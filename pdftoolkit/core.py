@@ -142,7 +142,7 @@ def find_gs() -> str | None:
 
 
 def _gs_dirs() -> list[str]:
-    out = []
+    out = [str(_app_dir() / "gs" / "bin")]  # bundled copy first
     for root in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)")):
         if root and Path(root, "gs").is_dir():
             for v in sorted(Path(root, "gs").iterdir(), reverse=True):
@@ -200,10 +200,12 @@ def _keep_smaller(src: str, tmp: str, dst: str, orig: int) -> tuple[int, int]:
 NATIVE_FORMATS = {".epub", ".mobi", ".fb2", ".xps", ".oxps", ".cbz", ".svg",
                   ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tif",
                   ".tiff", ".webp", ".html", ".htm", ".xhtml"}
-CALIBRE_FORMATS = {".azw", ".azw3", ".docx", ".doc", ".odt", ".rtf", ".md",
-                   ".lit", ".pdb", ".cbr", ".htmlz", ".txtz"}
+PANDOC_FORMATS = {".docx": "docx", ".odt": "odt", ".rtf": "rtf", ".md": "markdown",
+                  ".markdown": "markdown", ".rst": "rst", ".tex": "latex"}
+MOBI_LIKE = {".azw", ".azw3"}  # tried natively first, Calibre as fallback
+CALIBRE_FORMATS = {".azw", ".azw3", ".doc", ".lit", ".pdb", ".cbr", ".htmlz", ".txtz"}
 DJVU_FORMATS = {".djvu", ".djv"}
-ALL_FORMATS = sorted(NATIVE_FORMATS | CALIBRE_FORMATS | DJVU_FORMATS)
+ALL_FORMATS = sorted(NATIVE_FORMATS | set(PANDOC_FORMATS) | CALIBRE_FORMATS | DJVU_FORMATS)
 
 
 def _find_tool(names: list[str], extra_dirs: list[str]) -> str | None:
@@ -220,10 +222,14 @@ def _find_tool(names: list[str], extra_dirs: list[str]) -> str | None:
     return None
 
 
+def _app_dir() -> Path:
+    return Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
+
+
 def _program_dirs(*subdirs: str) -> list[str]:
     roots = [os.environ.get(k) for k in ("ProgramFiles", "ProgramFiles(x86)", "LOCALAPPDATA")]
     base = [Path(r) for r in roots if r]
-    here = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
+    here = _app_dir()
     out = [str(here / "djvu"), str(here), str(here / "bin")]  # bundled copy first
     for r in base:
         for s in subdirs:
@@ -239,10 +245,21 @@ def find_calibre() -> str | None:
     return _find_tool(["ebook-convert"], _program_dirs("Calibre2", "Calibre2/bin"))
 
 
+def find_pandoc() -> str | None:
+    try:
+        import pypandoc
+        p = pypandoc.get_pandoc_path()
+        if p and Path(p).is_file():
+            return p
+    except Exception:
+        pass
+    return _find_tool(["pandoc"], [])
+
+
 def supported_status() -> str:
-    dj = "built in" if find_ddjvu() else "NOT found (install DjVuLibre)"
-    ca = "found" if find_calibre() else "NOT found (install Calibre)"
-    return f"DjVu: {dj}   |   DOCX/AZW3/etc: {ca}"
+    def st(ok): return "built in" if ok else "missing"
+    return (f"DjVu: {st(find_ddjvu())}  |  DOCX/ODT/RTF: {st(find_pandoc())}  |  "
+            f"OCR: {st(find_tessdata())}  |  Ghostscript: {st(find_gs())}")
 
 
 def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
@@ -283,6 +300,35 @@ def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
                     pass
             pdf.save(out, garbage=3, deflate=True)
         return out
+
+    if ext in PANDOC_FORMATS:
+        pandoc = find_pandoc()
+        if not pandoc:
+            raise RuntimeError("Pandoc is missing from this build.")
+        with tempfile.TemporaryDirectory() as td:
+            html = Path(td) / "doc.html"
+            r = subprocess.run([pandoc, "-f", PANDOC_FORMATS[ext], "-t", "html5", "--standalone",
+                                "--embed-resources", "-o", str(html), str(s)],
+                               capture_output=True, text=True, cwd=td, creationflags=NO_WINDOW)
+            if r.returncode != 0 or not html.exists():
+                raise RuntimeError(f"Pandoc failed: {r.stderr.strip()[-300:]}")
+            with pymupdf.open(str(html)) as doc:
+                doc.layout(rect=pymupdf.paper_rect(page_size), fontsize=font_size)
+                pdf_bytes = doc.convert_to_pdf()
+            with pymupdf.open("pdf", pdf_bytes) as pdf:
+                pdf.save(out, garbage=3, deflate=True)
+        return out
+
+    if ext in MOBI_LIKE:  # KF8/AZW3 often opens as MOBI; fall through to Calibre if not
+        try:
+            with pymupdf.open(str(s), filetype="mobi") as doc:
+                doc.layout(rect=pymupdf.paper_rect(page_size), fontsize=font_size)
+                pdf_bytes = doc.convert_to_pdf()
+            with pymupdf.open("pdf", pdf_bytes) as pdf:
+                pdf.save(out, garbage=3, deflate=True)
+            return out
+        except Exception:
+            pass
 
     if ext in CALIBRE_FORMATS:
         tool = find_calibre()
@@ -403,7 +449,7 @@ def edit_pages(src: str, dst: str, action: str, spec: str = "", angle: int = 90)
 
 def find_tessdata() -> str | None:
     env = os.environ.get("TESSDATA_PREFIX")
-    cands = [env] if env else []
+    cands = [str(_app_dir() / "tessdata")] + ([env] if env else [])  # bundled copy first
     for root in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)"),
                  os.environ.get("LOCALAPPDATA")):
         if root:

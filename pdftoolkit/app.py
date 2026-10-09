@@ -202,6 +202,10 @@ class Tool(ctk.CTkFrame):
 
 # ------------------------------------------------------------------ tools
 PDF = [("PDF files", "*.pdf")]
+LANG_NAMES = {"eng": "English", "fas": "Persian (Farsi)", "ara": "Arabic", "deu": "German",
+              "fra": "French", "spa": "Spanish", "ita": "Italian", "rus": "Russian",
+              "tur": "Turkish", "nld": "Dutch", "por": "Portuguese", "heb": "Hebrew",
+              "ell": "Greek", "chi_sim": "Chinese (Simplified)", "jpn": "Japanese", "kor": "Korean"}
 
 
 class SplitTool(Tool):
@@ -278,11 +282,10 @@ class CompressTool(Tool):
         self.out = self.add(FileRow(self.body, "Output folder", kind="dir"))
         self.level = self.option_row("Level", list(core.COMPRESS_LEVELS), list(core.COMPRESS_LEVELS)[1])
         gs = core.find_gs()
-        engines = ["Built-in"] + (["Ghostscript (stronger)"] if gs else [])
+        engines = (["Ghostscript (stronger)"] if gs else []) + ["Built-in"]
         self.engine = self.option_row("Engine", engines)
-        self.note("Ghostscript detected — pick it for stronger compression of scanned books."
-                  if gs else
-                  "Tip: install Ghostscript (ghostscript.com) to unlock a stronger compression engine.")
+        self.note("Ghostscript is built in — it gives the strongest compression for scanned books."
+                  if gs else "Ghostscript is not available in this build; using the built-in engine.")
         self.note("Saved as <name>_compressed.pdf. If a file can't be made smaller, the original is kept.")
         self.button("Compress", self.run)
 
@@ -401,12 +404,13 @@ class OcrTool(Tool):
     def build(self):
         self.src = self.add(FileRow(self.body, "PDF file", types=PDF, on_pick=self._picked))
         self.out = self.add(FileRow(self.body, "Save as", kind="save", types=PDF))
-        langs = core.ocr_languages()
-        self.lang = self.option_row("Language", langs or ["eng"], "eng" if "eng" in langs else None)
+        codes = core.ocr_languages()
+        self.lang_map = {f"{LANG_NAMES.get(c, c)} ({c})": c for c in codes}
+        names = list(self.lang_map) or ["English (eng)"]
+        self.lang = self.option_row("Language", names, next((n for n in names if n.endswith("(eng)")), None))
         self.dpi = self.option_row("Scan quality", ["150 dpi (fast)", "200 dpi", "300 dpi (best)"], "200 dpi")
-        self.note("OCR is available (Tesseract found)." if langs else
-                  "Tesseract OCR not found. Install it from github.com/UB-Mannheim/tesseract/wiki "
-                  "(tick extra languages in the installer) and restart the app.")
+        self.note("OCR is built in. Pick the language of the scanned text."
+                  if codes else "OCR language data is missing from this build.")
         self.button("Run OCR", self.run)
 
     def _picked(self, p):
@@ -414,7 +418,8 @@ class OcrTool(Tool):
             self.out.var.set(str(Path(p).with_name(Path(p).stem + "_ocr.pdf")))
 
     def run(self):
-        src, out, lang = self.src.get(), self.out.get(), self.lang.get()
+        src, out = self.src.get(), self.out.get()
+        lang = self.lang_map.get(self.lang.get(), "eng")
         dpi = int(self.dpi.get().split()[0])
         if not self.need(src, out):
             return

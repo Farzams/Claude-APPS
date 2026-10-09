@@ -22,8 +22,21 @@ jobs:
           New-Item -ItemType Directory -Force pdftoolkit/djvu | Out-Null
           Copy-Item "$($exe.DirectoryName)\*" pdftoolkit/djvu -Recurse
           Get-ChildItem pdftoolkit/djvu
+      - name: Get Ghostscript and OCR language data (bundled)
+        shell: pwsh
+        run: |
+          choco install ghostscript -y --no-progress
+          $gsexe = Get-ChildItem "${env:ProgramFiles}\gs" -Recurse -Filter gswin64c.exe -ErrorAction Stop | Select-Object -First 1
+          $gsroot = $gsexe.Directory.Parent.FullName
+          New-Item -ItemType Directory -Force pdftoolkit/gs | Out-Null
+          Copy-Item "$gsroot\*" pdftoolkit/gs -Recurse
+          New-Item -ItemType Directory -Force pdftoolkit/tessdata | Out-Null
+          foreach ($l in "eng","fas","ara","deu","fra","spa","ita","rus","tur","nld","por","heb","ell","chi_sim","jpn","kor") {
+            Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" -OutFile "pdftoolkit/tessdata/$l.traineddata"
+          }
+          Get-ChildItem pdftoolkit/gs/bin, pdftoolkit/tessdata | Select-Object Name, Length
       # one-folder build: starts instantly (a one-file exe unpacks itself on every launch)
-      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "djvu;djvu" --collect-all customtkinter app.py
+      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tessdata;tessdata" --collect-all customtkinter --collect-all pypandoc app.py
         working-directory: pdftoolkit
       - name: Build installer
         working-directory: pdftoolkit
