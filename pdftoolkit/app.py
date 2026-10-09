@@ -15,7 +15,14 @@ import customtkinter as ctk
 import core
 
 ctk.set_default_color_theme("blue")
-ACCENT = ("#2563eb", "#3b82f6")
+ACCENT = ("#4f46e5", "#6366f1")
+ACCENT_HOVER = ("#4338ca", "#818cf8")
+BG = ("#f3f4f9", "#12141a")
+SIDEBAR = ("#ffffff", "#191c24")
+CARD = ("#ffffff", "#1d212b")
+FIELD = ("#f1f2f8", "#272c38")
+MUTED = ("gray40", "gray62")
+FONT = "Segoe UI"
 
 
 # ------------------------------------------------------------------ widgets
@@ -28,8 +35,10 @@ class FileRow(ctk.CTkFrame):
         self.var = tk.StringVar()
         self.columnconfigure(1, weight=1)
         ctk.CTkLabel(self, text=label, width=110, anchor="w").grid(row=0, column=0)
-        ctk.CTkEntry(self, textvariable=self.var).grid(row=0, column=1, sticky="ew", padx=8)
-        ctk.CTkButton(self, text="Browse…", width=90, command=self._browse).grid(row=0, column=2)
+        ctk.CTkEntry(self, textvariable=self.var, fg_color=FIELD, border_width=0, corner_radius=10,
+                     height=34).grid(row=0, column=1, sticky="ew", padx=8)
+        ctk.CTkButton(self, text="Browse…", width=90, height=34, corner_radius=10, fg_color=ACCENT,
+                      hover_color=ACCENT_HOVER, command=self._browse).grid(row=0, column=2)
 
     def _browse(self):
         if self.kind == "open":
@@ -57,7 +66,7 @@ class FileList(ctk.CTkFrame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
         self.lb = tk.Listbox(self, height=height, selectmode="extended", borderwidth=0,
-                             highlightthickness=1, activestyle="none", font=("Segoe UI", 10))
+                             highlightthickness=0, activestyle="none", font=(FONT, 10))
         self.lb.grid(row=0, column=0, sticky="nsew")
         sb = ctk.CTkScrollbar(self, command=self.lb.yview)
         sb.grid(row=0, column=1, sticky="ns")
@@ -67,9 +76,11 @@ class FileList(ctk.CTkFrame):
         for text, cmd in [("＋ Add files", self.add), ("▲ Up", lambda: self.move(-1)),
                           ("▼ Down", lambda: self.move(1)), ("Remove", self.remove),
                           ("Clear", self.clear)]:
-            ctk.CTkButton(bar, text=text, width=84, height=28, command=cmd,
-                          fg_color=ACCENT if text.startswith("＋") else ("gray70", "gray30"),
-                          text_color=("white" if text.startswith("＋") else ("black", "white"))
+            primary = text.startswith("＋")
+            ctk.CTkButton(bar, text=text, width=84, height=30, corner_radius=9, command=cmd,
+                          fg_color=ACCENT if primary else FIELD,
+                          hover_color=ACCENT_HOVER if primary else ("gray82", "gray30"),
+                          text_color="white" if primary else ("gray15", "gray90")
                           ).pack(side="left", padx=(0, 6))
         self.count = ctk.CTkLabel(bar, text="0 files")
         self.count.pack(side="right")
@@ -77,9 +88,9 @@ class FileList(ctk.CTkFrame):
 
     def recolor(self):
         dark = ctk.get_appearance_mode() == "Dark"
-        self.lb.configure(bg="#1f1f23" if dark else "#ffffff", fg="#e5e5e5" if dark else "#111111",
-                          selectbackground="#2563eb", selectforeground="white",
-                          highlightbackground="#3a3a40" if dark else "#c9c9cf")
+        self.lb.configure(bg="#272c38" if dark else "#f1f2f8", fg="#e8e8ee" if dark else "#14151a",
+                          selectbackground="#6366f1" if dark else "#4f46e5", selectforeground="white",
+                          highlightthickness=0)
 
     def add(self):
         for p in filedialog.askopenfilenames(filetypes=self.types):
@@ -125,12 +136,14 @@ class Tool(ctk.CTkFrame):
         super().__init__(app.main, fg_color="transparent")
         self.app = app
         self.columnconfigure(0, weight=1)
-        ctk.CTkLabel(self, text=self.title, font=ctk.CTkFont(size=24, weight="bold"),
+        ctk.CTkLabel(self, text=self.title, font=ctk.CTkFont(FONT, 26, "bold"),
                      anchor="w").grid(row=0, column=0, sticky="ew")
-        ctk.CTkLabel(self, text=self.subtitle, anchor="w", justify="left", wraplength=620,
-                     text_color=("gray35", "gray65")).grid(row=1, column=0, sticky="ew", pady=(0, 14))
-        self.body = ctk.CTkFrame(self, fg_color="transparent")
+        ctk.CTkLabel(self, text=self.subtitle, anchor="w", justify="left", wraplength=640,
+                     font=ctk.CTkFont(FONT, 13), text_color=MUTED).grid(
+            row=1, column=0, sticky="ew", pady=(0, 14))
+        self.body = ctk.CTkFrame(self, fg_color=CARD, corner_radius=16)
         self.body.grid(row=2, column=0, sticky="nsew")
+        self.body.grid_columnconfigure(0, weight=1)
         self.body.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
         self.build()
@@ -138,13 +151,20 @@ class Tool(ctk.CTkFrame):
     def build(self): ...
 
     def add(self, widget, **kw):
-        widget.grid(row=self.body.grid_size()[1], column=0, sticky="ew", pady=kw.pop("pady", 5), **kw)
+        row = self.body.grid_size()[1]
+        pad = kw.pop("pady", 6)
+        if isinstance(pad, tuple):
+            pad = (pad[0] + (14 if row == 0 else 0), pad[1])
+        elif row == 0:
+            pad = (pad + 14, pad)
+        widget.grid(row=row, column=0, sticky="ew", padx=22, pady=pad, **kw)
         return widget
 
     def button(self, text, cmd):
-        b = ctk.CTkButton(self.body, text=text, height=40, font=ctk.CTkFont(size=14, weight="bold"),
-                          fg_color=ACCENT, command=cmd)
-        self.add(b, pady=(16, 0))
+        b = ctk.CTkButton(self.body, text=text, height=44, corner_radius=12,
+                          font=ctk.CTkFont(FONT, 15, "bold"), fg_color=ACCENT,
+                          hover_color=ACCENT_HOVER, command=cmd)
+        self.add(b, pady=(18, 20))
         return b
 
     def entry_row(self, label, default="", hint=""):
@@ -152,7 +172,8 @@ class Tool(ctk.CTkFrame):
         f.columnconfigure(1, weight=1)
         ctk.CTkLabel(f, text=label, width=110, anchor="w").grid(row=0, column=0)
         var = tk.StringVar(value=default)
-        ctk.CTkEntry(f, textvariable=var, placeholder_text=hint).grid(row=0, column=1, sticky="ew", padx=8)
+        ctk.CTkEntry(f, textvariable=var, placeholder_text=hint, fg_color=FIELD, border_width=0,
+                     corner_radius=10, height=34).grid(row=0, column=1, sticky="ew", padx=8)
         self.add(f)
         return var
 
@@ -161,14 +182,16 @@ class Tool(ctk.CTkFrame):
         f.columnconfigure(1, weight=1)
         ctk.CTkLabel(f, text=label, width=110, anchor="w").grid(row=0, column=0)
         var = tk.StringVar(value=default or values[0])
-        ctk.CTkOptionMenu(f, variable=var, values=values, fg_color=ACCENT).grid(
+        ctk.CTkOptionMenu(f, variable=var, values=values, fg_color=FIELD, button_color=ACCENT,
+                          button_hover_color=ACCENT_HOVER, text_color=("gray10", "gray92"),
+                          corner_radius=10, height=34, dropdown_font=ctk.CTkFont(FONT, 13)).grid(
             row=0, column=1, sticky="ew", padx=8)
         self.add(f)
         return var
 
     def note(self, text):
         self.add(ctk.CTkLabel(self.body, text=text, anchor="w", justify="left", wraplength=620,
-                              text_color=("gray35", "gray65")))
+                              text_color=MUTED))
 
     def need(self, *vals):
         if not all(vals):
@@ -284,12 +307,11 @@ class ConvertTool(Tool):
 
     def build(self):
         self.files = self.add(FileList(self.body, [("Supported", " ".join("*" + e for e in core.ALL_FORMATS)),
-                                                   ("All files", "*.*")], height=6))
+                                                   ("All files", "*.*")], height=4))
         self.out = self.add(FileRow(self.body, "Output folder", kind="dir"))
         self.size = self.option_row("Ebook page size", ["A5", "A4", "A6", "Letter"])
         self.font = self.option_row("Ebook font size", [str(i) for i in range(8, 21)], "11")
-        self.note(core.supported_status() + "\nEPUB/MOBI/FB2/XPS/CBZ/HTML/TXT work out of the box. "
-                  "DjVu needs DjVuLibre; DOCX/AZW3/RTF/ODT need Calibre.")
+        self.note(core.supported_status() + "\nEverything else works out of the box.")
         self.button("Convert", self.run)
 
     def run(self):
@@ -311,7 +333,7 @@ class ConvertTool(Tool):
 
 
 class ImagesTool(Tool):
-    title, subtitle = "Images → PDF", "Pick several pictures, put them in order and turn them into one PDF."
+    title, subtitle = "Images to PDF", "Pick several pictures, put them in order and turn them into one PDF."
 
     def build(self):
         ex = " ".join("*" + e for e in core.IMAGE_EXTS)
@@ -330,7 +352,7 @@ class ImagesTool(Tool):
 
         def job(log, prog):
             n = core.images_to_pdf(files, out, size, margin, prog)
-            log(f"✔ {n} picture(s) → {Path(out).name}")
+            log(f"✔ {n} picture(s) to {Path(out).name}")
             return str(Path(out).parent)
         self.app.run(job)
 
@@ -407,65 +429,94 @@ class OcrTool(Tool):
 # ------------------------------------------------------------------ app
 class App(ctk.CTk):
     TOOLS = [("✂  Split", SplitTool), ("⧉  Merge", MergeTool), ("🗜  Compress", CompressTool),
-             ("⇄  Convert to PDF", ConvertTool), ("🖼  Images → PDF", ImagesTool),
+             ("⇄  Convert to PDF", ConvertTool), ("🖼  Images to PDF", ImagesTool),
              ("☰  Page tools", PagesTool), ("🔍  OCR", OcrTool)]
 
     def __init__(self):
         super().__init__()
         self.title("PDF Toolkit")
-        self.geometry("1020x720")
-        self.minsize(900, 620)
+        self.geometry("1080x800")
+        self.minsize(980, 720)
         self.q: queue.Queue = queue.Queue()
         self.busy, self.last_dir = False, None
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
 
-        side = ctk.CTkFrame(self, width=210, corner_radius=0)
+        self.configure(fg_color=BG)
+        if sys.platform == "win32":
+            try:
+                self.iconbitmap(str(Path(getattr(sys, "_MEIPASS", Path(__file__).parent)) / "icon.ico"))
+            except Exception:
+                pass
+        side = ctk.CTkFrame(self, width=230, corner_radius=0, fg_color=SIDEBAR)
         side.grid(row=0, column=0, rowspan=2, sticky="ns")
         side.grid_propagate(False)
-        ctk.CTkLabel(side, text="PDF Toolkit", font=ctk.CTkFont(size=22, weight="bold")).pack(
-            padx=20, pady=(24, 18), anchor="w")
+        logo = ctk.CTkFrame(side, fg_color="transparent")
+        logo.pack(fill="x", padx=18, pady=(26, 22))
+        ctk.CTkLabel(logo, text="PDF", width=40, height=40, corner_radius=11, fg_color=ACCENT,
+                     text_color="white", font=ctk.CTkFont(FONT, 14, "bold")).pack(side="left")
+        ctk.CTkLabel(logo, text="Toolkit", font=ctk.CTkFont(FONT, 21, "bold")).pack(side="left", padx=10)
         self.nav = {}
         for name, cls in self.TOOLS:
-            b = ctk.CTkButton(side, text=name, anchor="w", height=38, corner_radius=8,
-                              fg_color="transparent", text_color=("gray10", "gray90"),
-                              hover_color=("gray75", "gray25"), font=ctk.CTkFont(size=14),
+            b = ctk.CTkButton(side, text=name, anchor="w", height=42, corner_radius=11,
+                              fg_color="transparent", text_color=("gray20", "gray88"),
+                              hover_color=("#eceef7", "#262b38"), font=ctk.CTkFont(FONT, 14),
                               command=lambda n=name: self.show(n))
-            b.pack(fill="x", padx=12, pady=2)
+            b.pack(fill="x", padx=14, pady=2)
             self.nav[name] = b
-        self.theme = ctk.CTkSwitch(side, text="Dark mode", command=self._toggle_theme)
-        self.theme.pack(side="bottom", padx=20, pady=20, anchor="w")
+        self.theme = ctk.CTkSwitch(side, text="Dark mode", command=self._toggle_theme,
+                                   progress_color=ACCENT, font=ctk.CTkFont(FONT, 13))
+        self.theme.pack(side="bottom", padx=22, pady=22, anchor="w")
         self.theme.select() if ctk.get_appearance_mode() == "Dark" else self.theme.deselect()
 
         self.main = ctk.CTkFrame(self, fg_color="transparent")
-        self.main.grid(row=0, column=1, sticky="nsew", padx=24, pady=(20, 8))
+        self.main.grid(row=0, column=1, sticky="nsew", padx=28, pady=(24, 8))
         self.main.columnconfigure(0, weight=1)
         self.main.rowconfigure(0, weight=1)
-        self.pages = {}
-        for name, cls in self.TOOLS:
-            p = cls(self)
-            p.grid(row=0, column=0, sticky="nsew")
-            self.pages[name] = p
+        self.pages, self.current = {}, None
 
-        foot = ctk.CTkFrame(self, fg_color="transparent")
-        foot.grid(row=1, column=1, sticky="ew", padx=24, pady=(0, 16))
+        foot = ctk.CTkFrame(self, fg_color=CARD, corner_radius=16)
+        foot.grid(row=1, column=1, sticky="ew", padx=28, pady=(0, 20))
         foot.columnconfigure(0, weight=1)
-        self.bar = ctk.CTkProgressBar(foot)
+        self.bar = ctk.CTkProgressBar(foot, progress_color=ACCENT, height=8, fg_color=FIELD)
         self.bar.set(0)
-        self.bar.grid(row=0, column=0, sticky="ew")
-        self.open_btn = ctk.CTkButton(foot, text="Open folder", width=110, height=26,
+        self.bar.grid(row=0, column=0, sticky="ew", padx=(18, 8), pady=(16, 0))
+        self.open_btn = ctk.CTkButton(foot, text="Open folder", width=110, height=28, corner_radius=9,
+                                      fg_color=ACCENT, hover_color=ACCENT_HOVER,
                                       state="disabled", command=self.open_folder)
-        self.open_btn.grid(row=0, column=1, padx=(10, 0))
-        self.log = ctk.CTkTextbox(foot, height=110, state="disabled")
-        self.log.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(8, 0))
+        self.open_btn.grid(row=0, column=1, padx=(0, 18), pady=(12, 0))
+        self.log = ctk.CTkTextbox(foot, height=90, state="disabled", fg_color=FIELD, corner_radius=10,
+                                  font=ctk.CTkFont(FONT, 12))
+        self.log.grid(row=1, column=0, columnspan=2, sticky="ew", padx=18, pady=(10, 16))
         self.show(self.TOOLS[0][0])
         self.after(100, self._poll)
+        self.after(300, self._prebuild)
+
+    def _page(self, name):
+        if name not in self.pages:
+            self.pages[name] = dict(self.TOOLS)[name](self)
+        return self.pages[name]
+
+    def _prebuild(self):
+        """Build the remaining pages while idle (hidden), one per tick, so tab switches are instant."""
+        for name, _ in self.TOOLS:
+            if name not in self.pages:
+                self._page(name)
+                self.after(60, self._prebuild)
+                return
 
     def show(self, name):
-        self.pages[name].tkraise()
+        if self.current == name:
+            return
+        if self.current:
+            self.pages[self.current].grid_remove()  # hidden pages take no part in resize/layout
+        page = self._page(name)
+        page.grid(row=0, column=0, sticky="nsew")
+        self.current = name
         for n, b in self.nav.items():
             b.configure(fg_color=ACCENT if n == name else "transparent",
-                        text_color="white" if n == name else ("gray10", "gray90"))
+                        hover_color=ACCENT_HOVER if n == name else ("#eceef7", "#262b38"),
+                        text_color="white" if n == name else ("gray20", "gray88"))
 
     def _toggle_theme(self):
         ctk.set_appearance_mode("dark" if self.theme.get() else "light")
