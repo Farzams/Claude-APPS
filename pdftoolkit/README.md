@@ -16,3 +16,9 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - Converting DOCX/ODT/RTF/EPUB/TXT/HTML to PDF shapes letters, lays text out right-to-left and keeps headings as bookmarks
 - Text files in UTF-8, UTF-16 or Windows-1256 are read correctly
 - Extract text normalises Persian letters; Read tab searches Persian ignoring half-spaces
+
+## Interface
+- English and Persian (right-to-left) interface; Help section in both languages
+- 9 colour themes (light and dark), picture banners (built-in styles or your own photo), colourful icons
+- Theme changes only touch the visible page; the window hides its content while its edge is dragged, so resizing stays smooth
+- Settings are stored in `%APPDATA%\PDFToolkit\settings.json`

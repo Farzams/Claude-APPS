@@ -56,8 +56,15 @@ jobs:
         shell: pwsh
         env: { PYTHONUTF8: "1" }
         run: python pdftoolkit/smoke_test.py
+      - name: GUI smoke test, English and Persian (does not block the build)
+        shell: pwsh
+        continue-on-error: true
+        env: { PYTHONUTF8: "1" }
+        run: |
+          python pdftoolkit/gui_smoke.py en
+          python pdftoolkit/gui_smoke.py fa
       # one-folder build: starts instantly (a one-file exe unpacks itself on every launch)
-      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --collect-all customtkinter --collect-all pypandoc --collect-all tkinterdnd2 --collect-all docx app.py
+      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --collect-all customtkinter --collect-all pypandoc --collect-all tkinterdnd2 --collect-all docx --collect-all arabic_reshaper --collect-all bidi app.py
         working-directory: pdftoolkit
       - name: Build installer
         working-directory: pdftoolkit

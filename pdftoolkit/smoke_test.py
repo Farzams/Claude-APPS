@@ -69,5 +69,13 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
     if core.find_ddjvu():
         check("ddjvu runs", True)
 
+import i18n, art, theme  # noqa: E402
+i18n.set_lang("fa")
+check("Persian UI text is shaped", i18n.shape("سلام") != "سلام")
+b = art.banner(i18n.t("OCR"), i18n.t("Cut a PDF into several smaller files."), "ocr", (800, 110),
+               theme.THEMES["ocean"], "mountains", "", True)
+check("Persian banner renders", b.size == (800, 110))
+check("every theme has the required colours", all({"bg", "card", "accent", "text"} <= set(p) for p in theme.THEMES.values()))
+
 print("FAILED:", check.failed or "none")
 sys.exit(1 if check.failed else 0)
