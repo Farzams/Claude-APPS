@@ -552,7 +552,10 @@ def html_to_pdf(html: str, dst: str, page_size: str = "a5", font_size: int = 11,
         if pos.heading and (pos.open_close & 1) and pos.text.strip():
             toc.append([min(pos.heading, 6), pos.text.strip()[:120], page_no[0]])
 
-    writer = pymupdf.DocumentWriter(str(dst))
+    # Write to a scratch file first: Windows keeps the writer's file locked for a moment,
+    # so the final PDF (with bookmarks) is saved as a new file instead of replacing in place.
+    raw = os.path.join(tempfile.gettempdir(), f"pdftk_{os.getpid()}_{id(story)}.pdf")
+    writer = pymupdf.DocumentWriter(raw)
     more = 1
     while more:
         dev = writer.begin_page(mediabox)
@@ -562,7 +565,10 @@ def html_to_pdf(html: str, dst: str, page_size: str = "a5", font_size: int = 11,
         writer.end_page()
         page_no[0] += 1
     writer.close()
-    with pymupdf.open(str(dst)) as pdf:
+    del writer, story
+    import gc
+    gc.collect()
+    with pymupdf.open(raw) as pdf:
         n = pdf.page_count
         if toc:
             fixed, last = [], 0
@@ -572,12 +578,13 @@ def html_to_pdf(html: str, dst: str, page_size: str = "a5", font_size: int = 11,
                 last = lvl
             try:
                 pdf.set_toc(fixed)
-                tmp = str(dst) + ".tmp"
-                pdf.save(tmp, garbage=3, deflate=True)
             except Exception:
-                tmp = None
-    if toc and tmp:
-        os.replace(tmp, dst)
+                pass
+        pdf.save(str(dst), garbage=3, deflate=True)
+    try:
+        os.remove(raw)
+    except OSError:
+        pass
     return n
 
 

@@ -32,7 +32,7 @@ except Exception as e:
 check("pandoc found", bool(core.find_pandoc()), str(core.find_pandoc()))
 check("fonts present", (core.fonts_dir() / "NotoSansArabic-Regular.ttf").is_file())
 
-with tempfile.TemporaryDirectory() as td:
+with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
     td = Path(td)
     html = "<html dir='rtl'><body>" + "".join(f"<p>{t}</p>" for t in FA) + "</body></html>"
     core.html_to_pdf(html, str(td / "fa.pdf"), "a5", 16)
