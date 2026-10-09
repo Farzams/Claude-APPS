@@ -224,7 +224,7 @@ def _program_dirs(*subdirs: str) -> list[str]:
     roots = [os.environ.get(k) for k in ("ProgramFiles", "ProgramFiles(x86)", "LOCALAPPDATA")]
     base = [Path(r) for r in roots if r]
     here = Path(getattr(sys, "_MEIPASS", Path(__file__).parent))
-    out = [str(here), str(here / "bin")]
+    out = [str(here / "djvu"), str(here), str(here / "bin")]  # bundled copy first
     for r in base:
         for s in subdirs:
             out.append(str(r / s))
@@ -240,7 +240,7 @@ def find_calibre() -> str | None:
 
 
 def supported_status() -> str:
-    dj = "found" if find_ddjvu() else "NOT found (install DjVuLibre)"
+    dj = "built in" if find_ddjvu() else "NOT found (install DjVuLibre)"
     ca = "found" if find_calibre() else "NOT found (install Calibre)"
     return f"DjVu: {dj}   |   DOCX/AZW3/etc: {ca}"
 

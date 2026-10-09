@@ -1,5 +1,6 @@
 @echo off
 rem Builds dist\PDFToolkit\PDFToolkit.exe (fast-starting one-folder build). Needs Python 3.10+.
+rem To bundle DjVu: copy the DjVuLibre folder (ddjvu.exe + dlls) to a "djvu" folder here and add --add-data "djvu;djvu".
 rem For an installer, then open installer.iss with Inno Setup (jrsoftware.org/isinfo.php).
 cd /d "%~dp0"
 python -m pip install -r requirements.txt || exit /b 1
