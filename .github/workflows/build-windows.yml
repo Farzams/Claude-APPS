@@ -19,12 +19,19 @@ jobs:
       - name: Get DjVuLibre (bundled so DjVu works with no install)
         shell: pwsh
         run: |
-          choco install djvulibre -y --no-progress
-          $exe = Get-ChildItem "${env:ProgramFiles}","${env:ProgramFiles(x86)}" -Recurse -Filter ddjvu.exe -ErrorAction SilentlyContinue | Select-Object -First 1
-          if (-not $exe) { throw "ddjvu.exe not found after install" }
+          $env:MSYSTEM = "MINGW64"; $env:CHERE_INVOKING = "1"
+          & C:\msys64\usr\bin\pacman.exe -S --noconfirm --needed mingw-w64-x86_64-djvulibre
+          if (-not (Test-Path C:\msys64\mingw64\bin\ddjvu.exe)) { throw "ddjvu.exe not installed" }
           New-Item -ItemType Directory -Force pdftoolkit/djvu | Out-Null
-          Copy-Item "$($exe.DirectoryName)\*" pdftoolkit/djvu -Recurse
-          Get-ChildItem pdftoolkit/djvu
+          Copy-Item C:\msys64\mingw64\bin\ddjvu.exe pdftoolkit/djvu
+          $deps = & C:\msys64\usr\bin\bash.exe -lc "ldd /mingw64/bin/ddjvu.exe | grep -i /mingw64/ | sed 's/.*=> //; s/ (.*//'"
+          foreach ($d in $deps) {
+            $src = "C:\msys64" + $d.Trim().Replace("/", "\")
+            if (Test-Path $src) { Copy-Item $src pdftoolkit/djvu -Force }
+          }
+          Get-ChildItem pdftoolkit/djvu | Select-Object Name, Length
+          & pdftoolkit\djvu\ddjvu.exe -help 2>&1 | Select-Object -First 3
+          if ($LASTEXITCODE -eq -1073741515) { throw "ddjvu.exe is missing a DLL" }
       - name: Get Ghostscript and OCR language data (bundled)
         shell: pwsh
         run: |
