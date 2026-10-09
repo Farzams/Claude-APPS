@@ -73,17 +73,24 @@ jobs:
           path: |
             pdftoolkit/dist/PDFToolkit-Setup.exe
             pdftoolkit/dist/PDFToolkit-portable.zip
-      - name: Remove old single-file asset
+      - name: Publish release (with retries)
         shell: pwsh
         env: { GH_TOKEN: "${{ github.token }}" }
-        run: gh release delete-asset pdftoolkit-latest PDFToolkit.exe -y --repo ${{ github.repository }}
-        continue-on-error: true
-      - uses: softprops/action-gh-release@v2
-        with:
-          tag_name: pdftoolkit-latest
-          name: PDF Toolkit (latest Windows build)
-          body: "**PDFToolkit-Setup.exe** (recommended: installs, starts fastest) or **PDFToolkit-portable.zip** (unzip anywhere, run PDFToolkit.exe)."
-          target_commitish: ${{ github.sha }}
-          files: |
-            pdftoolkit/dist/PDFToolkit-Setup.exe
-            pdftoolkit/dist/PDFToolkit-portable.zip
+        run: |
+          $repo = "${{ github.repository }}"; $tag = "pdftoolkit-latest"
+          gh release view $tag --repo $repo *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --repo $repo --title "PDF Toolkit (latest Windows build)" --target "${{ github.sha }}" --notes "**PDFToolkit-Setup.exe** (recommended: installs, starts fastest) or **PDFToolkit-portable.zip** (unzip anywhere, run PDFToolkit.exe)."
+          }
+          gh release delete-asset $tag PDFToolkit.exe -y --repo $repo *> $null
+          foreach ($f in "pdftoolkit/dist/PDFToolkit-Setup.exe", "pdftoolkit/dist/PDFToolkit-portable.zip") {
+            $ok = $false
+            foreach ($i in 1..5) {
+              gh release upload $tag $f --clobber --repo $repo
+              if ($LASTEXITCODE -eq 0) { $ok = $true; break }
+              Write-Host "Upload of $f failed (attempt $i), retrying..."
+              Start-Sleep -Seconds (10 * $i)
+            }
+            if (-not $ok) { throw "Could not upload $f" }
+          }
+          gh release view $tag --repo $repo --json assets --jq ".assets[] | [.name, .size] | @tsv"
