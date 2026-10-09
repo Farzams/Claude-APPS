@@ -1,4 +1,4 @@
-"""PDF Toolkit - split, merge, compress, convert, images->PDF, page tools, OCR."""
+"""PDF Toolkit - read, split, merge, compress, convert, images to PDF, page tools, OCR (Farsi ready)."""
 from __future__ import annotations
 
 import os
@@ -14,15 +14,42 @@ import customtkinter as ctk
 
 import core
 
+try:  # drag & drop files onto the window (optional)
+    from tkinterdnd2 import DND_FILES, TkinterDnD
+    HAS_DND = True
+except Exception:  # pragma: no cover
+    HAS_DND = False
+
 ctk.set_default_color_theme("blue")
 ACCENT = ("#4f46e5", "#6366f1")
 ACCENT_HOVER = ("#4338ca", "#818cf8")
 BG = ("#f3f4f9", "#12141a")
 SIDEBAR = ("#ffffff", "#191c24")
 CARD = ("#ffffff", "#1d212b")
+CARD_HOVER = ("#eef0fb", "#262b3a")
 FIELD = ("#f1f2f8", "#272c38")
 MUTED = ("gray40", "gray62")
 FONT = "Segoe UI"
+
+PDF = [("PDF files", "*.pdf")]
+LANG_NAMES = {"fas": "Persian (Farsi)", "eng": "English", "ara": "Arabic", "deu": "German",
+              "fra": "French", "spa": "Spanish", "ita": "Italian", "rus": "Russian",
+              "tur": "Turkish", "nld": "Dutch", "por": "Portuguese", "heb": "Hebrew",
+              "ell": "Greek", "chi_sim": "Chinese (Simplified)", "jpn": "Japanese", "kor": "Korean"}
+LANG_ORDER = ["fas", "eng", "ara"]
+
+
+def lang_choices() -> dict[str, str]:
+    """{label: code} with Persian first."""
+    codes = core.ocr_languages()
+    codes.sort(key=lambda c: (LANG_ORDER.index(c) if c in LANG_ORDER else 99, LANG_NAMES.get(c, c)))
+    return {f"{LANG_NAMES.get(c, c)}  ({c})": c for c in codes}
+
+
+def tess_lang(code: str, also_english: bool) -> str:
+    if also_english and code != "eng" and "eng" in core.ocr_languages():
+        return f"{code}+eng"
+    return code
 
 
 # ------------------------------------------------------------------ widgets
@@ -48,9 +75,12 @@ class FileRow(ctk.CTkFrame):
         else:
             p = filedialog.askdirectory()
         if p:
-            self.var.set(p)
-            if self.on_pick:
-                self.on_pick(p)
+            self.set(p)
+
+    def set(self, p):
+        self.var.set(p)
+        if self.on_pick:
+            self.on_pick(p)
 
     def get(self):
         return self.var.get().strip()
@@ -73,7 +103,7 @@ class FileList(ctk.CTkFrame):
         self.lb.configure(yscrollcommand=sb.set)
         bar = ctk.CTkFrame(self, fg_color="transparent")
         bar.grid(row=1, column=0, columnspan=2, sticky="ew", pady=(8, 0))
-        for text, cmd in [("＋ Add files", self.add), ("▲ Up", lambda: self.move(-1)),
+        for text, cmd in [("＋ Add files", self.add_dialog), ("▲ Up", lambda: self.move(-1)),
                           ("▼ Down", lambda: self.move(1)), ("Remove", self.remove),
                           ("Clear", self.clear)]:
             primary = text.startswith("＋")
@@ -89,11 +119,13 @@ class FileList(ctk.CTkFrame):
     def recolor(self):
         dark = ctk.get_appearance_mode() == "Dark"
         self.lb.configure(bg="#272c38" if dark else "#f1f2f8", fg="#e8e8ee" if dark else "#14151a",
-                          selectbackground="#6366f1" if dark else "#4f46e5", selectforeground="white",
-                          highlightthickness=0)
+                          selectbackground="#6366f1" if dark else "#4f46e5", selectforeground="white")
 
-    def add(self):
-        for p in filedialog.askopenfilenames(filetypes=self.types):
+    def add_dialog(self):
+        self.add_paths(filedialog.askopenfilenames(filetypes=self.types))
+
+    def add_paths(self, paths):
+        for p in paths:
             if p not in self.files:
                 self.files.append(p)
         self._refresh()
@@ -128,7 +160,7 @@ class FileList(ctk.CTkFrame):
 
 
 class Tool(ctk.CTkFrame):
-    """Base page: title, subtitle, content grid, run button."""
+    """Base page: title, subtitle, content card, run button."""
 
     title, subtitle = "", ""
 
@@ -138,17 +170,37 @@ class Tool(ctk.CTkFrame):
         self.columnconfigure(0, weight=1)
         ctk.CTkLabel(self, text=self.title, font=ctk.CTkFont(FONT, 26, "bold"),
                      anchor="w").grid(row=0, column=0, sticky="ew")
-        ctk.CTkLabel(self, text=self.subtitle, anchor="w", justify="left", wraplength=640,
+        ctk.CTkLabel(self, text=self.subtitle, anchor="w", justify="left", wraplength=700,
                      font=ctk.CTkFont(FONT, 13), text_color=MUTED).grid(
             row=1, column=0, sticky="ew", pady=(0, 14))
         self.body = ctk.CTkFrame(self, fg_color=CARD, corner_radius=16)
         self.body.grid(row=2, column=0, sticky="nsew")
         self.body.grid_columnconfigure(0, weight=1)
-        self.body.columnconfigure(0, weight=1)
         self.rowconfigure(2, weight=1)
         self.build()
+        if app.dnd:
+            self._enable_drop()
 
     def build(self): ...
+
+    # ---- drag & drop: the first file list / file row on the page receives the files
+    def _enable_drop(self):
+        try:
+            self.drop_target_register(DND_FILES)
+            self.dnd_bind("<<Drop>>", lambda e: self.drop(list(self.tk.splitlist(e.data))))
+            self.body.drop_target_register(DND_FILES)
+            self.body.dnd_bind("<<Drop>>", lambda e: self.drop(list(self.tk.splitlist(e.data))))
+        except Exception:
+            pass
+
+    def drop(self, paths):
+        for w in self.body.winfo_children():
+            if isinstance(w, FileList):
+                w.add_paths(paths)
+                return
+            if isinstance(w, FileRow) and w.kind == "open":
+                w.set(paths[0])
+                return
 
     def add(self, widget, **kw):
         row = self.body.grid_size()[1]
@@ -189,8 +241,14 @@ class Tool(ctk.CTkFrame):
         self.add(f)
         return var
 
+    def check_row(self, text, default=True):
+        var = tk.BooleanVar(value=default)
+        self.add(ctk.CTkCheckBox(self.body, text=text, variable=var, fg_color=ACCENT,
+                                 hover_color=ACCENT_HOVER, corner_radius=6), pady=4)
+        return var
+
     def note(self, text):
-        self.add(ctk.CTkLabel(self.body, text=text, anchor="w", justify="left", wraplength=620,
+        self.add(ctk.CTkLabel(self.body, text=text, anchor="w", justify="left", wraplength=660,
                               text_color=MUTED))
 
     def need(self, *vals):
@@ -201,11 +259,166 @@ class Tool(ctk.CTkFrame):
 
 
 # ------------------------------------------------------------------ tools
-PDF = [("PDF files", "*.pdf")]
-LANG_NAMES = {"eng": "English", "fas": "Persian (Farsi)", "ara": "Arabic", "deu": "German",
-              "fra": "French", "spa": "Spanish", "ita": "Italian", "rus": "Russian",
-              "tur": "Turkish", "nld": "Dutch", "por": "Portuguese", "heb": "Hebrew",
-              "ell": "Greek", "chi_sim": "Chinese (Simplified)", "jpn": "Japanese", "kor": "Korean"}
+class ReadTool(Tool):
+    title = "Read"
+    subtitle = "View any PDF. Persian (Farsi), Arabic and English text can be searched and copied."
+
+    def build(self):
+        self.reader: core.PdfReader | None = None
+        self.page, self.zoom, self.fit = 0, 1.2, True
+        self.hits: list[int] = []
+        self._img = None
+        self._resize_job = None
+        self._last_q = None
+        b = self.body
+        b.rowconfigure(2, weight=1)
+        top = ctk.CTkFrame(b, fg_color="transparent")
+        top.grid(row=0, column=0, sticky="ew", padx=18, pady=(14, 4))
+        ctk.CTkButton(top, text="Open PDF…", width=100, height=32, corner_radius=9, fg_color=ACCENT,
+                      hover_color=ACCENT_HOVER, command=self.open_dialog).pack(side="left")
+        self.name = ctk.CTkLabel(top, text="No file open — or drop a PDF here", text_color=MUTED, anchor="w")
+        self.name.pack(side="left", padx=12)
+        bar = ctk.CTkFrame(b, fg_color="transparent")
+        bar.grid(row=1, column=0, sticky="ew", padx=18, pady=(2, 8))
+        small = dict(width=34, height=30, corner_radius=8, fg_color=FIELD, hover_color=("gray82", "gray30"),
+                     text_color=("gray15", "gray90"))
+        ctk.CTkButton(bar, text="◀", command=lambda: self.go(self.page - 1), **small).pack(side="left")
+        self.pg_var = tk.StringVar(value="1")
+        e = ctk.CTkEntry(bar, textvariable=self.pg_var, width=52, height=30, justify="center",
+                         fg_color=FIELD, border_width=0)
+        e.pack(side="left", padx=4)
+        e.bind("<Return>", lambda _e: self._goto_entry())
+        self.total = ctk.CTkLabel(bar, text="/ 0", width=44)
+        self.total.pack(side="left")
+        ctk.CTkButton(bar, text="▶", command=lambda: self.go(self.page + 1), **small).pack(side="left")
+        ctk.CTkButton(bar, text="−", command=lambda: self.set_zoom(self.zoom / 1.2), **small).pack(
+            side="left", padx=(14, 0))
+        ctk.CTkButton(bar, text="+", command=lambda: self.set_zoom(self.zoom * 1.2), **small).pack(
+            side="left", padx=4)
+        ctk.CTkButton(bar, text="Fit", command=self.fit_width, **small).pack(side="left")
+        self.q = tk.StringVar()
+        s = ctk.CTkEntry(bar, textvariable=self.q, placeholder_text="Search (Farsi OK)", height=30,
+                         width=170, fg_color=FIELD, border_width=0)
+        s.pack(side="left", padx=(14, 4))
+        s.bind("<Return>", lambda _e: self.find(1))
+        ctk.CTkButton(bar, text="Find", command=lambda: self.find(1), **small).pack(side="left")
+        self.hit_lbl = ctk.CTkLabel(bar, text="", text_color=MUTED)
+        self.hit_lbl.pack(side="left", padx=6)
+        ctk.CTkButton(bar, text="Copy text", width=84, height=30, corner_radius=8, fg_color=FIELD,
+                      hover_color=("gray82", "gray30"), text_color=("gray15", "gray90"),
+                      command=self.copy_text).pack(side="right")
+        holder = ctk.CTkFrame(b, fg_color=FIELD, corner_radius=10)
+        holder.grid(row=2, column=0, sticky="nsew", padx=18, pady=(0, 18))
+        holder.rowconfigure(0, weight=1)
+        holder.columnconfigure(0, weight=1)
+        self.cv = tk.Canvas(holder, highlightthickness=0, bd=0)
+        self.cv.grid(row=0, column=0, sticky="nsew", padx=2, pady=2)
+        vs = ctk.CTkScrollbar(holder, command=self.cv.yview)
+        vs.grid(row=0, column=1, sticky="ns")
+        hs = ctk.CTkScrollbar(holder, orientation="horizontal", command=self.cv.xview)
+        hs.grid(row=1, column=0, sticky="ew")
+        self.cv.configure(yscrollcommand=vs.set, xscrollcommand=hs.set)
+        self.cv.bind("<MouseWheel>", self._wheel)
+        self.cv.bind("<Button-4>", lambda e: self.cv.yview_scroll(-3, "units"))
+        self.cv.bind("<Button-5>", lambda e: self.cv.yview_scroll(3, "units"))
+        self.cv.bind("<Control-MouseWheel>",
+                     lambda e: self.set_zoom(self.zoom * (1.1 if e.delta > 0 else 1 / 1.1)))
+        self.cv.bind("<Left>", lambda e: self.go(self.page - 1))
+        self.cv.bind("<Right>", lambda e: self.go(self.page + 1))
+        self.cv.bind("<Button-1>", lambda e: self.cv.focus_set())
+        self.cv.bind("<Configure>", lambda e: self._on_resize())
+        self.recolor()
+
+    def recolor(self):
+        self.cv.configure(bg="#272c38" if ctk.get_appearance_mode() == "Dark" else "#e4e6f0")
+
+    def drop(self, paths):
+        self.open_pdf(paths[0])
+
+    def open_dialog(self):
+        p = filedialog.askopenfilename(filetypes=PDF)
+        if p:
+            self.open_pdf(p)
+
+    def open_pdf(self, path):
+        try:
+            r = core.PdfReader(path)
+        except Exception as e:
+            return messagebox.showerror("Cannot open", str(e))
+        if self.reader:
+            self.reader.close()
+        self.reader, self.page, self.hits, self._last_q = r, 0, [], None
+        self.name.configure(text=Path(path).name)
+        self.total.configure(text=f"/ {r.page_count}")
+        self.fit_width()
+
+    def _goto_entry(self):
+        try:
+            self.go(int(self.pg_var.get()) - 1)
+        except ValueError:
+            pass
+
+    def fit_width(self):
+        if not self.reader:
+            return
+        w = max(self.cv.winfo_width() - 24, 200)
+        self.zoom = max(0.2, min(w / self.reader.page_size(self.page)[0], 4))
+        self.fit = True
+        self.show_page()
+
+    def set_zoom(self, z):
+        self.zoom, self.fit = max(0.2, min(z, 5)), False
+        self.show_page()
+
+    def _on_resize(self):
+        if self.fit and self.reader:
+            if self._resize_job:
+                self.after_cancel(self._resize_job)
+            self._resize_job = self.after(150, self.fit_width)
+
+    def go(self, i):
+        if self.reader and 0 <= i < self.reader.page_count:
+            self.page = i
+            self.show_page()
+            self.cv.yview_moveto(0)
+
+    def show_page(self):
+        if not self.reader:
+            return
+        png, n = self.reader.render(self.page, self.zoom, self.q.get())
+        self._img = tk.PhotoImage(data=png)
+        self.cv.delete("all")
+        cw = max(self.cv.winfo_width(), 1)
+        x = max((cw - self._img.width()) // 2, 0)
+        self.cv.create_image(x, 0, anchor="nw", image=self._img)
+        self.cv.configure(scrollregion=(0, 0, max(self._img.width(), cw), self._img.height()))
+        self.pg_var.set(str(self.page + 1))
+        if self.q.get().strip():
+            self.hit_lbl.configure(text=f"{n} match(es) here" if n else "none on this page")
+
+    def find(self, step):
+        if not self.reader or not self.q.get().strip():
+            return
+        if not self.hits or self._last_q != self.q.get():
+            self._last_q = self.q.get()
+            self.hits = self.reader.search(self.q.get())
+        if not self.hits:
+            self.hit_lbl.configure(text="not found")
+            return
+        later = [p for p in self.hits if p > self.page]
+        target = later[0] if later else self.hits[0]
+        self.go(target)
+        self.hit_lbl.configure(text=f"page {target + 1}  ({self.hits.index(target) + 1}/{len(self.hits)})")
+
+    def copy_text(self):
+        if not self.reader:
+            return
+        self.clipboard_clear()
+        self.clipboard_append(self.reader.text(self.page))
+        self.app.toast("Page text copied")
+
+    def _wheel(self, e):
+        self.cv.yview_scroll(int(-e.delta / 120) * 3, "units")
 
 
 class SplitTool(Tool):
@@ -277,8 +490,7 @@ class CompressTool(Tool):
     title, subtitle = "Compress PDF", "Make PDFs smaller by reducing image size and cleaning up the file."
 
     def build(self):
-        self.src = self.add(FileRow(self.body, "PDF file", types=PDF, on_pick=lambda p: (
-            None if self.out.get() else self.out.var.set(str(Path(p).parent)))))
+        self.src = self.add(FileRow(self.body, "PDF file", types=PDF, on_pick=self._picked))
         self.out = self.add(FileRow(self.body, "Output folder", kind="dir"))
         self.level = self.option_row("Level", list(core.COMPRESS_LEVELS), list(core.COMPRESS_LEVELS)[1])
         gs = core.find_gs()
@@ -288,6 +500,10 @@ class CompressTool(Tool):
                   if gs else "Ghostscript is not available in this build; using the built-in engine.")
         self.note("Saved as <name>_compressed.pdf. If a file can't be made smaller, the original is kept.")
         self.button("Compress", self.run)
+
+    def _picked(self, p):
+        if not self.out.get():
+            self.out.var.set(str(Path(p).parent))
 
     def run(self):
         src, out, level = self.src.get(), self.out.get(), self.level.get()
@@ -314,7 +530,8 @@ class ConvertTool(Tool):
         self.out = self.add(FileRow(self.body, "Output folder", kind="dir"))
         self.size = self.option_row("Ebook page size", ["A5", "A4", "A6", "Letter"])
         self.font = self.option_row("Ebook font size", [str(i) for i in range(8, 21)], "11")
-        self.note(core.supported_status() + "\nEverything else works out of the box.")
+        self.note(core.supported_status() + "\nPersian / Arabic / Hebrew documents are shaped and laid "
+                  "out right-to-left automatically.")
         self.button("Convert", self.run)
 
     def run(self):
@@ -399,18 +616,23 @@ class PagesTool(Tool):
 
 
 class OcrTool(Tool):
-    title, subtitle = "OCR (searchable PDF)", "Turn scanned pages into a PDF whose text can be searched and copied."
+    title = "OCR — searchable PDF"
+    subtitle = ("Turn scanned books and documents into PDFs whose text can be searched and copied. "
+                "Persian (Farsi) and Arabic are fully supported.")
 
     def build(self):
         self.src = self.add(FileRow(self.body, "PDF file", types=PDF, on_pick=self._picked))
         self.out = self.add(FileRow(self.body, "Save as", kind="save", types=PDF))
-        codes = core.ocr_languages()
-        self.lang_map = {f"{LANG_NAMES.get(c, c)} ({c})": c for c in codes}
-        names = list(self.lang_map) or ["English (eng)"]
-        self.lang = self.option_row("Language", names, next((n for n in names if n.endswith("(eng)")), None))
-        self.dpi = self.option_row("Scan quality", ["150 dpi (fast)", "200 dpi", "300 dpi (best)"], "200 dpi")
-        self.note("OCR is built in. Pick the language of the scanned text."
-                  if codes else "OCR language data is missing from this build.")
+        self.langs = lang_choices()
+        names = list(self.langs) or ["English  (eng)"]
+        self.lang = self.option_row("Language", names, names[0])
+        self.eng = self.check_row("Also recognise English words (recommended for mixed text)", True)
+        self.dpi = self.option_row("Scan quality", ["200 dpi (fast)", "300 dpi (recommended)", "400 dpi (small print)"],
+                                   "300 dpi (recommended)")
+        self.skip = self.check_row("Skip pages that already contain text", True)
+        self.note("The original page images stay untouched — only an invisible text layer is added, "
+                  "so the file keeps its quality." if self.langs else
+                  "OCR engine is missing from this build.")
         self.button("Run OCR", self.run)
 
     def _picked(self, p):
@@ -419,55 +641,163 @@ class OcrTool(Tool):
 
     def run(self):
         src, out = self.src.get(), self.out.get()
-        lang = self.lang_map.get(self.lang.get(), "eng")
-        dpi = int(self.dpi.get().split()[0])
         if not self.need(src, out):
             return
+        lang = tess_lang(self.langs.get(self.lang.get(), "eng"), self.eng.get())
+        dpi, skip = int(self.dpi.get().split()[0]), self.skip.get()
 
         def job(log, prog):
-            n = core.ocr_pdf(src, out, lang, dpi, prog)
-            log(f"✔ OCR finished: {n} pages → {Path(out).name}")
+            n, total = core.ocr_pdf(src, out, lang, dpi, skip, 3, prog)
+            log(f"✔ OCR finished: {n} of {total} pages → {Path(out).name}")
             return str(Path(out).parent)
         self.app.run(job)
 
 
+class ExtractTool(Tool):
+    title = "Extract text"
+    subtitle = "Get the text out of a PDF as a clean .txt or Word file. Scanned pages are read with OCR."
+
+    def build(self):
+        self.src = self.add(FileRow(self.body, "PDF file", types=PDF, on_pick=self._picked))
+        self.out = self.add(FileRow(self.body, "Output folder", kind="dir"))
+        self.fmt = self.option_row("Format", ["Text file (.txt)", "Word document (.docx)"])
+        self.langs = lang_choices()
+        self.ocr = self.check_row("Read scanned pages with OCR", bool(self.langs))
+        names = list(self.langs) or ["English  (eng)"]
+        self.lang = self.option_row("OCR language", names, names[0])
+        self.eng = self.check_row("Also recognise English words", True)
+        self.rev = self.check_row("Fix backwards Persian/Arabic text (old PDFs that extract reversed)", False)
+        self.note("Persian letters are normalised (ﻣﻘﺪﻣﻪ → مقدمه) so the text can be searched and pasted anywhere.")
+        self.button("Extract text", self.run)
+
+    def _picked(self, p):
+        if not self.out.get():
+            self.out.var.set(str(Path(p).parent))
+
+    def run(self):
+        src, out = self.src.get(), self.out.get()
+        if not self.need(src, out):
+            return
+        fmt = "docx" if "docx" in self.fmt.get() else "txt"
+        lang = (tess_lang(self.langs.get(self.lang.get(), "eng"), self.eng.get())
+                if self.ocr.get() and self.langs else None)
+        rev = self.rev.get()
+
+        def job(log, prog):
+            dst = core.unique_path(Path(out) / (Path(src).stem + "." + fmt))
+            chars, ocr_pages = core.extract_text(src, str(dst), fmt, lang, rev, prog)
+            extra = f", {ocr_pages} page(s) read with OCR" if ocr_pages else ""
+            log(f"✔ {dst.name}: {chars:,} characters{extra}")
+            if chars == 0:
+                log("  (no text found — try enabling OCR)")
+            return out
+        self.app.run(job)
+
+
+# ------------------------------------------------------------------ home
+class HomeTool(Tool):
+    title = "PDF Toolkit"
+    subtitle = "Everything for your PDFs in one place — with first-class Persian (Farsi) support."
+
+    CARDS = [("📖", "Read", "Open and search PDFs, including Farsi"),
+             ("🔍", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
+             ("📝", "Extract text", "PDF to clean TXT / Word, with OCR"),
+             ("⇄", "Convert to PDF", "EPUB, DjVu, DOCX, MOBI, TXT, HTML…"),
+             ("✂", "Split", "Cut a PDF into parts or ranges"),
+             ("⧉", "Merge", "Join PDFs in any order"),
+             ("🗜", "Compress", "Four levels, up to Ghostscript power"),
+             ("🖼", "Images to PDF", "Many pictures into one PDF"),
+             ("☰", "Page tools", "Delete, extract, rotate, reverse")]
+
+    def build(self):
+        self.body.configure(fg_color="transparent")
+        grid = ctk.CTkFrame(self.body, fg_color="transparent")
+        grid.grid(row=0, column=0, sticky="nsew")
+        for c in range(3):
+            grid.columnconfigure(c, weight=1, uniform="c")
+        for i, (icon, name, desc) in enumerate(self.CARDS):
+            card = ctk.CTkFrame(grid, fg_color=CARD, corner_radius=16, height=118)
+            card.grid(row=i // 3, column=i % 3, sticky="nsew", padx=6, pady=6)
+            card.grid_propagate(False)
+            ctk.CTkLabel(card, text=icon, font=ctk.CTkFont(FONT, 26), text_color=ACCENT).place(x=16, y=12)
+            ctk.CTkLabel(card, text=name, font=ctk.CTkFont(FONT, 15, "bold"), anchor="w").place(x=16, y=52)
+            ctk.CTkLabel(card, text=desc, font=ctk.CTkFont(FONT, 11), text_color=MUTED, anchor="w",
+                         justify="left", wraplength=190).place(x=16, y=76)
+            target = next(n for n, _ in App.TOOLS if n.split(None, 1)[-1].strip() == name)
+
+            def enter(_e, c=card): c.configure(fg_color=CARD_HOVER)
+            def leave(_e, c=card): c.configure(fg_color=CARD)
+            def click(_e, t=target): self.app.show(t)
+            for w in [card, *card.winfo_children()]:
+                w.bind("<Enter>", enter)
+                w.bind("<Leave>", leave)
+                w.bind("<Button-1>", click)
+                try:
+                    w.configure(cursor="hand2")
+                except Exception:
+                    pass
+        chips = ctk.CTkFrame(self.body, fg_color=CARD, corner_radius=16)
+        chips.grid(row=1, column=0, sticky="ew", padx=6, pady=(10, 0))
+        langs = core.ocr_languages()
+        status = [("Persian OCR", "fas" in langs), ("Arabic OCR", "ara" in langs),
+                  ("DjVu", bool(core.find_ddjvu())), ("DOCX / ODT / RTF", bool(core.find_pandoc())),
+                  ("Ghostscript", bool(core.find_gs()))]
+        for j, (n, ok) in enumerate(status):
+            ctk.CTkLabel(chips, text=("●  " if ok else "○  ") + n, font=ctk.CTkFont(FONT, 12),
+                         text_color=("#15803d", "#4ade80") if ok else MUTED).grid(
+                row=0, column=j, padx=14, pady=12)
+        ctk.CTkLabel(self.body, text="Tip: drag & drop files onto the window to use them in the open tool.",
+                     text_color=MUTED, anchor="w").grid(row=2, column=0, sticky="w", padx=8, pady=(10, 0))
+
+
 # ------------------------------------------------------------------ app
-class App(ctk.CTk):
-    TOOLS = [("✂  Split", SplitTool), ("⧉  Merge", MergeTool), ("🗜  Compress", CompressTool),
-             ("⇄  Convert to PDF", ConvertTool), ("🖼  Images to PDF", ImagesTool),
-             ("☰  Page tools", PagesTool), ("🔍  OCR", OcrTool)]
+_Base = type("_Base", (ctk.CTk, TkinterDnD.DnDWrapper), {}) if HAS_DND else ctk.CTk
+
+
+class App(_Base):
+    TOOLS = [("⌂  Home", HomeTool), ("📖  Read", ReadTool), ("🔍  OCR", OcrTool),
+             ("📝  Extract text", ExtractTool), ("⇄  Convert to PDF", ConvertTool),
+             ("✂  Split", SplitTool), ("⧉  Merge", MergeTool), ("🗜  Compress", CompressTool),
+             ("🖼  Images to PDF", ImagesTool), ("☰  Page tools", PagesTool)]
 
     def __init__(self):
         super().__init__()
+        self.dnd = False
+        if HAS_DND:
+            try:
+                self.TkdndVersion = TkinterDnD._require(self)
+                self.dnd = True
+            except Exception:
+                self.dnd = False
         self.title("PDF Toolkit")
-        self.geometry("1080x800")
-        self.minsize(980, 720)
+        self.geometry("1120x820")
+        self.minsize(1000, 740)
         self.q: queue.Queue = queue.Queue()
         self.busy, self.last_dir = False, None
         self.columnconfigure(1, weight=1)
         self.rowconfigure(0, weight=1)
-
         self.configure(fg_color=BG)
         if sys.platform == "win32":
             try:
-                self.iconbitmap(str(Path(getattr(sys, "_MEIPASS", Path(__file__).parent)) / "icon.ico"))
+                self.iconbitmap(str(core._app_dir() / "icon.ico"))
             except Exception:
                 pass
+
         side = ctk.CTkFrame(self, width=230, corner_radius=0, fg_color=SIDEBAR)
         side.grid(row=0, column=0, rowspan=2, sticky="ns")
         side.grid_propagate(False)
         logo = ctk.CTkFrame(side, fg_color="transparent")
-        logo.pack(fill="x", padx=18, pady=(26, 22))
+        logo.pack(fill="x", padx=18, pady=(26, 18))
         ctk.CTkLabel(logo, text="PDF", width=40, height=40, corner_radius=11, fg_color=ACCENT,
                      text_color="white", font=ctk.CTkFont(FONT, 14, "bold")).pack(side="left")
         ctk.CTkLabel(logo, text="Toolkit", font=ctk.CTkFont(FONT, 21, "bold")).pack(side="left", padx=10)
         self.nav = {}
         for name, cls in self.TOOLS:
-            b = ctk.CTkButton(side, text=name, anchor="w", height=42, corner_radius=11,
+            b = ctk.CTkButton(side, text=name, anchor="w", height=40, corner_radius=11,
                               fg_color="transparent", text_color=("gray20", "gray88"),
                               hover_color=("#eceef7", "#262b38"), font=ctk.CTkFont(FONT, 14),
                               command=lambda n=name: self.show(n))
-            b.pack(fill="x", padx=14, pady=2)
+            b.pack(fill="x", padx=14, pady=1)
             self.nav[name] = b
         self.theme = ctk.CTkSwitch(side, text="Dark mode", command=self._toggle_theme,
                                    progress_color=ACCENT, font=ctk.CTkFont(FONT, 13))
@@ -490,12 +820,19 @@ class App(ctk.CTk):
                                       fg_color=ACCENT, hover_color=ACCENT_HOVER,
                                       state="disabled", command=self.open_folder)
         self.open_btn.grid(row=0, column=1, padx=(0, 18), pady=(12, 0))
-        self.log = ctk.CTkTextbox(foot, height=90, state="disabled", fg_color=FIELD, corner_radius=10,
+        self.log = ctk.CTkTextbox(foot, height=80, state="disabled", fg_color=FIELD, corner_radius=10,
                                   font=ctk.CTkFont(FONT, 12))
         self.log.grid(row=1, column=0, columnspan=2, sticky="ew", padx=18, pady=(10, 16))
+        self.toast_lbl = ctk.CTkLabel(self, text="", fg_color=ACCENT, text_color="white", corner_radius=10,
+                                      font=ctk.CTkFont(FONT, 12))
         self.show(self.TOOLS[0][0])
         self.after(100, self._poll)
         self.after(300, self._prebuild)
+
+    def toast(self, text):
+        self.toast_lbl.configure(text="  " + text + "  ")
+        self.toast_lbl.place(relx=0.5, rely=0.03, anchor="n")
+        self.after(1600, self.toast_lbl.place_forget)
 
     def _page(self, name):
         if name not in self.pages:
@@ -525,8 +862,15 @@ class App(ctk.CTk):
 
     def _toggle_theme(self):
         ctk.set_appearance_mode("dark" if self.theme.get() else "light")
-        self.after(50, lambda: [w.recolor() for p in self.pages.values()
-                                for w in p.body.winfo_children() if isinstance(w, FileList)])
+
+        def recolor():
+            for p in self.pages.values():
+                for w in p.body.winfo_children():
+                    if isinstance(w, FileList):
+                        w.recolor()
+                if isinstance(p, ReadTool):
+                    p.recolor()
+        self.after(50, recolor)
 
     # ---- background jobs
     def run(self, job):

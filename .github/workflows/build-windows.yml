@@ -32,21 +32,32 @@ jobs:
           Get-ChildItem pdftoolkit/djvu | Select-Object Name, Length
           & pdftoolkit\djvu\ddjvu.exe -help 2>&1 | Select-Object -First 3
           if ($LASTEXITCODE -eq -1073741515) { throw "ddjvu.exe is missing a DLL" }
-      - name: Get Ghostscript and OCR language data (bundled)
+      - name: Get Ghostscript, Tesseract and OCR language data (bundled)
         shell: pwsh
         run: |
-          choco install ghostscript -y --no-progress
+          choco install ghostscript tesseract -y --no-progress
           $gsexe = Get-ChildItem "${env:ProgramFiles}\gs" -Recurse -Filter gswin64c.exe -ErrorAction Stop | Select-Object -First 1
-          $gsroot = $gsexe.Directory.Parent.FullName
           New-Item -ItemType Directory -Force pdftoolkit/gs | Out-Null
-          Copy-Item "$gsroot\*" pdftoolkit/gs -Recurse
-          New-Item -ItemType Directory -Force pdftoolkit/tessdata | Out-Null
-          foreach ($l in "eng","fas","ara","deu","fra","spa","ita","rus","tur","nld","por","heb","ell","chi_sim","jpn","kor") {
-            Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" -OutFile "pdftoolkit/tessdata/$l.traineddata"
+          Copy-Item "$($gsexe.Directory.Parent.FullName)\*" pdftoolkit/gs -Recurse
+          $tess = "${env:ProgramFiles}\Tesseract-OCR"
+          if (-not (Test-Path "$tess\tesseract.exe")) { throw "tesseract.exe not found at $tess" }
+          New-Item -ItemType Directory -Force pdftoolkit/tesseract | Out-Null
+          Copy-Item "$tess\*" pdftoolkit/tesseract -Recurse
+          # best-quality models for Persian and Arabic, fast models for the rest
+          foreach ($l in "fas","ara") {
+            Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_best/raw/main/$l.traineddata" -OutFile "pdftoolkit/tesseract/tessdata/$l.traineddata"
           }
-          Get-ChildItem pdftoolkit/gs/bin, pdftoolkit/tessdata | Select-Object Name, Length
+          foreach ($l in "eng","deu","fra","spa","ita","rus","tur","nld","por","heb","ell","chi_sim","jpn","kor") {
+            Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_fast/raw/main/$l.traineddata" -OutFile "pdftoolkit/tesseract/tessdata/$l.traineddata"
+          }
+          Get-ChildItem pdftoolkit/gs/bin | Select-Object -First 5 Name
+          Get-ChildItem pdftoolkit/tesseract/tessdata | Select-Object Name, Length
+      - name: Smoke test bundled tools (Persian OCR, DOCX, Ghostscript)
+        shell: pwsh
+        env: { PYTHONUTF8: "1" }
+        run: python pdftoolkit/smoke_test.py
       # one-folder build: starts instantly (a one-file exe unpacks itself on every launch)
-      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tessdata;tessdata" --collect-all customtkinter --collect-all pypandoc app.py
+      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --collect-all customtkinter --collect-all pypandoc --collect-all tkinterdnd2 --collect-all docx app.py
         working-directory: pdftoolkit
       - name: Build installer
         working-directory: pdftoolkit
