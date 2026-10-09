@@ -1,6 +1,7 @@
 """Core PDF operations (no GUI): split, compress, convert."""
 from __future__ import annotations
 
+import io
 import os
 import re
 import shutil
@@ -127,13 +128,48 @@ COMPRESS_LEVELS: dict[str, tuple[int, int, int] | None] = {
 }
 
 
-def compress_pdf(src: str, dst: str, level: str) -> tuple[int, int]:
+GS_PRESETS = {  # level -> Ghostscript -dPDFSETTINGS
+    "Low (lossless, keeps quality)": "/prepress",
+    "Medium (images 150 dpi, good quality)": "/printer",
+    "High (images 110 dpi, smaller)": "/ebook",
+    "Extreme (images 72 dpi, smallest)": "/screen",
+}
+
+
+def find_gs() -> str | None:
+    return _find_tool(["gswin64c", "gswin32c", "gs"],
+                      _gs_dirs())
+
+
+def _gs_dirs() -> list[str]:
+    out = []
+    for root in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)")):
+        if root and Path(root, "gs").is_dir():
+            for v in sorted(Path(root, "gs").iterdir(), reverse=True):
+                out.append(str(v / "bin"))
+    return out
+
+
+def compress_pdf(src: str, dst: str, level: str, engine: str = "builtin") -> tuple[int, int]:
     """Compress src into dst. Returns (original_size, new_size).
 
-    If compression would make the file bigger, the original is copied instead.
+    engine: 'builtin' (PyMuPDF) or 'ghostscript'. If compression would make the
+    file bigger, the original is copied instead.
     """
-    params = COMPRESS_LEVELS[level]
     orig = os.path.getsize(src)
+    if engine == "ghostscript":
+        gs = find_gs()
+        if not gs:
+            raise RuntimeError("Ghostscript not found. Install it from https://ghostscript.com")
+        tmp = str(dst) + ".tmp"
+        r = subprocess.run([gs, "-sDEVICE=pdfwrite", "-dCompatibilityLevel=1.5",
+                            f"-dPDFSETTINGS={GS_PRESETS[level]}", "-dNOPAUSE", "-dBATCH",
+                            "-dQUIET", f"-sOutputFile={tmp}", src],
+                           capture_output=True, text=True, creationflags=NO_WINDOW)
+        if r.returncode != 0 or not os.path.exists(tmp):
+            raise RuntimeError(f"Ghostscript failed: {r.stderr.strip()[-300:]}")
+        return _keep_smaller(src, tmp, dst, orig)
+    params = COMPRESS_LEVELS[level]
     with pymupdf.open(src) as doc:
         if doc.needs_pass:
             raise ValueError("The PDF is password protected")
@@ -145,6 +181,10 @@ def compress_pdf(src: str, dst: str, level: str) -> tuple[int, int]:
         tmp = str(dst) + ".tmp"
         doc.save(tmp, garbage=4, deflate=True, deflate_images=True,
                  deflate_fonts=True, clean=True, use_objstms=True)
+    return _keep_smaller(src, tmp, dst, orig)
+
+
+def _keep_smaller(src: str, tmp: str, dst: str, orig: int) -> tuple[int, int]:
     new = os.path.getsize(tmp)
     if new >= orig:
         os.remove(tmp)
@@ -261,3 +301,144 @@ def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
 def page_count(path: str) -> int:
     with pymupdf.open(path) as d:
         return d.page_count
+
+
+# ---------------------------------------------------------------- merge
+
+def merge_pdfs(files: list[str], dst: str,
+               progress: Callable[[int, int], None] | None = None) -> int:
+    """Merge PDFs in order; keeps bookmarks. Returns total page count."""
+    with pymupdf.open() as out:
+        for i, f in enumerate(files, 1):
+            with pymupdf.open(f) as d:
+                if d.needs_pass:
+                    raise ValueError(f"{Path(f).name} is password protected")
+                out.insert_pdf(d)
+            if progress:
+                progress(i, len(files))
+        out.save(dst, garbage=3, deflate=True)
+        return out.page_count
+
+
+# ---------------------------------------------------------------- images -> pdf
+
+IMAGE_EXTS = (".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tif", ".tiff", ".webp")
+PAGE_SIZES = ["Fit to image", "A4", "A5", "Letter"]
+
+
+def images_to_pdf(files: list[str], dst: str, page_size: str = "A4",
+                  margin: float = 18, progress: Callable[[int, int], None] | None = None) -> int:
+    """One image per page. 'Fit to image' makes each page exactly image-sized."""
+    from PIL import Image, ImageOps
+
+    with pymupdf.open() as out:
+        for i, f in enumerate(files, 1):
+            with Image.open(f) as im:
+                im = ImageOps.exif_transpose(im)  # honour phone-camera rotation
+                if im.mode in ("RGBA", "LA", "P"):  # flatten transparency onto white
+                    im = im.convert("RGBA")
+                    bg = Image.new("RGB", im.size, "white")
+                    bg.paste(im, mask=im.getchannel("A"))
+                    im = bg
+                elif im.mode not in ("RGB", "L"):
+                    im = im.convert("RGB")
+                px_w, px_h = im.size
+                buf = io.BytesIO()
+                im.save(buf, "JPEG", quality=92)
+                data = buf.getvalue()
+            if page_size == "Fit to image":
+                w, h = px_w * 72 / 96, px_h * 72 / 96
+                page = out.new_page(width=w, height=h)
+                rect = page.rect
+            else:
+                pw, ph = pymupdf.paper_size(page_size.lower())
+                if px_w > px_h:  # landscape image -> landscape page
+                    pw, ph = ph, pw
+                page = out.new_page(width=pw, height=ph)
+                rect = page.rect + (margin, margin, -margin, -margin)
+            page.insert_image(rect, stream=data, keep_proportion=True)
+            if progress:
+                progress(i, len(files))
+        out.save(dst, garbage=3, deflate=True)
+        return out.page_count
+
+
+# ---------------------------------------------------------------- page tools
+
+def parse_pages(spec: str, page_count: int) -> list[int]:
+    """'1-3, 7, 10-' -> sorted unique 0-based indexes."""
+    pages: set[int] = set()
+    for g in parse_ranges(spec, page_count):
+        pages.update(g)
+    return sorted(pages)
+
+
+def edit_pages(src: str, dst: str, action: str, spec: str = "", angle: int = 90) -> int:
+    """action: delete | keep | rotate | reverse. Returns resulting page count."""
+    with pymupdf.open(src) as doc:
+        if doc.needs_pass:
+            raise ValueError("The PDF is password protected")
+        n = doc.page_count
+        if action == "reverse":
+            doc.select(list(range(n - 1, -1, -1)))
+        else:
+            pages = parse_pages(spec, n)
+            if action == "delete":
+                if len(pages) >= n:
+                    raise ValueError("That would delete every page")
+                doc.delete_pages(pages)
+            elif action == "keep":
+                doc.select(pages)
+            elif action == "rotate":
+                for p in pages:
+                    pg = doc[p]
+                    pg.set_rotation((pg.rotation + angle) % 360)
+            else:
+                raise ValueError(f"Unknown action {action}")
+        doc.save(dst, garbage=3, deflate=True)
+        return doc.page_count
+
+
+# ---------------------------------------------------------------- OCR
+
+def find_tessdata() -> str | None:
+    env = os.environ.get("TESSDATA_PREFIX")
+    cands = [env] if env else []
+    for root in (os.environ.get("ProgramFiles"), os.environ.get("ProgramFiles(x86)"),
+                 os.environ.get("LOCALAPPDATA")):
+        if root:
+            cands += [str(Path(root, "Tesseract-OCR", "tessdata")),
+                      str(Path(root, "Programs", "Tesseract-OCR", "tessdata"))]
+    cands += ["/usr/share/tesseract-ocr/5/tessdata", "/usr/share/tessdata",
+              "/usr/share/tesseract-ocr/4.00/tessdata"]
+    for c in cands:
+        if c and Path(c).is_dir() and any(Path(c).glob("*.traineddata")):
+            return c
+    return None
+
+
+def ocr_languages() -> list[str]:
+    td = find_tessdata()
+    if not td:
+        return []
+    return sorted(p.stem for p in Path(td).glob("*.traineddata") if p.stem != "osd")
+
+
+def ocr_pdf(src: str, dst: str, lang: str = "eng", dpi: int = 200,
+            progress: Callable[[int, int], None] | None = None) -> int:
+    """Make a scanned PDF searchable (adds an invisible text layer)."""
+    td = find_tessdata()
+    if not td:
+        raise RuntimeError("Tesseract OCR not found. Install it from "
+                           "https://github.com/UB-Mannheim/tesseract/wiki and retry.")
+    with pymupdf.open(src) as doc, pymupdf.open() as out:
+        if doc.needs_pass:
+            raise ValueError("The PDF is password protected")
+        for i, page in enumerate(doc, 1):
+            pix = page.get_pixmap(dpi=dpi)
+            pdf = pymupdf.open("pdf", pix.pdfocr_tobytes(language=lang, tessdata=td))
+            out.insert_pdf(pdf)
+            if progress:
+                progress(i, doc.page_count)
+        out.save(dst, garbage=3, deflate=True)
+        return out.page_count

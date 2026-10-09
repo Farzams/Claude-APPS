@@ -2,7 +2,9 @@ name: Build Windows exe
 on:
   workflow_dispatch:
   push:
-    paths: ["pdftoolkit/**"]
+    paths: ["pdftoolkit/**", ".github/workflows/build-windows.yml"]
+permissions:
+  contents: write
 jobs:
   build:
     runs-on: windows-latest
@@ -11,7 +13,14 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: python -m pip install -r pdftoolkit/requirements.txt
-      - run: python -m PyInstaller --noconfirm --onefile --windowed --name PDFToolkit app.py
+      - run: python -m PyInstaller --noconfirm --onefile --windowed --name PDFToolkit --collect-all customtkinter app.py
         working-directory: pdftoolkit
       - uses: actions/upload-artifact@v4
         with: { name: PDFToolkit-windows, path: pdftoolkit/dist/PDFToolkit.exe }
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: pdftoolkit-latest
+          name: PDF Toolkit (latest Windows build)
+          files: pdftoolkit/dist/PDFToolkit.exe
+          target_commitish: ${{ github.sha }}
