@@ -250,13 +250,21 @@ def find_calibre() -> str | None:
 
 
 def find_pandoc() -> str | None:
+    """Pandoc from the pypandoc package (bundled), an app folder, or PATH."""
+    cands: list[str] = []
     try:
         import pypandoc
         p = pypandoc.get_pandoc_path()
-        if p and Path(p).is_file():
-            return p
+        if p:
+            cands += [p, p + ".exe"]
+        files = Path(pypandoc.__file__).parent / "files"
+        cands += [str(files / "pandoc.exe"), str(files / "pandoc")]
     except Exception:
         pass
+    cands += [str(_app_dir() / "pypandoc" / "files" / n) for n in ("pandoc.exe", "pandoc")]
+    for c in cands:
+        if Path(c).is_file():
+            return c
     return _find_tool(["pandoc"], [])
 
 

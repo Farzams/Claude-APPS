@@ -24,7 +24,12 @@ print("tools:", core.supported_status())
 check("tesseract found", bool(core.find_tesseract()), str(core.find_tesseract()))
 check("Persian OCR data", "fas" in core.ocr_languages(), str(core.ocr_languages())[:80])
 check("Ghostscript found", bool(core.find_gs()), str(core.find_gs()))
-check("pandoc found", bool(core.find_pandoc()))
+try:
+    import pypandoc
+    print("pypandoc path:", pypandoc.get_pandoc_path())
+except Exception as e:
+    print("pypandoc error:", repr(e))
+check("pandoc found", bool(core.find_pandoc()), str(core.find_pandoc()))
 check("fonts present", (core.fonts_dir() / "NotoSansArabic-Regular.ttf").is_file())
 
 with tempfile.TemporaryDirectory() as td:
