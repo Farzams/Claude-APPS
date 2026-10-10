@@ -365,3 +365,7 @@ FA.update({
     "Copy LaTeX": "کپی لاتک", "Copy answer": "کپی پاسخ", "Insert into the LaTeX page": "درج در صفحهٔ لاتک", "Save picture…": "ذخیرهٔ تصویر…",
     "Type an expression first.": "اول یک عبارت بنویسید.", "A number is not valid.": "یک عدد معتبر نیست.", "Working…": "در حال محاسبه…", "Copied": "کپی شد",
 })
+
+FA.update({"Spell-check": "غلط‌یاب", "Underlines misspelled English and Persian words (math, commands and labels are skipped)": "واژه‌های غلط انگلیسی و فارسی را خط می‌کشد (ریاضی، دستورها و برچسب‌ها نادیده گرفته می‌شوند)",
+           "Loading dictionaries…": "در حال بارگذاری فرهنگ‌ها…", "Add to dictionary": "افزودن به فرهنگ", "Ignore this word": "نادیده گرفتن این واژه",
+           "(no suggestions)": "(پیشنهادی نیست)"})

@@ -5,7 +5,7 @@ import io
 import re
 from pathlib import Path
 
-from PySide6.QtCore import QRegularExpression, Qt, QTimer
+from PySide6.QtCore import QObject, QRegularExpression, Qt, QTimer, Signal
 from PySide6.QtGui import (QColor, QFont, QPixmap, QSyntaxHighlighter, QTextCharFormat, QTextCursor,
                            QTextFormat)
 from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QFrame, QGridLayout, QHBoxLayout, QLabel,
@@ -15,11 +15,13 @@ from PySide6.QtWidgets import (QApplication, QDialog, QFileDialog, QFrame, QGrid
 import core
 import i18n
 import qt_style
+import spell
 import symbols
 import templates
 import texengine
 import theme
 from i18n import tr, trf
+import settings
 from qt_common import Form, Tool, mkbutton, mkcheck, mkcombo, mklabel
 from qt_read import PdfView
 
@@ -48,12 +50,90 @@ class TexHighlighter(QSyntaxHighlighter):
         ]
         self.rehighlight()
 
+    spell_on = False
+
     def highlightBlock(self, text):
         for rx, f in self.rules:
             it = rx.globalMatch(text)
             while it.hasNext():
                 m = it.next()
                 self.setFormat(m.capturedStart(), m.capturedLength(), f)
+        state = max(self.previousBlockState(), 0)
+        if self.spell_on and spell.CHECKER.ready:
+            words, state = spell.scan(text, state)
+            for start, length, w in words:
+                if not spell.CHECKER.check(w):
+                    f = self.format(start)
+                    f.setUnderlineStyle(QTextCharFormat.SpellCheckUnderline)
+                    f.setUnderlineColor(QColor("#e5484d"))
+                    self.setFormat(start, length, f)
+        elif self.spell_on:
+            _w, state = spell.scan(text, state)
+        self.setCurrentBlockState(state)
+
+
+class _SpellSignals(QObject):
+    loaded = Signal()
+
+
+class SpellEditor(QPlainTextEdit):
+    """Plain-text editor with a right-click menu that offers spelling suggestions."""
+
+    changed_dictionary = None      # set by the page: called after "Add to dictionary"
+
+    def _word_at(self, pos):
+        cur = self.cursorForPosition(pos)
+        block = cur.block()
+        text, col = block.text(), cur.positionInBlock()
+        state = max(block.previous().userState(), 0) if block.previous().isValid() else 0
+        words, _s = spell.scan(text, state)
+        for start, length, w in words:
+            if start <= col <= start + length:
+                return block.position() + start, length, w
+        return None
+
+    def contextMenuEvent(self, e):
+        menu = self.createStandardContextMenu()
+        hit = self._word_at(e.pos()) if (self.document().findBlockByNumber(0).isValid() and spell.CHECKER.ready
+                                         and TexHighlighter.spell_on) else None
+        if hit and not spell.CHECKER.check(hit[2]):
+            pos, length, word = hit
+            first = menu.actions()[0] if menu.actions() else None
+            sugg = spell.CHECKER.suggest(word)
+            acts = []
+            for s in sugg:
+                a = menu.addAction(s)
+                a.triggered.connect(lambda _=False, s=s, pos=pos, length=length: self._replace(pos, length, s))
+                acts.append(a)
+            if not sugg:
+                n = menu.addAction(tr("(no suggestions)"))
+                n.setEnabled(False)
+                acts.append(n)
+            add = menu.addAction(tr("Add to dictionary"))
+            add.triggered.connect(lambda _=False: self._learn(word))
+            ign = menu.addAction(tr("Ignore this word"))
+            ign.triggered.connect(lambda _=False: self._ignore(word))
+            acts += [add, ign, menu.addSeparator()]
+            for a in acts:
+                menu.removeAction(a)
+                menu.insertAction(first, a)
+        menu.exec(e.globalPos())
+
+    def _replace(self, pos, length, text):
+        c = self.textCursor()
+        c.setPosition(pos)
+        c.setPosition(pos + length, QTextCursor.KeepAnchor)
+        c.insertText(text)
+
+    def _learn(self, word):
+        spell.CHECKER.add(word)
+        if self.changed_dictionary:
+            self.changed_dictionary()
+
+    def _ignore(self, word):
+        spell.CHECKER.ignore_word(word)
+        if self.changed_dictionary:
+            self.changed_dictionary()
 
 
 def insert_snippet(widget: QPlainTextEdit, tex: str):
@@ -99,12 +179,13 @@ class LatexTool(Tool):
 
         split = QSplitter(Qt.Horizontal)
         split.setChildrenCollapsible(False)
-        self.editor = QPlainTextEdit()
+        self.editor = SpellEditor()
         self.editor.setFont(qt_style.mono_font(10.5))
         self.editor.setLineWrapMode(QPlainTextEdit.NoWrap)
         self.editor.setLayoutDirection(Qt.LeftToRight)
         self.editor.setTabStopDistance(28)
         self.hl = TexHighlighter(self.editor.document())
+        self.editor.changed_dictionary = self.hl.rehighlight
         self.editor.focusInEvent_orig = self.editor.focusInEvent
         self.editor.focusInEvent = self._focus_in
         self.preview = PdfView(with_zoom=False)
@@ -115,7 +196,15 @@ class LatexTool(Tool):
         self.body.addWidget(split, 1)
 
         self.status = mklabel("Write LaTeX, press Compile (Ctrl+Enter).", "muted")
-        self.body.addWidget(self.status)
+        srow = QHBoxLayout()
+        srow.addWidget(self.status, 1)
+        self.spell_cb = mkcheck("Spell-check", bool(self.win.cfg.get("spell", True)))
+        self.spell_cb.setToolTip(tr("Underlines misspelled English and Persian words (math, commands and labels are skipped)"))
+        self.spell_cb.toggled.connect(self._spell_toggled)
+        self._sp_sig = _SpellSignals()
+        self._sp_sig.loaded.connect(self._spell_loaded)
+        srow.addWidget(self.spell_cb)
+        self.body.addLayout(srow)
         self.errs = QListWidget()
         self.errs.setMaximumHeight(112)
         self.errs.setLayoutDirection(Qt.LeftToRight)
@@ -126,12 +215,34 @@ class LatexTool(Tool):
         QShortcut(QKeySequence("Ctrl+Return"), self.editor, activated=self.compile)
         QShortcut(QKeySequence("Ctrl+S"), self.editor, activated=self.save)
 
+    def _spell_toggled(self, on: bool):
+        self.win.cfg["spell"] = on
+        settings.save(self.win.cfg)
+        self._apply_spell()
+
+    def _apply_spell(self):
+        on = self.spell_cb.isChecked()
+        TexHighlighter.spell_on = on
+        if on and not spell.CHECKER.ready and not spell.CHECKER.loading:
+            import threading
+            self.status.setText(tr("Loading dictionaries…"))
+            threading.Thread(target=spell.CHECKER.load, args=(self._sp_sig.loaded.emit,), daemon=True).start()
+        else:
+            self.hl.rehighlight()
+
+    def _spell_loaded(self):
+        self.status.setText(tr("Write LaTeX, press Compile (Ctrl+Enter)."))
+        self.hl.rehighlight()
+
     def _focus_in(self, e):
         self.win.insert_target = self.editor
         self.editor.focusInEvent_orig(e)
 
     def on_show(self):
         self.hl.recolor()
+        if not getattr(self, "_spell_started", False):
+            self._spell_started = True
+            QTimer.singleShot(400, self._apply_spell)
 
     # ---- files
     def _confirm_discard(self) -> bool:

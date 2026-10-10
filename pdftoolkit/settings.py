@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 
-DEFAULTS = {"theme": "indigo_night", "wallpaper": "aurora", "custom_picture": "", "lang": "en", "strength": "medium"}
+DEFAULTS = {"theme": "indigo_night", "wallpaper": "aurora", "custom_picture": "", "lang": "en", "strength": "medium", "spell": True}
 
 
 def _path() -> Path:
