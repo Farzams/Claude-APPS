@@ -9,7 +9,7 @@ from pathlib import Path
 
 from PySide6.QtCore import QPoint, QProcess, QSize, Qt, QTimer
 from PySide6.QtGui import QFont, QIcon, QPixmap
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QFileDialog, QFrame, QGridLayout, QHBoxLayout, QLabel,
+from PySide6.QtWidgets import (QScrollArea, QLineEdit, QApplication, QButtonGroup, QFileDialog, QFrame, QGridLayout, QHBoxLayout, QLabel,
                                QListWidget, QMainWindow, QMessageBox, QProgressBar, QPlainTextEdit, QPushButton,
                                QStackedWidget, QTextBrowser, QToolButton, QVBoxLayout, QWidget)
 
@@ -25,6 +25,9 @@ from i18n import tr, trf
 from qt_common import Card, JobRunner, Tool, hline, mkbutton, mkcheck, mkcombo, mklabel
 from qt_pages import (CompressTool, ConvertTool, ExtractTool, ImagesTool, MergeTool, OcrTool, PagesTool, SplitTool)
 from qt_reader import ReaderTool
+from qt_tools import (BackgroundTool, BatchTool, BlankTool, CropTool, ExportTool, HeaderFooterTool, HiddenTool,
+                      SecurityTool, WatermarkTool)
+from qt_pdfedit import CompareTool, EditTool, OrganizeTool, RedactTool
 from qt_science import FormulaTool, LatexTool, SymbolPalette, insert_snippet
 
 
@@ -60,7 +63,7 @@ class NavButton(QPushButton):
 class Tile(QFrame):
     """Clickable card on the Home page."""
 
-    def __init__(self, win, key, name, desc):
+    def __init__(self, win, key, name, desc, icon=None):
         super().__init__()
         self.setObjectName("tile")
         self.setCursor(Qt.PointingHandCursor)
@@ -69,7 +72,7 @@ class Tile(QFrame):
         lay.setContentsMargins(16, 14, 16, 14)
         lay.setSpacing(14)
         ic = QLabel()
-        ic.setPixmap(qt_style.icon_pixmap(key, 48))
+        ic.setPixmap(qt_style.icon_pixmap(icon or key, 48))
         ic.setFixedSize(48, 48)
         lay.addWidget(ic, 0, Qt.AlignTop)
         col = QVBoxLayout()
@@ -90,6 +93,7 @@ class HomeTool(Tool):
     key, icon, title = "home", "home", "PDF Toolkit"
     subtitle = "Everything for your PDFs in one place — with first-class Persian (Farsi) support."
     CARDS = [("read", "Read", "Open and search PDFs, including Farsi"),
+             ("tools", "All tools", "Organize, edit, protect, compare, batch…"),
              ("ocr", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
              ("extract", "Extract text", "PDF to clean TXT / Word, with OCR"),
              ("convert", "Convert to PDF", "EPUB, DjVu, DOCX, MOBI, TXT, HTML…"),
@@ -122,6 +126,86 @@ class HomeTool(Tool):
         chips.addStretch(1)
         self.body.addLayout(chips)
         self.body.addWidget(mklabel("Tip: drag & drop files onto the window to use them in the open tool.", "muted"))
+
+
+class ToolsTool(Tool):
+    key, icon, title = "tools", "tools", "All tools"
+    subtitle = "Every tool in one place — type to search."
+    GROUPS = [
+        ("Read and view", [("read", "read", "Read", "Books and documents in any format, with tabs and search")]),
+        ("Organize", [("organize", "pages", "Organize pages", "Drag to reorder, rotate, delete, duplicate, insert"),
+                      ("pages", "pages", "Page tools", "Delete, extract, rotate or reverse by page number"),
+                      ("split", "split", "Split", "Cut a PDF into parts or ranges"),
+                      ("merge", "merge", "Merge", "Join PDFs in any order"),
+                      ("crop", "crop", "Crop pages", "Trim white margins or cut fixed margins"),
+                      ("blank", "blank", "Delete blank pages", "Remove empty pages, even from scans")]),
+        ("Convert", [("convert", "convert", "Convert to PDF", "EPUB, DjVu, DOCX, MOBI, TXT, HTML…"),
+                     ("images", "images", "Images to PDF", "Many pictures into one PDF"),
+                     ("export", "export", "PDF to…", "Pictures, Word, Excel, HTML, RTF, EPUB, text"),
+                     ("ocr", "ocr", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
+                     ("extract", "extract", "Extract text", "PDF to clean TXT / Word, with OCR"),
+                     ("compress", "compress", "Compress", "Four levels, up to Ghostscript power")]),
+        ("Edit and stamp", [("edit", "edit", "Edit PDF", "Replace text, add text and pictures, change pictures"),
+                            ("headerfooter", "headerfooter", "Header, footer & Bates", "Page numbers, dates and Bates numbers"),
+                            ("watermark", "watermark", "Watermark", "Text or picture across the pages"),
+                            ("background", "background", "Page background", "A colour or picture behind the content")]),
+        ("Protect and review", [("security", "security", "Password & permissions", "Encrypt with AES-256 or remove a password"),
+                                ("redact", "redact", "Redact (black out)", "Permanently remove words and areas"),
+                                ("hidden", "hidden", "Remove hidden data", "Clean metadata, comments, attachments"),
+                                ("compare", "compare", "Compare PDFs", "See what changed between two versions")]),
+        ("Science", [("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
+                     ("formula", "formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]),
+        ("Automate", [("batch", "batch", "Batch process", "Run one operation on a whole folder of files")]),
+    ]
+
+    def build(self):
+        self.q = QLineEdit()
+        self.q.setPlaceholderText(tr("Search tools…"))
+        self.q.setClearButtonEnabled(True)
+        self.q.textChanged.connect(self._filter)
+        self.body.addWidget(self.q)
+        sc = QScrollArea()
+        sc.setWidgetResizable(True)
+        sc.setFrameShape(QFrame.NoFrame)
+        inner = QWidget()
+        self.vl = QVBoxLayout(inner)
+        self.vl.setContentsMargins(0, 4, 8, 4)
+        self.vl.setSpacing(10)
+        self.groups = []
+        for gname, items in self.GROUPS:
+            head = mklabel(gname, "h")
+            grid = QGridLayout()
+            grid.setSpacing(10)
+            tiles = []
+            for key, icon, name, desc in items:
+                t = Tile(self.win, key, name, desc, icon)
+                t._search = (tr(name) + " " + tr(desc) + " " + name + " " + desc).lower()
+                tiles.append(t)
+            self.vl.addWidget(head)
+            self.vl.addLayout(grid)
+            self.groups.append((head, grid, tiles))
+        self.vl.addStretch(1)
+        sc.setWidget(inner)
+        self.body.addWidget(sc, 1)
+        self._filter("")
+
+    def _filter(self, text: str):
+        q = text.strip().lower()
+        for head, grid, tiles in self.groups:
+            while grid.count():
+                grid.takeAt(0)
+            shown = [t for t in tiles if not q or q in t._search]
+            for t in tiles:
+                t.setVisible(t in shown)
+            for i, t in enumerate(shown):
+                grid.addWidget(t, i // 3, i % 3)
+            head.setVisible(bool(shown))
+        for c in range(3):
+            for _h, grid, _t in self.groups:
+                grid.setColumnStretch(c, 1)
+
+    def on_show(self):
+        self.q.setFocus()
 
 
 class SettingsTool(Tool):
@@ -241,12 +325,21 @@ class HelpTool(Tool):
 
 
 # ------------------------------------------------------------------ main window
-PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("ocr", "OCR", OcrTool),
-         ("extract", "Extract text", ExtractTool), ("convert", "Convert to PDF", ConvertTool),
+PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("tools", "All tools", ToolsTool),
+         ("ocr", "OCR", OcrTool), ("extract", "Extract text", ExtractTool), ("convert", "Convert to PDF", ConvertTool),
          ("split", "Split", SplitTool), ("merge", "Merge", MergeTool), ("compress", "Compress", CompressTool),
          ("images", "Images to PDF", ImagesTool), ("pages", "Page tools", PagesTool),
+         ("organize", "Organize pages", OrganizeTool), ("crop", "Crop pages", CropTool),
+         ("blank", "Delete blank pages", BlankTool), ("headerfooter", "Header, footer & Bates", HeaderFooterTool),
+         ("watermark", "Watermark", WatermarkTool), ("background", "Page background", BackgroundTool),
+         ("export", "PDF to…", ExportTool), ("security", "Password & permissions", SecurityTool),
+         ("hidden", "Remove hidden data", HiddenTool), ("redact", "Redact (black out)", RedactTool),
+         ("edit", "Edit PDF", EditTool), ("compare", "Compare PDFs", CompareTool), ("batch", "Batch process", BatchTool),
          ("latex", "LaTeX", LatexTool), ("formula", "Formula", FormulaTool),
          ("settings", "Settings", SettingsTool), ("help", "Help", HelpTool)]
+# pages shown in the sidebar; every other tool opens from "All tools" or the Home page
+SIDEBAR = ["home", "read", "tools", "ocr", "extract", "convert", "split", "merge", "compress", "images", "pages",
+           "latex", "formula", "settings", "help"]
 
 
 class MainWindow(QMainWindow):
@@ -255,7 +348,7 @@ class MainWindow(QMainWindow):
         self.cfg = cfg
         self.setWindowTitle(tr("PDF Toolkit"))
         self.resize(1180, 840)
-        self.setMinimumSize(1000, 700)
+        self.setMinimumSize(1100, 720)
         ico = core._app_dir() / "icon.ico"
         if ico.exists():
             self.setWindowIcon(QIcon(str(ico)))
@@ -297,19 +390,40 @@ class MainWindow(QMainWindow):
         self.nav: dict[str, QPushButton] = {}
         self.navgroup = QButtonGroup(self)
         self.navgroup.setExclusive(True)
-        for key, title, _cls in PAGES:
-            if key in ("latex", "settings"):
-                sl.addSpacing(6)
-                sl.addWidget(hline())
-                sl.addSpacing(6)
-            b = NavButton(key, title)
+        navbox = QWidget()
+        navbox.setObjectName("navbox")
+        nl = QVBoxLayout(navbox)
+        nl.setContentsMargins(0, 0, 4, 0)
+        nl.setSpacing(2)
+        titles = {k: t for k, t, _c in PAGES}
+        for key in SIDEBAR:
+            if key in ("settings", "help"):
+                continue
+            if key == "latex":
+                nl.addSpacing(6)
+                nl.addWidget(hline())
+                nl.addSpacing(6)
+            b = NavButton(key, titles[key])
+            b.clicked.connect(lambda _=False, k=key: self.show_page(k))
+            self.navgroup.addButton(b)
+            self.nav[key] = b
+            nl.addWidget(b)
+        nl.addStretch(1)
+        navscroll = QScrollArea()
+        navscroll.setWidgetResizable(True)
+        navscroll.setFrameShape(QFrame.NoFrame)
+        navscroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        navscroll.setWidget(navbox)
+        sl.addWidget(navscroll, 1)
+        sl.addSpacing(6)
+        sl.addWidget(hline())
+        sl.addSpacing(6)
+        for key in ("settings", "help"):
+            b = NavButton(key, titles[key])
             b.clicked.connect(lambda _=False, k=key: self.show_page(k))
             self.navgroup.addButton(b)
             self.nav[key] = b
             sl.addWidget(b)
-            if key == "formula":
-                sl.addStretch(1)
-        sl.addStretch(0)
 
         # content: pages + footer
         content = QWidget()
@@ -368,7 +482,7 @@ class MainWindow(QMainWindow):
         return self.pages[key]
 
     def _prebuild(self):
-        for key, _t, _c in PAGES:
+        for key in SIDEBAR:
             if key not in self.pages:
                 self.page(key)
                 QTimer.singleShot(40, self._prebuild)
@@ -381,7 +495,7 @@ class MainWindow(QMainWindow):
             pg._stamp = self._stamp
         self.stack.setCurrentWidget(pg)
         self.current = key
-        self.nav[key].setChecked(True)
+        self.nav.get(key, self.nav["tools"]).setChecked(True)
         self.foot.setVisible(key != "read")        # the reader wants the full height
         pg.on_show()
 

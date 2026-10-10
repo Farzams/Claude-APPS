@@ -10,11 +10,15 @@ Long jobs show a progress bar at the bottom. When a job finishes, the log tells 
 
 Everything is built in. Nothing else needs to be installed."""),
     ("Reading and searching", """
-Open a PDF with Open PDF… or drag it onto the Read page. Use ◀ ▶ (or the arrow keys) to change page, − + to zoom and Fit to fit the page to the window. Ctrl + mouse wheel also zooms.
+Open any book or document with Open… (Ctrl+O) or drag it onto the Read page: PDF, DjVu, EPUB, MOBI/AZW, FB2, CBZ, XPS, DOCX, ODT, RTF, Markdown, HTML, TXT, TeX and pictures. Formats that are not PDF are converted once in the background and remembered, so they open instantly next time.
 
-Type a word in the search box and press Enter. The app jumps to the next page that contains it and highlights the matches. Persian search ignores half-spaces (نیم‌فاصله) and different forms of the same letter, so «می‌شود» and «میشود» find each other.
+Every file opens in its own tab. Pages scroll continuously. Use the buttons on top or the keyboard: PageUp/PageDown or Space to move, Ctrl + mouse wheel or Ctrl + / Ctrl − to zoom, Ctrl+0 to fit the width, Ctrl+G to jump to a page, F11 for full screen.
 
-Copy text copies the text of the current page. Persian text is repaired automatically so it pastes correctly into Word or a browser."""),
+The side panel has page thumbnails, the table of contents, your bookmarks (Ctrl+D) and search results. Search (Ctrl+F) shows every page that contains the word and highlights the matches. Persian search ignores half-spaces and different forms of the same letter, so «می‌شود» and «میشود» find each other.
+
+Reading colours: light, sepia (paper) or night. Two-page view and a right-to-left switch are meant for books and manga. For e-books (EPUB, MOBI, FB2, TXT) the text size can be changed with Aa − / +.
+
+Select text by dragging over it; it is copied automatically. Click a link inside the book to follow it. The app remembers your page, zoom and bookmarks for every book."""),
     ("OCR: scanned books", """
 OCR adds an invisible text layer to scanned pages so you can search and copy them. The pictures of the pages are not changed.
 
@@ -69,6 +73,18 @@ Add many pictures, reorder them with ▲ ▼ and choose the page size: A4, A5, L
 Photos from a phone are rotated correctly. Transparent PNG pictures get a white background.
 
 Combine this with OCR to turn photos of book pages into a searchable PDF."""),
+    ("PDF tools: organize, edit, protect", """
+All tools are listed in All tools (type to search).
+
+Organize pages: drag the thumbnails to reorder; rotate, delete, duplicate, extract or insert pages from another PDF or picture; Undo goes back step by step. Crop pages trims white margins automatically or cuts a fixed margin. Delete blank pages finds empty pages, also nearly-white scans.
+
+Edit PDF: replace text (Persian works), add text or a picture inside a box you draw, replace or remove a picture. Header, footer & Bates adds page numbers, dates, file names and Bates numbers. Watermark stamps text or a picture at any angle. Page background paints a colour or picture behind the content.
+
+PDF to…: pictures (PNG, JPEG, TIFF), Word, Excel (tables), HTML, RTF, EPUB or text. The Word export keeps text, pictures and right-to-left direction but simplifies the exact layout. Scanned PDFs: tick the OCR option first.
+
+Password & permissions: protects with AES-256 and can forbid printing, copying or editing. A forgotten password cannot be recovered. Remove hidden data cleans author names, comments, attachments and scripts. Redact black out words, patterns (e-mail, phone, card numbers) or drawn areas — the text under the black is deleted for good.
+
+Compare PDFs shows what changed, as text and as a picture with differences in red. Batch process runs one operation on a whole list of files."""),
     ("Themes, pictures and language", """
 Open Settings. Click a colour theme to apply it immediately: there are light and dark themes.
 
@@ -119,11 +135,15 @@ FA = [
 
 همه‌چیز داخل برنامه است و به نصب چیز دیگری نیاز ندارید."""),
     ("مطالعه و جست‌وجو", """
-یک PDF را با «باز کردن PDF…» یا با کشیدن روی صفحهٔ مطالعه باز کنید. با ◀ ▶ (یا کلیدهای جهت‌دار) صفحه را عوض کنید، با − + بزرگ‌نمایی کنید و با «تنظیم» صفحه را به پهنای پنجره برسانید. Ctrl + چرخ ماوس هم بزرگ‌نمایی می‌کند.
+هر کتاب یا سندی را با «باز کردن…» (Ctrl+O) یا کشیدن روی صفحهٔ مطالعه باز کنید: PDF، DjVu، EPUB، MOBI/AZW، FB2، CBZ، XPS، DOCX، ODT، RTF، Markdown، HTML، TXT، TeX و تصویر. قالب‌هایی که PDF نیستند یک‌بار در پس‌زمینه تبدیل و به خاطر سپرده می‌شوند، پس دفعهٔ بعد فوراً باز می‌شوند.
 
-کلمه‌ای را در کادر جست‌وجو بنویسید و Enter بزنید. برنامه به صفحهٔ بعدی که آن کلمه را دارد می‌رود و نتیجه‌ها را رنگی می‌کند. جست‌وجوی فارسی نیم‌فاصله و شکل‌های مختلف یک حرف را نادیده می‌گیرد؛ پس «می‌شود» و «میشود» همدیگر را پیدا می‌کنند.
+هر فایل در زبانهٔ خودش باز می‌شود. صفحه‌ها پیوسته پیمایش می‌شوند. از دکمه‌های بالا یا صفحه‌کلید استفاده کنید: PageUp/PageDown یا فاصله برای حرکت، Ctrl + چرخ ماوس یا Ctrl + / Ctrl − برای بزرگ‌نمایی، Ctrl+0 برای هم‌عرض‌شدن، Ctrl+G برای رفتن به صفحه و F11 برای تمام‌صفحه.
 
-«کپی متن» متن صفحهٔ جاری را کپی می‌کند. متن فارسی خودکار اصلاح می‌شود تا در ورد یا مرورگر درست جایگذاری شود."""),
+نوار کناری تصویر بندانگشتی صفحه‌ها، فهرست مطالب، نشانک‌های شما (Ctrl+D) و نتایج جست‌وجو را دارد. جست‌وجو (Ctrl+F) همهٔ صفحه‌های دارای واژه را نشان می‌دهد و موارد را پررنگ می‌کند. جست‌وجوی فارسی نیم‌فاصله و شکل‌های مختلف یک حرف را نادیده می‌گیرد، پس «می‌شود» و «میشود» همدیگر را پیدا می‌کنند.
+
+رنگ مطالعه: روشن، کاغذی یا شب. نمای دو صفحه‌ای و کلید راست‌به‌چپ برای کتاب و مانگا است. در کتاب‌های الکترونیکی (EPUB، MOBI، FB2، TXT) اندازهٔ متن با Aa − / + تغییر می‌کند.
+
+با کشیدن روی متن آن را انتخاب کنید؛ خودکار کپی می‌شود. روی پیوندهای داخل کتاب کلیک کنید تا باز شوند. برنامه صفحه، بزرگ‌نمایی و نشانک‌های هر کتاب را به خاطر می‌سپارد."""),
     ("OCR: کتاب‌های اسکن‌شده", """
 OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده می‌افزاید تا بتوانید در آن‌ها جست‌وجو و از آن‌ها کپی کنید. تصویر صفحه‌ها تغییر نمی‌کند.
 
@@ -178,6 +198,18 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
 عکس‌های موبایل درست چرخانده می‌شوند و تصویرهای PNG شفاف زمینهٔ سفید می‌گیرند.
 
 با OCR ترکیبش کنید تا عکس صفحه‌های کتاب به PDF قابل جست‌وجو تبدیل شود."""),
+    ("ابزارهای PDF: مرتب‌سازی، ویرایش، حفاظت", """
+همهٔ ابزارها در «همهٔ ابزارها» فهرست شده‌اند (برای جست‌وجو تایپ کنید).
+
+مرتب‌سازی صفحه‌ها: تصویرهای بندانگشتی را بکشید تا جابه‌جا شوند؛ بچرخانید، حذف، تکثیر، استخراج یا از PDF و تصویر دیگر درج کنید؛ «واگرد» قدم‌به‌قدم برمی‌گردد. برش صفحه‌ها حاشیهٔ سفید را خودکار می‌برد یا حاشیهٔ ثابتی را. حذف صفحه‌های خالی صفحه‌های خالی و اسکن‌های تقریباً سفید را پیدا می‌کند.
+
+ویرایش PDF: جایگزینی متن (فارسی هم کار می‌کند)، افزودن متن یا تصویر داخل جعبه‌ای که می‌کشید، تعویض یا حذف تصویر. سرصفحه، پاصفحه و باتس شمارهٔ صفحه، تاریخ، نام فایل و شمارهٔ باتس می‌افزاید. واترمارک متن یا تصویر را با هر زاویه می‌زند. پس‌زمینهٔ صفحه رنگ یا تصویری پشت محتوا می‌گذارد.
+
+PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها)، HTML، RTF، EPUB یا متن. خروجی ورد متن، تصویر و جهت راست‌به‌چپ را نگه می‌دارد ولی چیدمان دقیق را ساده می‌کند. برای PDF اسکن‌شده اول گزینهٔ OCR را تیک بزنید.
+
+گذرواژه و دسترسی‌ها: با AES-256 محافظت می‌کند و می‌تواند چاپ، کپی یا ویرایش را ممنوع کند. گذرواژهٔ فراموش‌شده بازیابی نمی‌شود. حذف داده‌های پنهان نام نویسنده، نظرها، پیوست‌ها و اسکریپت‌ها را پاک می‌کند. سانسور واژه‌ها، الگوها (ایمیل، تلفن، کارت) یا ناحیه‌های کشیده‌شده را می‌پوشاند — متن زیر نوار سیاه برای همیشه پاک می‌شود.
+
+مقایسهٔ PDFها نشان می‌دهد چه چیزی تغییر کرده، هم متنی و هم تصویری با تفاوت‌های قرمز. پردازش دسته‌ای یک عملیات را روی فهرستی از فایل‌ها اجرا می‌کند."""),
     ("تم، تصویر و زبان", """
 «تنظیمات» را باز کنید. روی یک تم رنگی بزنید تا فوراً اعمال شود؛ تم روشن و تیره دارید.
 

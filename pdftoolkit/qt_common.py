@@ -6,7 +6,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFileDialog, QFormLayout, QFrame, QGridLayout,
-                               QHBoxLayout, QLabel, QLineEdit, QListWidget, QPushButton, QSizePolicy, QVBoxLayout,
+                               QHBoxLayout, QLabel, QLineEdit, QListWidget, QPushButton, QScrollArea, QSizePolicy, QVBoxLayout,
                                QWidget)
 
 import core
@@ -133,8 +133,9 @@ class JobRunner(QObject):
 class Form(QGridLayout):
     """Label + widget rows; Qt flips the whole thing for right-to-left languages."""
 
-    def __init__(self):
+    def __init__(self, label_width: int = 130):
         super().__init__()
+        self.label_width = label_width
         self.setHorizontalSpacing(14)
         self.setVerticalSpacing(10)
         self.setColumnStretch(1, 1)
@@ -148,7 +149,7 @@ class Form(QGridLayout):
                 self.addLayout(widget, self._r, 0, 1, 2)
         else:
             lab = mklabel(text)
-            lab.setMinimumWidth(130)
+            lab.setMinimumWidth(self.label_width)
             lab.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
             self.addWidget(lab, self._r, 0)
             if isinstance(widget, QWidget):
@@ -305,9 +306,19 @@ class Tool(QWidget):
         outer.addWidget(Hero(self.icon, self.title, self.subtitle))
         self.card = Card()
         outer.addWidget(self.card, 1)
-        self.body = QVBoxLayout(self.card)
-        self.body.setContentsMargins(24, 20, 24, 20)
+        # the content scrolls when the window is too short, instead of squeezing the fields
+        shell = QVBoxLayout(self.card)
+        shell.setContentsMargins(0, 6, 0, 6)
+        self.scroll = QScrollArea()
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setFrameShape(QFrame.NoFrame)
+        self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        inner = QWidget()
+        self.body = QVBoxLayout(inner)
+        self.body.setContentsMargins(24, 14, 24, 14)
         self.body.setSpacing(12)
+        self.scroll.setWidget(inner)
+        shell.addWidget(self.scroll)
         self.build()
 
     def build(self): ...

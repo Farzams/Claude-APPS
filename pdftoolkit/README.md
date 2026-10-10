@@ -30,3 +30,10 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - **Symbols**: 300+ symbols (Greek, operators, analysis incl. Orlicz notation, algebra, physics, chemistry `\ce{}`/`\chemfig`, units) inserted at the cursor
 - **Convert to PDF** typesets equations in Word/Markdown/ODT/EPUB (via Pandoc + LaTeX), also in Persian documents; `.tex` converts directly; Import turns Word/Markdown into `.tex`
 - Tectonic (MIT) runs as a separate program; its package cache is pre-filled at build time so common packages work offline, others are fetched on first use
+
+## Reader and PDF tools (v6)
+- **Reader**: tabs, continuous scrolling, two-page and right-to-left modes, light / sepia / night, thumbnails, contents, bookmarks, Persian-aware search with highlights, text selection, links; opens PDF, DjVu, EPUB, MOBI/AZW, FB2, CBZ, XPS, DOCX, ODT, RTF, Markdown, HTML, TXT, TeX and pictures (non-PDF formats are converted once and cached)
+- **Organize pages** (drag & drop thumbnails, rotate, delete, duplicate, insert, undo), **Crop**, **Delete blank pages**, **Header/footer/Bates**, **Watermark**, **Page background**
+- **PDF to** pictures / Word / Excel / HTML / RTF / EPUB / text, **Password & permissions** (AES-256), **Remove hidden data**, **Redact** (words, patterns, drawn areas; also Persian), **Edit PDF** (replace/add text and pictures), **Compare PDFs**, **Batch process**
+- Icons are vector (SVG, drawn by Qt); input fields have a visible border on every theme
+- openpyxl (MIT) is used for Excel export

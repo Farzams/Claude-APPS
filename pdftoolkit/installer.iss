@@ -1,7 +1,7 @@
 ; Inno Setup script - builds PDFToolkit-Setup.exe from the PyInstaller one-folder build
 [Setup]
 AppName=PDF Toolkit
-AppVersion=5.0
+AppVersion=6.0
 AppPublisher=PDF Toolkit
 DefaultDirName={autopf}\PDF Toolkit
 DefaultGroupName=PDF Toolkit
