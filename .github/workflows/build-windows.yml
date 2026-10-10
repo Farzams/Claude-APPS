@@ -67,7 +67,7 @@ jobs:
         timeout-minutes: 30
         env: { PYTHONUTF8: "1", PDFTK_TEX_CACHE: "pdftoolkit/tex-cache" }
         run: python pdftoolkit/smoke_test.py
-      - name: GUI smoke test, English and Persian (does not block the build)
+      - name: GUI smoke test (Qt window), English and Persian (does not block the build)
         shell: pwsh
         continue-on-error: true
         env: { PYTHONUTF8: "1" }
@@ -75,7 +75,7 @@ jobs:
           python pdftoolkit/gui_smoke.py en
           python pdftoolkit/gui_smoke.py fa
       # one-folder build: starts instantly (a one-file exe unpacks itself on every launch)
-      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --add-data "tectonic;tectonic" --add-data "tex-cache;tex-cache" --collect-all customtkinter --collect-all pypandoc --collect-all tkinterdnd2 --collect-all docx --collect-all arabic_reshaper --collect-all bidi app.py
+      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --add-data "tectonic;tectonic" --add-data "tex-cache;tex-cache" --collect-all pypandoc --collect-all docx --collect-all bidi --exclude-module tkinter --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick --exclude-module PySide6.QtQuickWidgets --exclude-module PySide6.QtPdf --exclude-module PySide6.QtPdfWidgets --exclude-module PySide6.QtSql --exclude-module PySide6.QtTest --exclude-module PySide6.QtOpenGL --exclude-module PySide6.QtOpenGLWidgets app.py
         working-directory: pdftoolkit
       - name: Build installer
         working-directory: pdftoolkit

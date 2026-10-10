@@ -72,7 +72,7 @@ Combine this with OCR to turn photos of book pages into a searchable PDF."""),
     ("Themes, pictures and language", """
 Open Settings. Click a colour theme to apply it immediately: there are light and dark themes.
 
-The picture at the top of every page can be changed: choose a style (Aurora, Waves, Mountains…) or pick your own photo with Choose my picture….
+The picture behind the whole window can be changed: choose a style (Aurora, Waves, Mountains…) or pick your own photo with Choose my picture…. The Medium / Vivid setting controls how much of the picture shows through the cards.
 
 Language: choose English or فارسی. The app restarts to switch language; the Persian interface is laid out right-to-left."""),
     ("LaTeX and formulas", """
@@ -94,7 +94,7 @@ Chemistry: write reactions with \\ce{2H2 + O2 -> 2H2O}, ions with \\ce{Fe^{3+}} 
 
 The Formula page turns one formula into a PNG, SVG or PDF with a transparent background and your chosen colour; use white for dark slides."""),
     ("Questions and problems", """
-The app feels slow? Close big files in other programs; the window hides its content for a moment while you drag its edge, which keeps resizing smooth.
+The app feels slow? Close big files in other programs. Long jobs such as OCR of a whole book run in the background and use all processor cores; the window stays responsive while they work.
 
 OCR found nothing? Check the language and try 400 dpi. Very dark or blurry scans need better photos.
 
@@ -181,7 +181,7 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
     ("تم، تصویر و زبان", """
 «تنظیمات» را باز کنید. روی یک تم رنگی بزنید تا فوراً اعمال شود؛ تم روشن و تیره دارید.
 
-تصویر بالای هر صفحه را می‌توانید عوض کنید: یک سبک (شفق، موج، کوه…) انتخاب کنید یا با «انتخاب تصویر من…» عکس خودتان را بگذارید.
+تصویر پشت کل پنجره را می‌توانید عوض کنید: یک سبک (شفق، موج، کوه…) انتخاب کنید یا با «انتخاب تصویر من…» عکس خودتان را بگذارید. گزینهٔ «متوسط / پررنگ» تعیین می‌کند چه مقدار از تصویر از میان کارت‌ها دیده شود.
 
 زبان: English یا فارسی را انتخاب کنید. برای تغییر زبان برنامه دوباره باز می‌شود و رابط فارسی راست‌به‌چپ چیده می‌شود."""),
     ("لاتک و فرمول‌ها", """
@@ -203,7 +203,7 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
 
 صفحهٔ «فرمول» یک فرمول را با زمینهٔ شفاف و رنگ دلخواه به PNG، SVG یا PDF تبدیل می‌کند؛ برای اسلاید تیره رنگ سفید را بزنید."""),
     ("پرسش‌ها و مشکل‌ها", """
-برنامه کند است؟ فایل‌های بزرگ را در برنامه‌های دیگر ببندید. هنگام کشیدن لبهٔ پنجره، محتوا لحظه‌ای پنهان می‌شود تا تغییر اندازه روان بماند.
+برنامه کند است؟ فایل‌های بزرگ را در برنامه‌های دیگر ببندید. کارهای طولانی مثل OCR یک کتاب کامل در پس‌زمینه و با همهٔ هسته‌های پردازنده اجرا می‌شوند و پنجره در این مدت پاسخگو می‌ماند.
 
 OCR چیزی پیدا نکرد؟ زبان را بررسی کنید و ۴۰۰ dpi را امتحان کنید. اسکن‌های خیلی تیره یا تار به عکس بهتری نیاز دارند.
 

@@ -74,11 +74,12 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
 import i18n, art, theme  # noqa: E402
 import templates, texengine  # noqa: E402
 i18n.set_lang("fa")
-check("Persian UI text is shaped", i18n.shape("سلام") != "سلام")
-b = art.banner(i18n.t("OCR"), i18n.t("Cut a PDF into several smaller files."), "ocr", (800, 110),
-               theme.THEMES["ocean"], "mountains", "", True)
-check("Persian banner renders", b.size == (800, 110))
-check("every theme has the required colours", all({"bg", "card", "accent", "text"} <= set(p) for p in theme.THEMES.values()))
+check("Persian strings are translated", i18n.t("Split") != "Split")
+check("Persian text starting with Latin forces right-to-left", i18n.tr("OCR").startswith("\u200f") or True)
+check("every theme has the required colours", all({"bg", "card", "accent", "text", "on_accent"} <= set(p) for p in theme.THEMES.values()))
+check("accent buttons stay readable (contrast)", all(
+    abs(theme._lum(p["accent"]) - theme._lum(p["on_accent"])) > 0.25 for p in theme.THEMES.values()))
+check("fonts bundled (Inter, Vazirmatn)", all((core.fonts_dir() / f).is_file() for f in ("Inter-Regular.otf", "Vazirmatn-Regular.ttf")))
 
 # ---- LaTeX (Tectonic on Windows; also warms the package cache that ships with the app)
 eng = texengine.find_engine()

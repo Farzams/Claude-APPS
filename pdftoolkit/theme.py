@@ -1,9 +1,4 @@
-"""Colour themes and a tiny style registry.
-
-Widgets are registered with {option: role}. Switching theme only re-colours the pages
-that are visible; hidden pages catch up the next time they are shown. This avoids
-CustomTkinter's slow "re-theme every widget" appearance switch.
-"""
+"""Colour themes."""
 from __future__ import annotations
 
 THEMES: dict[str, dict] = {
@@ -37,57 +32,34 @@ THEMES: dict[str, dict] = {
 }
 
 
+def _lum(h: str) -> float:
+    h = h.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
+    f = lambda c: c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+    return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b)
+
+
+def contrast_text(bg: str) -> str:
+    """White or near-black, whichever reads better on bg (WCAG contrast)."""
+    l = _lum(bg)
+    white = 1.05 / (l + 0.05)
+    black = (l + 0.05) / (_lum("#14110a") + 0.05)
+    return "#ffffff" if white >= black else "#14110a"
+
+
+for _t in THEMES.values():
+    _t["on_accent"] = contrast_text(_t["accent"])
+
+
 class _State:
     name = "indigo_night"
     pal = THEMES["indigo_night"]
-    version = 0
-    owner = "chrome"
 
 
 STATE = _State()
-_registry: dict[str, list] = {}
-_applied: dict[str, int] = {}
 
 
 def set_theme(name: str) -> dict:
     STATE.name = name if name in THEMES else "indigo_night"
     STATE.pal = THEMES[STATE.name]
-    STATE.version += 1
     return STATE.pal
-
-
-def set_owner(owner: str) -> None:
-    STATE.owner = owner
-
-
-def col(role: str) -> str:
-    """Colour for a role; 'transparent' passes through; '#rrggbb' strings are used as-is."""
-    if role == "transparent" or role.startswith("#"):
-        return role
-    return STATE.pal[role]
-
-
-def style(widget, **roles):
-    """Configure widget now and remember the roles so the theme can re-apply them."""
-    _registry.setdefault(STATE.owner, []).append((widget, roles))
-    try:
-        widget.configure(**{k: col(v) for k, v in roles.items()})
-    except Exception:
-        pass
-    return widget
-
-
-def apply(owner: str) -> None:
-    """Re-colour one owner's widgets (only if its colours are out of date)."""
-    if _applied.get(owner) == STATE.version:
-        return
-    _applied[owner] = STATE.version
-    for widget, roles in _registry.get(owner, []):
-        try:
-            widget.configure(**{k: col(v) for k, v in roles.items()})
-        except Exception:
-            pass
-
-
-def mark_built(owner: str) -> None:
-    _applied[owner] = STATE.version

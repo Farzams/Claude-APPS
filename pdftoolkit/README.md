@@ -18,9 +18,10 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - Extract text normalises Persian letters; Read tab searches Persian ignoring half-spaces
 
 ## Interface
-- English and Persian (right-to-left) interface; Help section in both languages
-- 9 colour themes (light and dark), picture banners (built-in styles or your own photo), colourful icons
-- Theme changes only touch the visible page; the window hides its content while its edge is dragged, so resizing stays smooth
+- Built with **Qt (PySide6, LGPL)**: native speed, correct Persian shaping and right-to-left layout
+- English and Persian interface; Help section in both languages; fonts Inter and Vazirmatn (SIL OFL, in `fonts/`)
+- 9 colour themes (light and dark), a picture behind the whole window (built-in styles or your own photo) with adjustable visibility, colourful icons, drag & drop
+- Theme changes restyle only the visible page; hidden pages catch up when opened
 - Settings are stored in `%APPDATA%\PDFToolkit\settings.json`
 
 ## Science tools

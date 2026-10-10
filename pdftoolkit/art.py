@@ -9,7 +9,6 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
-import i18n
 
 FONT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).parent)) / "fonts"
 WALLPAPERS = ["aurora", "waves", "mountains", "lowpoly", "bokeh", "dots", "plain"]
@@ -76,46 +75,6 @@ def _runs(visual: str):
     if cur:
         runs.append((cur, cur_ar))
     return runs
-
-
-@lru_cache(maxsize=8)
-def _cmap(path: str) -> frozenset:
-    try:
-        from fontTools.ttLib import TTFont
-        return frozenset(TTFont(path, lazy=True).getBestCmap())
-    except Exception:
-        return frozenset()
-
-
-def _run_font(text: str, size: int, bold: bool, arabic: bool):
-    """Font for a run; bold Arabic falls back to regular if the bold file lacks a glyph."""
-    if arabic and bold:
-        p = FONT_DIR / "NotoSansArabic-Bold.ttf"
-        cm = _cmap(str(p))
-        if cm and any(ord(c) not in cm and not c.isspace() for c in text):
-            bold = False
-    return _font(size, bold, arabic)
-
-
-def _clean(visual: str) -> str:
-    return visual.replace("\u200c", "").replace("\u200d", "").replace("\u200e", "").replace("\u200f", "")
-
-
-def text_width(draw, visual: str, size: int, bold=False) -> int:
-    return int(sum(draw.textlength(r, font=_run_font(r, size, bold, ar)) for r, ar in _runs(_clean(visual))))
-
-
-def draw_text(draw, xy, visual: str, size: int, fill, bold=False, shadow=True) -> int:
-    """Draw visual-order text; runs in different fonts share one baseline."""
-    x, y = xy
-    base = y + size * 0.92
-    for r, ar in _runs(_clean(visual)):
-        f = _run_font(r, size, bold, ar)
-        if shadow:
-            draw.text((x + 1, base + 2), r, font=f, fill=(0, 0, 0, 90), anchor="ls")
-        draw.text((x, base), r, font=f, fill=fill, anchor="ls")
-        x += draw.textlength(r, font=f)
-    return int(x - xy[0])
 
 
 # ---------------------------------------------------------------- wallpapers
@@ -282,54 +241,6 @@ def icon(name: str, px: int = 64, round_: float = 0.26) -> Image.Image:
     ImageDraw.Draw(mask).rounded_rectangle((0, 0, s - 1, s - 1), s * round_, fill=255)
     tile.putalpha(mask)
     return tile.resize((px, px), Image.LANCZOS)
-
-
-# ---------------------------------------------------------------- banner
-def banner(title: str, subtitle: str, icon_name: str, size: tuple[int, int], pal: dict,
-           wallpaper_style: str, custom_path: str = "", rtl: bool = False, seed=7) -> Image.Image:
-    """Rounded picture banner with the page icon, title and subtitle drawn on it."""
-    w, h = size
-    S = 2
-    try:
-        base = _wall_cached(wallpaper_style, w * S, h * S, pal["accent"], pal["bg"], pal["dark"],
-                            custom_path, seed)
-    except Exception:
-        base = wallpaper("plain", (w * S, h * S), pal["accent"], pal["bg"], pal["dark"])
-    img = base.convert("RGBA")
-    # darker scrim on the text side keeps white text readable on any picture
-    ramp = Image.new("L", (w * S, 1))
-    ramp.putdata([int(max(0, 150 * (1 - (((1 - i / (w * S)) if rtl else (i / (w * S)))) / 0.75)))
-                  for i in range(w * S)])
-    scrim = Image.new("RGBA", (w * S, h * S), (8, 10, 24, 0))
-    scrim.putalpha(ramp.resize((w * S, h * S)))
-    img = Image.alpha_composite(img, scrim)
-    d = ImageDraw.Draw(img, "RGBA")
-    pad = 22 * S
-    ic = icon(icon_name, 64 * S // 1, 0.26)
-    ix = (w * S - pad - ic.width) if rtl else pad
-    img.alpha_composite(ic, (ix, (h * S - ic.height) // 2))
-    text_w = w * S - 2 * pad - ic.width - 18 * S
-    tx0 = pad if rtl else pad + ic.width + 18 * S
-    tsize, ssize = 26 * S, 13 * S
-    title_v = i18n.shape(title)
-    lines = []
-    if subtitle:
-        measure = lambda v: text_width(d, v, ssize)
-        lines = i18n.wrap(subtitle, measure, text_w)[:2]
-    block_h = tsize * 1.25 + (len(lines) * ssize * 1.45 if lines else 0)
-    y = (h * S - block_h) / 2 - 2 * S
-    tw = text_width(d, title_v, tsize, True)
-    draw_text(d, ((tx0 + text_w - tw) if rtl else tx0, y), title_v, tsize, (255, 255, 255, 255), True)
-    y += tsize * 1.25
-    for ln in lines:
-        v = i18n.shape(ln)
-        lw = text_width(d, v, ssize)
-        draw_text(d, ((tx0 + text_w - lw) if rtl else tx0, y), v, ssize, (255, 255, 255, 225))
-        y += ssize * 1.45
-    mask = Image.new("L", img.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle((0, 0, img.width - 1, img.height - 1), 18 * S, fill=255)
-    img.putalpha(mask)
-    return img.resize((w, h), Image.LANCZOS)
 
 
 def swatch(pal: dict, size=(120, 64)) -> Image.Image:

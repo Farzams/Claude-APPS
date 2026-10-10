@@ -168,3 +168,8 @@ FA.update({
     "Sets & logic": "مجموعه و منطق", "Analysis": "آنالیز", "Algebra": "جبر", "Geometry": "هندسه",
     "Templates": "قالب‌ها", "Fonts & accents": "قلم‌ها و نشانه‌ها", "Physics": "فیزیک", "Chemistry": "شیمی", "Units": "یکاها",
 })
+
+FA.update({"No picture": "بدون تصویر", "Subtle": "ملایم", "Medium": "متوسط", "Vivid": "پررنگ",
+           "Search: integral, alpha, ∂, norm…": "جست‌وجو: integral، alpha، ∂، norm…"})
+
+FA.update({"EPUB, MOBI, FB2, DjVu, XPS, CBZ, HTML, TXT, DOCX, TEX and more.": "EPUB، MOBI، FB2، DjVu، XPS، CBZ، HTML، TXT، DOCX، TEX و بیشتر."})
