@@ -369,3 +369,27 @@ FA.update({
 FA.update({"Spell-check": "غلط‌یاب", "Underlines misspelled English and Persian words (math, commands and labels are skipped)": "واژه‌های غلط انگلیسی و فارسی را خط می‌کشد (ریاضی، دستورها و برچسب‌ها نادیده گرفته می‌شوند)",
            "Loading dictionaries…": "در حال بارگذاری فرهنگ‌ها…", "Add to dictionary": "افزودن به فرهنگ", "Ignore this word": "نادیده گرفتن این واژه",
            "(no suggestions)": "(پیشنهادی نیست)"})
+
+FA.update({"Open the full toolkit": "باز کردن جعبه‌ابزار کامل", "Reader": "مطالعه", "Math Studio": "استودیوی ریاضی", "PDF Toolkit — Reader": "جعبه‌ابزار PDF — مطالعه",
+           "PDF Toolkit — Math Studio": "جعبه‌ابزار PDF — استودیوی ریاضی"})
+
+# ---- add-ons and formula OCR
+FA.update({
+    "Add-ons": "افزونه‌ها", "Optional extras. Download one when you need it; it stays on this computer, works offline and can be removed again.":
+        "افزودنی‌های اختیاری. هر وقت لازم شد دانلود کنید؛ روی همین رایانه می‌ماند، بدون اینترنت کار می‌کند و دوباره قابل حذف است.",
+    "Refresh the list": "تازه‌سازی فهرست", "Loading the list…": "در حال بارگیری فهرست…", "Install": "نصب", "Installed": "نصب‌شده",
+    "Downloading…": "در حال دانلود…", "Downloading… {a} of {b} MB": "در حال دانلود… {a} از {b} مگابایت", "Unpacking…": "در حال بازکردن…",
+    "Could not reach the add-on list ({err}). Check your internet connection.": "فهرست افزونه‌ها در دسترس نبود ({err}). اتصال اینترنت را بررسی کنید.",
+    "Cannot install": "نصب نشد", "This add-on cannot be downloaded right now.": "این افزونه الان قابل دانلود نیست.", "Removed": "حذف شد",
+    "Formula from picture": "فرمول از روی تصویر", "Photo or screenshot of a formula to LaTeX (add-on)": "عکس یا اسکرین‌شات فرمول به لاتک (افزونه)",
+    "Turn a picture of a formula — photo, screenshot or part of a PDF page — into LaTeX. Always check the result.": "تصویر یک فرمول — عکس، اسکرین‌شات یا بخشی از صفحهٔ PDF — را به لاتک تبدیل کنید. نتیجه را همیشه بررسی کنید.",
+    "This tool needs the Formula OCR add-on (about 190 MB, works offline afterwards).": "این ابزار به افزونهٔ OCR فرمول نیاز دارد (حدود ۱۹۰ مگابایت، بعد از آن بدون اینترنت کار می‌کند).",
+    "Open Settings > Add-ons": "باز کردن تنظیمات ← افزونه‌ها", "Source": "منبع", "A picture file": "یک فایل تصویر", "The clipboard (screenshot)": "کلیپ‌بورد (اسکرین‌شات)",
+    "A region of a PDF page": "ناحیه‌ای از صفحهٔ PDF", "Copy a formula as a picture (for example with Win+Shift+S), then press the button.": "فرمول را به‌صورت تصویر کپی کنید (مثلاً با Win+Shift+S)، سپس دکمه را بزنید.",
+    "Take the picture from the clipboard": "برداشتن تصویر از کلیپ‌بورد", "Draw a box around one formula.": "دور یک فرمول جعبه بکشید.",
+    "Recognise the formula": "تشخیص فرمول", "LaTeX (you can edit it)": "لاتک (قابل ویرایش)", "Preview": "پیش‌نمایش", "Recognising…": "در حال تشخیص…",
+    "Done. Neural recognition can make mistakes (for example n and π, ≤ and ≅): compare with the picture.": "انجام شد. تشخیص عصبی ممکن است اشتباه کند (مثلاً n و π، ≤ و ≅): با تصویر مقایسه کنید.",
+    "The preview could not draw this formula; the LaTeX text is still copied correctly.": "پیش‌نمایش نتوانست این فرمول را بکشد؛ متن لاتک همچنان درست کپی می‌شود.",
+    "The clipboard has no picture.": "کلیپ‌بورد تصویری ندارد.", "Choose a picture first (or draw a box on the PDF page).": "اول تصویری انتخاب کنید (یا روی صفحهٔ PDF جعبه بکشید).",
+    "Installed": "نصب‌شده",
+})

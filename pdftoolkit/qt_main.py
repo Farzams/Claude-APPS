@@ -27,25 +27,42 @@ from qt_pages import (CompressTool, ConvertTool, ExtractTool, ImagesTool, MergeT
 from qt_reader import ReaderTool
 from qt_tools import (BackgroundTool, BatchTool, BlankTool, CleanScanTool, CropTool, RepairTool, ExportTool, HeaderFooterTool, HiddenTool,
                       SecurityTool, WatermarkTool)
+from qt_formulaocr import FormulaOcrTool
 from qt_math import MathTool
 from qt_pdfedit import CompareTool, EditTool, OrganizeTool, RedactTool
 from qt_science import FormulaTool, LatexTool, SymbolPalette, insert_snippet
 
 
+# One program, several windows: the same files, started with --mode, give separate "apps" (own shortcut, icon,
+# taskbar entry) that show only what that job needs.
+from modes import MODES  # noqa: E402
+
+
+def launch(mode: str = "full", files=()):
+    """Start another window of the program (a different mode, or more files in the reader)."""
+    args = [] if getattr(sys, "frozen", False) else [str(Path(__file__).with_name("app.py"))]
+    if mode != "full":
+        args += ["--mode", mode]
+    args += [str(f) for f in files]
+    QProcess.startDetached(sys.executable, args)
+
+
 class NavButton(QPushButton):
     """Sidebar entry: icon always at the start edge, text next to it (works in both directions)."""
 
-    def __init__(self, key: str, title: str):
+    def __init__(self, key: str, title: str, compact: bool = False, icon: str | None = None):
         super().__init__()
         self.setObjectName("nav")
         self.setCheckable(True)
         self.setCursor(Qt.PointingHandCursor)
         self.setMinimumHeight(44)
+        if compact:
+            self.setToolTip(tr(title))
         lay = QHBoxLayout(self)
-        lay.setContentsMargins(12, 0, 12, 0)
+        lay.setContentsMargins(8 if compact else 12, 0, 8 if compact else 12, 0)
         lay.setSpacing(12)
         ic = QLabel()
-        ic.setPixmap(qt_style.icon_pixmap(key, 26))
+        ic.setPixmap(qt_style.icon_pixmap(icon or key, 26))
         ic.setFixedSize(26, 26)
         self.text = QLabel(tr(title))
         self.text.setObjectName("navText")
@@ -53,6 +70,8 @@ class NavButton(QPushButton):
             w.setAttribute(Qt.WA_TransparentForMouseEvents)
         lay.addWidget(ic)
         lay.addWidget(self.text, 1)
+        if compact:
+            self.text.hide()
         self.toggled.connect(self._sync)
 
     def _sync(self, on: bool):
@@ -157,6 +176,7 @@ class ToolsTool(Tool):
                                 ("hidden", "hidden", "Remove hidden data", "Clean metadata, comments, attachments"),
                                 ("compare", "compare", "Compare PDFs", "See what changed between two versions")]),
         ("Science", [("math", "math", "Math", "Calculator, plots and Orlicz-space helpers (SymPy)"),
+                     ("formulaocr", "formulaocr", "Formula from picture", "Photo or screenshot of a formula to LaTeX (add-on)"),
                      ("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
                      ("formula", "formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]),
         ("Automate", [("batch", "batch", "Batch process", "Run one operation on a whole folder of files")]),
@@ -271,6 +291,10 @@ class SettingsTool(Tool):
         lrow.addStretch(1)
         self.body.addLayout(lrow)
         self.note("Changing the language restarts the app (your files and settings are kept).")
+        from qt_addons import AddonsPanel
+        self.body.addSpacing(10)
+        self.addons_panel = AddonsPanel(self.win)
+        self.body.addWidget(self.addons_panel)
         self.body.addStretch(1)
         self.refresh()
 
@@ -281,6 +305,7 @@ class SettingsTool(Tool):
 
     def on_show(self):
         self.refresh()
+        self.addons_panel.on_show()
 
     def _wp_changed(self, _i):
         key = self.wp.currentData()
@@ -340,7 +365,7 @@ PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("tools", "Al
          ("hidden", "Remove hidden data", HiddenTool), ("redact", "Redact (black out)", RedactTool),
          ("clean", "Clean scans", CleanScanTool), ("repair", "Repair & optimize", RepairTool),
          ("edit", "Edit PDF", EditTool), ("compare", "Compare PDFs", CompareTool), ("batch", "Batch process", BatchTool),
-         ("math", "Math", MathTool), ("latex", "LaTeX", LatexTool), ("formula", "Formula", FormulaTool),
+         ("math", "Math", MathTool), ("formulaocr", "Formula from picture", FormulaOcrTool), ("latex", "LaTeX", LatexTool), ("formula", "Formula", FormulaTool),
          ("settings", "Settings", SettingsTool), ("help", "Help", HelpTool)]
 # pages shown in the sidebar; every other tool opens from "All tools" or the Home page
 SIDEBAR = ["home", "read", "tools", "ocr", "extract", "convert", "split", "merge", "compress", "images", "pages",
@@ -348,14 +373,19 @@ SIDEBAR = ["home", "read", "tools", "ocr", "extract", "convert", "split", "merge
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, cfg: dict):
+    def __init__(self, cfg: dict, mode: str = "full"):
         super().__init__()
         self.cfg = cfg
-        self.setWindowTitle(tr("PDF Toolkit"))
+        self.mode = mode if mode in MODES else "full"
+        self.mcfg = MODES[self.mode]
+        self.setWindowTitle(tr(self.mcfg["title"]))
         self.resize(1180, 840)
         self.setMinimumSize(1100, 720)
         ico = core._app_dir() / "icon.ico"
-        if ico.exists():
+        if self.mcfg["icon"]:
+            import icons
+            self.setWindowIcon(QIcon(icons.tile_pixmap(self.mcfg["icon"], 256, 1.0)))
+        elif ico.exists():
             self.setWindowIcon(QIcon(str(ico)))
         self.setAcceptDrops(True)
         self.insert_target = None
@@ -377,7 +407,8 @@ class MainWindow(QMainWindow):
         side = QFrame()
         self.side = side
         side.setObjectName("sidebar")
-        side.setFixedWidth(238)
+        compact = self.mcfg["compact"]
+        side.setFixedWidth(68 if compact else 238)
         sl = QVBoxLayout(side)
         sl.setContentsMargins(14, 20, 14, 14)
         sl.setSpacing(2)
@@ -386,10 +417,13 @@ class MainWindow(QMainWindow):
         li = QLabel()
         li.setPixmap(qt_style.icon_pixmap("home", 40))
         li.setFixedSize(40, 40)
-        lt = QLabel(tr("PDF Toolkit"))
+        lt = QLabel(tr("PDF Toolkit" if self.mode == "full" else "Math Studio" if self.mode == "math" else "Reader"))
         lt.setObjectName("logoText")
         logo.addWidget(li)
         logo.addWidget(lt, 1)
+        if compact:
+            lt.hide()
+            li.setPixmap(qt_style.icon_pixmap(self.mcfg["icon"] or "home", 40))
         sl.addLayout(logo)
         sl.addSpacing(14)
         self.nav: dict[str, QPushButton] = {}
@@ -401,14 +435,16 @@ class MainWindow(QMainWindow):
         nl.setContentsMargins(0, 0, 4, 0)
         nl.setSpacing(2)
         titles = {k: t for k, t, _c in PAGES}
-        for key in SIDEBAR:
+        keys = self.mcfg["sidebar"] or SIDEBAR
+        self.keys = keys
+        for key in keys:
             if key in ("settings", "help"):
                 continue
-            if key == "math":
+            if key == "math" and self.mode == "full":
                 nl.addSpacing(6)
                 nl.addWidget(hline())
                 nl.addSpacing(6)
-            b = NavButton(key, titles[key])
+            b = NavButton(key, titles[key], compact)
             b.clicked.connect(lambda _=False, k=key: self.show_page(k))
             self.navgroup.addButton(b)
             self.nav[key] = b
@@ -423,8 +459,30 @@ class MainWindow(QMainWindow):
         sl.addSpacing(6)
         sl.addWidget(hline())
         sl.addSpacing(6)
+        if self.mode != "full":
+            fb = QPushButton()
+            fb.setObjectName("nav")
+            fb.setCursor(Qt.PointingHandCursor)
+            fb.setMinimumHeight(44)
+            fl_ = QHBoxLayout(fb)
+            fl_.setContentsMargins(8 if compact else 12, 0, 8 if compact else 12, 0)
+            fl_.setSpacing(12)
+            fi = QLabel()
+            fi.setPixmap(qt_style.icon_pixmap("tools", 26))
+            fi.setFixedSize(26, 26)
+            fl_.addWidget(fi)
+            ft = QLabel(tr("Open the full toolkit"))
+            ft.setObjectName("navText")
+            fl_.addWidget(ft, 1)
+            for w in (fi, ft):
+                w.setAttribute(Qt.WA_TransparentForMouseEvents)
+            if compact:
+                ft.hide()
+            fb.setToolTip(tr("Open the full toolkit"))
+            fb.clicked.connect(lambda _=False: launch("full"))
+            sl.addWidget(fb)
         for key in ("settings", "help"):
-            b = NavButton(key, titles[key])
+            b = NavButton(key, titles[key], compact)
             b.clicked.connect(lambda _=False, k=key: self.show_page(k))
             self.navgroup.addButton(b)
             self.nav[key] = b
@@ -472,7 +530,7 @@ class MainWindow(QMainWindow):
         self.jobs.finished.connect(self._job_finished)
 
         self.apply_style()
-        self.show_page("home")
+        self.show_page(self.mcfg["start"])
         QTimer.singleShot(250, self._prebuild)
 
     # ---- pages
@@ -487,7 +545,7 @@ class MainWindow(QMainWindow):
         return self.pages[key]
 
     def _prebuild(self):
-        for key in SIDEBAR:
+        for key in self.keys:
             if key not in self.pages:
                 self.page(key)
                 QTimer.singleShot(40, self._prebuild)
@@ -500,7 +558,7 @@ class MainWindow(QMainWindow):
             pg._stamp = self._stamp
         self.stack.setCurrentWidget(pg)
         self.current = key
-        self.nav.get(key, self.nav["tools"]).setChecked(True)
+        (self.nav.get(key) or self.nav.get("tools") or next(iter(self.nav.values()))).setChecked(True)
         self.foot.setVisible(key not in ("read", "math"))        # these pages want the full height
         pg.on_show()
 
@@ -556,8 +614,7 @@ class MainWindow(QMainWindow):
             return
         self.cfg["lang"] = code
         settings.save(self.cfg)
-        args = [] if getattr(sys, "frozen", False) else [str(Path(__file__).with_name("app.py"))]
-        QProcess.startDetached(sys.executable, args)
+        launch(self.mode)
         QApplication.quit()
 
     # ---- jobs / log

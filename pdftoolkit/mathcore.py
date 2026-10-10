@@ -524,8 +524,31 @@ def orlicz_plot(phi: str, var: str = "t", hi: float = 4.0, dark: bool = False) -
 
 
 # ---------------------------------------------------------------- rendering
+def _mathtext_safe(latex: str) -> str:
+    """Rewrite common LaTeX that Matplotlib's math engine does not know."""
+    t = re.sub(r"\\(textstyle|displaystyle|scriptstyle|scriptscriptstyle|limits|nolimits)\b", "", latex)
+    t = re.sub(r"\\operatorname\*?\s*\{([^{}]*)\}", r"\\mathrm{\1}", t)
+    t = re.sub(r"\\(mathbbm|mathds)\b", r"\\mathbb", t)
+    t = t.replace("\\;", " ").replace("\\!", "").replace("\\:", " ")
+    return t
+
+
 def latex_png(latex: str, fontsize: int = 18, color: str = "#111111", dpi: int = 200) -> bytes | None:
-    """Render a LaTeX formula to PNG with Matplotlib's built-in math engine (no TeX needed)."""
+    """Render a LaTeX formula to PNG: Matplotlib's built-in math engine first, the real LaTeX engine as a fallback."""
+    png = _mathtext_png(_mathtext_safe(latex), fontsize, color, dpi)
+    if png:
+        return png
+    try:
+        import texengine
+        imgs, _log = texengine.render_formulas([(latex, True)], dpi=dpi, color=color)
+        if imgs and imgs[0].ok:
+            return imgs[0].png
+    except Exception:
+        pass
+    return None
+
+
+def _mathtext_png(latex: str, fontsize: int = 18, color: str = "#111111", dpi: int = 200) -> bytes | None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
