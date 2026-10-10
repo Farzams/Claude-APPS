@@ -14,3 +14,4 @@ pdf2docx>=0.5.8
 pikepdf>=9.0
 fonttools>=4.50
 pyinstaller>=6.0
+spylls>=0.1.7
