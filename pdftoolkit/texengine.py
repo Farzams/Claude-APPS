@@ -174,6 +174,27 @@ def _run(cmd, cwd, timeout, env=None):
                           timeout=timeout, creationflags=NO_WINDOW, env=env or _env())
 
 
+def ensure_bundled_fonts(src: Path) -> None:
+    """Documents that load the bundled Persian fonts via Path=fonts/ get a fonts/ folder next to them.
+
+    (Absolute Windows paths such as D:/... break XeTeX's font loader, a relative path does not.)
+    """
+    try:
+        text = src.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return
+    if not re.search(r"Path=\.?/?fonts/", text):
+        return
+    dest = src.parent / "fonts"
+    for f in fonts_dir().glob("*.[to]tf"):
+        if f.stem.split("-")[0] in text and not (dest / f.name).exists():
+            dest.mkdir(exist_ok=True)
+            try:
+                shutil.copyfile(f, dest / f.name)
+            except OSError:
+                pass
+
+
 def compile_tex(tex: str, out_dir: str | None = None, engine: Engine | None = None,
                 timeout: int = 600) -> CompileResult:
     """Compile a .tex file. The PDF is written to out_dir (default: next to the source)."""
@@ -185,6 +206,7 @@ def compile_tex(tex: str, out_dir: str | None = None, engine: Engine | None = No
                              errors=[TexError("", 0, "No LaTeX engine (Tectonic, XeLaTeX) was found.")])
     out = Path(out_dir) if out_dir else src.parent
     out.mkdir(parents=True, exist_ok=True)
+    ensure_bundled_fonts(src)
     build = Path(tempfile.mkdtemp(prefix="pdftk_tex_"))
     log = ""
     try:

@@ -170,7 +170,7 @@ PERSIAN = r"""\documentclass[12pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{xepersian}
-\settextfont[Path=@FONTDIR@/,Extension=.ttf,UprightFont=*-Regular,BoldFont=*-Bold]{NotoSansArabic}
+\settextfont[Path=fonts/,Extension=.ttf,UprightFont=*-Regular,BoldFont=*-Bold]{NotoSansArabic}% fonts/ is created next to this file when you compile
 \setlatintextfont{Latin Modern Roman}
 \newtheorem{theorem}{قضیه}[section]
 \theoremstyle{definition}
