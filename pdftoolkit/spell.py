@@ -47,6 +47,21 @@ def user_dict_path() -> Path:
     return Path(base) / "PDFToolkit" / "userdict.txt"
 
 
+def _normalise_line_endings(d: Path) -> None:
+    """Hunspell files must use plain newlines; repair them in a cache copy if a checkout turned them into CRLF."""
+    for f in list(d.rglob("*.aff")) + list(d.rglob("*.dic")):
+        try:
+            raw = f.read_bytes()
+        except OSError:
+            continue
+        if b"\r\n" in raw:
+            fixed = raw.replace(b"\r\n", b"\n")
+            try:
+                f.write_bytes(fixed)
+            except OSError:
+                pass
+
+
 def scan(text: str, state: int = 0) -> tuple[list[tuple[int, int, str]], int]:
     """Words to check in one line of LaTeX. state: 0 normal, 1 inside a math/verbatim environment.
 
@@ -117,6 +132,7 @@ class SpellChecker:
     def __init__(self):
         self.en = self.fa = None
         self.ready = False
+        self.error = ""
         self.loading = False
         self._cache: dict[str, bool] = {}
         self.user: set[str] = set()
@@ -133,6 +149,7 @@ class SpellChecker:
             try:
                 from spylls.hunspell import Dictionary
                 d = _dict_dir()
+                _normalise_line_endings(d)
                 self.en = Dictionary.from_files(str(d / "en" / "index"))
                 self.fa = Dictionary.from_files(str(d / "fa" / "index"))
                 try:
@@ -145,6 +162,8 @@ class SpellChecker:
                     pass
                 self.ready = True
             except Exception:
+                import traceback
+                self.error = traceback.format_exc()
                 self.ready = False
             finally:
                 self.loading = False

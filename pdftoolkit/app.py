@@ -60,7 +60,8 @@ def selftest(outfile: str) -> int:
     def spell_():
         import spell
         spell.CHECKER.load()
-        assert spell.CHECKER.ready and not spell.CHECKER.check("algbra") and spell.CHECKER.check("algebra")
+        assert spell.CHECKER.ready, "dictionaries did not load: " + spell.CHECKER.error[-600:]
+        assert not spell.CHECKER.check("algbra") and spell.CHECKER.check("algebra"), "wrong spell-check answers"
         return "en+fa dictionaries"
 
     def openpyxl_():
