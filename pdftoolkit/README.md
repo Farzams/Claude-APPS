@@ -37,3 +37,11 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - **PDF to** pictures / Word / Excel / HTML / RTF / EPUB / text, **Password & permissions** (AES-256), **Remove hidden data**, **Redact** (words, patterns, drawn areas; also Persian), **Edit PDF** (replace/add text and pictures), **Compare PDFs**, **Batch process**
 - Icons are vector (SVG, drawn by Qt); input fields have a visible border on every theme
 - openpyxl (MIT) is used for Excel export
+
+## v6.1 additions
+- **Math** page (SymPy, NumPy, Matplotlib): calculator, calculus, equations/ODEs, matrices, plots, LaTeX output; runs in a separate process with a 90 s limit. **Orlicz helpers**: Young/N-function check, complementary function, Δ₂ test, Luxemburg and Orlicz (Amemiya) norms (numerical, checked against known values)
+- **Spell-check** (English SCOWL en_US, MIT/BSD; Persian Lilak, Apache-2.0; via spylls, MPL-2.0) in the LaTeX editor, aware of LaTeX commands, math and comments
+- **Clean scans** (OpenCV: deskew, shadows, denoise), **Repair & optimize** (pikepdf/qpdf), Word export with **pdf2docx** layout engine for left-to-right documents (Persian uses the flowing-text engine)
+- **Separate windows from one install**: PDF Toolkit, Reader, Math Studio (`--mode reader|math`); Inno Setup creates the shortcuts and an optional "Open with" entry for book formats
+- **Add-ons** (Settings): downloaded from the release `pdftoolkit-addons` (built by `.github/workflows/addons.yml`), SHA-256 checked. *Formula OCR*: ONNX Runtime (MIT) + tokenizers (Apache-2.0) + RapidLaTeXOCR models (Apache-2.0, from LaTeX-OCR/pix2tex, MIT). *More LaTeX packages*: extra Tectonic cache files
+- `PDFToolkit.exe --selftest out.json` checks the packaged program (used by the build)

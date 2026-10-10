@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 
 lang = sys.argv[1] if len(sys.argv) > 1 else "en"
+mode = sys.argv[2] if len(sys.argv) > 2 else "full"
 tmp = tempfile.mkdtemp()
 os.environ["APPDATA"] = tmp
 os.environ["LOCALAPPDATA"] = tmp
@@ -37,12 +38,14 @@ if i18n.rtl():
 from qt_main import PAGES, MainWindow  # noqa: E402
 
 t0 = time.time()
-win = MainWindow(cfg)
+win = MainWindow(cfg, mode)
 win.show()
 for _ in range(30):
     app.processEvents()
     time.sleep(0.02)
 for key, _title, _cls in PAGES:
+    if mode != "full" and key not in win.keys:
+        continue
     win.show_page(key)
     app.processEvents()
 for th in ("daylight", "gold", "rose", "sunset"):
@@ -87,4 +90,4 @@ for i in range(len(rd.docs) - 1, -1, -1):
     rd.close_tab(i)
 shot = win.grab()
 assert not shot.isNull() and shot.width() > 500
-print(f"PASS gui {lang}: {len(win.pages)} pages, theme+picture switching ok, {time.time() - t0:.1f}s")
+print(f"PASS gui {lang} {mode}: {len(win.pages)} pages, theme+picture switching ok, {time.time() - t0:.1f}s")

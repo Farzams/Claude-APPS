@@ -85,6 +85,18 @@ PDF to…: pictures (PNG, JPEG, TIFF), Word, Excel (tables), HTML, RTF, EPUB or 
 Password & permissions: protects with AES-256 and can forbid printing, copying or editing. A forgotten password cannot be recovered. Remove hidden data cleans author names, comments, attachments and scripts. Redact black out words, patterns (e-mail, phone, card numbers) or drawn areas — the text under the black is deleted for good.
 
 Compare PDFs shows what changed, as text and as a picture with differences in red. Batch process runs one operation on a whole list of files."""),
+    ("Math, Orlicz helpers and spell-check", """
+Math (in the side list, and in Math Studio) is an exact calculator. Type ordinary maths: x^2, 2x, sin(x)/x, sqrt(2), pi, e, oo for infinity — or paste LaTeX such as \\frac{x^2-1}{x-1}. Choose what to do: simplify, expand, factor, derivative, integral (leave the limits empty for an indefinite integral), limit, Taylor series, sum, equations and systems (one per line), differential equations (write y'' + y = 0), matrices (determinant, inverse, eigenvalues…) and plots. Every answer is shown as a formula and can be copied as LaTeX or inserted into the LaTeX page. A hard problem is stopped after 90 seconds.
+
+Orlicz spaces: Is Φ a Young / N-function? checks the defining properties of Φ(t) (limits at 0 and ∞, convexity). Complementary function Ψ gives the conjugate Ψ(s) = sup(st − Φ(t)) exactly when possible. Δ₂-condition tests Φ(2t) ≤ K·Φ(t). Luxemburg and Orlicz norm computes both norms of a function f on an interval by numerical integration (for example Φ = t², f = x on [0,1] gives 1/√3 and 2/√3). Plot Φ and Ψ draws both. These are aids for exploring examples, not proofs.
+
+Spell-check in the LaTeX page underlines misspelled English and Persian words with a red wave; commands, formulas, labels and comments are skipped. Right-click a word for suggestions, Add to dictionary or Ignore. The tick box under the editor turns it off. Names such as Orlicz, Banach and Luxemburg are already known."""),
+    ("Add-ons and separate windows", """
+Settings has an Add-ons section. Add-ons are optional downloads that stay on your computer and work offline afterwards: Formula OCR (a picture of a printed formula becomes LaTeX; always check the result — it may confuse symbols such as n and π) and More LaTeX packages (hundreds more packages, classes and fonts that compile without internet). Install or Remove with one click; the list needs internet only to download.
+
+One installation gives three start-menu apps: PDF Toolkit (everything), PDF Toolkit Reader (only the reader, with a slim side bar) and Math Studio (Math, Formula from picture, LaTeX and Formula). They share the same files, so they need no extra space. In the portable version use Reader.bat and MathStudio.bat. During installation you can add the Reader to the Open with list of DjVu, EPUB, MOBI, FB2, CBZ and XPS files.
+
+Clean scans straightens crooked pages, removes shadows and noise and can make black-and-white pages with small files; run OCR afterwards. Repair & optimize rebuilds a damaged PDF that will not open."""),
     ("Themes, pictures and language", """
 Open Settings. Click a colour theme to apply it immediately: there are light and dark themes.
 
@@ -210,6 +222,18 @@ PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها
 گذرواژه و دسترسی‌ها: با AES-256 محافظت می‌کند و می‌تواند چاپ، کپی یا ویرایش را ممنوع کند. گذرواژهٔ فراموش‌شده بازیابی نمی‌شود. حذف داده‌های پنهان نام نویسنده، نظرها، پیوست‌ها و اسکریپت‌ها را پاک می‌کند. سانسور واژه‌ها، الگوها (ایمیل، تلفن، کارت) یا ناحیه‌های کشیده‌شده را می‌پوشاند — متن زیر نوار سیاه برای همیشه پاک می‌شود.
 
 مقایسهٔ PDFها نشان می‌دهد چه چیزی تغییر کرده، هم متنی و هم تصویری با تفاوت‌های قرمز. پردازش دسته‌ای یک عملیات را روی فهرستی از فایل‌ها اجرا می‌کند."""),
+    ("ریاضی، ابزارهای اورلیچ و غلط‌یاب", """
+«ریاضی» (در فهرست کناری و در استودیوی ریاضی) یک ماشین‌حساب دقیق است. ریاضی را عادی بنویسید: x^2، 2x، sin(x)/x، sqrt(2)، pi، e و oo برای بی‌نهایت — یا لاتک مثل \\frac{x^2-1}{x-1} را بچسبانید. بگویید چه کنم: ساده‌سازی، بسط، تجزیه، مشتق، انتگرال (برای نامعین حدها را خالی بگذارید)، حد، سری تیلور، مجموع، معادله و دستگاه (هر خط یکی)، معادلهٔ دیفرانسیل (بنویسید y'' + y = 0)، ماتریس (دترمینان، وارون، مقادیر ویژه…) و نمودار. هر پاسخ به‌صورت فرمول نشان داده می‌شود و می‌توان آن را به‌صورت لاتک کپی یا در صفحهٔ لاتک درج کرد. مسئلهٔ سخت بعد از ۹۰ ثانیه متوقف می‌شود.
+
+فضاهای اورلیچ: «آیا Φ تابع یانگ / N است؟» ویژگی‌های تعریف Φ(t) را بررسی می‌کند (حد در ۰ و ∞، تحدب). «تابع مکمل Ψ» مزدوج Ψ(s) = sup(st − Φ(t)) را در صورت امکان دقیق می‌دهد. «شرط Δ₂» نامساوی Φ(2t) ≤ K·Φ(t) را می‌آزماید. «نرم لوکزامبورگ و اورلیچ» هر دو نرم تابع f را روی یک بازه با انتگرال‌گیری عددی حساب می‌کند (مثلاً Φ = t² و f = x روی [0,1] مقدارهای 1/√3 و 2/√3 را می‌دهد). «رسم Φ و Ψ» هر دو را می‌کشد. این‌ها ابزار کاوش مثال‌ها هستند، نه اثبات.
+
+غلط‌یاب در صفحهٔ لاتک واژه‌های غلط انگلیسی و فارسی را با موج قرمز خط می‌کشد؛ دستورها، فرمول‌ها، برچسب‌ها و توضیحات نادیده گرفته می‌شوند. روی واژه راست‌کلیک کنید تا پیشنهاد، «افزودن به فرهنگ» یا «نادیده گرفتن» را ببینید. کادر تیک زیر ویرایشگر آن را خاموش می‌کند. نام‌هایی مثل اورلیچ، باناخ و لوکزامبورگ از قبل شناخته‌شده‌اند."""),
+    ("افزونه‌ها و پنجره‌های جدا", """
+در تنظیمات بخش «افزونه‌ها» هست. افزونه‌ها دانلودهای اختیاری‌اند که روی رایانهٔ شما می‌مانند و بعد از آن بدون اینترنت کار می‌کنند: «OCR فرمول» (تصویر یک فرمول چاپی را به لاتک تبدیل می‌کند؛ نتیجه را همیشه بررسی کنید — ممکن است نمادهایی مثل n و π را اشتباه بگیرد) و «بسته‌های بیشتر لاتک» (صدها بسته، کلاس و قلم بیشتر که بدون اینترنت کامپایل می‌شوند). نصب یا حذف با یک کلیک؛ فقط برای دانلود اینترنت لازم است.
+
+یک نصب سه برنامه در منوی شروع می‌دهد: جعبه‌ابزار PDF (همه‌چیز)، مطالعه (فقط خواننده با نوار کناری باریک) و استودیوی ریاضی (ریاضی، فرمول از روی تصویر، لاتک و فرمول). فایل‌های مشترک دارند و فضای اضافه نمی‌خواهند. در نسخهٔ قابل‌حمل از Reader.bat و MathStudio.bat استفاده کنید. هنگام نصب می‌توانید «مطالعه» را به فهرست «باز کردن با» فایل‌های DjVu، EPUB، MOBI، FB2، CBZ و XPS اضافه کنید.
+
+«پاک‌سازی اسکن» صفحه‌های کج را صاف می‌کند، سایه و نویز را برمی‌دارد و می‌تواند صفحه‌های سیاه‌وسفید کم‌حجم بسازد؛ بعد از آن OCR بزنید. «تعمیر و بهینه‌سازی» PDF آسیب‌دیده‌ای را که باز نمی‌شود بازسازی می‌کند."""),
     ("تم، تصویر و زبان", """
 «تنظیمات» را باز کنید. روی یک تم رنگی بزنید تا فوراً اعمال شود؛ تم روشن و تیره دارید.
 
