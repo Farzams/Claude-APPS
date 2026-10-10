@@ -115,5 +115,42 @@ if eng:
             rr = texengine.compile_tex(str(q))
             check(f"LaTeX package {pkg}", rr.ok, "" if rr.ok else (rr.errors[0].message if rr.errors else ""), soft=True)
 
+# ---- extra PDF tools (organize, crop, stamps, export, security, redaction, edit, batch)
+import pdftools
+with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ptd:
+    ptd = Path(ptd)
+    en, fa = str(ptd / "en.pdf"), str(ptd / "fa.pdf")
+    core.html_to_pdf("<h1>Annual Report</h1><p>Mail john@example.com</p><table border=1><tr><td>A</td><td>1</td></tr>"
+                     "<tr><td>B</td><td>2</td></tr></table><p>" + "Lorem ipsum dolor. " * 120 + "</p>", en, "a5")
+    core.html_to_pdf("<h1>گزارش سالانه</h1><p>این یک متن آزمایشی فارسی است.</p>", fa, "a5")
+    def q(path, i=0):
+        with pymupdf.open(path) as d:
+            return d[i].get_text()
+    check("Organize pages", pdftools.organize(en, str(ptd / "o.pdf"), [(1, 90), (0, 0)]) == 2)
+    pdftools.crop_pdf(en, str(ptd / "c.pdf"), auto=True)
+    check("Crop (auto)", pymupdf.open(str(ptd / "c.pdf"))[0].rect.width < 420)
+    pdftools.header_footer(fa, str(ptd / "hf.pdf"), "", "{page}/{pages}", "")
+    pdftools.watermark(fa, str(ptd / "wm.pdf"), "محرمانه")
+    check("Header/footer + Persian watermark", pymupdf.open(str(ptd / "wm.pdf")).page_count == 1)
+    pdftools.protect(en, str(ptd / "pw.pdf"), "abc")
+    pdftools.unlock(str(ptd / "pw.pdf"), str(ptd / "un.pdf"), "abc")
+    check("Password protect / unlock", pdftools.is_encrypted(str(ptd / "pw.pdf")) and "Annual" in q(str(ptd / "un.pdf")))
+    check("Redact (Latin)", pdftools.redact(en, str(ptd / "r.pdf"), ["john@example.com"]) >= 1
+          and "john@" not in q(str(ptd / "r.pdf")))
+    pdftools.redact(fa, str(ptd / "rf.pdf"), ["آزمایشی"])
+    check("Redact (Persian)", core._fold("آزمایشی") not in core._fold(q(str(ptd / "rf.pdf"))))
+    check("Replace text (Persian)", pdftools.replace_text(fa, str(ptd / "rt.pdf"), "سالانه", "ماهانه") == 1
+          and core._fold("ماهانه") in core._fold(q(str(ptd / "rt.pdf"))))
+    docx_n = pdftools.to_docx(fa, str(ptd / "fa.docx"))
+    import docx as _docx
+    check("PDF to Word (Persian)", core._fold("گزارش") in core._fold(_docx.Document(str(ptd / "fa.docx")).paragraphs[0].text))
+    check("PDF to Excel", pdftools.to_xlsx(en, str(ptd / "t.xlsx")) >= 1)
+    check("PDF to images", len(pdftools.to_images(en, str(ptd / "img"), "jpg", 60)) == 2)
+    pdftools.export_text_format(fa, str(ptd / "f.epub"), "epub")
+    pdftools.export_text_format(en, str(ptd / "e.rtf"), "rtf")
+    check("PDF to EPUB / RTF", (ptd / "f.epub").stat().st_size > 500 and (ptd / "e.rtf").stat().st_size > 100)
+    res = pdftools.batch_run([en, fa], str(ptd / "b"), "watermark", {"text": "DRAFT"})
+    check("Batch run", all(ok for _, ok, _ in res))
+
 print("FAILED:", check.failed or "none")
 sys.exit(1 if check.failed else 0)
