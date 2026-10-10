@@ -29,5 +29,12 @@ for th in ("daylight", "gold", "rose"):
 for wp in ("waves", "mountains", "lowpoly", "bokeh", "dots", "plain", "aurora"):
     a.set_wallpaper(wp)
     a.update()
+a.show_palette()
+for _ in range(6):
+    a.update()
+a._palette.show_cat("Analysis")
+a.update()
+a._palette.destroy()
+a._palette = None
 print(f"PASS gui {lang}: {len(a.pages)} pages, theme+picture switching ok, {time.time() - t0:.1f}s")
 a.destroy()

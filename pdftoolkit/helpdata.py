@@ -75,6 +75,24 @@ Open Settings. Click a colour theme to apply it immediately: there are light and
 The picture at the top of every page can be changed: choose a style (Aurora, Waves, Mountains…) or pick your own photo with Choose my picture….
 
 Language: choose English or فارسی. The app restarts to switch language; the Persian interface is laid out right-to-left."""),
+    ("LaTeX and formulas", """
+Open the LaTeX page to write or open a .tex file. Press Compile (or Ctrl+Enter): the PDF appears on the right, and any error is listed below with the line number and a plain-words hint. Click an error to jump to that line.
+
+New from template gives you ready documents: article with theorems, Orlicz-space notes with notation macros, thesis, slides (Beamer), a Persian + English article, and chemistry and physics notes.
+
+Import turns a Word, ODT, Markdown, EPUB or HTML file into a .tex file; equations stay as LaTeX.
+
+Convert to PDF now typesets equations in Word, Markdown, ODT and EPUB files properly, also inside Persian documents. A .tex file can be converted directly.
+
+The first compile may need internet to fetch a package; after that it is stored for offline use."""),
+    ("Symbols, chemistry and physics", """
+Press Symbols to open the palette: more than 300 symbols in groups (Greek letters, operators, relations, arrows, sets and logic, analysis, algebra, geometry, templates, physics, chemistry, units). Click a symbol to insert its LaTeX at the cursor in the editor or the Formula box. Right-click copies it instead. Use the search box to find a symbol by name, for example integral, alpha or norm.
+
+The Analysis group has notation for Orlicz spaces: Lᶲ, Luxemburg norm, Δ₂ and ∇₂ conditions, modular, convolution, Fourier transform.
+
+Chemistry: write reactions with \\ce{2H2 + O2 -> 2H2O}, ions with \\ce{Fe^{3+}} and structure drawings with \\chemfig{*6(=-=-=-)}. Physics: units with \\SI{9.81}{m/s^2}, bra-ket and derivatives with the physics package.
+
+The Formula page turns one formula into a PNG, SVG or PDF with a transparent background and your chosen colour; use white for dark slides."""),
     ("Questions and problems", """
 The app feels slow? Close big files in other programs; the window hides its content for a moment while you drag its edge, which keeps resizing smooth.
 
@@ -166,6 +184,24 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
 تصویر بالای هر صفحه را می‌توانید عوض کنید: یک سبک (شفق، موج، کوه…) انتخاب کنید یا با «انتخاب تصویر من…» عکس خودتان را بگذارید.
 
 زبان: English یا فارسی را انتخاب کنید. برای تغییر زبان برنامه دوباره باز می‌شود و رابط فارسی راست‌به‌چپ چیده می‌شود."""),
+    ("لاتک و فرمول‌ها", """
+صفحهٔ «لاتک» را باز کنید تا فایل tex بنویسید یا باز کنید. «کامپایل» (یا Ctrl+Enter) را بزنید: PDF سمت راست نمایش داده می‌شود و هر خطا همراه با شمارهٔ خط و یک راهنمای ساده پایین فهرست می‌شود. روی خطا بزنید تا به همان خط بروید.
+
+«جدید از قالب» سندهای آماده می‌دهد: مقاله با قضیه، یادداشت‌های فضاهای اورلیچ با میانبرهای نمادگذاری، پایان‌نامه، اسلاید (Beamer)، مقالهٔ فارسی + انگلیسی و یادداشت‌های شیمی و فیزیک.
+
+«درون‌ریزی» فایل ورد، ODT، Markdown، EPUB یا HTML را به فایل tex تبدیل می‌کند و معادله‌ها به‌صورت لاتک می‌مانند.
+
+«تبدیل به PDF» حالا معادله‌ها را در فایل‌های ورد، Markdown، ODT و EPUB درست حروف‌چینی می‌کند، حتی داخل سندهای فارسی. فایل tex را هم می‌توان مستقیم تبدیل کرد.
+
+اولین کامپایل ممکن است برای گرفتن یک بسته به اینترنت نیاز داشته باشد؛ بعد از آن برای استفادهٔ آفلاین ذخیره می‌شود."""),
+    ("نمادها، شیمی و فیزیک", """
+«نمادها» را بزنید تا پالت باز شود: بیش از ۳۰۰ نماد در گروه‌ها (حروف یونانی، عملگرها، رابطه‌ها، پیکان‌ها، مجموعه و منطق، آنالیز، جبر، هندسه، قالب‌ها، فیزیک، شیمی، یکاها). روی یک نماد بزنید تا لاتک آن در جای مکان‌نما در ویرایشگر یا کادر فرمول درج شود. با راست‌کلیک فقط کپی می‌شود. با کادر جست‌وجو نماد را از روی نامش پیدا کنید، مثلاً integral، alpha یا norm.
+
+گروه «آنالیز» نمادگذاری فضاهای اورلیچ را دارد: Lᶲ، نرم لوکزامبورگ، شرط‌های Δ₂ و ∇₂، مدولار، کانولوشن و تبدیل فوریه.
+
+شیمی: واکنش‌ها را با \\ce{2H2 + O2 -> 2H2O}، یون‌ها را با \\ce{Fe^{3+}} و ساختارها را با \\chemfig{*6(=-=-=-)} بنویسید. فیزیک: یکاها با \\SI{9.81}{m/s^2} و براکت‌ها و مشتق‌ها با بستهٔ physics.
+
+صفحهٔ «فرمول» یک فرمول را با زمینهٔ شفاف و رنگ دلخواه به PNG، SVG یا PDF تبدیل می‌کند؛ برای اسلاید تیره رنگ سفید را بزنید."""),
     ("پرسش‌ها و مشکل‌ها", """
 برنامه کند است؟ فایل‌های بزرگ را در برنامه‌های دیگر ببندید. هنگام کشیدن لبهٔ پنجره، محتوا لحظه‌ای پنهان می‌شود تا تغییر اندازه روان بماند.
 

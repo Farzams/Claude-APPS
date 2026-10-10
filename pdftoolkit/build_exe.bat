@@ -4,6 +4,6 @@ rem To bundle DjVu: copy the DjVuLibre folder (ddjvu.exe + dlls) to a "djvu" fol
 rem For an installer, then open installer.iss with Inno Setup (jrsoftware.org/isinfo.php).
 cd /d "%~dp0"
 python -m pip install -r requirements.txt || exit /b 1
-python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "gs;gs" --add-data "tesseract;tesseract" --add-data "djvu;djvu" --collect-all customtkinter --collect-all pypandoc --collect-all tkinterdnd2 --collect-all docx --collect-all arabic_reshaper --collect-all bidi app.py || exit /b 1
+python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "gs;gs" --add-data "tesseract;tesseract" --add-data "djvu;djvu" --add-data "tectonic;tectonic" --collect-all customtkinter --collect-all pypandoc --collect-all tkinterdnd2 --collect-all docx --collect-all arabic_reshaper --collect-all bidi app.py || exit /b 1
 echo.
 echo Done: dist\PDFToolkit\PDFToolkit.exe

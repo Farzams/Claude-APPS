@@ -4,6 +4,7 @@ import tempfile
 from pathlib import Path
 
 import pymupdf
+import pypandoc
 
 sys.path.insert(0, str(Path(__file__).parent))
 import core  # noqa: E402
@@ -12,9 +13,10 @@ FA = ["فضاهای اورلیچ تعمیمی از فضاهای هستند.", "�
       "قضیه ۱. هر عملگر خطی کراندار روی فضای باناخ پیوسته است."]
 
 
-def check(name, ok, extra=""):
-    print(("PASS " if ok else "FAIL ") + name, extra)
-    if not ok:
+def check(name, ok, extra="", soft=False):
+    """soft=True: report but do not fail the build (used while a new tool is being proven on Windows)."""
+    print(("PASS " if ok else ("WARN " if soft else "FAIL ")) + name, extra)
+    if not ok and not soft:
         check.failed.append(name)
 
 
@@ -70,12 +72,47 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
         check("ddjvu runs", True)
 
 import i18n, art, theme  # noqa: E402
+import templates, texengine  # noqa: E402
 i18n.set_lang("fa")
 check("Persian UI text is shaped", i18n.shape("سلام") != "سلام")
 b = art.banner(i18n.t("OCR"), i18n.t("Cut a PDF into several smaller files."), "ocr", (800, 110),
                theme.THEMES["ocean"], "mountains", "", True)
 check("Persian banner renders", b.size == (800, 110))
 check("every theme has the required colours", all({"bg", "card", "accent", "text"} <= set(p) for p in theme.THEMES.values()))
+
+# ---- LaTeX (Tectonic on Windows; also warms the package cache that ships with the app)
+eng = texengine.find_engine()
+check("LaTeX engine found", bool(eng), str(eng))
+if eng:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ltd:
+        ltd = Path(ltd)
+        SOFT = {"Slides (Beamer)", "Persian + English article (XeLaTeX)"}
+        for i, name in enumerate(templates.TEMPLATES):
+            p = ltd / f"t{i}.tex"
+            p.write_text(templates.get(name, texengine.fonts_dir()), encoding="utf-8")
+            r = texengine.compile_tex(str(p))
+            first = r.errors[0].message if r.errors else ""
+            check(f"LaTeX template: {name}", r.ok, f"{r.seconds:.0f}s {first}", soft=name in SOFT)
+            if not r.ok:
+                print("   log tail:", r.log[-600:].replace("\n", " | "))
+        imgs, flog = texengine.render_formulas([(r"\int_0^1 x^2\,dx=\frac13", True), (r"\ce{H2O}", False)], dpi=200)
+        check("Formulas render to images", all(i.ok for i in imgs), flog[-200:] if not all(i.ok for i in imgs) else "")
+        # Word/Markdown equations -> typeset images in the converted PDF
+        (ltd / "m.md").write_text("# Test\n\nInline $a_1^2$ and\n\n$$\\int_0^1 x\\,dx$$\n", encoding="utf-8")
+        pypandoc.convert_file(str(ltd / "m.md"), "docx", outputfile=str(ltd / "m.docx"))
+        outp = core.convert_to_pdf(str(ltd / "m.docx"), str(ltd / "o2"))
+        with pymupdf.open(outp) as d:
+            check("DOCX equations are typeset (not raw LaTeX)", sum(len(p.get_image_info()) for p in d) >= 2)
+        # pre-fill the package cache with commonly used packages (soft: a missing package just downloads later)
+        for pkg in ["amsmath", "amssymb", "amsthm", "mathtools", "bm", "physics", "siunitx", "mhchem", "chemfig",
+                    "tikz", "pgfplots", "xcolor", "graphicx", "hyperref", "booktabs", "enumitem", "cleveref",
+                    "cancel", "mathrsfs", "stmaryrd", "tcolorbox", "subcaption", "float", "multirow", "longtable",
+                    "geometry", "fancyhdr", "titlesec", "microtype", "setspace", "listings", "natbib", "algorithm2e",
+                    "tikz-cd", "braket", "esdiff", "chemmacros", "units", "fontspec"]:
+            q = ltd / "pkg.tex"
+            q.write_text("\\documentclass{article}\\usepackage{%s}\\begin{document}x\\end{document}" % pkg)
+            rr = texengine.compile_tex(str(q))
+            check(f"LaTeX package {pkg}", rr.ok, "" if rr.ok else (rr.errors[0].message if rr.errors else ""), soft=True)
 
 print("FAILED:", check.failed or "none")
 sys.exit(1 if check.failed else 0)

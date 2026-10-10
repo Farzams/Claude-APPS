@@ -21,6 +21,7 @@ ICON_COLORS = {
     "extract": ("#14b8a6", "#06b6d4"), "convert": ("#f59e0b", "#f97316"), "split": ("#ef4444", "#f97316"),
     "merge": ("#22c55e", "#10b981"), "compress": ("#0ea5e9", "#6366f1"), "images": ("#a855f7", "#ec4899"),
     "pages": ("#84cc16", "#22c55e"), "settings": ("#64748b", "#94a3b8"), "help": ("#3b82f6", "#06b6d4"),
+    "latex": ("#0ea5e9", "#2563eb"), "formula": ("#f59e0b", "#ef4444"),
 }
 
 
@@ -251,6 +252,15 @@ def _glyph(name: str, d: ImageDraw.ImageDraw, s: int):
                        (cx + math.cos(a + .22) * 26 * u, cy + math.sin(a + .22) * 26 * u)], fill=W)
         d.ellipse((cx - 30 * u, cy - 30 * u, cx + 30 * u, cy + 30 * u), fill=W)
         d.ellipse((cx - 13 * u, cy - 13 * u, cx + 13 * u, cy + 13 * u), fill=(0, 0, 0, 90))
+    elif name == "latex":
+        f = _font(int(36 * u), True)
+        tw = d.textlength("TeX", font=f)
+        d.text(((s - tw) / 2, 30 * u), "TeX", font=f, fill=W)
+        L([(24, 76), (76, 76)], 5)
+    elif name == "formula":
+        f = _font(int(76 * u), True)
+        tw = d.textlength("∑", font=f)
+        d.text(((s - tw) / 2, 4 * u), "∑", font=f, fill=W)
     elif name == "help":
         f = _font(int(66 * u), True)
         tw = d.textlength("?", font=f)

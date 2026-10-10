@@ -202,13 +202,13 @@ NATIVE_FORMATS = {".epub", ".mobi", ".fb2", ".xps", ".oxps", ".cbz", ".svg",
                   ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tif",
                   ".tiff", ".webp", ".html", ".htm", ".xhtml"}
 PANDOC_FORMATS = {".docx": "docx", ".odt": "odt", ".rtf": "rtf", ".md": "markdown",
-                  ".markdown": "markdown", ".rst": "rst", ".tex": "latex",
-                  ".epub": "epub", ".fb2": "fb2"}
+                  ".markdown": "markdown", ".rst": "rst", ".epub": "epub", ".fb2": "fb2"}
+TEX_FORMATS = {".tex", ".ltx"}
 PANDOC_OR_NATIVE = {".epub", ".fb2"}  # pandoc path gives correct Farsi; native is the fallback
 MOBI_LIKE = {".azw", ".azw3"}  # tried natively first, Calibre as fallback
 CALIBRE_FORMATS = {".azw", ".azw3", ".doc", ".lit", ".pdb", ".cbr", ".htmlz", ".txtz"}
 DJVU_FORMATS = {".djvu", ".djv"}
-ALL_FORMATS = sorted(NATIVE_FORMATS | set(PANDOC_FORMATS) | CALIBRE_FORMATS | DJVU_FORMATS)
+ALL_FORMATS = sorted(NATIVE_FORMATS | set(PANDOC_FORMATS) | TEX_FORMATS | CALIBRE_FORMATS | DJVU_FORMATS)
 
 
 def _find_tool(names: list[str], extra_dirs: list[str]) -> str | None:
@@ -274,6 +274,41 @@ def supported_status() -> str:
             f"OCR: {st(find_tessdata())}  |  Ghostscript: {st(find_gs())}")
 
 
+_EQ = re.compile(r'<eq env="(math|displaymath)">(.*?)</eq>', re.S)
+
+
+def render_math_in_html(html: str, workdir: str, font_size: int = 11) -> tuple[str, int, int]:
+    """Replace pandoc --gladtex <eq> tags by typeset formula images. Returns (html, rendered, failed)."""
+    import html as _html
+    import texengine
+    found = list(_EQ.finditer(html))
+    if not found:
+        return html, 0, 0
+    items = [(_html.unescape(m.group(2)).strip(), m.group(1) == "displaymath") for m in found]
+    imgs, _log = texengine.render_formulas(items, dpi=300)
+    out, last, ok, bad = [], 0, 0, 0
+    scale = font_size / 12.0
+    Path(workdir).mkdir(parents=True, exist_ok=True)
+    for i, (m, img) in enumerate(zip(found, imgs)):
+        out.append(html[last:m.start()])
+        last = m.end()
+        if img.ok and img.png:
+            name = f"pdftk_math_{i}.png"
+            (Path(workdir) / name).write_bytes(img.png)
+            h_pt = img.height_px * 72 / 300 * scale
+            if m.group(1) == "displaymath":
+                out.append(f'<div style="text-align:center;margin:6pt 0"><img src="{name}" style="height:{h_pt:.1f}pt"/></div>')
+            else:
+                shift = img.depth_pt * scale
+                out.append(f'<img src="{name}" style="height:{h_pt:.1f}pt;vertical-align:-{shift:.1f}pt"/>')
+            ok += 1
+        else:
+            out.append(f"<code>{_html.escape(items[i][0])}</code>")
+            bad += 1
+    out.append(html[last:])
+    return "".join(out), ok, bad
+
+
 def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
                    font_size: int = 11) -> Path:
     """Convert a document/ebook to PDF; returns the output path."""
@@ -304,6 +339,17 @@ def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
                         base_dirs=[str(s.parent)])
         return out
 
+    if ext in TEX_FORMATS:
+        import texengine
+        res = texengine.compile_tex(str(s), out_dir)
+        if not res.ok:
+            msg = res.errors[0].message if res.errors else "compile failed"
+            raise RuntimeError(f"LaTeX error: {msg}")
+        final = unique_path(Path(out_dir) / (s.stem + ".pdf")) if Path(res.pdf).resolve() != out.resolve() else out
+        if Path(res.pdf).resolve() != final.resolve():
+            shutil.copyfile(res.pdf, final)
+        return final
+
     if ext in PANDOC_FORMATS:
         pandoc = find_pandoc()
         try:
@@ -311,7 +357,7 @@ def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
                 raise RuntimeError("Pandoc is missing from this build.")
             with tempfile.TemporaryDirectory() as td:
                 html = Path(td) / "doc.html"
-                r = subprocess.run([pandoc, "-f", PANDOC_FORMATS[ext], "-t", "html5", "--standalone",
+                r = subprocess.run([pandoc, "-f", PANDOC_FORMATS[ext], "-t", "html5", "--standalone", "--gladtex",
                                     f"--extract-media={td}", "-o", str(html), str(s)],
                                    capture_output=True, text=True, encoding="utf-8", errors="replace",
                                    cwd=td, creationflags=NO_WINDOW)
@@ -321,6 +367,10 @@ def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
                 # make image paths relative to the extraction folder (works with Windows paths)
                 text = re.sub(r'src="[^"]*?[\\/](media[\\/][^"]+)"',
                               lambda m: 'src="' + m.group(1).replace("\\", "/") + '"', text)
+                try:
+                    text, _ok, _bad = render_math_in_html(text, td, font_size)
+                except Exception:
+                    text = _EQ.sub(lambda m: "<code>" + m.group(2) + "</code>", text)  # no LaTeX engine: show the source
                 html_to_pdf(text, str(out), page_size, font_size, base_dirs=[td])
             return out
         except Exception:

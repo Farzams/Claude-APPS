@@ -22,3 +22,10 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - 9 colour themes (light and dark), picture banners (built-in styles or your own photo), colourful icons
 - Theme changes only touch the visible page; the window hides its content while its edge is dragged, so resizing stays smooth
 - Settings are stored in `%APPDATA%\PDFToolkit\settings.json`
+
+## Science tools
+- **LaTeX**: write or open `.tex`, compile with the bundled **Tectonic** (XeTeX; an installed XeLaTeX/MiKTeX/TeX Live is used if Tectonic is absent), preview the PDF, errors listed with line numbers and plain-words hints; 8 templates (article, Orlicz notes, thesis, Beamer, Persian + English, chemistry, physics, blank)
+- **Formula**: one LaTeX formula to PNG / SVG / PDF with transparent background and colour choice
+- **Symbols**: 300+ symbols (Greek, operators, analysis incl. Orlicz notation, algebra, physics, chemistry `\ce{}`/`\chemfig`, units) inserted at the cursor
+- **Convert to PDF** typesets equations in Word/Markdown/ODT/EPUB (via Pandoc + LaTeX), also in Persian documents; `.tex` converts directly; Import turns Word/Markdown into `.tex`
+- Tectonic (MIT) runs as a separate program; its package cache is pre-filled at build time so common packages work offline, others are fetched on first use
