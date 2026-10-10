@@ -17,7 +17,7 @@ app = QApplication([])
 
 
 def tile_image(name: str, px: int) -> Image.Image:
-    pm = icons.tile_pixmap(name, px, 1.0)
+    pm = icons.app_icon_pixmap(name, px, 1.0)
     buf = QBuffer()
     buf.open(QIODevice.WriteOnly)
     pm.save(buf, "PNG")

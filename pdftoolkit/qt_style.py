@@ -3,13 +3,14 @@ from __future__ import annotations
 
 import sys
 import tempfile
+import weakref
 from functools import lru_cache
 from pathlib import Path
 
 from PIL import Image, ImageDraw
 from PySide6.QtCore import QPoint, QRect, QSize, Qt, QTimer
 from PySide6.QtGui import QColor, QFont, QFontDatabase, QImage, QPainter, QPixmap
-from PySide6.QtWidgets import QApplication, QWidget
+from PySide6.QtWidgets import QApplication, QLabel, QWidget
 
 import art
 import i18n
@@ -23,21 +24,26 @@ OVERLAY = {"off": 1.0, "subtle": 0.78, "medium": 0.52, "vivid": 0.26}     # veil
 # ---------------------------------------------------------------- fonts
 def load_fonts() -> None:
     for f in ("Inter-Regular.otf", "Inter-Medium.otf", "Inter-SemiBold.otf", "Inter-Bold.otf",
-              "Vazirmatn-Regular.ttf", "Vazirmatn-Medium.ttf", "Vazirmatn-Bold.ttf",
+              "Vazirmatn-Regular.ttf", "Vazirmatn-Medium.ttf", "Vazirmatn-Bold.ttf", "NotoSansArabic-Regular.ttf", "NotoSansArabic-Bold.ttf",
               "DejaVuSans.ttf", "DejaVuSans-Bold.ttf"):
         p = FONT_DIR / f
         if p.is_file():
             QFontDatabase.addApplicationFont(str(p))
 
 
+FA_FONT = {"name": "Vazirmatn"}            # Persian UI font chosen in Settings
+FA_FONTS = {"Vazirmatn": "Vazirmatn", "Noto Sans Arabic": "Noto Sans Arabic", "Windows default": "Tahoma"}
+TEXT_SCALE = {"scale": 1.0}
+
+
 def ui_family() -> str:
-    return "Vazirmatn" if i18n.rtl() else "Inter"
+    return FA_FONT["name"] if i18n.rtl() else "Inter"
 
 
 def apply_app_font(app: QApplication, size: float = 10.5) -> None:
     f = QFont(ui_family())
     f.setFamilies([ui_family(), "Inter", "Vazirmatn", "Segoe UI", "Tahoma"])
-    f.setPointSizeF(size + (0.5 if i18n.rtl() else 0))   # Persian letters need a little more size to stay crisp
+    f.setPointSizeF((size + (0.5 if i18n.rtl() else 0)) * TEXT_SCALE["scale"])   # Persian letters need a little more size to stay crisp
     # Unhinted outlines and full anti-aliasing keep Persian curves smooth (hinting makes them jagged on Windows).
     f.setHintingPreference(QFont.PreferNoHinting)
     f.setStyleStrategy(QFont.PreferAntialias | QFont.PreferQuality)
@@ -86,11 +92,67 @@ def qpixmap(img: Image.Image, dpr: float = 1.0) -> QPixmap:
     return pm
 
 
-@lru_cache(maxsize=96)
-def icon_pixmap(name: str, px: int) -> QPixmap:
-    """Colourful tool icon (vector, rendered at 2x so it stays sharp on high-DPI screens)."""
+ICON = {"style": "gradient"}          # effective icon style, set by the main window
+
+
+def effective_icon_style(choice: str, flat: bool) -> str:
     import icons
-    return icons.tile_pixmap(name, px, 2.0)
+    return choice if choice in icons.STYLES else ("line" if flat else "gradient")
+
+
+def icon_pixmap(name: str, px: int, kind: str = "tile", active: bool = False) -> QPixmap:
+    """Tool icon in the chosen style (vector, rendered at 2x so it stays sharp on high-DPI screens).
+
+    kind: "tile" (cards, on the page background), "nav" (sidebar), "hero" (on the coloured page header)."""
+    import icons
+    P = theme.STATE.pal
+    style = ICON["style"]
+    acc = P["accent"]
+    if kind == "hero" and P["flat"]:      # flat header: a small tinted chip, whatever the icon style
+        return icons.styled_pixmap(name, px, "soft", acc, mix(acc, P["card"], 0.86), "", 2.0)
+    if style == "gradient":
+        return icons.tile_pixmap(name, px, 2.0)
+    acc = P["accent"]
+    if kind == "hero":
+        # the header is solid accent: white glyph on a translucent tile
+        if style == "line":
+            return icons.styled_pixmap(name, px, "line", P["on_accent"], dpr=2.0)
+        return icons.styled_pixmap(name, px, "outlined", P["on_accent"], rgba(P["on_accent"], 0.14), rgba(P["on_accent"], 0.45), 2.0)
+    if kind == "nav":
+        col = acc if active and P["flat"] else (P["on_accent"] if active else P["muted"] if style == "line" else acc)
+        if style == "line":
+            return icons.styled_pixmap(name, px, "line", col, dpr=2.0)
+        fill = mix(acc, P["card"], 0.86)
+        return icons.styled_pixmap(name, px, style, acc, fill, mix(acc, P["card"], 0.62), 2.0)
+    return icons.styled_pixmap(name, px, style, acc, mix(acc, P["card"], 0.88), mix(acc, P["card"], 0.60), 2.0)
+
+
+class IconLabel(QLabel):
+    """A tool icon that redraws itself when the theme, accent or icon style changes."""
+    _all: "weakref.WeakSet[IconLabel]" = weakref.WeakSet()
+
+    def __init__(self, name: str, px: int, kind: str = "tile"):
+        super().__init__()
+        self.name, self.px, self.kind, self.active = name, px, kind, False
+        self.setFixedSize(px, px)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+        IconLabel._all.add(self)
+        self.refresh()
+
+    def refresh(self):
+        self.setPixmap(icon_pixmap(self.name, self.px, self.kind, self.active))
+
+    def set_active(self, on: bool):
+        self.active = on
+        self.refresh()
+
+
+def refresh_icons():
+    for w in list(IconLabel._all):
+        try:
+            w.refresh()
+        except RuntimeError:
+            pass
 
 
 # ---------------------------------------------------------------- style sheet
@@ -132,11 +194,12 @@ def _glyph_png(kind: str, color: str, size: int = 24) -> str:
 
 
 @lru_cache(maxsize=48)
-def build_qss(theme_name: str, strength: str, rtl: bool) -> str:
-    P = theme.THEMES[theme_name]
+def build_qss(theme_name: str, strength: str, rtl: bool, accent: str = "", fa_font: str = "Vazirmatn") -> str:
+    P = theme.resolve(theme_name, accent)
+    flat = P["flat"]
     fam = ui_family()
-    card_a = STRENGTHS.get(strength, 0.8)
-    border = mix(P["card"], P["text"], 0.14)
+    card_a = 1.0 if flat else STRENGTHS.get(strength, 0.8)
+    border = P["line"]
     field = P["field"]
     fb = mix(field, P["text"], 0.20 if P["dark"] else 0.34)      # visible outline for inputs on every theme
     chk = _glyph_png("check", P["on_accent"])
@@ -144,23 +207,44 @@ def build_qss(theme_name: str, strength: str, rtl: bool) -> str:
     xclose = _glyph_png("close", P["text"])
     xclose_on = _glyph_png("close", P["on_accent"])
     align = "right" if rtl else "left"
+    edge = "right" if not rtl else "left"
+    if flat:
+        sidebar_css = f"background: {P['sidebar']}; border: none; border-{edge}: 1px solid {border};"
+        card_css = f"background: {P['card']}; border: 1px solid {border}; border-radius: 14px;"
+        tile_css = f"background: {P['card']}; border: 1px solid {border}; border-radius: 14px;"
+        tile_hover = f"background: {P['card']}; border: 1px solid {P['accent']};"
+        hero_css = "background: transparent; border: none; border-radius: 0;"
+        hero_title, hero_sub = P["text"], P["muted"]
+        nav_on_bg, nav_on_text = rgba(P["accent"], 0.13), P["accent"]
+    else:
+        sidebar_css = f"background: {rgba(P['sidebar'], min(1.0, card_a + 0.06))}; border: none;"
+        card_css = f"background: {rgba(P['card'], card_a)}; border-radius: 18px;"
+        tile_css = f"background: {rgba(P['field'], min(1.0, card_a + 0.04))}; border: 1px solid {fb}; border-radius: 16px;"
+        tile_hover = f"background: {rgba(P['hover'], 1.0)};"
+        hero_css = (f"background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 {rgba(mix(P['accent'], '#000000', 0.18), 0.96)}, "
+                    f"stop:1 {rgba(mix(P['accent'], P['bg'], 0.30), 0.82)}); border-radius: 20px;")
+        hero_title, hero_sub = P["on_accent"], rgba(P["on_accent"], 0.9)
+        nav_on_bg, nav_on_text = P["accent"], P["on_accent"]
     return f"""
 * {{ font-family: "{fam}", "Inter", "Vazirmatn", "Segoe UI"; color: {P['text']}; outline: 0; }}
 QWidget#root, QStackedWidget, QScrollArea, QScrollArea > QWidget > QWidget {{ background: transparent; }}
-QFrame#sidebar {{ background: {rgba(P['sidebar'], min(1.0, card_a + 0.06))}; border: none; }}
-QFrame#card {{ background: {rgba(P['card'], card_a)}; border-radius: 18px; }}
-QFrame#tile {{ background: {rgba(P['field'], min(1.0, card_a + 0.04))}; border: 1px solid {fb}; border-radius: 16px; }}
-QFrame#tile:hover {{ background: {rgba(P['hover'], 1.0)}; }}
-QFrame#hero {{ background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 {rgba(mix(P['accent'], '#000000', 0.18), 0.96)},
-              stop:1 {rgba(mix(P['accent'], P['bg'], 0.30), 0.82)}); border-radius: 20px; }}
+QFrame#sidebar {{ {sidebar_css} }}
+QFrame#card {{ {card_css} }}
+QFrame#tile {{ {tile_css} }}
+QFrame#tile:hover {{ {tile_hover} }}
+QFrame#hero {{ {hero_css} }}
 QFrame#paper {{ background: #ffffff; border-radius: 12px; }}
 QLabel {{ background: transparent; }}
-QLabel#heroTitle {{ color: {P['on_accent']}; font-size: 21pt; font-weight: 700; }}
-QLabel#heroSub {{ color: {rgba(P['on_accent'], 0.9)}; font-size: 10.5pt; }}
+QLabel#heroTitle {{ color: {hero_title}; font-size: {'19' if flat else '21'}pt; font-weight: 700; }}
+QLabel#heroSub {{ color: {hero_sub}; font-size: 10.5pt; }}
 QLabel[role="muted"] {{ color: {P['muted']}; }}
 QLabel[role="h"] {{ font-size: 12pt; font-weight: 700; }}
 QLabel[role="good"] {{ color: {P['good']}; }}
 QLabel[role="tileTitle"] {{ font-size: 11.5pt; font-weight: 700; }}
+QPushButton#searchbar {{ background: {field}; border: 1px solid {fb}; border-radius: 12px; padding: 0 16px; text-align: {align}; color: {P['muted']}; font-weight: 400; }}
+QPushButton#searchbar:hover {{ border-color: {P['accent']}; }}
+QPushButton#recentrow {{ background: transparent; border: 1px solid {border}; border-radius: 10px; padding: 9px 14px; text-align: left; font-weight: 500; }}
+QPushButton#recentrow:hover {{ background: {P['hover']}; }}
 QLabel#logoText {{ font-size: 15pt; font-weight: 700; }}
 
 QPushButton {{ background: {field}; border: 1px solid {fb}; border-radius: 11px; padding: 8px 16px; font-weight: 500; }}
@@ -173,9 +257,9 @@ QPushButton[kind="primary"]:disabled {{ background: {field}; color: {P['muted']}
 QPushButton#nav {{ background: transparent; border: 1px solid transparent; text-align: {align}; padding: 10px 12px; border-radius: 13px;
                   font-size: 10.5pt; font-weight: 500; }}
 QPushButton#nav:hover {{ background: {P['hover']}; }}
-QPushButton#nav:checked {{ background: {P['accent']}; }}
+QPushButton#nav:checked {{ background: {nav_on_bg}; }}
 QLabel#navText {{ font-size: 10.5pt; font-weight: 500; }}
-QLabel#navText[active="true"] {{ color: {P['on_accent']}; font-weight: 700; }}
+QLabel#navText[active="true"] {{ color: {nav_on_text}; font-weight: 700; }}
 QPushButton[pill="true"] {{ background: {field}; border: 1px solid {fb}; border-radius: 15px; padding: 7px 22px; min-width: 76px; }}
 QPushButton[pill="true"]:checked {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 700; }}
 QPushButton[pill="true"]:hover:!checked {{ background: {P['hover']}; }}

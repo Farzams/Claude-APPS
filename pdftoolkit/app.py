@@ -123,7 +123,10 @@ def main() -> int:
         pass
     cfg.setdefault("strength", "medium")
     i18n.set_lang(cfg["lang"])
-    theme.set_theme(cfg["theme"])
+    import qt_style as _qs
+    _qs.TEXT_SCALE["scale"] = float(cfg.get("text_scale", 1.0))
+    _qs.FA_FONT["name"] = cfg.get("fa_font", "Vazirmatn")
+    theme.set_theme(cfg["theme"], cfg.get("accent", ""))
 
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import QApplication

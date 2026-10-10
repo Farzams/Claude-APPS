@@ -48,9 +48,27 @@ for key, _title, _cls in PAGES:
         continue
     win.show_page(key)
     app.processEvents()
-for th in ("daylight", "gold", "rose", "sunset"):
+for th in ("daylight", "gold", "rose", "sunset", "qp_light", "qp_dark", "paper", "paper_dark"):
     win.set_theme(th)
     app.processEvents()
+for acc in ("#be185d", ""):
+    win.set_accent(acc)
+    app.processEvents()
+for st in ("line", "soft", "outlined", "gradient", "auto"):
+    win.set_icon_style(st)
+    app.processEvents()
+win.set_text_scale(1.1)
+win.set_text_scale(1.0)
+win.show_page("settings")
+for sec in win.page("settings").sections:
+    win.page("settings").show_section(sec)
+    app.processEvents()
+win.palette_box.open()
+win.palette_box.edit.setText("water" if mode == "full" else "settings")
+app.processEvents()
+assert win.palette_box.list.count() >= 1, "palette search found nothing"
+win.palette_box.close()
+win.set_theme("indigo_night")
 for wp in ("waves", "mountains", "lowpoly", "bokeh", "dots", "plain", "aurora"):
     win.set_wallpaper(wp)
     app.processEvents()

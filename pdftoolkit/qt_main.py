@@ -30,6 +30,8 @@ from qt_tools import (BackgroundTool, BatchTool, BlankTool, CleanScanTool, CropT
 from qt_formulaocr import FormulaOcrTool
 from qt_math import MathTool
 from qt_pdfedit import CompareTool, EditTool, OrganizeTool, RedactTool
+import qt_palette
+from qt_settings import SettingsTool
 from qt_science import FormulaTool, LatexTool, SymbolPalette, insert_snippet
 
 
@@ -61,9 +63,8 @@ class NavButton(QPushButton):
         lay = QHBoxLayout(self)
         lay.setContentsMargins(8 if compact else 12, 0, 8 if compact else 12, 0)
         lay.setSpacing(12)
-        ic = QLabel()
-        ic.setPixmap(qt_style.icon_pixmap(icon or key, 26))
-        ic.setFixedSize(26, 26)
+        ic = qt_style.IconLabel(icon or key, 26, "nav")
+        self.ic = ic
         self.text = QLabel(tr(title))
         self.text.setObjectName("navText")
         for w in (ic, self.text):
@@ -78,6 +79,7 @@ class NavButton(QPushButton):
         self.text.setProperty("active", on)
         self.text.style().unpolish(self.text)
         self.text.style().polish(self.text)
+        self.ic.set_active(on)
 
 
 class Tile(QFrame):
@@ -91,10 +93,7 @@ class Tile(QFrame):
         lay = QHBoxLayout(self)
         lay.setContentsMargins(16, 14, 16, 14)
         lay.setSpacing(14)
-        ic = QLabel()
-        ic.setPixmap(qt_style.icon_pixmap(icon or key, 48))
-        ic.setFixedSize(48, 48)
-        lay.addWidget(ic, 0, Qt.AlignTop)
+        lay.addWidget(qt_style.IconLabel(icon or key, 48), 0, Qt.AlignTop)
         col = QVBoxLayout()
         col.setSpacing(3)
         col.addWidget(mklabel(name, "tileTitle"))
@@ -109,30 +108,64 @@ class Tile(QFrame):
             self.win.show_page(self.key)
 
 
+class TaskTile(QFrame):
+    """Big clickable action on the Home page: icon, verb, one line of help."""
+
+    def __init__(self, name, desc, icon, cb):
+        super().__init__()
+        self.setObjectName("tile")
+        self.setCursor(Qt.PointingHandCursor)
+        self.cb = cb
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(18, 16, 18, 16)
+        lay.setSpacing(8)
+        lay.addWidget(qt_style.IconLabel(icon, 44), 0, Qt.AlignLeft)
+        lay.addWidget(mklabel(name, "tileTitle"))
+        lay.addWidget(mklabel(desc, "muted", wrap=True))
+        lay.addStretch(1)
+        self.setMinimumHeight(138)
+
+    def mousePressEvent(self, e):
+        if e.button() == Qt.LeftButton:
+            self.cb()
+
+
 class HomeTool(Tool):
     key, icon, title = "home", "home", "PDF Toolkit"
-    subtitle = "Everything for your PDFs in one place — with first-class Persian (Farsi) support."
-    CARDS = [("read", "Read", "Open and search PDFs, including Farsi"),
-             ("tools", "All tools", "Organize, edit, protect, compare, batch…"),
-             ("ocr", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
-             ("extract", "Extract text", "PDF to clean TXT / Word, with OCR"),
-             ("convert", "Convert to PDF", "EPUB, DjVu, DOCX, MOBI, TXT, HTML…"),
-             ("split", "Split", "Cut a PDF into parts or ranges"),
-             ("merge", "Merge", "Join PDFs in any order"),
-             ("compress", "Compress", "Four levels, up to Ghostscript power"),
-             ("images", "Images to PDF", "Many pictures into one PDF"),
-             ("pages", "Page tools", "Delete, extract, rotate, reverse"),
-             ("latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
-             ("formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]
+    subtitle = "What do you want to do?"
 
     def build(self):
+        win = self.win
+        self.search = QPushButton("  " + tr("Search tools, settings and recent files…"))
+        self.search.setObjectName("searchbar")
+        self.search.setCursor(Qt.PointingHandCursor)
+        self.search.setMinimumHeight(44)
+        self.search.setText(tr("Search tools, settings and recent files…") + "        Ctrl K")
+        self.search.clicked.connect(lambda: win.palette_box.open())
+        self.body.addWidget(self.search)
+        self.body.addSpacing(4)
         grid = QGridLayout()
         grid.setSpacing(12)
-        for i, (key, name, desc) in enumerate(self.CARDS):
-            grid.addWidget(Tile(self.win, key, name, desc), i // 3, i % 3)
+        tasks = [("Open a file", "Read any PDF or book, with search and bookmarks", "read", lambda: win.show_page("read")),
+                 ("Combine PDFs", "Join files in any order, then reorder pages", "merge", lambda: win.show_page("merge")),
+                 ("Make smaller", "Shrink a PDF for email or upload", "compress", lambda: win.show_page("compress")),
+                 ("Convert", "To or from Word, Excel, pictures, EPUB, DjVu…", "convert", lambda: win.show_page("export")),
+                 ("Make a scan searchable", "OCR for Persian, Arabic and English books", "ocr", lambda: win.show_page("ocr")),
+                 ("Edit and protect", "Change text, add a watermark, set a password", "edit", lambda: win.show_page("edit"))]
+        for i, (name, desc, icon, cb) in enumerate(tasks):
+            grid.addWidget(TaskTile(name, desc, icon, cb), i // 3, i % 3)
         for c in range(3):
             grid.setColumnStretch(c, 1)
         self.body.addLayout(grid)
+        more = QHBoxLayout()
+        more.addStretch(1)
+        more.addWidget(mkbutton("All tools", lambda: win.show_page("tools")))
+        self.body.addLayout(more)
+        self.recent_title = mklabel("Continue reading", "h")
+        self.body.addWidget(self.recent_title)
+        self.recent_box = QVBoxLayout()
+        self.recent_box.setSpacing(6)
+        self.body.addLayout(self.recent_box)
         self.body.addStretch(1)
         langs = core.ocr_languages()
         status = [("Persian OCR", "fas" in langs), ("Arabic OCR", "ara" in langs), ("DjVu", bool(core.find_ddjvu())),
@@ -146,6 +179,34 @@ class HomeTool(Tool):
         chips.addStretch(1)
         self.body.addLayout(chips)
         self.body.addWidget(mklabel("Tip: drag & drop files onto the window to use them in the open tool.", "muted"))
+
+    def on_show(self):
+        import reader_core
+        while self.recent_box.count():
+            w = self.recent_box.takeAt(0).widget()
+            if w:
+                w.deleteLater()
+        shown = 0
+        try:
+            st = reader_core.load_state()
+            for path in st["recent"]:
+                if shown >= 4:
+                    break
+                if not os.path.exists(path):
+                    continue
+                e = st["books"].get(path, {})
+                pct = f"   {int((e.get('page', 0) + 1) * 100 / max(e.get('pages', 1), 1))}%" if e.get("pages") else ""
+                b = QPushButton(f"{e.get('title') or Path(path).stem}{pct}")
+                b.setObjectName("recentrow")
+                b.setCursor(Qt.PointingHandCursor)
+                b.setToolTip(path)
+                b.setLayoutDirection(Qt.LeftToRight)
+                b.clicked.connect(lambda _=False, p=path: (self.win.show_page("read"), self.win.page("read").open_path(p)))
+                self.recent_box.addWidget(b)
+                shown += 1
+        except Exception:
+            pass
+        self.recent_title.setVisible(shown > 0)
 
 
 class ToolsTool(Tool):
@@ -232,94 +293,6 @@ class ToolsTool(Tool):
         self.q.setFocus()
 
 
-class SettingsTool(Tool):
-    key, icon, title = "settings", "settings", "Settings"
-    subtitle = "Choose a theme and picture, and switch the language."
-
-    def build(self):
-        self.body.addWidget(mklabel("Theme", "h"))
-        grid = QGridLayout()
-        grid.setSpacing(8)
-        self.group = QButtonGroup(self)
-        self.group.setExclusive(True)
-        self.btns = {}
-        for i, (key, pal) in enumerate(theme.THEMES.items()):
-            b = QToolButton()
-            b.setProperty("swatch", True)
-            b.setCheckable(True)
-            b.setText(tr(pal["name"]))
-            b.setIcon(QIcon(qt_style.qpixmap(art.swatch(pal, (232, 124)), 2.0)))
-            b.setIconSize(QSize(116, 62))
-            b.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-            b.setCursor(Qt.PointingHandCursor)
-            b.setFixedSize(138, 104)
-            b.clicked.connect(lambda _=False, k=key: self.win.set_theme(k))
-            self.group.addButton(b)
-            self.btns[key] = b
-            grid.addWidget(b, i // 5, i % 5)
-        grid.setColumnStretch(5, 1)
-        self.body.addLayout(grid)
-        self.body.addWidget(mklabel("Picture", "h"))
-        row = QHBoxLayout()
-        row.setSpacing(10)
-        styles = {tr(art.WALLPAPER_NAMES[k]): k for k in art.WALLPAPERS}
-        styles[tr(art.WALLPAPER_NAMES["custom"])] = "custom"
-        self.wp = mkcombo(styles, self.win.cfg["wallpaper"])
-        self.wp.activated.connect(self._wp_changed)
-        row.addWidget(self.wp)
-        self.strength = mkcombo({tr("No picture"): "off", tr("Subtle"): "subtle", tr("Medium"): "medium",
-                                 tr("Vivid"): "vivid"}, self.win.cfg.get("strength", "medium"))
-        self.strength.activated.connect(lambda _i: self.win.set_strength(self.strength.currentData()))
-        row.addWidget(self.strength)
-        row.addWidget(mkbutton("Choose my picture…", self._pick))
-        row.addStretch(1)
-        self.body.addLayout(row)
-        self.body.addWidget(mklabel("Language", "h"))
-        lrow = QHBoxLayout()
-        lrow.setSpacing(8)
-        self.lg = QButtonGroup(self)
-        for code, label in (("en", "English"), ("fa", "فارسی")):
-            b = QPushButton(label)
-            b.setFont(QFont("Vazirmatn" if code == "fa" else "Inter", 11))
-            b.setProperty("pill", True)
-            b.setCheckable(True)
-            b.setChecked(self.win.cfg["lang"] == code)
-            b.setCursor(Qt.PointingHandCursor)
-            b.clicked.connect(lambda _=False, c=code: self.win.set_language(c))
-            self.lg.addButton(b)
-            lrow.addWidget(b)
-        lrow.addStretch(1)
-        self.body.addLayout(lrow)
-        self.note("Changing the language restarts the app (your files and settings are kept).")
-        from qt_addons import AddonsPanel
-        self.body.addSpacing(10)
-        self.addons_panel = AddonsPanel(self.win)
-        self.body.addWidget(self.addons_panel)
-        self.body.addStretch(1)
-        self.refresh()
-
-    def refresh(self):
-        b = self.btns.get(theme.STATE.name)
-        if b:
-            b.setChecked(True)
-
-    def on_show(self):
-        self.refresh()
-        self.addons_panel.on_show()
-
-    def _wp_changed(self, _i):
-        key = self.wp.currentData()
-        if key == "custom" and not self.win.cfg.get("custom_picture"):
-            return self._pick()
-        self.win.set_wallpaper(key)
-
-    def _pick(self):
-        p, _ = QFileDialog.getOpenFileName(self, "", "", "Images (*.png *.jpg *.jpeg *.bmp *.webp)")
-        if p:
-            self.win.set_wallpaper("custom", p)
-            self.wp.setCurrentIndex(self.wp.findData("custom"))
-
-
 class HelpTool(Tool):
     key, icon, title = "help", "help", "Help"
     subtitle = "How to use every tool, tips for Persian documents, and answers to common questions."
@@ -384,7 +357,7 @@ class MainWindow(QMainWindow):
         ico = core._app_dir() / "icon.ico"
         if self.mcfg["icon"]:
             import icons
-            self.setWindowIcon(QIcon(icons.tile_pixmap(self.mcfg["icon"], 256, 1.0)))
+            self.setWindowIcon(QIcon(icons.app_icon_pixmap(self.mcfg["icon"], 256, 1.0)))
         elif ico.exists():
             self.setWindowIcon(QIcon(str(ico)))
         self.setAcceptDrops(True)
@@ -414,16 +387,17 @@ class MainWindow(QMainWindow):
         sl.setSpacing(2)
         logo = QHBoxLayout()
         logo.setSpacing(10)
+        import icons
+        app_glyph = {"full": "tools", "reader": "read", "math": "math"}[self.mode]
         li = QLabel()
-        li.setPixmap(qt_style.icon_pixmap("home", 40))
-        li.setFixedSize(40, 40)
+        li.setPixmap(icons.app_icon_pixmap(app_glyph, 36, 2.0))
+        li.setFixedSize(36, 36)
         lt = QLabel(tr("PDF Toolkit" if self.mode == "full" else "Math Studio" if self.mode == "math" else "Reader"))
         lt.setObjectName("logoText")
         logo.addWidget(li)
         logo.addWidget(lt, 1)
         if compact:
             lt.hide()
-            li.setPixmap(qt_style.icon_pixmap(self.mcfg["icon"] or "home", 40))
         sl.addLayout(logo)
         sl.addSpacing(14)
         self.nav: dict[str, QPushButton] = {}
@@ -467,9 +441,7 @@ class MainWindow(QMainWindow):
             fl_ = QHBoxLayout(fb)
             fl_.setContentsMargins(8 if compact else 12, 0, 8 if compact else 12, 0)
             fl_.setSpacing(12)
-            fi = QLabel()
-            fi.setPixmap(qt_style.icon_pixmap("tools", 26))
-            fi.setFixedSize(26, 26)
+            fi = qt_style.IconLabel("tools", 26, "nav")
             fl_.addWidget(fi)
             ft = QLabel(tr("Open the full toolkit"))
             ft.setObjectName("navText")
@@ -529,8 +501,18 @@ class MainWindow(QMainWindow):
         self.jobs.started.connect(self._job_started)
         self.jobs.finished.connect(self._job_finished)
 
+        if self.cfg.get("follow_system"):
+            self.sync_system_scheme(save=False)
+            try:
+                QApplication.styleHints().colorSchemeChanged.connect(lambda _s: self.sync_system_scheme(save=False))
+            except Exception:
+                pass
+        self.palette_box = qt_palette.install(self)
         self.apply_style()
-        self.show_page(self.mcfg["start"])
+        start = self.mcfg["start"]
+        if self.mode == "full" and self.cfg.get("start_page") in {k for k, _t, _c in PAGES}:
+            start = self.cfg["start_page"]
+        self.show_page(start)
         QTimer.singleShot(250, self._prebuild)
 
     # ---- pages
@@ -559,8 +541,55 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(pg)
         self.current = key
         (self.nav.get(key) or self.nav.get("tools") or next(iter(self.nav.values()))).setChecked(True)
-        self.foot.setVisible(key not in ("read", "math"))        # these pages want the full height
+        self.foot.setVisible(key not in ("read", "math", "settings", "help", "home", "tools"))        # these pages want the full height
         pg.on_show()
+
+    def palette_entries(self):
+        """Everything Ctrl+K can reach in this window."""
+        from qt_palette import Entry
+        out = []
+        have = set(self.keys) | {"settings", "help"}
+        seen = set()
+        if self.mode == "full":
+            have = {k for k, _t, _c in PAGES}
+        for _g, items in ToolsTool.GROUPS:
+            for key, icon, title, desc in items:
+                if key in have and key not in seen:
+                    seen.add(key)
+                    out.append(Entry(title, desc, icon, "Tool", lambda k=key: self.show_page(k)))
+        titles = {k: t for k, t, _c in PAGES}
+        for key in ("home", "tools", "settings", "help"):
+            if key in have and key not in seen:
+                seen.add(key)
+                out.append(Entry(titles[key], "", key, "Tool", lambda k=key: self.show_page(k)))
+        for key, t in titles.items():
+            if key in have and key not in seen:
+                seen.add(key)
+                out.append(Entry(t, "", key, "Tool", lambda k=key: self.show_page(k)))
+        # settings
+        light_dark = theme.STYLES[theme.style_of(theme.STATE.name)]
+        out.append(Entry("Dark mode", "Switch to the dark theme", "settings", "Setting", lambda: self.set_theme(light_dark[1], follow=False), "night black"))
+        out.append(Entry("Light mode", "Switch to the light theme", "settings", "Setting", lambda: self.set_theme(light_dark[0], follow=False), "day bright"))
+        for key, pal in theme.THEMES.items():
+            out.append(Entry("Theme: " + pal["name"], "Colour theme", "settings", "Setting", lambda k=key: self.set_theme(k, follow=False), "colour color appearance"))
+        for style, label in (("line", "Line"), ("soft", "Soft tile"), ("outlined", "Outlined tile"), ("gradient", "Gradient")):
+            out.append(Entry("Icons: " + label, "Icon style", "settings", "Setting", lambda s=style: self.set_icon_style(s), "icon style appearance"))
+        out.append(Entry("Language: English", "Restarts the app", "settings", "Setting", lambda: self.set_language("en")))
+        out.append(Entry("زبان: فارسی  (Language: Persian)", "Restarts the app", "settings", "Setting", lambda: self.set_language("fa"), "persian farsi", raw=True))
+        for sec, icon, label in SettingsTool.SECTIONS:
+            out.append(Entry("Settings: " + label, "", icon, "Setting", lambda s=sec: (self.show_page("settings"), self.page("settings").show_section(s))))
+        # recent files
+        if "read" in have:
+            try:
+                import reader_core
+                st = reader_core.load_state()
+                for path in st["recent"][:8]:
+                    if os.path.exists(path):
+                        title = st["books"].get(path, {}).get("title") or Path(path).stem
+                        out.append(Entry(title, path, "read", "Recent", lambda p=path: (self.show_page("read"), self.page("read").open_path(p)), raw=True))
+            except Exception:
+                pass
+        return out
 
     def current_page(self) -> Tool | None:
         return self.pages.get(self.current)
@@ -568,9 +597,10 @@ class MainWindow(QMainWindow):
     # ---- look
     def apply_style(self):
         P = theme.STATE.pal
-        strength = self.cfg.get("strength", "medium")
+        strength = "off" if P["flat"] else self.cfg.get("strength", "medium")      # flat themes have no picture
+        qt_style.ICON["style"] = qt_style.effective_icon_style(self.cfg.get("icon_style", "auto"), P["flat"])
         # Only the visible parts are restyled now; hidden pages catch up when shown (keeps theme changes fast).
-        self.qss = qt_style.build_qss(theme.STATE.name, strength, i18n.rtl())
+        self.qss = qt_style.build_qss(theme.STATE.name, strength, i18n.rtl(), theme.STATE.accent, qt_style.FA_FONT["name"])
         self._stamp += 1
         for w in (self.side, self.foot, self.toast_lbl):
             w.setStyleSheet(self.qss)
@@ -579,6 +609,7 @@ class MainWindow(QMainWindow):
             cur.setStyleSheet(self.qss)
             cur._stamp = self._stamp
         qt_style.set_tooltip_palette(P)
+        qt_style.refresh_icons()
         style = self.cfg.get("wallpaper", "aurora")
         key = (style, theme.STATE.name, self.cfg.get("custom_picture", ""))
         if key not in self._wall_cache:
@@ -586,9 +617,11 @@ class MainWindow(QMainWindow):
         img = None if strength == "off" else self._wall_cache[key]
         self.backdrop.set_picture(img, P["bg"], qt_style.OVERLAY.get(strength, 0.66))
 
-    def set_theme(self, key):
+    def set_theme(self, key, follow=None):
         theme.set_theme(key)
         self.cfg["theme"] = key
+        if follow is not None:
+            self.cfg["follow_system"] = follow
         settings.save(self.cfg)
         self.apply_style()
         if self.current_page():
@@ -596,6 +629,50 @@ class MainWindow(QMainWindow):
         if self._palette is not None:
             self._palette.close()
             self._palette = None
+
+    def sync_system_scheme(self, save: bool = True):
+        """"Match Windows": pick the light or dark theme of the current design style."""
+        try:
+            dark = QApplication.styleHints().colorScheme() == Qt.ColorScheme.Dark
+        except Exception:
+            dark = False
+        self.cfg["follow_system"] = True
+        key = theme.STYLES[theme.style_of(theme.STATE.name)][1 if dark else 0]
+        if key != theme.STATE.name:
+            theme.set_theme(key)
+            self.cfg["theme"] = key
+        if save:
+            settings.save(self.cfg)
+            self.apply_style()
+            if self.current_page():
+                self.current_page().on_show()
+
+    def set_accent(self, color: str):
+        self.cfg["accent"] = color
+        theme.set_theme(theme.STATE.name, color)
+        settings.save(self.cfg)
+        self.apply_style()
+        if self.current_page():
+            self.current_page().on_show()
+
+    def set_icon_style(self, style: str):
+        self.cfg["icon_style"] = style
+        settings.save(self.cfg)
+        self.apply_style()
+
+    def set_text_scale(self, scale: float):
+        self.cfg["text_scale"] = scale
+        qt_style.TEXT_SCALE["scale"] = scale
+        settings.save(self.cfg)
+        qt_style.apply_app_font(QApplication.instance())
+        self.apply_style()
+
+    def set_fa_font(self, name: str):
+        self.cfg["fa_font"] = name
+        qt_style.FA_FONT["name"] = name
+        settings.save(self.cfg)
+        qt_style.apply_app_font(QApplication.instance())
+        self.apply_style()
 
     def set_wallpaper(self, style, custom=None):
         self.cfg["wallpaper"] = style

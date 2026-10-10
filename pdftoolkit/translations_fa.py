@@ -392,3 +392,67 @@ FA.update({
 
 FA.update({"Lp norm": "نرم Lp", "Calculator, equations, matrices and plots (SymPy)": "ماشین‌حساب، معادله، ماتریس و نمودار (SymPy)",
            "Algebra, calculus, equations, matrices and plots. Results as LaTeX.": "جبر، حسابان، معادله، ماتریس و نمودار. نتیجه به‌صورت لاتک."})
+
+FA.update({
+    # settings
+    "Everything is saved automatically.": "همه‌چیز خودکار ذخیره می‌شود.",
+    "Appearance": "ظاهر", "General": "عمومی", "Writing and OCR": "نوشتن و OCR", "Add-ons": "افزونه‌ها",
+    "Shortcuts": "میان‌برها", "Storage and privacy": "فضای ذخیره و حریم خصوصی", "About": "درباره",
+    "Mode": "حالت", "Light": "روشن", "Dark": "تیره", "Match Windows": "مطابق ویندوز",
+    "Light, dark, or follow Windows": "روشن، تیره، یا هم‌رنگ با ویندوز",
+    "Design style": "سبک طراحی", "How the whole app is drawn": "ظاهر کلی برنامه",
+    "Quiet Pro": "آرام و حرفه‌ای", "Paper": "کاغذ", "Classic (picture backgrounds)": "کلاسیک (پس‌زمینهٔ تصویری)",
+    "Accent colour": "رنگ تأکید", "Theme colour": "رنگ خود تم",
+    "Buttons, selection and links. The first circle returns to the theme's own colour.":
+        "دکمه‌ها، انتخاب‌ها و پیوندها. دایرهٔ اول به رنگ خود تم برمی‌گردد.",
+    "Colour themes: all of them, pick any": "تمام تم‌ها، هر کدام را که می‌خواهید انتخاب کنید",
+    "Quiet Light": "آرام روشن", "Quiet Dark": "آرام تیره", "Paper Night": "کاغذ شب",
+    "Icon style": "سبک آیکن", "The same drawings in four treatments": "همان طرح‌ها در چهار حالت",
+    "Line": "خطی", "Soft tile": "کاشی نرم", "Outlined tile": "کاشی دورخط", "Gradient (classic)": "گرادیان (کلاسیک)",
+    "App icons": "آیکن برنامه‌ها", "Flat colour: Start menu, taskbar and shortcuts": "تک‌رنگ: منوی شروع، نوار وظیفه و میان‌برها",
+    "Reader": "خواننده", "Math Studio": "ریاضی‌استودیو",
+    "Everything scales together": "همه‌چیز با هم بزرگ یا کوچک می‌شود",
+    "Persian font": "قلم فارسی", "Used when the language is Persian. Pick what reads best on your screen.":
+        "وقتی زبان فارسی است به کار می‌رود. بهترینِ خوانایی روی صفحهٔ خود را انتخاب کنید.",
+    "Windows default": "پیش‌فرض ویندوز",
+    "Picture backdrop": "پس‌زمینهٔ تصویری", "Only in the Classic themes": "فقط در تم‌های کلاسیک",
+    "Language": "زبان", "The app restarts when you change it. Your files and settings are kept.":
+        "با تغییر زبان برنامه دوباره باز می‌شود. فایل‌ها و تنظیمات شما می‌مانند.",
+    "Start with": "شروع با", "Which page opens first in the full window": "کدام صفحه در پنجرهٔ کامل اول باز شود",
+    "Reset": "بازنشانی", "Back to the original look. Language and add-ons stay.": "بازگشت به ظاهر اولیه. زبان و افزونه‌ها می‌مانند.",
+    "Reset appearance": "بازنشانی ظاهر",
+    "Spell-check": "غلط‌یاب", "Check spelling in the LaTeX editor (English and Persian)": "غلط‌یابی در ویرایشگر LaTeX (انگلیسی و فارسی)",
+    "Red underline in the editor; right-click a word to fix or add it to your dictionary.":
+        "زیر واژهٔ غلط خط قرمز می‌آید؛ روی واژه راست‌کلیک کنید تا اصلاح یا به فرهنگ لغت شما افزوده شود.",
+    "OCR languages": "زبان‌های OCR", "Installed with the app. Pick the language on the OCR page.": "همراه برنامه نصب شده‌اند. زبان را در صفحهٔ OCR انتخاب کنید.",
+    "none found": "یافت نشد",
+    "Search tools, pages and settings": "جست‌وجوی ابزارها، صفحه‌ها و تنظیمات", "Open a file in the Reader": "باز کردن فایل در خواننده",
+    "Search inside the open book": "جست‌وجو در کتاب باز", "Next / previous search result": "نتیجهٔ بعدی / قبلی جست‌وجو",
+    "Go to a page": "رفتن به صفحه", "Add a bookmark": "افزودن نشانک", "Close the current Reader tab": "بستن زبانهٔ فعلی خواننده",
+    "Next Reader tab": "زبانهٔ بعدی خواننده", "Full screen in the Reader": "تمام‌صفحه در خواننده",
+    "Zoom in / out in the Reader": "بزرگ‌نمایی / کوچک‌نمایی در خواننده", "Fit the page to the width": "جا دادن صفحه در عرض",
+    "Previous / next page": "صفحهٔ قبلی / بعدی", "First / last page": "صفحهٔ اول / آخر",
+    "Reader cache": "حافظهٔ نهانی خواننده", "Converted DjVu, DOCX and other books so they open fast next time":
+        "کتاب‌های تبدیل‌شده (DjVu، DOCX و…) تا دفعهٔ بعد سریع باز شوند",
+    "LaTeX packages": "بسته‌های LaTeX", "Downloaded once, then work offline": "یک بار دانلود می‌شوند و بعد آفلاین کار می‌کنند",
+    "Clear": "پاک کردن", "Cleared": "پاک شد", "Privacy": "حریم خصوصی",
+    "Nothing is sent anywhere. The only internet use is when you download an add-on.": "هیچ چیزی به جایی فرستاده نمی‌شود. تنها استفاده از اینترنت دانلود افزونه است.",
+    "Everything stays on this computer": "همه‌چیز روی همین رایانه می‌ماند",
+    "Version": "نسخه", "What is inside": "چه چیزی داخل است", "Free software, bundled so it works offline": "نرم‌افزار آزاد، همراه برنامه تا آفلاین کار کند",
+    "Releases and licences": "نسخه‌ها و مجوزها", "Full licence texts are in the licences folder of the installation.": "متن کامل مجوزها در پوشهٔ نصب برنامه است.",
+    # home + palette
+    "What do you want to do?": "می‌خواهید چه کاری انجام دهید؟",
+    "Search tools, settings and recent files…": "جست‌وجوی ابزار، تنظیمات و فایل‌های اخیر…",
+    "Open a file": "باز کردن فایل", "Read any PDF or book, with search and bookmarks": "هر PDF یا کتابی را با جست‌وجو و نشانک بخوانید",
+    "Combine PDFs": "ترکیب PDFها", "Join files in any order, then reorder pages": "فایل‌ها را به هر ترتیب بچسبانید و صفحه‌ها را جابه‌جا کنید",
+    "Make smaller": "کوچک‌تر کردن", "Shrink a PDF for email or upload": "PDF را برای ایمیل یا بارگذاری کوچک کنید",
+    "Convert": "تبدیل", "To or from Word, Excel, pictures, EPUB, DjVu…": "از/به ورد، اکسل، تصویر، EPUB، DjVu…",
+    "Make a scan searchable": "اسکن را قابل جست‌وجو کنید", "OCR for Persian, Arabic and English books": "OCR برای کتاب‌های فارسی، عربی و انگلیسی",
+    "Edit and protect": "ویرایش و محافظت", "Change text, add a watermark, set a password": "متن را تغییر دهید، واترمارک بگذارید، رمز بگذارید",
+    "All tools": "همهٔ ابزارها", "Continue reading": "ادامهٔ مطالعه",
+    "Nothing matches.": "چیزی پیدا نشد.", "↑ ↓ to choose   ·   Enter to open   ·   Esc to close": "↑ ↓ برای انتخاب   ·   Enter برای باز کردن   ·   Esc برای بستن",
+    "Tool": "ابزار", "Setting": "تنظیم", "Recent": "اخیر",
+    "Dark mode": "حالت تیره", "Switch to the dark theme": "رفتن به تم تیره", "Light mode": "حالت روشن", "Switch to the light theme": "رفتن به تم روشن",
+    "Colour theme": "تم رنگی", "Icon style ": "سبک آیکن", "Restarts the app": "برنامه دوباره باز می‌شود",
+    "Theme: ": "تم: ", "Icons: ": "آیکن: ", "Settings: ": "تنظیمات: ", "Language: English": "زبان: انگلیسی",
+})

@@ -3,9 +3,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import QObject, QRunnable, QSize, Qt, QThreadPool, Signal
+from PySide6.QtCore import QObject, QPoint, QRect, QRunnable, QSize, Qt, QThreadPool, Signal
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QComboBox, QFileDialog, QFormLayout, QFrame, QGridLayout,
+from PySide6.QtWidgets import (QLayout, QAbstractItemView, QCheckBox, QComboBox, QFileDialog, QFormLayout, QFrame, QGridLayout,
                                QHBoxLayout, QLabel, QLineEdit, QListWidget, QPushButton, QScrollArea, QSizePolicy, QVBoxLayout,
                                QWidget)
 
@@ -273,10 +273,7 @@ class Hero(QFrame):
         lay = QHBoxLayout(self)
         lay.setContentsMargins(22, 16, 22, 16)
         lay.setSpacing(16)
-        ic = QLabel()
-        ic.setPixmap(qt_style.icon_pixmap(icon, 60))
-        ic.setFixedSize(60, 60)
-        lay.addWidget(ic)
+        lay.addWidget(qt_style.IconLabel(icon, 60, "hero"))
         col = QVBoxLayout()
         col.setSpacing(2)
         self.title = QLabel(tr(title))
@@ -351,3 +348,66 @@ class Tool(QWidget):
         lb = mklabel(text, "muted", wrap=True)
         self.body.addWidget(lb)
         return lb
+
+
+class FlowLayout(QLayout):
+    """Lays widgets out left to right and wraps them to the next line when the row is full."""
+
+    def __init__(self, parent=None, hspace: int = 8, vspace: int = 8):
+        super().__init__(parent)
+        self._items: list = []
+        self._h, self._v = hspace, vspace
+        self.setContentsMargins(0, 0, 0, 0)
+
+    def addItem(self, item):
+        self._items.append(item)
+
+    def count(self):
+        return len(self._items)
+
+    def itemAt(self, i):
+        return self._items[i] if 0 <= i < len(self._items) else None
+
+    def takeAt(self, i):
+        return self._items.pop(i) if 0 <= i < len(self._items) else None
+
+    def hasHeightForWidth(self):
+        return True
+
+    def heightForWidth(self, w):
+        return self._do(QRect(0, 0, w, 0), True)
+
+    def setGeometry(self, rect):
+        super().setGeometry(rect)
+        self._do(rect, False)
+
+    def sizeHint(self):
+        w = h = 0
+        for it in self._items:
+            sz = it.sizeHint()
+            w += sz.width() + self._h
+            h = max(h, sz.height())
+        return QSize(max(0, w - self._h), h)
+
+    def minimumSize(self):
+        s = QSize()
+        for it in self._items:
+            s = s.expandedTo(it.minimumSize())
+        m = self.contentsMargins()
+        return s + QSize(m.left() + m.right(), m.top() + m.bottom())
+
+    def _do(self, rect, test):
+        m = self.contentsMargins()
+        r = rect.adjusted(m.left(), m.top(), -m.right(), -m.bottom())
+        x, y, line_h = r.x(), r.y(), 0
+        rtl = self.parentWidget() is not None and self.parentWidget().layoutDirection() == Qt.RightToLeft
+        for it in self._items:
+            sz = it.sizeHint()
+            if x + sz.width() > r.right() + 1 and line_h > 0:
+                x, y, line_h = r.x(), y + line_h + self._v, 0
+            if not test:
+                px = (r.right() + 1 - (x - r.x()) - sz.width()) if rtl else x
+                it.setGeometry(QRect(QPoint(px, y), sz))
+            x += sz.width() + self._h
+            line_h = max(line_h, sz.height())
+        return y + line_h - r.y() + m.top() + m.bottom()

@@ -89,6 +89,15 @@ Compare PDFs shows what changed, as text and as a picture with differences in re
 Math (in the side list, and in Math Studio) is an exact calculator. Type ordinary maths: x^2, 2x, sin(x)/x, sqrt(2), pi, e, oo for infinity — or paste LaTeX such as \\frac{x^2-1}{x-1}. Choose what to do: simplify, expand, factor, derivative, integral (leave the limits empty for an indefinite integral), limit, Taylor series, sum, equations and systems (one per line), differential equations (write y'' + y = 0), matrices (determinant, inverse, eigenvalues…) and plots. Every answer is shown as a formula and can be copied as LaTeX or inserted into the LaTeX page. A hard problem is stopped after 90 seconds.
 
 Spell-check in the LaTeX page underlines misspelled English and Persian words with a red wave; commands, formulas, labels and comments are skipped. Right-click a word for suggestions, Add to dictionary or Ignore. The tick box under the editor turns it off. Common names of mathematicians (Banach, Hilbert, Fourier…) are already known."""),
+    ("Look, Settings and Ctrl+K search", """
+Press Ctrl+K anywhere to open the search box. Type a few letters of a tool ("water", "merge"), a setting ("dark", "icons"), or the name of a book you opened before, then press Enter.
+
+Settings > Appearance: choose Light, Dark or Match Windows; a design style (Quiet Pro is flat and calm, Paper is warm like a book, Classic keeps the picture backgrounds); an accent colour for buttons and links; any of the 13 colour themes; one of four icon styles; the text size; and the Persian font.
+
+The three programs (PDF Toolkit, Reader, Math Studio) have flat colour icons: indigo, teal and magenta.
+
+Settings > Storage shows how much space the Reader cache and the LaTeX packages use, and clears them. Nothing you save is touched.
+"""),
     ("Add-ons and separate windows", """
 Settings has an Add-ons section. Add-ons are optional downloads that stay on your computer and work offline afterwards: Formula OCR (a picture of a printed formula becomes LaTeX; always check the result — it may confuse symbols such as n and π) and More LaTeX packages (hundreds more packages, classes and fonts that compile without internet). Install or Remove with one click; the list needs internet only to download.
 
@@ -268,6 +277,15 @@ OCR چیزی پیدا نکرد؟ زبان را بررسی کنید و ۴۰۰ dpi
 جعبه‌ابزار PDF از این برنامه‌های رایگان استفاده می‌کند که هر کدام جدا و بدون تغییر اجرا می‌شوند: PyMuPDF (خواندن و صفحه‌آرایی)، Tesseract (OCR)، Ghostscript (فشرده‌سازی)، DjVuLibre (DjVu) و Pandoc (ورد/ODT/RTF/EPUB).
 
 قلم‌ها: Noto Sans Arabic (مجوز SIL Open Font) و DejaVu Sans. متن کامل مجوزها در پوشهٔ fonts و فایل README پروژه است."""),
+    ("ظاهر، تنظیمات و جست‌وجوی Ctrl+K", """
+در هر جای برنامه Ctrl+K را بزنید تا کادر جست‌وجو باز شود. چند حرف از نام یک ابزار (مثلاً «واترمارک» یا «ادغام»)، یک تنظیم (مثلاً «تیره») یا نام کتابی که پیش‌تر باز کرده‌اید بنویسید و Enter بزنید.
+
+تنظیمات > ظاهر: حالت روشن، تیره یا هم‌رنگ با ویندوز؛ سبک طراحی (آرام و حرفه‌ای تخت و ساده است، کاغذ گرم و شبیه کتاب است و کلاسیک پس‌زمینه‌های تصویری را نگه می‌دارد)؛ رنگ تأکید برای دکمه‌ها و پیوندها؛ هر کدام از ۱۳ تم رنگی؛ یکی از چهار سبک آیکن؛ اندازهٔ متن و قلم فارسی.
+
+سه برنامه (جعبه‌ابزار PDF، خواننده و ریاضی‌استودیو) آیکن‌های تک‌رنگ دارند: نیلی، سبزآبی و سرخابی.
+
+تنظیمات > فضای ذخیره نشان می‌دهد حافظهٔ نهانی خواننده و بسته‌های LaTeX چقدر جا می‌گیرند و آن‌ها را پاک می‌کند. به فایل‌های شما دست نمی‌زند.
+"""),
 ]
 
 TOPICS = {"en": EN, "fa": FA}

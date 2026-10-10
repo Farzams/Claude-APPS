@@ -154,3 +154,37 @@ def glyph_pixmap(name: str, px: int, color: str, dpr: float = 2.0, width: float 
 def glyph_icon(name: str, color: str, px: int = 20):
     from PySide6.QtGui import QIcon
     return QIcon(glyph_pixmap(name, px, color))
+
+
+# ---------------------------------------------------------------- icon styles
+STYLES = ("line", "soft", "outlined", "gradient")
+
+
+def styled_svg(name: str, style: str, color: str, fill: str = "", edge: str = "", width: float = 1.8) -> str:
+    """The same glyph drawn as plain line, on a soft tinted tile, or on an outlined tile (gradient = classic tile)."""
+    if style == "gradient":
+        return tile_svg(name)
+    g = _glyph_svg(name, color, width)
+    if style == "line":
+        return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">{g}</svg>'
+    bg = f'<rect x="0.75" y="0.75" width="46.5" height="46.5" rx="13" fill="{fill or "none"}"'
+    bg += f' stroke="{edge}" stroke-width="1.5"/>' if style == "outlined" else ' stroke="none"/>'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">{bg}<g transform="translate(11 11) scale(1.0833)">{g}</g></svg>'
+
+
+def styled_pixmap(name: str, px: int, style: str, color: str, fill: str = "", edge: str = "", dpr: float = 2.0):
+    return _render(styled_svg(name, style, color, fill, edge), px, dpr)
+
+
+def flat_tile_svg(color: str, name: str) -> str:
+    """Flat-colour app icon: one solid rounded square with a white glyph."""
+    g = _glyph_svg(name, "#ffffff", 1.9)
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="1" y="1" width="46" height="46" rx="12" fill="{color}"/>'
+            f'<g transform="translate(10 10) scale(1.1667)">{g}</g></svg>')
+
+
+APP_COLORS = {"tools": "#4f46e5", "read": "#0f766e", "math": "#be185d"}
+
+
+def app_icon_pixmap(name: str, px: int, dpr: float = 1.0):
+    return _render(flat_tile_svg(APP_COLORS.get(name, "#4f46e5"), name), px, dpr)
