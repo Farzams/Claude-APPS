@@ -134,7 +134,7 @@ class SettingsTool(Tool):
     subtitle = "Everything is saved automatically."
 
     SECTIONS = [("appearance", "settings", "Appearance"), ("general", "home", "General"),
-                ("writing", "latex", "Writing and OCR"), ("addons", "tools", "Add-ons"),
+                ("writing", "latex", "Writing and OCR"),
                 ("shortcuts", "search", "Shortcuts"), ("storage", "security", "Storage and privacy"),
                 ("about", "help", "About")]
 
@@ -191,8 +191,6 @@ class SettingsTool(Tool):
         self.refresh()
         if key == "storage":
             self.refresh_storage()
-        if key == "addons":
-            self.addons_panel.on_show()
 
     # ------------------------------------------------------------ Appearance
     def sec_appearance(self, lay):
@@ -346,7 +344,7 @@ class SettingsTool(Tool):
         self.start = mkcombo(pages, win.cfg.get("start_page", "home"))
         self.start.activated.connect(self._start_changed)
         lay.addWidget(Row("Start with", "Which page opens first in the full window", self.start))
-        lay.addWidget(Row("Reset", "Back to the original look. Language and add-ons stay.", mkbutton("Reset appearance", self._reset)))
+        lay.addWidget(Row("Reset", "Back to the original look. The language stays.", mkbutton("Reset appearance", self._reset)))
 
     def _start_changed(self, _i):
         self.win.cfg["start_page"] = self.start.currentData()
@@ -379,12 +377,6 @@ class SettingsTool(Tool):
         self.win.cfg["spell"] = bool(on)
         settings.save(self.win.cfg)
 
-    # ------------------------------------------------------------ Add-ons
-    def sec_addons(self, lay):
-        from qt_addons import AddonsPanel
-        self.addons_panel = AddonsPanel(self.win)
-        lay.addWidget(self.addons_panel)
-
     # ------------------------------------------------------------ Shortcuts
     def sec_shortcuts(self, lay):
         for keys, what in SHORTCUTS:
@@ -404,7 +396,7 @@ class SettingsTool(Tool):
             val = mklabel("…", "muted", translate=False)
             self.store_labels[key] = (val, path_fn)
             lay.addWidget(Row(label, hint, val, mkbutton("Clear", lambda k=key: self._clear(k))))
-        lay.addWidget(Row("Privacy", "Nothing is sent anywhere. The only internet use is when you download an add-on.", mklabel("Everything stays on this computer", "good")))
+        lay.addWidget(Row("Privacy", "Nothing is sent anywhere. The app works fully offline.", mklabel("Everything stays on this computer", "good")))
 
     def refresh_storage(self):
         for key, (lb, fn) in self.store_labels.items():
@@ -458,4 +450,3 @@ class SettingsTool(Tool):
 
     def on_show(self):
         self.refresh()
-        self.addons_panel.on_show()

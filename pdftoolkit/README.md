@@ -43,5 +43,5 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - **Spell-check** (English SCOWL en_US, MIT/BSD; Persian Lilak, Apache-2.0; via spylls, MPL-2.0) in the LaTeX editor, aware of LaTeX commands, math and comments
 - **Clean scans** (OpenCV: deskew, shadows, denoise), **Repair & optimize** (pikepdf/qpdf), Word export with **pdf2docx** layout engine for left-to-right documents (Persian uses the flowing-text engine)
 - **Separate windows from one install**: PDF Toolkit, Reader, Math Studio (`--mode reader|math`); Inno Setup creates the shortcuts and an optional "Open with" entry for book formats
-- **Add-ons** (Settings): downloaded from the release `pdftoolkit-addons` (built by `.github/workflows/addons.yml`), SHA-256 checked. *Formula OCR*: ONNX Runtime (MIT) + tokenizers (Apache-2.0) + RapidLaTeXOCR models (Apache-2.0, from LaTeX-OCR/pix2tex, MIT). *More LaTeX packages*: extra Tectonic cache files
+- **Formula OCR** (bundled in `formula_models/`, downloaded by the build): ONNX Runtime (MIT) + tokenizers (Apache-2.0) + RapidLaTeXOCR models (Apache-2.0, from LaTeX-OCR/pix2tex, MIT). **More LaTeX packages**: the build compiles hundreds of sample documents (`build_tools/warm_tex.py`) so their Tectonic package files ship in `tex-cache/`.
 - `PDFToolkit.exe --selftest out.json` checks the packaged program (used by the build)

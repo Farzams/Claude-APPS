@@ -98,8 +98,8 @@ The three programs (PDF Toolkit, Reader, Math Studio) have flat colour icons: in
 
 Settings > Storage shows how much space the Reader cache and the LaTeX packages use, and clears them. Nothing you save is touched.
 """),
-    ("Add-ons and separate windows", """
-Settings has an Add-ons section. Add-ons are optional downloads that stay on your computer and work offline afterwards: Formula OCR (a picture of a printed formula becomes LaTeX; always check the result — it may confuse symbols such as n and π) and More LaTeX packages (hundreds more packages, classes and fonts that compile without internet). Install or Remove with one click; the list needs internet only to download.
+    ("Separate windows, formulas and LaTeX packages", """
+Everything is included in the app and works offline. Formula from picture turns a picture of a printed formula into LaTeX; always check the result, because it may confuse symbols such as n and π. The LaTeX editor compiles with hundreds of packages, classes and fonts without internet.
 
 One installation gives three start-menu apps: PDF Toolkit (everything), PDF Toolkit Reader (only the reader, with a slim side bar) and Math Studio (Math, Formula from picture, LaTeX and Formula). They share the same files, so they need no extra space. In the portable version use Reader.bat and MathStudio.bat. During installation you can add the Reader to the Open with list of DjVu, EPUB, MOBI, FB2, CBZ and XPS files.
 
@@ -233,8 +233,8 @@ PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها
 «ریاضی» (در فهرست کناری و در استودیوی ریاضی) یک ماشین‌حساب دقیق است. ریاضی را عادی بنویسید: x^2، 2x، sin(x)/x، sqrt(2)، pi، e و oo برای بی‌نهایت — یا لاتک مثل \\frac{x^2-1}{x-1} را بچسبانید. بگویید چه کنم: ساده‌سازی، بسط، تجزیه، مشتق، انتگرال (برای نامعین حدها را خالی بگذارید)، حد، سری تیلور، مجموع، معادله و دستگاه (هر خط یکی)، معادلهٔ دیفرانسیل (بنویسید y'' + y = 0)، ماتریس (دترمینان، وارون، مقادیر ویژه…) و نمودار. هر پاسخ به‌صورت فرمول نشان داده می‌شود و می‌توان آن را به‌صورت لاتک کپی یا در صفحهٔ لاتک درج کرد. مسئلهٔ سخت بعد از ۹۰ ثانیه متوقف می‌شود.
 
 غلط‌یاب در صفحهٔ لاتک واژه‌های غلط انگلیسی و فارسی را با موج قرمز خط می‌کشد؛ دستورها، فرمول‌ها، برچسب‌ها و توضیحات نادیده گرفته می‌شوند. روی واژه راست‌کلیک کنید تا پیشنهاد، «افزودن به فرهنگ» یا «نادیده گرفتن» را ببینید. کادر تیک زیر ویرایشگر آن را خاموش می‌کند. نام رایج ریاضی‌دانان (باناخ، هیلبرت، فوریه…) از قبل شناخته‌شده است."""),
-    ("افزونه‌ها و پنجره‌های جدا", """
-در تنظیمات بخش «افزونه‌ها» هست. افزونه‌ها دانلودهای اختیاری‌اند که روی رایانهٔ شما می‌مانند و بعد از آن بدون اینترنت کار می‌کنند: «OCR فرمول» (تصویر یک فرمول چاپی را به لاتک تبدیل می‌کند؛ نتیجه را همیشه بررسی کنید — ممکن است نمادهایی مثل n و π را اشتباه بگیرد) و «بسته‌های بیشتر لاتک» (صدها بسته، کلاس و قلم بیشتر که بدون اینترنت کامپایل می‌شوند). نصب یا حذف با یک کلیک؛ فقط برای دانلود اینترنت لازم است.
+    ("پنجره‌های جدا، فرمول و بسته‌های LaTeX", """
+همه‌چیز همراه برنامه است و بدون اینترنت کار می‌کند. «فرمول از روی تصویر» عکس یک فرمول چاپی را به LaTeX تبدیل می‌کند؛ همیشه نتیجه را بررسی کنید چون ممکن است نمادهایی مثل n و π را با هم اشتباه بگیرد. ویرایشگر LaTeX با صدها بسته، کلاس و قلم بدون اینترنت کامپایل می‌کند.
 
 یک نصب سه برنامه در منوی شروع می‌دهد: جعبه‌ابزار PDF (همه‌چیز)، مطالعه (فقط خواننده با نوار کناری باریک) و استودیوی ریاضی (ریاضی، فرمول از روی تصویر، لاتک و فرمول). فایل‌های مشترک دارند و فضای اضافه نمی‌خواهند. در نسخهٔ قابل‌حمل از Reader.bat و MathStudio.bat استفاده کنید. هنگام نصب می‌توانید «مطالعه» را به فهرست «باز کردن با» فایل‌های DjVu، EPUB، MOBI، FB2، CBZ و XPS اضافه کنید.
 

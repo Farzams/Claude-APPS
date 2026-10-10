@@ -2,3 +2,7 @@ __pycache__/
 build/
 dist/
 *.spec
+
+# Formula OCR model files are downloaded by the build (see .github/workflows/build-windows.yml)
+pdftoolkit/formula_models/*.onnx
+pdftoolkit/formula_models/tokenizer.json

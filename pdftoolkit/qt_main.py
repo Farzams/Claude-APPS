@@ -237,7 +237,7 @@ class ToolsTool(Tool):
                                 ("hidden", "hidden", "Remove hidden data", "Clean metadata, comments, attachments"),
                                 ("compare", "compare", "Compare PDFs", "See what changed between two versions")]),
         ("Science", [("math", "math", "Math", "Calculator, equations, matrices and plots (SymPy)"),
-                     ("formulaocr", "formulaocr", "Formula from picture", "Photo or screenshot of a formula to LaTeX (add-on)"),
+                     ("formulaocr", "formulaocr", "Formula from picture", "Photo or screenshot of a formula to LaTeX"),
                      ("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
                      ("formula", "formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]),
         ("Automate", [("batch", "batch", "Batch process", "Run one operation on a whole folder of files")]),

@@ -76,14 +76,28 @@ def selftest(outfile: str) -> int:
         assert not pm.isNull()
         return pm.width()
 
-    def addons_():
-        import addons
-        return str(addons.addons_dir())
+    def formula_():
+        import os
+        import formula_ocr
+        from qt_formulaocr import model_dir
+        assert formula_ocr.available(model_dir()), "formula models missing: " + str(model_dir())
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        import tempfile
+        png = os.path.join(tempfile.gettempdir(), "pdftk_formula_selftest.png")
+        fig = plt.figure(figsize=(4, 1.2), dpi=200)
+        fig.text(0.05, 0.3, r"$\int_0^1 x^2\,dx=\frac{1}{3}$", fontsize=22)
+        fig.savefig(png)
+        plt.close(fig)
+        res = formula_ocr.FormulaOCR(model_dir()).recognize(png)
+        assert "frac" in res and "int" in res, res
+        return res
 
     for name, fn in (("math worker (child process)", math_worker), ("sympy latex parser", latex_parse),
                      ("matplotlib plot", plot), ("opencv", opencv), ("pikepdf", pikepdf_), ("pdf2docx", pdf2docx_),
                      ("spell dictionaries", spell_), ("openpyxl", openpyxl_), ("svg icons", icons_),
-                     ("add-ons folder", addons_)):
+                     ("formula OCR (bundled models)", formula_)):
         t(name, fn)
     try:
         with open(outfile, "w", encoding="utf-8") as f:
@@ -116,11 +130,6 @@ def main() -> int:
         except Exception:
             pass
     cfg = settings.load()
-    try:
-        import addons
-        addons.activate()                 # installed add-ons become importable
-    except Exception:
-        pass
     cfg.setdefault("strength", "medium")
     i18n.set_lang(cfg["lang"])
     import qt_style as _qs

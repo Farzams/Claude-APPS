@@ -1,4 +1,4 @@
-"""Formula from a picture: photo, screenshot, clipboard or a region of a PDF page -> LaTeX (Formula OCR add-on)."""
+"""Formula from a picture: photo, screenshot, clipboard or a region of a PDF page -> LaTeX (offline, models bundled)."""
 from __future__ import annotations
 
 import io
@@ -9,25 +9,24 @@ from PySide6.QtGui import QGuiApplication, QImage, QPixmap
 from PySide6.QtWidgets import (QFileDialog, QHBoxLayout, QLabel, QPlainTextEdit, QScrollArea, QSizePolicy, QStackedWidget,
                                QVBoxLayout, QWidget)
 
-import addons
+import core
 import qt_style
 import theme
 from i18n import tr, trf
 from qt_common import FileRow, Form, Tool, mkbutton, mkcombo, mklabel
 from qt_pdfedit import PagePicker
 
-ADDON_ID = "formula-ocr"
 _MODEL = None
 
 
 def model_dir() -> Path:
-    return addons.path(ADDON_ID) / "models"
+    import os
+    return Path(os.environ.get("PDFTK_FORMULA_MODELS") or core._app_dir() / "formula_models")
 
 
 def get_model():
     global _MODEL
     if _MODEL is None:
-        addons.activate()
         import formula_ocr
         _MODEL = formula_ocr.FormulaOCR(model_dir())
     return _MODEL
@@ -67,14 +66,9 @@ class FormulaOcrTool(Tool):
         self.need_box = QWidget()
         nb = QVBoxLayout(self.need_box)
         nb.addStretch(1)
-        t = mklabel("This tool needs the Formula OCR add-on (about 190 MB, works offline afterwards).", "h", wrap=True)
+        t = mklabel("The formula model files were not found. Reinstall the app to get them back.", "h", wrap=True)
         t.setAlignment(Qt.AlignCenter)
         nb.addWidget(t)
-        row = QHBoxLayout()
-        row.addStretch(1)
-        row.addWidget(mkbutton("Open Settings > Add-ons", lambda: self.win.show_page("settings"), "primary", 240))
-        row.addStretch(1)
-        nb.addLayout(row)
         nb.addStretch(2)
         self.main = QWidget()
         cols = QHBoxLayout(self.main)
@@ -154,15 +148,16 @@ class FormulaOcrTool(Tool):
         self._qimage: QImage | None = None
         self._busy = False
         self._pm = None
-        self.addons_changed()
+        self.models_changed()
 
-    def addons_changed(self):
-        ok = addons.is_installed(ADDON_ID)
+    def models_changed(self):
+        import formula_ocr
+        ok = formula_ocr.available(model_dir())
         self.need_box.setVisible(not ok)
         self.main.setVisible(ok)
 
     def on_show(self):
-        self.addons_changed()
+        self.models_changed()
 
     def _src(self):
         self.stack.setCurrentIndex(["file", "clip", "pdf"].index(self.src.currentData()))

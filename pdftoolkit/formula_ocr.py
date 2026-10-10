@@ -1,4 +1,4 @@
-"""Picture of a formula -> LaTeX, with the ONNX models of the "Formula OCR" add-on (offline, CPU).
+"""Picture of a formula -> LaTeX, with the ONNX models bundled in formula_models/ (offline, CPU).
 
 The inference code follows RapidLaTeXOCR (Apache-2.0, https://github.com/RapidAI/RapidLaTeXOCR), which runs the
 LaTeX-OCR / pix2tex model (MIT, https://github.com/lukas-blecher/LaTeX-OCR) through ONNX Runtime. Greedy decoding.

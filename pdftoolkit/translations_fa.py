@@ -456,3 +456,10 @@ FA.update({
     "Colour theme": "تم رنگی", "Icon style ": "سبک آیکن", "Restarts the app": "برنامه دوباره باز می‌شود",
     "Theme: ": "تم: ", "Icons: ": "آیکن: ", "Settings: ": "تنظیمات: ", "Language: English": "زبان: انگلیسی",
 })
+
+FA.update({
+    "Photo or screenshot of a formula to LaTeX": "عکس یا اسکرین‌شات فرمول به لاتک",
+    "The formula model files were not found. Reinstall the app to get them back.": "فایل‌های مدل فرمول پیدا نشد. برنامه را دوباره نصب کنید.",
+    "Back to the original look. The language stays.": "بازگشت به ظاهر اولیه. زبان می‌ماند.",
+    "Nothing is sent anywhere. The app works fully offline.": "هیچ چیزی به جایی فرستاده نمی‌شود. برنامه کاملاً آفلاین کار می‌کند.",
+})
