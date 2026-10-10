@@ -322,3 +322,46 @@ FA.update({
     "Finished: {ok} of {n} file(s) done.": "پایان: {ok} از {n} فایل انجام شد.", "Normal": "معمولی", "Format": "قالب",
     "Resolution (dpi)": "وضوح (dpi)", "Page size": "اندازهٔ صفحه", "Owner password": "گذرواژهٔ مالک", "Current password": "گذرواژهٔ فعلی",
 })
+
+# ---- clean / repair / math
+FA.update({
+    "Clean scans": "پاک‌سازی اسکن", "Straighten, denoise and sharpen scanned pages": "صاف‌کردن، نویززدایی و شفاف‌کردن صفحه‌های اسکن‌شده",
+    "Straighten crooked pages, remove noise and shadows, and make scans sharper. Run OCR afterwards.": "صفحه‌های کج را صاف کنید، نویز و سایه را بردارید و اسکن را شفاف‌تر کنید. بعد از آن OCR بزنید.",
+    "Grey — natural look": "خاکستری — ظاهر طبیعی", "Black and white — smallest files": "سیاه‌وسفید — کم‌حجم‌ترین فایل",
+    "Colour — keep colours": "رنگی — حفظ رنگ‌ها", "Result": "نتیجه", "Straighten crooked pages": "صاف‌کردن صفحه‌های کج",
+    "Even out lighting and remove shadows": "یکنواخت‌کردن نور و حذف سایه", "Noise removal": "حذف نویز", "None": "هیچ",
+    "Light — dust and specks": "سبک — گردوغبار و لکه‌های ریز", "Strong — grainy or photographed pages (slower)": "قوی — صفحه‌های دانه‌دار یا عکس‌گرفته‌شده (کندتر)",
+    "Quality (dpi)": "کیفیت (dpi)", "Clean": "پاک‌سازی",
+    "The result contains pictures only. Use OCR afterwards to make the text searchable.": "نتیجه فقط تصویر دارد. بعد از آن با OCR متن را قابل جست‌وجو کنید.",
+    "Straightened:": "صاف‌شده:",
+    "Repair & optimize": "تعمیر و بهینه‌سازی", "Fix a damaged PDF and store it compactly": "PDF آسیب‌دیده را درست کنید و فشرده‌تر ذخیره کنید",
+    "Rebuild a damaged PDF that will not open, and store it more compactly.": "PDF آسیب‌دیده‌ای را که باز نمی‌شود بازسازی کنید و فشرده‌تر ذخیره کنید.",
+    "Prepare for fast web viewing (linearize)": "آماده‌سازی برای نمایش سریع در وب (خطی‌سازی)",
+    "Password (if the file has one)": "گذرواژه (اگر فایل دارد)", "Only check the file for problems": "فقط فایل را از نظر مشکل بررسی کن",
+    "Repair": "تعمیر", "No problems found.": "مشکلی پیدا نشد.", "{n} problem(s):": "{n} مشکل:", "✔ Saved {name}: {old} → {new}": "✔ {name} ذخیره شد: {old} ← {new}",
+    "Word layout": "چیدمان ورد", "Automatic (layout for English, flowing text for Persian)": "خودکار (چیدمان برای انگلیسی، متن روان برای فارسی)",
+    "Keep the page layout (columns, tables) — left-to-right only": "حفظ چیدمان صفحه (ستون، جدول) — فقط چپ‌به‌راست",
+    "Simple flowing text — safest for Persian and Arabic": "متن روان ساده — مطمئن‌ترین برای فارسی و عربی",
+    "Clean scans": "پاک‌سازی اسکن",
+})
+
+FA.update({
+    "Math": "ریاضی", "Calculator, plots and Orlicz-space helpers (SymPy)": "ماشین‌حساب، نمودار و ابزارهای فضاهای اورلیچ (SymPy)",
+    "Algebra, calculus, equations, matrices, plots — and helpers for Orlicz spaces. Results as LaTeX.": "جبر، حساب دیفرانسیل و انتگرال، معادله، ماتریس، نمودار — و ابزارهایی برای فضاهای اورلیچ. نتیجه به‌صورت لاتک.",
+    "What to do": "کار موردنظر", "Calculate": "محاسبه", "Algebra": "جبر", "Calculus": "حسابان", "Equations": "معادله‌ها", "Matrices": "ماتریس‌ها", "Plot": "نمودار", "Orlicz spaces": "فضاهای اورلیچ",
+    "Evaluate (exact and numeric)": "محاسبهٔ دقیق و عددی", "Simplify": "ساده‌سازی", "Expand": "بسط", "Factor": "تجزیه", "Partial fractions": "کسرهای جزئی",
+    "Derivative": "مشتق", "Integral": "انتگرال", "Limit": "حد", "Taylor series": "سری تیلور", "Sum": "مجموع",
+    "Solve equation or system": "حل معادله یا دستگاه", "Differential equation": "معادلهٔ دیفرانسیل", "Matrix operation": "عملیات ماتریسی", "Plot functions": "رسم تابع",
+    "Is Φ a Young / N-function?": "آیا Φ تابع یانگ / N است؟", "Complementary function Ψ (conjugate)": "تابع مکمل Ψ (مزدوج)",
+    "Δ₂-condition": "شرط Δ₂", "Luxemburg and Orlicz norm of f": "نرم لوکزامبورگ و اورلیچ تابع f", "Plot Φ and Ψ": "رسم Φ و Ψ",
+    "Expression": "عبارت", "Function": "تابع", "Term": "جمله", "Digits": "رقم‌ها", "Variable": "متغیر", "Order": "مرتبه",
+    "From (empty = indefinite)": "از (خالی = نامعین)", "To": "تا", "Approaches (e.g. 0, oo)": "میل می‌کند به (مثلاً 0 یا oo)", "From": "از", "Around": "حول", "Terms": "جمله‌ها",
+    "To (e.g. oo)": "تا (مثلاً oo)", "Equation(s), one per line": "معادله(ها)، هر خط یکی", "Unknowns (comma, optional)": "مجهول‌ها (با ویرگول، اختیاری)",
+    "Equation (use y', y'')": "معادله (از y' و y'' استفاده کنید)", "Matrix, e.g. [[1,2],[3,4]]": "ماتریس، مثلاً [[1,2],[3,4]]", "Function(s), one per line": "تابع(ها)، هر خط یکی",
+    "x from": "x از", "x to": "x تا", "Interval from": "بازه از", "to": "تا", "Variable of Φ": "متغیر Φ", "t up to": "t تا", "Examples": "نمونه‌ها",
+    "Choose an example…": "یک نمونه انتخاب کنید…", "both sides": "از دو طرف", "right (+)": "از راست (+)", "left (−)": "از چپ (−)",
+    "determinant": "دترمینان", "inverse": "وارون", "rank": "رتبه", "transpose": "ترانهاده", "row-reduced form": "فرم پلکانی کاهش‌یافته", "eigenvalues and vectors": "مقادیر و بردارهای ویژه",
+    "null space": "فضای پوچ", "characteristic polynomial": "چندجمله‌ای مشخصه",
+    "Copy LaTeX": "کپی لاتک", "Copy answer": "کپی پاسخ", "Insert into the LaTeX page": "درج در صفحهٔ لاتک", "Save picture…": "ذخیرهٔ تصویر…",
+    "Type an expression first.": "اول یک عبارت بنویسید.", "A number is not valid.": "یک عدد معتبر نیست.", "Working…": "در حال محاسبه…", "Copied": "کپی شد",
+})

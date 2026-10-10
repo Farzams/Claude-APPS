@@ -486,12 +486,39 @@ def _join_lines(lines: list[str]) -> str:
     return core.normalize_persian(out.strip())
 
 
-def to_docx(src: str, dst: str, pages: str = "", scanned_images: bool = True,
-            progress: Progress = None) -> int:
-    """PDF -> Word. Text flows as paragraphs (RTL aware), pictures are kept, scanned pages become pictures.
+def _docx_layout(src: str, dst: str, pages: str) -> int:
+    """PDF -> Word with columns, tables and positions kept (pdf2docx). Left-to-right documents."""
+    from pdf2docx import Converter
+    with open_pdf(src) as d:
+        sel = _pages(pages, d.page_count)
+    cv = Converter(src)
+    try:
+        cv.convert(dst, pages=sel)
+    finally:
+        cv.close()
+    return len(sel)
 
-    Layout is simplified (no columns/exact positions). For scans, run OCR first.
+
+def to_docx(src: str, dst: str, pages: str = "", scanned_images: bool = True,
+            progress: Progress = None, engine: str = "auto") -> int:
+    """PDF -> Word.
+
+    engine: "layout" keeps columns/tables (pdf2docx; no right-to-left support), "flow" writes simple paragraphs
+    (RTL aware, Persian safe), "auto" uses layout for left-to-right documents and flow for Persian/Arabic.
     """
+    if engine != "flow":
+        use_layout = engine == "layout"
+        if engine == "auto":
+            with open_pdf(src) as d:
+                sel = _pages(pages, d.page_count)[:6]
+                sample = " ".join(d[i].get_text() for i in sel)
+            use_layout = not core.is_rtl_text(sample)
+        if use_layout:
+            try:
+                return _docx_layout(src, dst, pages)
+            except Exception:
+                if engine == "layout":
+                    raise
     import docx
     from docx.enum.text import WD_ALIGN_PARAGRAPH
     from docx.oxml import OxmlElement
@@ -839,6 +866,127 @@ def replace_text(src: str, dst: str, old: str, new: str, pages: str = "") -> int
     return n
 
 
+# ---------------------------------------------------------------- scan cleanup (OpenCV) and repair (pikepdf)
+
+def estimate_skew(gray) -> float:
+    """Skew angle of a scanned page in degrees (positive = text runs downhill), found by projection profiles."""
+    import cv2
+    import numpy as np
+    h, w = gray.shape[:2]
+    scale = 900.0 / max(h, w)
+    small = cv2.resize(gray, (max(int(w * scale), 1), max(int(h * scale), 1)), interpolation=cv2.INTER_AREA)
+    _t, bw = cv2.threshold(small, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    if cv2.countNonZero(bw) < 50:
+        return 0.0
+    cy, cx = bw.shape[0] / 2, bw.shape[1] / 2
+
+    def score(angle: float) -> float:
+        m = cv2.getRotationMatrix2D((cx, cy), angle, 1.0)
+        r = cv2.warpAffine(bw, m, (bw.shape[1], bw.shape[0]), flags=cv2.INTER_NEAREST)
+        prof = r.sum(axis=1).astype(np.float64)
+        return float(np.var(np.diff(prof)))
+
+    best = max(np.arange(-10, 10.01, 0.5), key=score)
+    best = max(np.arange(best - 0.5, best + 0.51, 0.1), key=score)
+    return float(best)
+
+
+def _clean_image(img, mode: str, deskew: bool, denoise: str, shadows: bool):
+    import cv2
+    import numpy as np
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if img.ndim == 3 else img
+    angle = estimate_skew(gray) if deskew else 0.0
+    colour = mode == "color" and img.ndim == 3
+    if abs(angle) >= 0.15:
+        h, w = gray.shape[:2]
+        m = cv2.getRotationMatrix2D((w / 2, h / 2), angle, 1.0)
+        white = (255, 255, 255)
+        img = cv2.warpAffine(img, m, (w, h), flags=cv2.INTER_CUBIC, borderValue=white if img.ndim == 3 else 255)
+        gray = cv2.warpAffine(gray, m, (w, h), flags=cv2.INTER_CUBIC, borderValue=255)
+    if colour:                                  # keep the colours: only straighten, flatten the light and denoise
+        out = img
+        if shadows:
+            bg = cv2.medianBlur(cv2.resize(gray, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA), 21)
+            bg = cv2.resize(bg, (gray.shape[1], gray.shape[0]), interpolation=cv2.INTER_LINEAR)
+            gain = (255.0 / np.maximum(bg, 1).astype(np.float32))[:, :, None]
+            out = np.clip(out.astype(np.float32) * gain, 0, 255).astype(np.uint8)
+        if denoise == "strong":
+            out = cv2.fastNlMeansDenoisingColored(out, None, 8, 8, 7, 21)
+        elif denoise == "light":
+            out = cv2.medianBlur(out, 3)
+        return out, angle
+    if shadows:
+        k = max(int(min(gray.shape) / 30) | 1, 15)
+        bg = cv2.medianBlur(cv2.resize(gray, None, fx=0.25, fy=0.25, interpolation=cv2.INTER_AREA), max(k // 4 | 1, 5))
+        bg = cv2.resize(bg, (gray.shape[1], gray.shape[0]), interpolation=cv2.INTER_LINEAR)
+        gray = cv2.divide(gray, np.maximum(bg, 1), scale=255)
+    if denoise == "light":
+        gray = cv2.medianBlur(gray, 3)
+    elif denoise == "strong":
+        gray = cv2.fastNlMeansDenoising(gray, None, 12, 7, 21)
+    if mode == "bw":
+        out = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 41, 15)
+        return out, angle
+    return gray, angle
+
+
+def clean_scan(src: str, dst: str, mode: str = "gray", deskew: bool = True, denoise: str = "light",
+               shadows: bool = True, dpi: int = 300, pages: str = "", progress: Progress = None) -> list[float]:
+    """Straighten, de-noise and clean scanned pages. Output pages are pictures: run OCR afterwards.
+
+    mode: gray | bw (black & white, smallest files) | color. Returns the skew angle found on each page.
+    """
+    import cv2
+    import numpy as np
+    angles = []
+    with open_pdf(src) as doc, pymupdf.open() as out:
+        sel = _pages(pages, doc.page_count)
+        for k, i in enumerate(sel):
+            pg = doc[i]
+            pix = pg.get_pixmap(dpi=dpi, colorspace=pymupdf.csRGB if mode == "color" else pymupdf.csGRAY, alpha=False)
+            arr = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+            img = cv2.cvtColor(arr, cv2.COLOR_RGB2BGR) if pix.n == 3 else arr[:, :, 0].copy()
+            res, angle = _clean_image(img, mode, deskew, denoise, shadows)
+            angles.append(angle)
+            ok, buf = cv2.imencode(".png" if mode == "bw" else ".jpg", res,
+                                   [] if mode == "bw" else [cv2.IMWRITE_JPEG_QUALITY, 88])
+            page = out.new_page(width=pg.rect.width, height=pg.rect.height)
+            page.insert_image(page.rect, stream=buf.tobytes())
+            if progress:
+                progress(k + 1, len(sel), f"page {i + 1}")
+        _save(out, dst)
+    return angles
+
+
+def _problems(pdf) -> list[str]:
+    fn = getattr(pdf, "check_pdf_syntax", None) or getattr(pdf, "check", None)
+    try:
+        return [str(m) for m in (fn() if fn else [])]
+    except Exception as e:
+        return [str(e)]
+
+
+def check_pdf(src: str) -> list[str]:
+    """Structural problems found by qpdf (empty list = healthy)."""
+    import pikepdf
+    try:
+        with pikepdf.open(src, attempt_recovery=True) as pdf:
+            return _problems(pdf)
+    except Exception as e:
+        return [str(e)]
+
+
+def repair_pdf(src: str, dst: str, linearize: bool = False, password: str = "") -> tuple[int, int, list[str]]:
+    """Rebuild a damaged PDF and store it compactly. Returns (old_size, new_size, problems_found)."""
+    import pikepdf
+    problems = []
+    with pikepdf.open(src, attempt_recovery=True, password=password) as pdf:
+        problems = _problems(pdf)
+        pdf.save(dst, linearize=linearize, object_stream_mode=pikepdf.ObjectStreamMode.generate,
+                 compress_streams=True, recompress_flate=True)
+    return os.path.getsize(src), os.path.getsize(dst), problems
+
+
 # ---------------------------------------------------------------- batch
 
 def _out_name(src: str, out_dir: str, suffix: str, ext: str = ".pdf") -> str:
@@ -867,6 +1015,8 @@ BATCH_OPS: dict[str, tuple[str, Callable]] = {
     "remove_hidden": ("_clean", lambda s, d, p: [_do(remove_hidden, s, _out_name(s, d, p["suffix"]), p.get("options"))]),
     "to_images": ("", lambda s, d, p: to_images(s, str(Path(d) / Path(s).stem), p.get("fmt", "png"), p.get("dpi", 150))),
     "to_docx": ("", lambda s, d, p: [_do(to_docx, s, _out_name(s, d, p["suffix"], ".docx"))]),
+    "clean_scan": ("_clean", lambda s, d, p: [_do(clean_scan, s, _out_name(s, d, p["suffix"]), p.get("mode", "gray"))]),
+    "repair": ("_fixed", lambda s, d, p: [_do(repair_pdf, s, _out_name(s, d, p["suffix"]))]),
     "to_xlsx": ("", lambda s, d, p: [_do(to_xlsx, s, _out_name(s, d, p["suffix"], ".xlsx"))]),
     "to_html": ("", lambda s, d, p: [export_text_format(s, _out_name(s, d, p["suffix"], ".html"), "html")]),
     "to_text": ("", lambda s, d, p: [_do(core.extract_text, s, _out_name(s, d, p["suffix"], ".txt"), "txt")]),

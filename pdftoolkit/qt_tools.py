@@ -396,6 +396,10 @@ class ExportTool(Tool):
         self.pages = QLineEdit()
         self.pages.setPlaceholderText(tr("all pages, or e.g. 1-3, 7"))
         f.row("Pages", self.pages)
+        self.engine = mkcombo({tr("Automatic (layout for English, flowing text for Persian)"): "auto",
+                               tr("Keep the page layout (columns, tables) — left-to-right only"): "layout",
+                               tr("Simple flowing text — safest for Persian and Arabic"): "flow"})
+        f.row("Word layout", self.engine)
         self.ocr = mkcheck("Scanned document: recognise the text first (OCR)", False)
         f.row("", self.ocr, span=True)
         self.langs = lang_choices()
@@ -415,6 +419,7 @@ class ExportTool(Tool):
     def _fmt(self):
         kind = self.FORMATS[self.fmt.currentData()][1]
         self.dpi.setEnabled(kind == "img")
+        self.engine.setEnabled(kind == "docx")
         self.ocr.setEnabled(kind in ("docx", "txt") and self.fmt.currentData() != "Web page (.html)")
         self.lang.setEnabled(self.ocr.isEnabled())
         self.note_lb.setText(tr(self.NOTES.get(kind, "")))
@@ -436,6 +441,7 @@ class ExportTool(Tool):
         pages, dpi = self.pages.text(), self.dpi.currentData()
         ocr = self.ocr.isChecked() and self.ocr.isEnabled()
         lang = tess_lang(self.lang.currentData(), True)
+        eng = self.engine.currentData()
 
         def job(log, prog):
             work = src
@@ -454,7 +460,7 @@ class ExportTool(Tool):
                     return str(d)
                 dst = str(core.unique_path(Path(out) / f"{Path(src).stem}.{ext}"))
                 if ext == "docx":
-                    pdftools.to_docx(work, dst, pages, True, lambda i, t, n: prog(i, t))
+                    pdftools.to_docx(work, dst, pages, True, lambda i, t, n: prog(i, t), eng)
                 elif ext == "xlsx":
                     n = pdftools.to_xlsx(work, dst, pages)
                     log(trf("{n} table(s) found", n=n))
@@ -571,6 +577,109 @@ class HiddenTool(PdfInOut):
         self.win.run(job)
 
 
+# ---------------------------------------------------------------- clean scans
+class CleanScanTool(PdfInOut):
+    key, icon, title = "clean", "clean", "Clean scans"
+    subtitle = "Straighten crooked pages, remove noise and shadows, and make scans sharper. Run OCR afterwards."
+    suffix = "_clean"
+
+    def build(self):
+        f = Form()
+        self.pdf_rows(f)
+        self.mode = mkcombo({tr("Grey — natural look"): "gray", tr("Black and white — smallest files"): "bw",
+                             tr("Colour — keep colours"): "color"})
+        f.row("Result", self.mode)
+        self.deskew = mkcheck("Straighten crooked pages", True)
+        self.shadows = mkcheck("Even out lighting and remove shadows", True)
+        f.row("", self.deskew, span=True)
+        f.row("", self.shadows, span=True)
+        self.denoise = mkcombo({tr("None"): "none", tr("Light — dust and specks"): "light",
+                                tr("Strong — grainy or photographed pages (slower)"): "strong"}, "light")
+        f.row("Noise removal", self.denoise)
+        self.dpi = mkcombo({"200": 200, "300": 300, "400": 400}, 300)
+        f.row("Quality (dpi)", self.dpi)
+        self.pages = QLineEdit()
+        self.pages.setPlaceholderText(tr("all pages, or e.g. 1-3, 7"))
+        f.row("Pages", self.pages)
+        self.body.addLayout(f)
+        self.note("The result contains pictures only. Use OCR afterwards to make the text searchable.")
+        self.body.addStretch(1)
+        self.run_button("Clean", self.run)
+
+    def run(self):
+        paths = self.check_paths()
+        if not paths:
+            return
+        src, out = paths
+        a = dict(mode=self.mode.currentData(), deskew=self.deskew.isChecked(), denoise=self.denoise.currentData(),
+                 shadows=self.shadows.isChecked(), dpi=self.dpi.currentData(), pages=self.pages.text())
+
+        def job(log, prog):
+            ang = pdftools.clean_scan(src, out, progress=lambda i, t, n: prog(i, t), **a)
+            tilted = [f"{i + 1}: {x:+.1f}°" for i, x in enumerate(ang) if abs(x) >= 0.3]
+            log(trf("✔ Saved {name} ({pages} pages)", name=Path(out).name, pages=len(ang)))
+            if tilted:
+                log(tr("Straightened:") + " " + ", ".join(tilted[:12]) + (" …" if len(tilted) > 12 else ""))
+            return _folder(out)
+        self.win.run(job)
+
+
+# ---------------------------------------------------------------- repair
+class RepairTool(PdfInOut):
+    key, icon, title = "repair", "repair", "Repair & optimize"
+    subtitle = "Rebuild a damaged PDF that will not open, and store it more compactly."
+    suffix = "_fixed"
+
+    def build(self):
+        f = Form()
+        self.pdf_rows(f)
+        self.fast = mkcheck("Prepare for fast web viewing (linearize)", False)
+        f.row("", self.fast, span=True)
+        self.pw = QLineEdit()
+        self.pw.setEchoMode(QLineEdit.Password)
+        self.pw.setLayoutDirection(Qt.LeftToRight)
+        f.row("Password (if the file has one)", self.pw)
+        self.body.addLayout(f)
+        self.body.addStretch(1)
+        row = QHBoxLayout()
+        row.addWidget(mkbutton("Only check the file for problems", self.check))
+        row.addStretch(1)
+        self.body.addLayout(row)
+        self.run_button("Repair", self.run)
+
+    def _picked(self, p):
+        if not self.out.get():
+            self.out.edit.setText(_suffix_path(p, self.suffix))
+        self.info.setText("")
+
+    def check(self):
+        src = self.src.get()
+        if not self.need(src):
+            return
+
+        def job(log, prog):
+            problems = pdftools.check_pdf(src)
+            log(tr("No problems found.") if not problems else trf("{n} problem(s):", n=len(problems)))
+            for p in problems[:15]:
+                log("• " + p)
+        self.win.run(job)
+
+    def run(self):
+        paths = self.check_paths()
+        if not paths:
+            return
+        src, out = paths
+        fast, pw = self.fast.isChecked(), self.pw.text()
+
+        def job(log, prog):
+            old, new, problems = pdftools.repair_pdf(src, out, fast, pw)
+            log(trf("✔ Saved {name}: {old} → {new}", name=Path(out).name, old=core.fmt_size(old), new=core.fmt_size(new)))
+            for p in problems[:8]:
+                log("• " + p)
+            return _folder(out)
+        self.win.run(job)
+
+
 # ---------------------------------------------------------------- batch
 class BatchTool(Tool):
     key, icon, title = "batch", "batch", "Batch process"
@@ -579,7 +688,7 @@ class BatchTool(Tool):
            "Password protect": "protect", "Remove password": "unlock", "Crop": "crop",
            "Delete blank pages": "delete_blank", "Watermark": "watermark", "Header / footer / Bates": "header_footer",
            "Page background": "background", "Remove hidden data": "remove_hidden", "PDF to pictures": "to_images",
-           "PDF to Word": "to_docx", "PDF to Excel": "to_xlsx", "PDF to HTML": "to_html", "PDF to text": "to_text"}
+           "Clean scans": "clean_scan", "Repair & optimize": "repair", "PDF to Word": "to_docx", "PDF to Excel": "to_xlsx", "PDF to HTML": "to_html", "PDF to text": "to_text"}
 
     def build(self):
         self.files = FileList("PDF and documents (*.*)", 5)

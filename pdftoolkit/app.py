@@ -12,6 +12,8 @@ import theme
 
 
 def main() -> int:
+    import multiprocessing
+    multiprocessing.freeze_support()      # the math calculator runs in a child process
     cfg = settings.load()
     cfg.setdefault("strength", "medium")
     i18n.set_lang(cfg["lang"])

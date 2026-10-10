@@ -25,8 +25,9 @@ from i18n import tr, trf
 from qt_common import Card, JobRunner, Tool, hline, mkbutton, mkcheck, mkcombo, mklabel
 from qt_pages import (CompressTool, ConvertTool, ExtractTool, ImagesTool, MergeTool, OcrTool, PagesTool, SplitTool)
 from qt_reader import ReaderTool
-from qt_tools import (BackgroundTool, BatchTool, BlankTool, CropTool, ExportTool, HeaderFooterTool, HiddenTool,
+from qt_tools import (BackgroundTool, BatchTool, BlankTool, CleanScanTool, CropTool, RepairTool, ExportTool, HeaderFooterTool, HiddenTool,
                       SecurityTool, WatermarkTool)
+from qt_math import MathTool
 from qt_pdfedit import CompareTool, EditTool, OrganizeTool, RedactTool
 from qt_science import FormulaTool, LatexTool, SymbolPalette, insert_snippet
 
@@ -138,10 +139,12 @@ class ToolsTool(Tool):
                       ("split", "split", "Split", "Cut a PDF into parts or ranges"),
                       ("merge", "merge", "Merge", "Join PDFs in any order"),
                       ("crop", "crop", "Crop pages", "Trim white margins or cut fixed margins"),
-                      ("blank", "blank", "Delete blank pages", "Remove empty pages, even from scans")]),
+                      ("blank", "blank", "Delete blank pages", "Remove empty pages, even from scans"),
+                      ("repair", "repair", "Repair & optimize", "Fix a damaged PDF and store it compactly")]),
         ("Convert", [("convert", "convert", "Convert to PDF", "EPUB, DjVu, DOCX, MOBI, TXT, HTML…"),
                      ("images", "images", "Images to PDF", "Many pictures into one PDF"),
                      ("export", "export", "PDF to…", "Pictures, Word, Excel, HTML, RTF, EPUB, text"),
+                     ("clean", "clean", "Clean scans", "Straighten, denoise and sharpen scanned pages"),
                      ("ocr", "ocr", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
                      ("extract", "extract", "Extract text", "PDF to clean TXT / Word, with OCR"),
                      ("compress", "compress", "Compress", "Four levels, up to Ghostscript power")]),
@@ -153,7 +156,8 @@ class ToolsTool(Tool):
                                 ("redact", "redact", "Redact (black out)", "Permanently remove words and areas"),
                                 ("hidden", "hidden", "Remove hidden data", "Clean metadata, comments, attachments"),
                                 ("compare", "compare", "Compare PDFs", "See what changed between two versions")]),
-        ("Science", [("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
+        ("Science", [("math", "math", "Math", "Calculator, plots and Orlicz-space helpers (SymPy)"),
+                     ("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
                      ("formula", "formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]),
         ("Automate", [("batch", "batch", "Batch process", "Run one operation on a whole folder of files")]),
     ]
@@ -334,12 +338,13 @@ PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("tools", "Al
          ("watermark", "Watermark", WatermarkTool), ("background", "Page background", BackgroundTool),
          ("export", "PDF to…", ExportTool), ("security", "Password & permissions", SecurityTool),
          ("hidden", "Remove hidden data", HiddenTool), ("redact", "Redact (black out)", RedactTool),
+         ("clean", "Clean scans", CleanScanTool), ("repair", "Repair & optimize", RepairTool),
          ("edit", "Edit PDF", EditTool), ("compare", "Compare PDFs", CompareTool), ("batch", "Batch process", BatchTool),
-         ("latex", "LaTeX", LatexTool), ("formula", "Formula", FormulaTool),
+         ("math", "Math", MathTool), ("latex", "LaTeX", LatexTool), ("formula", "Formula", FormulaTool),
          ("settings", "Settings", SettingsTool), ("help", "Help", HelpTool)]
 # pages shown in the sidebar; every other tool opens from "All tools" or the Home page
 SIDEBAR = ["home", "read", "tools", "ocr", "extract", "convert", "split", "merge", "compress", "images", "pages",
-           "latex", "formula", "settings", "help"]
+           "math", "latex", "formula", "settings", "help"]
 
 
 class MainWindow(QMainWindow):
@@ -399,7 +404,7 @@ class MainWindow(QMainWindow):
         for key in SIDEBAR:
             if key in ("settings", "help"):
                 continue
-            if key == "latex":
+            if key == "math":
                 nl.addSpacing(6)
                 nl.addWidget(hline())
                 nl.addSpacing(6)
@@ -496,7 +501,7 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(pg)
         self.current = key
         self.nav.get(key, self.nav["tools"]).setChecked(True)
-        self.foot.setVisible(key != "read")        # the reader wants the full height
+        self.foot.setVisible(key not in ("read", "math"))        # these pages want the full height
         pg.on_show()
 
     def current_page(self) -> Tool | None:

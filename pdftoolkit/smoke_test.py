@@ -152,5 +152,43 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ptd:
     res = pdftools.batch_run([en, fa], str(ptd / "b"), "watermark", {"text": "DRAFT"})
     check("Batch run", all(ok for _, ok, _ in res))
 
+# ---- math engine, scan cleanup, repair, Word layout
+import mathcore
+r = mathcore.run("integrate", expr="x*exp(-x)", var="x", lower="", upper="")
+check("Math: indefinite integral", "exp" in r.text and bool(r.png))
+check("Math: limit sin(x)/x", mathcore.run("limit", expr="sin(x)/x", var="x", point="0", direction="+-").text == "1")
+check("Math: solve system", "x = 2" in mathcore.run("solve", eqs="x+y=3\nx-y=1", vars_="").text)
+check("Math: ODE", "C1" in mathcore.run("ode", eq="y'' + y = 0", func="y", var="x").text)
+check("Math: plot", bool(mathcore.run("plot", exprs="sin(x)", var="x", lo=-3, hi=3).png))
+n = mathcore.run("orlicz_norms", phi="t^2", fexpr="x", a=0, b=1)       # Luxemburg norm = 1/sqrt(3)
+check("Orlicz: Luxemburg norm of x for t^2", "0.577350" in n.text, n.text.split("\n")[0])
+check("Orlicz: Orlicz norm of x for t^2", "1.154700" in n.text)
+c = mathcore.run("orlicz_conjugate", phi="exp(t)-t-1")
+check("Orlicz: conjugate of e^t-t-1", "log" in c.text)
+check("Orlicz: delta2 holds for t^2, fails for e^t-t-1",
+      "HOLD" in mathcore.run("orlicz_delta2", phi="t^2").text and "FAIL" in mathcore.run("orlicz_delta2", phi="exp(t)-t-1").text)
+with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as qd:
+    qd = Path(qd)
+    import numpy as np
+    from PIL import Image
+    src = str(qd / "e.pdf")
+    core.html_to_pdf("<p>" + "Scan test line. " * 300 + "</p>", src, "a5")
+    with pymupdf.open(src) as d:
+        pix = d[0].get_pixmap(dpi=150, colorspace=pymupdf.csGRAY)
+    im = Image.frombytes("L", (pix.width, pix.height), pix.samples).rotate(3, fillcolor=255, expand=False)
+    im.save(qd / "k.png")
+    with pymupdf.open() as d:
+        pg = d.new_page(width=pix.width * 72 / 150, height=pix.height * 72 / 150)
+        pg.insert_image(pg.rect, filename=str(qd / "k.png"))
+        d.save(str(qd / "k.pdf"))
+    ang = pdftools.clean_scan(str(qd / "k.pdf"), str(qd / "c.pdf"), "bw", dpi=150)
+    check("Clean scan: skew found (3 degrees)", abs(abs(ang[0]) - 3) < 0.6, f"{ang[0]:.2f}")
+    raw = Path(src).read_bytes()
+    (qd / "b.pdf").write_bytes(raw[:-250])
+    old, new, probs = pdftools.repair_pdf(str(qd / "b.pdf"), str(qd / "f.pdf"))
+    check("Repair damaged PDF", pymupdf.open(str(qd / "f.pdf")).page_count >= 1 and bool(probs))
+    pdftools.to_docx(src, str(qd / "l.docx"), "", True, None, "layout")
+    check("PDF to Word (layout engine)", (qd / "l.docx").stat().st_size > 1000)
+
 print("FAILED:", check.failed or "none")
 sys.exit(1 if check.failed else 0)
