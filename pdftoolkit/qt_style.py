@@ -37,7 +37,10 @@ def ui_family() -> str:
 def apply_app_font(app: QApplication, size: float = 10.5) -> None:
     f = QFont(ui_family())
     f.setFamilies([ui_family(), "Inter", "Vazirmatn", "Segoe UI", "Tahoma"])
-    f.setPointSizeF(size)
+    f.setPointSizeF(size + (0.5 if i18n.rtl() else 0))   # Persian letters need a little more size to stay crisp
+    # Unhinted outlines and full anti-aliasing keep Persian curves smooth (hinting makes them jagged on Windows).
+    f.setHintingPreference(QFont.PreferNoHinting)
+    f.setStyleStrategy(QFont.PreferAntialias | QFont.PreferQuality)
     app.setFont(f)
 
 
@@ -85,8 +88,9 @@ def qpixmap(img: Image.Image, dpr: float = 1.0) -> QPixmap:
 
 @lru_cache(maxsize=96)
 def icon_pixmap(name: str, px: int) -> QPixmap:
-    """Colourful tool icon, rendered at 2x so it stays sharp on high-DPI screens."""
-    return qpixmap(art.icon(name, px * 2), 2.0)
+    """Colourful tool icon (vector, rendered at 2x so it stays sharp on high-DPI screens)."""
+    import icons
+    return icons.tile_pixmap(name, px, 2.0)
 
 
 # ---------------------------------------------------------------- style sheet
@@ -118,6 +122,9 @@ def _glyph_png(kind: str, color: str, size: int = 24) -> str:
         c = _hex_rgb(color) + (255,)
         if kind == "check":
             dr.line([(5 * S, 12.5 * S), (10 * S, 17 * S), (19 * S, 7 * S)], fill=c, width=int(2.6 * S), joint="curve")
+        elif kind == "close":
+            dr.line([(7 * S, 7 * S), (17 * S, 17 * S)], fill=c, width=int(2.2 * S))
+            dr.line([(17 * S, 7 * S), (7 * S, 17 * S)], fill=c, width=int(2.2 * S))
         else:
             dr.line([(6 * S, 9 * S), (12 * S, 15 * S), (18 * S, 9 * S)], fill=c, width=int(2.4 * S), joint="curve")
         im.resize((size, size), Image.LANCZOS).save(p)
@@ -131,15 +138,18 @@ def build_qss(theme_name: str, strength: str, rtl: bool) -> str:
     card_a = STRENGTHS.get(strength, 0.8)
     border = mix(P["card"], P["text"], 0.14)
     field = P["field"]
+    fb = mix(field, P["text"], 0.20 if P["dark"] else 0.34)      # visible outline for inputs on every theme
     chk = _glyph_png("check", P["on_accent"])
     arrow = _glyph_png("chev", P["text"])
+    xclose = _glyph_png("close", P["text"])
+    xclose_on = _glyph_png("close", P["on_accent"])
     align = "right" if rtl else "left"
     return f"""
 * {{ font-family: "{fam}", "Inter", "Vazirmatn", "Segoe UI"; color: {P['text']}; outline: 0; }}
 QWidget#root, QStackedWidget, QScrollArea, QScrollArea > QWidget > QWidget {{ background: transparent; }}
 QFrame#sidebar {{ background: {rgba(P['sidebar'], min(1.0, card_a + 0.06))}; border: none; }}
 QFrame#card {{ background: {rgba(P['card'], card_a)}; border-radius: 18px; }}
-QFrame#tile {{ background: {rgba(P['field'], min(1.0, card_a + 0.04))}; border-radius: 16px; }}
+QFrame#tile {{ background: {rgba(P['field'], min(1.0, card_a + 0.04))}; border: 1px solid {fb}; border-radius: 16px; }}
 QFrame#tile:hover {{ background: {rgba(P['hover'], 1.0)}; }}
 QFrame#hero {{ background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 {rgba(mix(P['accent'], '#000000', 0.18), 0.96)},
               stop:1 {rgba(mix(P['accent'], P['bg'], 0.30), 0.82)}); border-radius: 20px; }}
@@ -153,38 +163,51 @@ QLabel[role="good"] {{ color: {P['good']}; }}
 QLabel[role="tileTitle"] {{ font-size: 11.5pt; font-weight: 700; }}
 QLabel#logoText {{ font-size: 15pt; font-weight: 700; }}
 
-QPushButton {{ background: {field}; border: none; border-radius: 11px; padding: 8px 16px; font-weight: 500; }}
+QPushButton {{ background: {field}; border: 1px solid {fb}; border-radius: 11px; padding: 8px 16px; font-weight: 500; }}
 QPushButton:hover {{ background: {P['hover']}; }}
 QPushButton:pressed {{ background: {mix(P['hover'], P['accent'], 0.25)}; }}
-QPushButton[kind="primary"] {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 700; }}
+QPushButton[kind="primary"] {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 700; border: 1px solid {P['accent']}; }}
 QPushButton[kind="primary"]:hover {{ background: {P['accent_hover']}; }}
 QPushButton:disabled {{ background: {field}; color: {P['muted']}; }}
 QPushButton[kind="primary"]:disabled {{ background: {field}; color: {P['muted']}; }}
-QPushButton#nav {{ background: transparent; text-align: {align}; padding: 10px 12px; border-radius: 13px;
+QPushButton#nav {{ background: transparent; border: 1px solid transparent; text-align: {align}; padding: 10px 12px; border-radius: 13px;
                   font-size: 10.5pt; font-weight: 500; }}
 QPushButton#nav:hover {{ background: {P['hover']}; }}
 QPushButton#nav:checked {{ background: {P['accent']}; }}
 QLabel#navText {{ font-size: 10.5pt; font-weight: 500; }}
 QLabel#navText[active="true"] {{ color: {P['on_accent']}; font-weight: 700; }}
-QPushButton[pill="true"] {{ background: {field}; border-radius: 15px; padding: 7px 22px; min-width: 76px; }}
+QPushButton[pill="true"] {{ background: {field}; border: 1px solid {fb}; border-radius: 15px; padding: 7px 22px; min-width: 76px; }}
 QPushButton[pill="true"]:checked {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 700; }}
 QPushButton[pill="true"]:hover:!checked {{ background: {P['hover']}; }}
 QToolButton {{ background: transparent; border: none; border-radius: 12px; padding: 6px; }}
 QToolButton:hover {{ background: {P['hover']}; }}
+QToolButton[tb="true"] {{ padding: 7px; border-radius: 10px; border: 1px solid transparent; }}
+QToolButton[tb="true"]:hover {{ background: {P['hover']}; }}
+QToolButton[tb="true"]:checked {{ background: {rgba(P['accent'], 0.24)}; border: 1px solid {P['accent']}; }}
+QTabBar {{ background: transparent; }}
+QTabBar::tab {{ background: {field}; border: 1px solid {fb}; border-radius: 10px; padding: 7px 28px 7px 14px; margin: 0 6px 2px 0;
+               min-width: 90px; max-width: 260px; }}
+QTabBar::tab:hover:!selected {{ background: {P['hover']}; }}
+QTabBar::tab:selected {{ background: {P['accent']}; color: {P['on_accent']}; border-color: {P['accent']}; }}
+QTabBar::close-button {{ image: url({xclose}); subcontrol-position: right; margin: 0 6px 0 0; width: 14px; height: 14px; }}
+QTabBar::close-button:selected {{ image: url({xclose_on}); }}
 QToolButton[swatch="true"] {{ border: 2px solid transparent; background: {field}; }}
 QToolButton[swatch="true"]:checked {{ border: 2px solid {P['accent']}; }}
-QToolButton[sym="true"] {{ background: {field}; border-radius: 8px; padding: 4px; }}
+QToolButton[sym="true"] {{ background: {field}; border: 1px solid {fb}; border-radius: 8px; padding: 4px; }}
 QToolButton[sym="true"]:hover {{ background: {P['accent']}; color: {P['on_accent']}; }}
 
-QLineEdit, QPlainTextEdit, QTextEdit, QTextBrowser, QListWidget {{
-    background: {field}; border: 1.5px solid transparent; border-radius: 11px; padding: 6px 10px;
+QLineEdit, QPlainTextEdit, QTextEdit, QTextBrowser, QListWidget, QTreeWidget {{
+    background: {field}; border: 1.5px solid {fb}; border-radius: 11px; padding: 6px 10px;
     selection-background-color: {P['accent']}; selection-color: {P['on_accent']}; }}
 QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {{ border: 1.5px solid {P['accent']}; }}
-QListWidget {{ padding: 4px; }}
+QListWidget, QTreeWidget {{ padding: 4px; }}
+QTreeWidget::item {{ padding: 5px 6px; border-radius: 7px; }}
+QTreeWidget::item:hover {{ background: {P['hover']}; }}
+QTreeWidget::item:selected {{ background: {P['accent']}; color: {P['on_accent']}; }}
 QListWidget::item {{ padding: 7px 10px; border-radius: 8px; }}
 QListWidget::item:hover {{ background: {P['hover']}; }}
 QListWidget::item:selected {{ background: {P['accent']}; color: {P['on_accent']}; }}
-QComboBox {{ background: {field}; border: none; border-radius: 11px; padding: 7px 14px; min-height: 22px; }}
+QComboBox {{ background: {field}; border: 1.5px solid {fb}; border-radius: 11px; padding: 7px 14px; min-height: 22px; }}
 QComboBox:hover {{ background: {P['hover']}; }}
 QComboBox::drop-down {{ border: none; width: 28px; }}
 QComboBox::down-arrow {{ image: url({arrow}); width: 14px; height: 14px; }}
@@ -194,7 +217,7 @@ QCheckBox {{ spacing: 10px; background: transparent; }}
 QCheckBox::indicator {{ width: 20px; height: 20px; border-radius: 7px; border: 2px solid {P['muted']}; background: transparent; }}
 QCheckBox::indicator:hover {{ border-color: {P['accent']}; }}
 QCheckBox::indicator:checked {{ background: {P['accent']}; border-color: {P['accent']}; image: url({chk}); }}
-QProgressBar {{ background: {field}; border: none; border-radius: 5px; max-height: 10px; min-height: 10px; text-align: center; color: transparent; }}
+QProgressBar {{ background: {field}; border: 1px solid {fb}; border-radius: 5px; max-height: 10px; min-height: 10px; text-align: center; color: transparent; }}
 QProgressBar::chunk {{ background: {P['accent']}; border-radius: 5px; }}
 QScrollBar:vertical {{ width: 12px; background: transparent; margin: 2px; }}
 QScrollBar::handle:vertical {{ background: {P['hover']}; border-radius: 5px; min-height: 36px; }}

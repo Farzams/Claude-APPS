@@ -24,7 +24,7 @@ import theme
 from i18n import tr, trf
 from qt_common import Card, JobRunner, Tool, hline, mkbutton, mkcheck, mkcombo, mklabel
 from qt_pages import (CompressTool, ConvertTool, ExtractTool, ImagesTool, MergeTool, OcrTool, PagesTool, SplitTool)
-from qt_read import ReadTool
+from qt_reader import ReaderTool
 from qt_science import FormulaTool, LatexTool, SymbolPalette, insert_snippet
 
 
@@ -241,7 +241,7 @@ class HelpTool(Tool):
 
 
 # ------------------------------------------------------------------ main window
-PAGES = [("home", "Home", HomeTool), ("read", "Read", ReadTool), ("ocr", "OCR", OcrTool),
+PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("ocr", "OCR", OcrTool),
          ("extract", "Extract text", ExtractTool), ("convert", "Convert to PDF", ConvertTool),
          ("split", "Split", SplitTool), ("merge", "Merge", MergeTool), ("compress", "Compress", CompressTool),
          ("images", "Images to PDF", ImagesTool), ("pages", "Page tools", PagesTool),
@@ -382,6 +382,7 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(pg)
         self.current = key
         self.nav[key].setChecked(True)
+        self.foot.setVisible(key != "read")        # the reader wants the full height
         pg.on_show()
 
     def current_page(self) -> Tool | None:

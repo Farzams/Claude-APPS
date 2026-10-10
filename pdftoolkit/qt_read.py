@@ -1,4 +1,4 @@
-"""Read tab: PDF viewer with Persian-aware search. Also the preview pane used by the LaTeX page."""
+"""Small single-page PDF view (used for the LaTeX preview)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (QFileDialog, QHBoxLayout, QLabel, QLineEdit, QScr
 import core
 import i18n
 from i18n import tr, trf
-from qt_common import Tool, mkbutton, mklabel
+from qt_common import mkbutton, mklabel
 
 
 class PdfView(QWidget):
@@ -130,67 +130,3 @@ class PdfView(QWidget):
     def _refit(self):
         if self.fit and self.reader:
             self.fit_width()
-
-
-class ReadTool(Tool):
-    key, icon, title = "read", "read", "Read"
-    subtitle = "View any PDF. Persian (Farsi), Arabic and English text can be searched and copied."
-
-    def build(self):
-        top = QHBoxLayout()
-        top.setSpacing(8)
-        top.addWidget(mkbutton("Open PDF…", self.open_dialog, "primary"))
-        self.name = mklabel("No file open — or drop a PDF here", "muted")
-        top.addWidget(self.name, 1)
-        self.q = QLineEdit()
-        self.q.setPlaceholderText(tr("Search"))
-        self.q.setMinimumWidth(200)
-        self.q.returnPressed.connect(lambda: self.find())
-        top.addWidget(self.q)
-        top.addWidget(mkbutton("Find", self.find))
-        self.hit = mklabel("", "muted", translate=False)
-        top.addWidget(self.hit)
-        top.addWidget(mkbutton("Copy text", self.copy_text))
-        self.body.addLayout(top)
-        self.view = PdfView()
-        self.body.addWidget(self.view, 1)
-        self.hits: list[int] = []
-        self._last_q = None
-
-    def drop(self, paths):
-        self.open_pdf(paths[0])
-
-    def open_dialog(self):
-        p, _ = QFileDialog.getOpenFileName(self, "", "", "PDF (*.pdf)")
-        if p:
-            self.open_pdf(p)
-
-    def open_pdf(self, path: str):
-        if not self.view.open(path):
-            return self.win.warn(tr("Cannot open"), getattr(self.view, "error", ""))
-        self.hits, self._last_q = [], None
-        self.view.query = ""
-        self.name.setText(Path(path).name)
-        self.hit.setText("")
-
-    def find(self):
-        q = self.q.text().strip()
-        if not self.view.reader or not q:
-            return
-        if not self.hits or self._last_q != q:
-            self._last_q = q
-            self.hits = self.view.reader.search(q)
-            self.view.query = q
-        if not self.hits:
-            self.hit.setText(tr("not found"))
-            return
-        later = [p for p in self.hits if p > self.view.page]
-        target = later[0] if later else self.hits[0]
-        self.view.go(target)
-        self.hit.setText(f"{target + 1}  ({self.hits.index(target) + 1}/{len(self.hits)})")
-
-    def copy_text(self):
-        if self.view.reader:
-            from PySide6.QtWidgets import QApplication
-            QApplication.clipboard().setText(self.view.reader.text(self.view.page))
-            self.win.toast("Page text copied")

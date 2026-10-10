@@ -173,3 +173,25 @@ FA.update({"No picture": "بدون تصویر", "Subtle": "ملایم", "Medium"
            "Search: integral, alpha, ∂, norm…": "جست‌وجو: integral، alpha، ∂، norm…"})
 
 FA.update({"EPUB, MOBI, FB2, DjVu, XPS, CBZ, HTML, TXT, DOCX, TEX and more.": "EPUB، MOBI، FB2، DjVu، XPS، CBZ، HTML، TXT، DOCX، TEX و بیشتر."})
+
+# ---- reader
+FA.update({
+    "Sidebar": "نوار کناری", "Open a book or document… (Ctrl+O)": "باز کردن کتاب یا سند… (Ctrl+O)",
+    "Previous page": "صفحهٔ قبل", "Next page": "صفحهٔ بعد", "Zoom out (Ctrl+−)": "کوچک‌نمایی (Ctrl+−)",
+    "Zoom in (Ctrl++)": "بزرگ‌نمایی (Ctrl++)", "Fit width": "هم‌عرض پنجره", "Fit whole page": "کل صفحه",
+    "Two pages side by side": "دو صفحه کنار هم", "Right-to-left book (manga, Persian)": "کتاب راست‌به‌چپ (مانگا، فارسی)",
+    "Select text (off = drag to scroll)": "انتخاب متن (خاموش = کشیدن برای پیمایش)",
+    "Reading colours: light / sepia / night": "رنگ مطالعه: روشن / کاغذی / شب",
+    "Smaller text": "متن کوچک‌تر", "Larger text": "متن بزرگ‌تر", "Previous result (Shift+F3)": "نتیجهٔ قبلی (Shift+F3)",
+    "Next result (F3)": "نتیجهٔ بعدی (F3)", "Add bookmark (Ctrl+D)": "افزودن نشانک (Ctrl+D)",
+    "Full screen (F11)": "تمام‌صفحه (F11)", "Pages": "صفحه‌ها", "Contents": "فهرست", "Bookmarks": "نشانک‌ها",
+    "Search results": "نتایج جست‌وجو", "Open a book or document": "یک کتاب یا سند را باز کنید",
+    "Drop a file here, or press Ctrl+O. Persian, Arabic and English text can be searched and copied.":
+        "فایل را اینجا رها کنید یا Ctrl+O را بزنید. متن فارسی، عربی و انگلیسی قابل جست‌وجو و کپی است.",
+    "Recent": "اخیر", "Opening…": "در حال باز کردن…", "Converting…": "در حال تبدیل…", "Preparing…": "در حال آماده‌سازی…",
+    "Still opening the previous file…": "فایل قبلی هنوز در حال باز شدن است…", "Password": "گذرواژه",
+    "This file is password protected. Password:": "این فایل گذرواژه دارد. گذرواژه:", "Unsupported file": "فایل پشتیبانی نمی‌شود",
+    "{n} page(s) found": "{n} صفحه پیدا شد", "Searching…": "در حال جست‌وجو…", "Text copied": "متن کپی شد",
+    "Copy selected text": "کپی متن انتخاب‌شده", "Copy page text": "کپی متن صفحه", "Add bookmark": "افزودن نشانک",
+    "Open the folder": "باز کردن پوشه", "Bookmark added": "نشانک افزوده شد",
+})

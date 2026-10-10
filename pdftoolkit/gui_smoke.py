@@ -56,6 +56,35 @@ win.show_palette()
 app.processEvents()
 win._palette.show_cat("Analysis")
 app.processEvents()
+# reader: open a PDF, an EPUB-like text file and a Persian search, then close
+import core  # noqa: E402
+win.show_page("read")
+rd = win.page("read")
+pdf = str(Path(tmp, "r.pdf"))
+core.html_to_pdf("<h1>Reader test</h1><p>Hello سلام دنیا</p>", pdf, "a5")
+txt = Path(tmp, "r.txt")
+txt.write_text("سلام دنیا\nhello\n", encoding="utf-8")
+for f in (pdf, str(txt)):
+    n = len(rd.docs)
+    rd.open_path(f)
+    for _ in range(300):
+        app.processEvents()
+        time.sleep(0.02)
+        if len(rd.docs) > n:
+            break
+    assert len(rd.docs) > n, f"reader did not open {f}"
+rd.q.setText("دنیا")
+rd.start_search()
+for _ in range(100):
+    app.processEvents()
+    time.sleep(0.02)
+assert rd.cur.hits, "Persian search found nothing"
+rd.cycle_mode()
+for _ in range(20):
+    app.processEvents()
+    time.sleep(0.02)
+for i in range(len(rd.docs) - 1, -1, -1):
+    rd.close_tab(i)
 shot = win.grab()
 assert not shot.isNull() and shot.width() > 500
 print(f"PASS gui {lang}: {len(win.pages)} pages, theme+picture switching ok, {time.time() - t0:.1f}s")
