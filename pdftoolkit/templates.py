@@ -134,9 +134,9 @@ PERSIAN = r"""\documentclass[12pt,a4paper]{article}
 \end{abstract}
 
 \section{مقدمه}
-فضاهای اورلیچ تعمیمی از فضاهای $L^p$ هستند. نرم لوکزامبورگ تابع $f$ برابر است با
+فضاهای $L^p$ مجموعهٔ تابع‌هایی هستند که نرم زیر برایشان متناهی است:
 \[
-  \|f\|_{(\Phi)}=\inf\Bigl\{k>0:\int_\Omega \Phi\Bigl(\tfrac{|f|}{k}\Bigr)\,d\mu\le 1\Bigr\}.
+  \|f\|_{p}=\Bigl(\int_\Omega |f|^{p}\,d\mu\Bigr)^{1/p}.
 \]
 
 \begin{theorem}

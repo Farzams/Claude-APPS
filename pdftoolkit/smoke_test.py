@@ -9,7 +9,7 @@ import pypandoc
 sys.path.insert(0, str(Path(__file__).parent))
 import core  # noqa: E402
 
-FA = ["فضاهای اورلیچ تعمیمی از فضاهای هستند.", "جبرهای باناخ و کاربردهای آن‌ها در نظریه عملگرها بررسی می‌شود.",
+FA = ["فضاهای برداری تعمیمی از صفحه و فضا هستند.", "جبرهای خطی و کاربردهای آن‌ها در علوم بررسی می‌شود.",
       "قضیه ۱. هر عملگر خطی کراندار روی فضای باناخ پیوسته است."]
 
 
@@ -50,7 +50,7 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
     check("Persian text searchable after OCR", hits == [0], str(hits))
     core.extract_text(str(td / "ocr.pdf"), str(td / "o.txt"), "txt")
     txt = (td / "o.txt").read_text(encoding="utf-8-sig")
-    check("Persian text extracted in order", "فضاهای اورلیچ" in txt.replace("ج", "چ") or "باناخ" in txt, txt[:60])
+    check("Persian text extracted in order", "فضاهای برداری" in txt or "جبرهای خطی" in txt, txt[:60])
     # DOCX with Persian -> PDF
     import pypandoc
     from PIL import Image
