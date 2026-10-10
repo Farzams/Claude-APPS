@@ -160,13 +160,10 @@ check("Math: limit sin(x)/x", mathcore.run("limit", expr="sin(x)/x", var="x", po
 check("Math: solve system", "x = 2" in mathcore.run("solve", eqs="x+y=3\nx-y=1", vars_="").text)
 check("Math: ODE", "C1" in mathcore.run("ode", eq="y'' + y = 0", func="y", var="x").text)
 check("Math: plot", bool(mathcore.run("plot", exprs="sin(x)", var="x", lo=-3, hi=3).png))
-n = mathcore.run("orlicz_norms", phi="t^2", fexpr="x", a=0, b=1)       # Luxemburg norm = 1/sqrt(3)
-check("Orlicz: Luxemburg norm of x for t^2", "0.577350" in n.text, n.text.split("\n")[0])
-check("Orlicz: Orlicz norm of x for t^2", "1.154700" in n.text)
-c = mathcore.run("orlicz_conjugate", phi="exp(t)-t-1")
-check("Orlicz: conjugate of e^t-t-1", "log" in c.text)
-check("Orlicz: delta2 holds for t^2, fails for e^t-t-1",
-      "HOLD" in mathcore.run("orlicz_delta2", phi="t^2").text and "FAIL" in mathcore.run("orlicz_delta2", phi="exp(t)-t-1").text)
+d = mathcore.run("diff", expr="x^3*sin(x)", var="x", order=1)
+check("Math: derivative", "x**2" in d.text or "x^2" in d.text)
+check("Math: definite integral", "sqrt(pi)" in mathcore.run("integrate", expr="exp(-x^2)", var="x", lower="-oo", upper="oo").text)
+check("Math: matrix determinant", mathcore.run("matrix", text="[[1,2],[3,4]]", op="det").text == "-2")
 with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as qd:
     qd = Path(qd)
     import numpy as np

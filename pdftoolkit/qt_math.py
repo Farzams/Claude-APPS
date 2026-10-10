@@ -1,4 +1,4 @@
-"""Math page: exact calculator (SymPy), plots (Matplotlib) and helpers for Orlicz spaces."""
+"""Math page: exact calculator (SymPy) and plots (Matplotlib)."""
 from __future__ import annotations
 
 from PySide6.QtCore import QObject, QRunnable, Qt, QThreadPool, Signal
@@ -54,22 +54,9 @@ GROUPS = [
         ("Plot functions", "plot", "exprs", "Function(s), one per line", "sin(x)\nx^2/10",
          [("var", "Variable", "x", None), ("lo", "x from", "-6", None), ("hi", "x to", "6", None)], ["sin(x)\ncos(x)", "x^3 - 3x", "exp(-x^2)"]),
     ]),
-    ("Orlicz spaces", [
-        ("Is Φ a Young / N-function?", "orlicz_young", "phi", "Φ(t), t ≥ 0", "t^2*log(1+t)",
-         [("var", "Variable", "t", None)], ["t^2", "t^2*log(1+t)", "exp(t)-t-1", "cosh(t)-1", "t^3/3", "sqrt(t)"]),
-        ("Complementary function Ψ (conjugate)", "orlicz_conjugate", "phi", "Φ(t)", "exp(t)-t-1",
-         [("var", "Variable", "t", None)], ["t^2", "t^3/3", "exp(t)-t-1", "cosh(t)-1"]),
-        ("Δ₂-condition", "orlicz_delta2", "phi", "Φ(t)", "t^2*log(1+t)", [("var", "Variable", "t", None)],
-         ["t^2", "t^2*log(1+t)", "exp(t)-t-1", "t^3"]),
-        ("Luxemburg and Orlicz norm of f", "orlicz_norms", "phi", "Φ(t)", "t^2",
-         [("fexpr", "f(x)", "x", None), ("a", "Interval from", "0", None), ("b", "to", "1", None), ("var", "Variable of Φ", "t", None)],
-         ["t^2", "t", "exp(t)-1", "t^2*log(1+t)"]),
-        ("Plot Φ and Ψ", "orlicz_plot", "phi", "Φ(t)", "t^2",
-         [("var", "Variable", "t", None), ("hi", "t up to", "4", None)], ["t^2", "t^3/3", "exp(t)-t-1"]),
-    ]),
 ]
-NUMERIC = {"digits": int, "order": int, "lo": float, "hi": float, "a": float, "b": float}
-DARK_OPS = {"plot", "orlicz_plot"}
+NUMERIC = {"digits": int, "order": int, "lo": float, "hi": float}
+DARK_OPS = {"plot"}
 
 
 class _Sig(QObject):
@@ -91,7 +78,7 @@ class _Job(QRunnable):
 
 class MathTool(Tool):
     key, icon, title = "math", "math", "Math"
-    subtitle = "Algebra, calculus, equations, matrices, plots — and helpers for Orlicz spaces. Results as LaTeX."
+    subtitle = "Algebra, calculus, equations, matrices and plots. Results as LaTeX."
 
     def build(self):
         self._busy = False

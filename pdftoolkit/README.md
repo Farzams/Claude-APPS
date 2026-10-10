@@ -25,9 +25,9 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - Settings are stored in `%APPDATA%\PDFToolkit\settings.json`
 
 ## Science tools
-- **LaTeX**: write or open `.tex`, compile with the bundled **Tectonic** (XeTeX; an installed XeLaTeX/MiKTeX/TeX Live is used if Tectonic is absent), preview the PDF, errors listed with line numbers and plain-words hints; 8 templates (article, Orlicz notes, thesis, Beamer, Persian + English, chemistry, physics, blank)
+- **LaTeX**: write or open `.tex`, compile with the bundled **Tectonic** (XeTeX; an installed XeLaTeX/MiKTeX/TeX Live is used if Tectonic is absent), preview the PDF, errors listed with line numbers and plain-words hints; 7 templates (article, thesis, Beamer, Persian + English, chemistry, physics, blank)
 - **Formula**: one LaTeX formula to PNG / SVG / PDF with transparent background and colour choice
-- **Symbols**: 300+ symbols (Greek, operators, analysis incl. Orlicz notation, algebra, physics, chemistry `\ce{}`/`\chemfig`, units) inserted at the cursor
+- **Symbols**: 300+ symbols (Greek, operators, analysis, algebra, physics, chemistry `\ce{}`/`\chemfig`, units) inserted at the cursor
 - **Convert to PDF** typesets equations in Word/Markdown/ODT/EPUB (via Pandoc + LaTeX), also in Persian documents; `.tex` converts directly; Import turns Word/Markdown into `.tex`
 - Tectonic (MIT) runs as a separate program; its package cache is pre-filled at build time so common packages work offline, others are fetched on first use
 
@@ -39,7 +39,7 @@ Each tool runs as a separate, unmodified program. Calibre is optional and only n
 - openpyxl (MIT) is used for Excel export
 
 ## v6.1 additions
-- **Math** page (SymPy, NumPy, Matplotlib): calculator, calculus, equations/ODEs, matrices, plots, LaTeX output; runs in a separate process with a 90 s limit. **Orlicz helpers**: Young/N-function check, complementary function, Δ₂ test, Luxemburg and Orlicz (Amemiya) norms (numerical, checked against known values)
+- **Math** page (SymPy, NumPy, Matplotlib): calculator, calculus, equations/ODEs, matrices, plots, LaTeX output; runs in a separate process with a 90 s limit.
 - **Spell-check** (English SCOWL en_US, MIT/BSD; Persian Lilak, Apache-2.0; via spylls, MPL-2.0) in the LaTeX editor, aware of LaTeX commands, math and comments
 - **Clean scans** (OpenCV: deskew, shadows, denoise), **Repair & optimize** (pikepdf/qpdf), Word export with **pdf2docx** layout engine for left-to-right documents (Persian uses the flowing-text engine)
 - **Separate windows from one install**: PDF Toolkit, Reader, Math Studio (`--mode reader|math`); Inno Setup creates the shortcuts and an optional "Open with" entry for book formats

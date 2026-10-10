@@ -377,7 +377,7 @@ class FormulaTool(Tool):
     key, icon, title = "formula", "formula", "Formula"
     subtitle = "Type a formula in LaTeX and get a crisp image (PNG, SVG or PDF) for slides, Word or papers."
     EXAMPLES = {
-        "Luxemburg norm (Orlicz)": r"\|f\|_{(\Phi)}=\inf\Bigl\{k>0:\int_\Omega \Phi\Bigl(\frac{|f|}{k}\Bigr)\,d\mu\le 1\Bigr\}",
+        "Lp norm": r"\|f\|_{p}=\Bigl(\int_\Omega |f|^{p}\,d\mu\Bigr)^{1/p}",
         "Quadratic formula": r"x=\frac{-b\pm\sqrt{b^{2}-4ac}}{2a}",
         "Fourier transform": r"\widehat{f}(\xi)=\int_{\mathbb{R}^{n}} f(x)\,e^{-2\pi i\,x\cdot\xi}\,dx",
         "Cauchy–Schwarz inequality": r"\left|\langle x,y\rangle\right|\le\|x\|\,\|y\|",

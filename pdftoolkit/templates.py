@@ -52,60 +52,6 @@ By Theorem~\ref{thm:main} we obtain
 \end{document}
 """
 
-ORLICZ = r"""\documentclass[11pt,a4paper]{article}
-\usepackage[margin=2.5cm]{geometry}
-\usepackage{amsmath,amssymb,amsthm,mathtools,bm}
-\usepackage[hidelinks]{hyperref}
-""" + THEOREMS + r"""
-% ---- notation for Orlicz spaces and algebras --------------------------------
-\newcommand{\R}{\mathbb{R}}\newcommand{\C}{\mathbb{C}}\newcommand{\N}{\mathbb{N}}
-\newcommand{\norm}[1]{\left\lVert #1\right\rVert}
-\newcommand{\abs}[1]{\left\lvert #1\right\rvert}
-\newcommand{\LPhi}{L^{\Phi}}
-\newcommand{\Lux}[1]{\norm{#1}_{(\Phi)}}      % Luxemburg norm
-\newcommand{\Orl}[1]{\norm{#1}_{\Phi}}        % Orlicz (Amemiya) norm
-\newcommand{\Dtwo}{\Delta_2}\newcommand{\Ntwo}{\nabla_2}
-\DeclareMathOperator{\supp}{supp}
-\DeclareMathOperator{\esssup}{ess\,sup}
-\newcommand{\Mod}[1]{\rho_{\Phi}(#1)}         % modular
-\newcommand{\conv}{\ast}
-
-\title{Notes on Orlicz spaces and Orlicz algebras}
-\author{Author Name}
-\date{\today}
-
-\begin{document}
-\maketitle
-
-\section{Young functions and Orlicz spaces}
-\begin{definition}
-A convex, left-continuous function $\Phi\colon[0,\infty)\to[0,\infty]$ with $\Phi(0)=0$ that is
-neither identically $0$ nor identically $\infty$ is a \emph{Young function}.
-\end{definition}
-
-Let $(\Omega,\mu)$ be a measure space. The \emph{Orlicz space} is
-\[
-  \LPhi(\mu)=\Bigl\{ f \text{ measurable} : \Mod{f/k}=\int_\Omega \Phi\!\Bigl(\tfrac{\abs{f}}{k}\Bigr)\,d\mu<\infty \text{ for some } k>0 \Bigr\},
-\]
-with the Luxemburg norm
-\[
-  \Lux{f}=\inf\Bigl\{k>0 : \int_\Omega \Phi\!\Bigl(\tfrac{\abs{f}}{k}\Bigr)\,d\mu\le 1\Bigr\}.
-\]
-
-\begin{proposition}
-If $\Phi$ satisfies the $\Dtwo$-condition, then $\LPhi$ is separable and the simple functions are dense.
-\end{proposition}
-
-\section{Convolution}
-For a locally compact group $G$ and $f,g\in\LPhi(G)$ we study when
-$(f\conv g)(x)=\int_G f(y)\,g(y^{-1}x)\,dy$ defines an algebra product on $\LPhi(G)$.
-
-\begin{remark}
-Replace this text with your own results.
-\end{remark}
-
-\end{document}
-"""
 
 REPORT = r"""\documentclass[12pt,a4paper]{report}
 \usepackage[margin=3cm]{geometry}
@@ -134,7 +80,7 @@ Statement of the main theorem.
 \end{theorem}
 
 \begin{thebibliography}{9}
-\bibitem{rr} M.~M. Rao and Z.~D. Ren, \emph{Theory of Orlicz Spaces}, Marcel Dekker, 1991.
+\bibitem{knuth} D.~E. Knuth, \emph{The \TeX book}, Addison-Wesley, 1984.
 \end{thebibliography}
 
 \end{document}
@@ -280,7 +226,6 @@ Hello, $e^{i\pi}+1=0$.
 
 TEMPLATES = {
     "Article (theorems, math)": ARTICLE,
-    "Orlicz spaces notes": ORLICZ,
     "Thesis / report": REPORT,
     "Slides (Beamer)": BEAMER,
     "Persian + English article (XeLaTeX)": PERSIAN,

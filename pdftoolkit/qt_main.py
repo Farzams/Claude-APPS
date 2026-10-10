@@ -175,7 +175,7 @@ class ToolsTool(Tool):
                                 ("redact", "redact", "Redact (black out)", "Permanently remove words and areas"),
                                 ("hidden", "hidden", "Remove hidden data", "Clean metadata, comments, attachments"),
                                 ("compare", "compare", "Compare PDFs", "See what changed between two versions")]),
-        ("Science", [("math", "math", "Math", "Calculator, plots and Orlicz-space helpers (SymPy)"),
+        ("Science", [("math", "math", "Math", "Calculator, equations, matrices and plots (SymPy)"),
                      ("formulaocr", "formulaocr", "Formula from picture", "Photo or screenshot of a formula to LaTeX (add-on)"),
                      ("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
                      ("formula", "formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]),

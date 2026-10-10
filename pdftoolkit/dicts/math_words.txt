@@ -1,4 +1,3 @@
-Orlicz
 Banach
 Hilbert
 Lebesgue
@@ -9,11 +8,6 @@ Riesz
 Minkowski
 Hölder
 Jensen
-Luxemburg
-Amemiya
-Nakano
-Musielak
-Zygmund
 Kolmogorov
 Borel
 Radon
@@ -65,7 +59,6 @@ Krein
 Milman
 Alaoglu
 Mazur
-Orlicz-Sobolev
 submultiplicative
 supermultiplicative
 isometric
@@ -84,14 +77,11 @@ nonzero
 reflexivity
 separability
 uniformly
-Δ
-Young
 Boyd
 Marcus
 Lorentz
 Cesàro
 Bergman
-Hardy-Orlicz
 Kuratowski
 Zorn
 Dirac
@@ -118,7 +108,6 @@ Bernoulli
 Gaussian
 Brownian
 Sharpe
-اورلیچ
 باناخ
 هیلبرت
 لبگ
@@ -126,10 +115,6 @@ Sharpe
 ریس
 مینکوفسکی
 هلدر
-یانگ
-لوکزامبورگ
-آمیامیا
-نانوکی
 کوشی
 شوارتس
 فوریه

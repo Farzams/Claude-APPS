@@ -76,8 +76,8 @@ else:
     jobs.append(("tikz libraries", doc("\\documentclass{article}\\usepackage{tikz}" + "".join("\\usetikzlibrary{%s}" % l for l in TIKZLIBS))))
     jobs.append(("pgfplots libraries", doc("\\documentclass{article}\\usepackage{pgfplots}" + "".join("\\usepgfplotslibrary{%s}" % l for l in PGFPLOTSLIBS))))
     jobs.append(("amsthm + thmtools", doc("\\documentclass{article}\\usepackage{amsthm,thmtools}\\newtheorem{thm}{Theorem}", "\\begin{thm}x\\end{thm}")))
-    jobs.append(("orlicz-style article", doc("\\documentclass[11pt]{amsart}\\usepackage{amsmath,amssymb,mathtools,bm,mathrsfs,enumitem,hyperref,cleveref}",
-                                           "$\\|f\\|_{\\Phi}=\\inf\\{k>0:\\int\\Phi(|f|/k)\\le1\\}$")))
+    jobs.append(("math article", doc("\\documentclass[11pt]{amsart}\\usepackage{amsmath,amssymb,mathtools,bm,mathrsfs,enumitem,hyperref,cleveref}",
+                                    "$\\|f\\|_{p}=(\\int|f|^p)^{1/p}$")))
 
 eng = texengine.find_engine("tectonic")
 print("engine:", eng.label if eng else None, "cache:", texengine.cache_dir())

@@ -123,7 +123,7 @@ FA.update({
     "LaTeX formula to PNG / SVG / PDF": "فرمول لاتک به PNG / SVG / PDF",
     "New from template…": "جدید از قالب…", "Open…": "باز کردن…", "Save": "ذخیره", "Import…": "درون‌ریزی…",
     "Compile ▶": "کامپایل ▶", "No LaTeX engine": "موتور لاتک نیست",
-    "Article (theorems, math)": "مقاله (قضیه، ریاضی)", "Orlicz spaces notes": "یادداشت‌های فضاهای اورلیچ",
+    "Article (theorems, math)": "مقاله (قضیه، ریاضی)",
     "Thesis / report": "پایان‌نامه / گزارش", "Slides (Beamer)": "اسلاید (Beamer)",
     "Persian + English article (XeLaTeX)": "مقالهٔ فارسی + انگلیسی (XeLaTeX)",
     "Chemistry (mhchem, chemfig)": "شیمی (mhchem، chemfig)", "Physics (siunitx, physics, plots)": "فیزیک (siunitx، physics، نمودار)",
@@ -157,8 +157,7 @@ FA.update({
     "Transparent background": "زمینهٔ شفاف", "Render": "ساخت تصویر", "Save…": "ذخیره…", "Copy LaTeX": "کپی لاتک",
     "Rendering…": "در حال ساخت…", "LaTeX copied": "لاتک کپی شد",
     "Could not render this formula. See the log below.": "این فرمول ساخته نشد. گزارش پایین را ببینید.",
-    "Rendered. Use Save… for PNG, SVG or PDF.": "ساخته شد. برای PNG، SVG یا PDF «ذخیره…» را بزنید.",
-    "Luxemburg norm (Orlicz)": "نرم لوکزامبورگ (اورلیچ)", "Quadratic formula": "فرمول درجهٔ دوم",
+    "Rendered. Use Save… for PNG, SVG or PDF.": "ساخته شد. برای PNG، SVG یا PDF «ذخیره…» را بزنید.", "Quadratic formula": "فرمول درجهٔ دوم",
     "Fourier transform": "تبدیل فوریه", "Cauchy–Schwarz inequality": "نامساوی کوشی–شوارتس",
     "Schrödinger equation": "معادلهٔ شرودینگر", "Maxwell: Gauss's law": "ماکسول: قانون گاوس",
     "Nernst equation": "معادلهٔ نرنست", "Methane combustion": "سوختن متان", "Ammonia equilibrium": "تعادل آمونیاک",
@@ -346,19 +345,16 @@ FA.update({
 })
 
 FA.update({
-    "Math": "ریاضی", "Calculator, plots and Orlicz-space helpers (SymPy)": "ماشین‌حساب، نمودار و ابزارهای فضاهای اورلیچ (SymPy)",
-    "Algebra, calculus, equations, matrices, plots — and helpers for Orlicz spaces. Results as LaTeX.": "جبر، حساب دیفرانسیل و انتگرال، معادله، ماتریس، نمودار — و ابزارهایی برای فضاهای اورلیچ. نتیجه به‌صورت لاتک.",
-    "What to do": "کار موردنظر", "Calculate": "محاسبه", "Algebra": "جبر", "Calculus": "حسابان", "Equations": "معادله‌ها", "Matrices": "ماتریس‌ها", "Plot": "نمودار", "Orlicz spaces": "فضاهای اورلیچ",
+    "Math": "ریاضی",
+    "What to do": "کار موردنظر", "Calculate": "محاسبه", "Algebra": "جبر", "Calculus": "حسابان", "Equations": "معادله‌ها", "Matrices": "ماتریس‌ها", "Plot": "نمودار",
     "Evaluate (exact and numeric)": "محاسبهٔ دقیق و عددی", "Simplify": "ساده‌سازی", "Expand": "بسط", "Factor": "تجزیه", "Partial fractions": "کسرهای جزئی",
     "Derivative": "مشتق", "Integral": "انتگرال", "Limit": "حد", "Taylor series": "سری تیلور", "Sum": "مجموع",
     "Solve equation or system": "حل معادله یا دستگاه", "Differential equation": "معادلهٔ دیفرانسیل", "Matrix operation": "عملیات ماتریسی", "Plot functions": "رسم تابع",
-    "Is Φ a Young / N-function?": "آیا Φ تابع یانگ / N است؟", "Complementary function Ψ (conjugate)": "تابع مکمل Ψ (مزدوج)",
-    "Δ₂-condition": "شرط Δ₂", "Luxemburg and Orlicz norm of f": "نرم لوکزامبورگ و اورلیچ تابع f", "Plot Φ and Ψ": "رسم Φ و Ψ",
     "Expression": "عبارت", "Function": "تابع", "Term": "جمله", "Digits": "رقم‌ها", "Variable": "متغیر", "Order": "مرتبه",
     "From (empty = indefinite)": "از (خالی = نامعین)", "To": "تا", "Approaches (e.g. 0, oo)": "میل می‌کند به (مثلاً 0 یا oo)", "From": "از", "Around": "حول", "Terms": "جمله‌ها",
     "To (e.g. oo)": "تا (مثلاً oo)", "Equation(s), one per line": "معادله(ها)، هر خط یکی", "Unknowns (comma, optional)": "مجهول‌ها (با ویرگول، اختیاری)",
     "Equation (use y', y'')": "معادله (از y' و y'' استفاده کنید)", "Matrix, e.g. [[1,2],[3,4]]": "ماتریس، مثلاً [[1,2],[3,4]]", "Function(s), one per line": "تابع(ها)، هر خط یکی",
-    "x from": "x از", "x to": "x تا", "Interval from": "بازه از", "to": "تا", "Variable of Φ": "متغیر Φ", "t up to": "t تا", "Examples": "نمونه‌ها",
+    "x from": "x از", "x to": "x تا", "to": "تا", "Examples": "نمونه‌ها",
     "Choose an example…": "یک نمونه انتخاب کنید…", "both sides": "از دو طرف", "right (+)": "از راست (+)", "left (−)": "از چپ (−)",
     "determinant": "دترمینان", "inverse": "وارون", "rank": "رتبه", "transpose": "ترانهاده", "row-reduced form": "فرم پلکانی کاهش‌یافته", "eigenvalues and vectors": "مقادیر و بردارهای ویژه",
     "null space": "فضای پوچ", "characteristic polynomial": "چندجمله‌ای مشخصه",
@@ -393,3 +389,6 @@ FA.update({
     "The clipboard has no picture.": "کلیپ‌بورد تصویری ندارد.", "Choose a picture first (or draw a box on the PDF page).": "اول تصویری انتخاب کنید (یا روی صفحهٔ PDF جعبه بکشید).",
     "Installed": "نصب‌شده",
 })
+
+FA.update({"Lp norm": "نرم Lp", "Calculator, equations, matrices and plots (SymPy)": "ماشین‌حساب، معادله، ماتریس و نمودار (SymPy)",
+           "Algebra, calculus, equations, matrices and plots. Results as LaTeX.": "جبر، حسابان، معادله، ماتریس و نمودار. نتیجه به‌صورت لاتک."})
