@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
-import androidx.test.uiautomator.Direction
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
 import org.junit.Assert.assertTrue
@@ -46,11 +45,12 @@ class TemplatesTest {
 
     private fun newProject(template: String) {
         clickRes("new_project")
-        assertTrue(device.wait(Until.hasObject(By.res("template_list")), 10_000))
+        // the dialog is a separate window without resource ids: look for the template by its name, swiping its list up
+        assertTrue("dialog", device.wait(Until.hasObject(By.text("Templates")), 10_000))
         var tries = 0
-        while (!device.hasObject(By.text(template)) && tries < 12) {
-            device.findObject(By.res("template_list")).scroll(Direction.DOWN, 0.6f)
-            Thread.sleep(250)
+        while (!device.hasObject(By.text(template)) && tries < 14) {
+            device.swipe(device.displayWidth / 2, device.displayHeight * 6 / 10, device.displayWidth / 2, device.displayHeight * 4 / 10, 20)
+            Thread.sleep(300)
             tries++
         }
         clickText(template)
@@ -104,9 +104,9 @@ class TemplatesTest {
         device.click(device.displayWidth / 2, device.displayHeight * 6 / 10)
         Thread.sleep(400)
 
-        fun tool(tag: String) {
+        fun tool(label: String) {
             clickRes("more"); clickText("Insert and check…")
-            clickRes(tag)
+            clickText(label)
         }
         fun pickFromDownloads(name: String) {
             assertTrue("in-app picker", device.wait(Until.hasObject(By.res("file_browser")), 10_000))
@@ -117,36 +117,36 @@ class TemplatesTest {
             if (device.hasObject(By.res("fm_add"))) device.findObject(By.res("fm_add")).click()
         }
 
-        tool("tool_csv")
+        tool("Table or plot from CSV")
         pickFromDownloads("tools_data.csv")
-        assertTrue("csv dialog", device.wait(Until.hasObject(By.res("csv_insert")), 10_000))
+        assertTrue("csv dialog", device.wait(Until.hasObject(By.text("Line graph")), 10_000))
         shot("tool1_csv_dialog")
-        clickRes("csv_line")
-        clickRes("csv_insert")
+        clickText("Line graph")
+        clickText("Insert")
         Thread.sleep(600)
         Log.i("PDFTK", "csv plot inserted")
 
         device.click(device.displayWidth / 2, device.displayHeight * 6 / 10)
-        tool("tool_picture")
+        tool("Picture")
         pickFromDownloads("tools_pic.png")
         Thread.sleep(1200)
         shot("tool2_after_picture")
         Log.i("PDFTK", "picture inserted")
 
-        tool("tool_doi")
-        assertTrue(device.wait(Until.hasObject(By.res("doi_field")), 5_000))
-        device.findObject(By.res("doi_field")).text = "not a doi"
-        clickRes("doi_add")
+        tool("Citation from a DOI")
+        assertTrue("doi field", device.wait(Until.hasObject(By.clazz("android.widget.EditText")), 5_000))
+        device.findObject(By.clazz("android.widget.EditText")).text = "not a doi"
+        clickText("Add")
         assertTrue("bad DOI is explained", device.wait(Until.hasObject(By.textContains("does not look like a DOI")), 5_000))
         device.pressBack(); Thread.sleep(400)
         Log.i("PDFTK", "doi check ok")
 
-        tool("tool_style")
-        clickRes("style_unsrt")
+        tool("Citation style")
+        clickText("Numbered, in order of citation")
         Thread.sleep(500)
 
-        tool("tool_check")
-        assertTrue("check dialog", device.wait(Until.hasObject(By.res("check_summary")), 8_000))
+        tool("Check the project")
+        assertTrue("check dialog", device.wait(Until.hasObject(By.textContains("to look at")), 8_000) || device.hasObject(By.text("No problems found.")))
         shot("tool3_check")
         Log.i("PDFTK", "check dialog ok")
         device.pressBack(); Thread.sleep(500)
