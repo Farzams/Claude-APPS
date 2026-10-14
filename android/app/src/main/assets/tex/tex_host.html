@@ -1,0 +1,62 @@
+<!doctype html>
+<html><head><meta charset="utf-8"></head><body>
+<script>
+const D = '/assets/tex/';
+const PACKAGES = ['texlive-basic.js', 'ubuntu-texlive-latex-base.js', 'ubuntu-texlive-latex-recommended.js',
+                  'ubuntu-texlive-latex-extra.js', 'ubuntu-texlive-science.js'].map(f => D + f);
+let worker = null, pending = null, extras = null;
+
+function status(s) { try { Android.onStatus(s); } catch (e) {} }
+
+function ensureWorker() {
+  if (worker) return;
+  worker = new Worker(D + 'tex_worker.js');
+  worker.onmessage = ({data}) => {
+    if (data.print) { Android.onLog(String(data.print)); }
+    else if (data.initialized) { status('ready'); }
+    else if (data.exception) { if (pending) { pending.reject(data.exception); pending = null; } }
+    else if ('exit_code' in data) { if (pending) { pending.resolve(data); pending = null; } }
+  };
+  worker.postMessage({busytex_js: D + 'busytex.js', busytex_wasm: D + 'busytex.wasm', texmf_local: ['./texmf', './.texmf'],
+                      preload_data_packages_js: PACKAGES.slice(0, 1), data_packages_js: PACKAGES});
+}
+
+async function loadExtras() {            // Persian packages (xepersian, bidi) and fonts, shipped inside the app
+  if (extras) return extras;
+  const list = await (await fetch(D + 'extras.json')).json();
+  const out = [];
+  for (const rel of list) {
+    const r = await fetch(D + 'extras/' + rel);
+    out.push({path: rel, contents: new Uint8Array(await r.arrayBuffer())});
+  }
+  extras = out;
+  return out;
+}
+
+function b64ToBytes(b64) { const bin = atob(b64); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+function bytesToB64(u8) { let s = ''; for (let i = 0; i < u8.length; i += 8192) s += String.fromCharCode.apply(null, u8.subarray(i, i + 8192)); return btoa(s); }
+
+window.compileProject = async function (jsonStr) {
+  try {
+    const req = JSON.parse(jsonStr);
+    status('compiling');
+    ensureWorker();
+    const files = req.files.map(f => ({path: f.path, contents: f.text !== undefined ? f.text : b64ToBytes(f.b64)}));
+    if (req.files.some(f => f.text && /xepersian|bidi|Path=fonts|Vazirmatn/i.test(f.text))) files.push(...await loadExtras());
+    const res = await new Promise((resolve, reject) => {
+      pending = {resolve, reject};
+      worker.postMessage({files, main_tex_path: req.main, verbose: 'silent', bibtex: null, driver: req.driver || 'xetex_bibtex8_dvipdfmx', data_packages_js: null});
+    });
+    if (res.pdf) Android.onPdf(bytesToB64(res.pdf));
+    status('ready');
+    Android.onDone(JSON.stringify({ok: !!res.pdf, exit: res.exit_code, log: res.log || ''}));
+  } catch (e) {
+    status('ready');
+    Android.onDone(JSON.stringify({ok: false, exit: -1, log: 'Engine error: ' + e}));
+  }
+};
+
+Android.onReady();
+status('starting');
+ensureWorker();
+</script></body></html>

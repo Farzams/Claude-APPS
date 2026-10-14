@@ -1,0 +1,83 @@
+name: Build Android app
+# Builds the debug APK, runs it in an emulator (compiles an English and a Persian LaTeX document offline,
+# takes screenshots), and publishes the APK in the release "android-latest".
+on:
+  workflow_dispatch:
+  push:
+    paths: ["android/**", ".github/workflows/build-android.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: build-android
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Fetch the offline TeX engine and Persian packages (not stored in git)
+        run: |
+          sudo apt-get update -qq
+          android/tools/fetch_tex_assets.sh
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: wrapper }
+      - name: Build the APK
+        working-directory: android
+        env: { APP_VERSION_CODE: "${{ github.run_number }}" }
+        run: ./gradlew --no-daemon assembleDebug
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run in an emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        env: { APP_VERSION_CODE: "${{ github.run_number }}" }
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_6
+          ram-size: 4096M
+          heap-size: 1024M
+          disk-size: 6144M
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          script: bash android/tools/ci_emulator.sh
+      - name: Test result
+        run: |
+          echo "instrumented test exit code: $(cat test_exit.txt 2>/dev/null || echo missing)"
+          cat pdftk.log 2>/dev/null | tail -60 || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: android-results
+          path: |
+            shots
+            pdftk.log
+            chromium.log
+            android/app/build/reports/androidTests
+      - name: Publish screenshots to the branch android-ci-shots (so they can be looked at)
+        if: always()
+        run: |
+          mkdir -p /tmp/pub/shots && cp -r shots/. /tmp/pub/shots/ 2>/dev/null || true
+          cp pdftk.log chromium.log /tmp/pub/ 2>/dev/null || true
+          git config user.name "github-actions"; git config user.email "actions@users.noreply.github.com"
+          git checkout --orphan android-ci-shots
+          git rm -rf . -q
+          cp -r /tmp/pub/. .
+          echo "run ${{ github.run_number }} commit ${{ github.sha }}" > RUN.txt
+          git add -A
+          git commit -q -m "Android CI results for run ${{ github.run_number }}"
+          git push -f origin android-ci-shots
+      - name: Fail when the emulator test failed
+        run: test "$(cat test_exit.txt 2>/dev/null || echo 1)" = "0"
+      - name: Publish the APK (release android-latest)
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          repo="${{ github.repository }}"; tag="android-latest"
+          cp android/app/build/outputs/apk/debug/app-debug.apk PDFToolkit-Android.apk
+          gh release view $tag --repo $repo >/dev/null 2>&1 || gh release create $tag --repo $repo --title "PDF Toolkit for Android (latest build)" --target "${{ github.sha }}" --notes "Install PDFToolkit-Android.apk on your phone (allow installs from your browser or file manager when asked)."
+          for i in 1 2 3 4 5; do gh release upload $tag PDFToolkit-Android.apk --clobber --repo $repo && break; sleep $((10*i)); done
+          gh release view $tag --repo $repo --json assets --jq ".assets[] | [.name, .size] | @tsv"

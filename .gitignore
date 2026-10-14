@@ -6,3 +6,12 @@ dist/
 # Formula OCR model files are downloaded by the build (see .github/workflows/build-windows.yml)
 pdftoolkit/formula_models/*.onnx
 pdftoolkit/formula_models/tokenizer.json
+
+# Android build outputs and the TeX engine files fetched by the build
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/tex/*
+!android/app/src/main/assets/tex/tex_host.html
+!android/app/src/main/assets/tex/tex_worker.js
