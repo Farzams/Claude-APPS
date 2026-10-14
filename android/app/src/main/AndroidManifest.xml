@@ -6,6 +6,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:largeHeap="true"
+        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.PDFToolkit">
         <activity
             android:name=".MainActivity"

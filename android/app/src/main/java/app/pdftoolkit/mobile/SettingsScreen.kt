@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 
@@ -55,7 +57,8 @@ fun SettingsScreen(prefs: Prefs, onChanged: () -> Unit, onBack: () -> Unit) {
             IconButton(onClick = onBack, modifier = Modifier.testTag("back")) { Icon(Icons.AutoMirrored.Filled.ArrowBack, t("back"), tint = cs.onBackground) }
             Text(t("settings"), style = MaterialTheme.typography.titleLarge, color = cs.onBackground)
         }
-        Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
+        Column(Modifier.widthIn(max = CONTENT_MAX_DP.dp).fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 20.dp), verticalArrangement = Arrangement.spacedBy(18.dp)) {
             Text(t("mode"), style = MaterialTheme.typography.titleSmall, color = cs.onSurfaceVariant)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 chip(t("light"), !pal.dark, "mode_light") { prefs.theme = STYLES[style]!!.first; onChanged() }
@@ -70,7 +73,7 @@ fun SettingsScreen(prefs: Prefs, onChanged: () -> Unit, onBack: () -> Unit) {
             Text(t("accent"), style = MaterialTheme.typography.titleSmall, color = cs.onSurfaceVariant)
             FlowRow(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 for (hex in listOf("") + ACCENTS) {
-                    val color = parseColor(hex) ?: pal.accent
+                    val color = parseColor(hex) ?: parseColor(LocalContext.current.getString(R.string.app_accent)) ?: pal.accent
                     Box(
                         Modifier.size(36.dp).clip(CircleShape).background(color)
                             .clickable { prefs.accent = hex; onChanged() }.testTag("accent_${hex.ifEmpty { "default" }}"),
@@ -85,6 +88,7 @@ fun SettingsScreen(prefs: Prefs, onChanged: () -> Unit, onBack: () -> Unit) {
                 chip("English", prefs.lang == "en", "lang_en") { prefs.lang = "en"; onChanged() }
                 chip("فارسی", prefs.lang == "fa", "lang_fa") { prefs.lang = "fa"; onChanged() }
             }
+        }
         }
     }
 }

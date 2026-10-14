@@ -4,6 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,19 +47,28 @@ class MainActivity : ComponentActivity() {
             val home = { screen = "home" }
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
                 Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).semantics { testTagsAsResourceId = true }) {
-                    if (tick >= 0) when (screen) {
-                        "merge" -> MergeScreen(home)
-                        "split" -> SplitScreen(home)
-                        "organize" -> OrganizeScreen(home)
-                        "compress" -> CompressScreen(home)
-                        "img2pdf" -> PicturesToPdfScreen(home)
-                        "pdf2img" -> PdfToPicturesScreen(home)
-                        "protect" -> ProtectScreen(home)
-                        "watermark" -> WatermarkScreen(home)
-                        "numbers" -> NumbersScreen(home)
-                        "docs2pdf" -> ConvertScreen(home)
-                        "settings" -> SettingsScreen(prefs, refresh) { screen = "home" }
-                        else -> HomeScreen({ screen = it }, { screen = "settings" })
+                    AnimatedContent(
+                        targetState = screen, label = "screen",
+                        transitionSpec = {
+                            if (targetState == "home" || targetState == "files") fadeIn(tween(180)) togetherWith fadeOut(tween(120))
+                            else (fadeIn(tween(200)) + slideInHorizontally(tween(220)) { it / 10 }) togetherWith fadeOut(tween(120))
+                        },
+                    ) { s ->
+                        if (tick >= 0) when (s) {
+                            "merge" -> MergeScreen(home)
+                            "split" -> SplitScreen(home)
+                            "organize" -> OrganizeScreen(home)
+                            "compress" -> CompressScreen(home)
+                            "img2pdf" -> PicturesToPdfScreen(home)
+                            "pdf2img" -> PdfToPicturesScreen(home)
+                            "protect" -> ProtectScreen(home)
+                            "watermark" -> WatermarkScreen(home)
+                            "numbers" -> NumbersScreen(home)
+                            "docs2pdf" -> ConvertScreen(home)
+                            "settings" -> SettingsScreen(prefs, refresh) { screen = "home" }
+                            "files" -> PdfShell("files", { screen = it }) { FilesScreen { screen = it } }
+                            else -> PdfShell("home", { screen = it }) { HomeScreen { screen = it } }
+                        }
                     }
                 }
             }

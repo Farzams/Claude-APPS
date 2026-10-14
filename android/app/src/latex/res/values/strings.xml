@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TeXora</string>
+    <string name="app_accent">#4450D8</string>
 </resources>

@@ -168,18 +168,64 @@ class PdfToolsTest {
         Log.i("PDFTK", "djvu ok: ${PdfOps.sizeOf(ctx, pdf)} bytes")
     }
 
-    @Test
-    fun everyScreenOpens() {
+    private fun launchApp() {
         val intent = ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ctx.startActivity(intent)
         assertTrue(device.wait(Until.hasObject(By.res("card_merge")), 30_000))
+    }
+
+    /** The home page scrolls, so swipe up until the card is on screen. */
+    private fun clickCard(key: String) {
+        var tries = 0
+        while (!device.hasObject(By.res("card_$key")) && tries < 6) {
+            device.swipe(device.displayWidth / 2, device.displayHeight * 3 / 4, device.displayWidth / 2, device.displayHeight / 4, 25)
+            Thread.sleep(400)
+            tries++
+        }
+        assertTrue("card $key not found", device.wait(Until.hasObject(By.res("card_$key")), 5_000))
+        device.findObject(By.res("card_$key")).click()
+    }
+
+    @Test
+    fun everyScreenOpens() {
+        launchApp()
         shot("p01_home")
         for (key in listOf("merge", "split", "organize", "compress", "img2pdf", "pdf2img", "protect", "watermark", "numbers", "docs2pdf")) {
-            device.findObject(By.res("card_$key")).click()
+            clickCard(key)
             assertTrue("screen $key did not open", device.wait(Until.hasObject(By.res("back")), 10_000))
             shot("p02_$key")
             device.findObject(By.res("back")).click()
             assertTrue(device.wait(Until.hasObject(By.res("card_merge")), 10_000))
         }
+    }
+
+    /** Press and hold the first page, drag it onto the third: the pages must change places. */
+    @Test
+    fun organizeDragAndDrop() {
+        PdfOps.init(ctx)
+        PendingFile.uri = makePdf("drag.pdf", 4)
+        launchApp()
+        clickCard("organize")
+        assertTrue("pages did not load", device.wait(Until.hasObject(By.res("page_card")), 20_000))
+        assertTrue("page picture", device.wait(Until.hasObject(By.descStartsWith("page ")), 10_000))
+        Thread.sleep(1500)
+        fun cards() = device.findObjects(By.res("page_card")).sortedWith(compareBy({ it.visibleBounds.top }, { it.visibleBounds.left }))
+        fun order() = cards().map { c -> c.findObject(By.descStartsWith("page "))?.contentDescription ?: "?" }
+        val before = order()
+        Log.i("PDFTK", "organize order before: $before")
+        assertEquals(listOf("page 1", "page 2", "page 3", "page 4"), before.take(4))
+        shot("p03_organize_before")
+        val c = cards()
+        val from = c[0].visibleBounds
+        val to = c[2].visibleBounds
+        device.drag(from.centerX(), from.centerY(), to.centerX(), to.centerY(), 60)
+        Thread.sleep(1200)
+        shot("p03_organize_after")
+        val after = order()
+        Log.i("PDFTK", "organize order after: $after")
+        assertEquals("page 2", after[0])
+        assertEquals("page 3", after[1])
+        assertEquals("page 1", after[2])
+        Log.i("PDFTK", "drag ok")
     }
 }

@@ -2,7 +2,9 @@ package app.pdftoolkit.mobile
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -10,12 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 data class Palette(
     val key: String, val name: String, val dark: Boolean,
@@ -43,7 +48,12 @@ fun parseColor(hex: String): Color? = runCatching { Color(android.graphics.Color
 private val Vazir = FontFamily(Font(R.font.vazirmatn_regular, FontWeight.Normal), Font(R.font.vazirmatn_bold, FontWeight.Bold))
 
 private fun typography(fa: Boolean): Typography {
-    val base = Typography()
+    val plain = Typography()
+    val base = plain.copy(
+        headlineMedium = plain.headlineMedium.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.4).sp),
+        titleLarge = plain.titleLarge.copy(fontWeight = FontWeight.Bold),
+        titleMedium = plain.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+    )
     if (!fa) return base
     fun f(s: TextStyle) = s.copy(fontFamily = Vazir)
     return base.copy(
@@ -57,7 +67,8 @@ private fun typography(fa: Boolean): Typography {
 
 @Composable
 fun AppTheme(pal: Palette, accentHex: String, fa: Boolean, content: @Composable () -> Unit) {
-    val accent = parseColor(accentHex) ?: pal.accent
+    val appAccent = parseColor(LocalContext.current.getString(R.string.app_accent))
+    val accent = parseColor(accentHex) ?: appAccent ?: pal.accent
     val onAccent = if (accent.luminance() > 0.40f) Color(0xFF14110A) else Color.White
     val base: ColorScheme = if (pal.dark) darkColorScheme() else lightColorScheme()
     val scheme = base.copy(
@@ -72,6 +83,13 @@ fun AppTheme(pal: Palette, accentHex: String, fa: Boolean, content: @Composable 
         error = Color(0xFFDC2626),
     )
     CompositionLocalProvider(LocalLayoutDirection provides if (fa) LayoutDirection.Rtl else LayoutDirection.Ltr) {
-        MaterialTheme(colorScheme = scheme, typography = typography(fa), content = content)
+        MaterialTheme(
+            colorScheme = scheme, typography = typography(fa),
+            shapes = Shapes(
+                extraSmall = RoundedCornerShape(8.dp), small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(16.dp),
+                large = RoundedCornerShape(24.dp), extraLarge = RoundedCornerShape(28.dp),
+            ),
+            content = content,
+        )
     }
 }

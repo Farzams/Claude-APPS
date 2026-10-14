@@ -72,6 +72,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -87,6 +88,7 @@ import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextDirection
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -105,27 +107,63 @@ fun EditorScreen(vm: EditorViewModel, prefs: Prefs, onBack: () -> Unit) {
         prefs.editorSize = v.size; prefs.lineNumbers = v.lineNumbers; prefs.wrap = v.wrap; prefs.autoPairs = v.autoPairs; prefs.palette = v.palette
     }
 
-    Column(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding().navigationBarsPadding()) {
-        TopBar(vm, onBack, engine, view, ::update)
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        FileTabs(vm)
-        if (vm.findOpen) FindBar(vm)
-        BoxWithConstraints(Modifier.fillMaxSize()) {
-            if (maxWidth >= 840.dp) {
-                Row(Modifier.fillMaxSize()) {
-                    Box(Modifier.weight(1f).fillMaxHeight()) { EditorPane(vm, view) }
-                    Box(Modifier.width(1.dp).fillMaxHeight().background(MaterialTheme.colorScheme.outlineVariant))
-                    Box(Modifier.weight(1f).fillMaxHeight()) { PdfPreview(vm.pdfFile, vm.pdfVersion) }
+    BoxWithConstraints(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).statusBarsPadding().navigationBarsPadding()) {
+        val wide = maxWidth >= 840.dp
+        Column(Modifier.fillMaxSize()) {
+            TopBar(vm, onBack, engine, view, ::update)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            FileTabs(vm)
+            if (vm.findOpen) FindBar(vm)
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                if (wide) {
+                    Row(Modifier.fillMaxSize()) {
+                        Box(Modifier.weight(1f).fillMaxHeight()) { EditorPane(vm, view) }
+                        Box(Modifier.width(1.dp).fillMaxHeight().background(MaterialTheme.colorScheme.outlineVariant))
+                        Box(Modifier.weight(1f).fillMaxHeight()) { PdfPreview(vm.pdfFile, vm.pdfVersion) }
+                    }
+                } else if (tab == 0) EditorPane(vm, view) else PdfPreview(vm.pdfFile, vm.pdfVersion)
+            }
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            EditorBottomBar(vm, tab, { tab = it }, switch = !wide)
+        }
+    }
+}
+
+/** Edit / PDF switch, undo, redo and the compile button: always in thumb reach at the bottom. */
+@Composable
+private fun EditorBottomBar(vm: EditorViewModel, tab: Int, onTab: (Int) -> Unit, switch: Boolean) {
+    val cs = MaterialTheme.colorScheme
+    Surface(color = cs.surface) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            if (switch) {
+                Row(Modifier.weight(1f).height(46.dp).clip(RoundedCornerShape(23.dp)).background(cs.surfaceContainerHighest).padding(3.dp)) {
+                    for ((i, key) in listOf(0 to "editor", 1 to "preview")) {
+                        Surface(
+                            onClick = { onTab(i) }, shape = RoundedCornerShape(20.dp),
+                            color = if (tab == i) cs.primary else Color.Transparent,
+                            modifier = Modifier.weight(1f).fillMaxHeight().testTag(if (i == 0) "tab_editor" else "tab_pdf"),
+                        ) {
+                            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Text(t(key), color = if (tab == i) cs.onPrimary else cs.onSurfaceVariant, style = MaterialTheme.typography.labelLarge, maxLines = 1)
+                            }
+                        }
+                    }
                 }
-            } else {
-                Column(Modifier.fillMaxSize()) {
-                    TabRow(selectedTabIndex = tab, containerColor = MaterialTheme.colorScheme.surface) {
-                        Tab(tab == 0, { tab = 0 }, Modifier.testTag("tab_editor"), text = { Text(t("editor")) })
-                        Tab(tab == 1, { tab = 1 }, Modifier.testTag("tab_pdf"), text = { Text(t("preview")) })
-                    }
-                    Box(Modifier.weight(1f).fillMaxWidth()) {
-                        if (tab == 0) EditorPane(vm, view) else PdfPreview(vm.pdfFile, vm.pdfVersion)
-                    }
+            } else Box(Modifier.weight(1f))
+            IconButton(onClick = { vm.undo() }, enabled = vm.canUndo, modifier = Modifier.testTag("undo")) {
+                Icon(Icons.AutoMirrored.Filled.Undo, t("undo"), tint = cs.onSurface.copy(alpha = if (vm.canUndo) 1f else 0.3f))
+            }
+            IconButton(onClick = { vm.redo() }, enabled = vm.canRedo, modifier = Modifier.testTag("redo")) {
+                Icon(Icons.AutoMirrored.Filled.Redo, t("redo"), tint = cs.onSurface.copy(alpha = if (vm.canRedo) 1f else 0.3f))
+            }
+            Surface(
+                onClick = { vm.compile() }, enabled = !vm.compiling, shape = RoundedCornerShape(16.dp), color = cs.primary,
+                modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp).testTag("compile"),
+            ) {
+                Row(Modifier.padding(horizontal = if (switch) 16.dp else 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    if (vm.compiling) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp, color = cs.onPrimary)
+                    else Icon(Icons.Filled.PlayArrow, t("compile"), Modifier.size(22.dp), tint = cs.onPrimary)
+                    if (!switch) Text(t("compile"), color = cs.onPrimary, style = MaterialTheme.typography.labelLarge)
                 }
             }
         }
@@ -162,33 +200,17 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, t("back"), tint = cs.onSurface)
             }
             Column(Modifier.weight(1f)) {
-                Text(vm.project?.name ?: t("app.latex"), style = MaterialTheme.typography.titleMedium, color = cs.onSurface, maxLines = 1)
+                Text(vm.project?.name ?: t("app.latex"), style = MaterialTheme.typography.titleMedium, color = cs.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 val line = when {
                     vm.compiling -> t("compiling")
                     engine == "starting" -> t("engine.start")
                     vm.status.isNotEmpty() -> vm.status
                     else -> vm.current
                 }
-                Text(line, style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, maxLines = 1)
+                Text(line, style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             IconButton(onClick = { vm.findOpen = !vm.findOpen }, modifier = Modifier.testTag("find")) {
                 Icon(Icons.Filled.Search, t("find"), tint = cs.onSurface)
-            }
-            IconButton(onClick = { vm.undo() }, enabled = vm.canUndo, modifier = Modifier.testTag("undo")) {
-                Icon(Icons.AutoMirrored.Filled.Undo, t("undo"), tint = cs.onSurface.copy(alpha = if (vm.canUndo) 1f else 0.3f))
-            }
-            IconButton(onClick = { vm.redo() }, enabled = vm.canRedo, modifier = Modifier.testTag("redo")) {
-                Icon(Icons.AutoMirrored.Filled.Redo, t("redo"), tint = cs.onSurface.copy(alpha = if (vm.canRedo) 1f else 0.3f))
-            }
-            Surface(
-                onClick = { vm.compile() }, enabled = !vm.compiling, shape = RoundedCornerShape(12.dp),
-                color = cs.primary, modifier = Modifier.testTag("compile"),
-            ) {
-                Row(Modifier.padding(horizontal = 14.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    if (vm.compiling) CircularProgressIndicator(Modifier.size(16.dp), strokeWidth = 2.dp, color = cs.onPrimary)
-                    else Icon(Icons.Filled.PlayArrow, null, Modifier.size(18.dp), tint = cs.onPrimary)
-                    Text(t("compile"), color = cs.onPrimary, style = MaterialTheme.typography.labelLarge)
-                }
             }
             Box {
                 IconButton(onClick = { menu = true }, modifier = Modifier.testTag("more")) { Icon(Icons.Filled.MoreVert, null, tint = cs.onSurface) }

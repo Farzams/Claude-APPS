@@ -15,16 +15,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.AlertDialog
@@ -38,6 +44,8 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +53,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -81,38 +92,63 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
         exporting = null
     }
 
-    Column(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding()) {
-        Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Column(Modifier.weight(1f)) {
-                Text(t("app.latex"), style = MaterialTheme.typography.headlineMedium, color = cs.onBackground)
-                Text(t("latex.sub"), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
+    var query by remember { mutableStateOf("") }
+    val shown = vm.projects.filter { query.isBlank() || it.name.contains(query.trim(), ignoreCase = true) }
+
+    Box(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(), contentAlignment = Alignment.TopCenter) {
+        Column(Modifier.widthIn(max = 1000.dp).fillMaxSize()) {
+            Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+                Column(Modifier.weight(1f)) {
+                    Text(t("app.latex"), style = MaterialTheme.typography.headlineMedium, color = cs.onBackground)
+                    Text(t("latex.sub"), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
+                }
+                IconButton(onClick = { importer.launch(arrayOf("application/zip", "text/*", "application/x-tex", "application/octet-stream")) }, modifier = Modifier.testTag("import_project")) {
+                    Icon(Icons.Filled.UploadFile, t("import"), tint = cs.onBackground)
+                }
+                IconButton(onClick = onSettings, modifier = Modifier.testTag("open_settings")) {
+                    Icon(Icons.Filled.Settings, t("settings"), tint = cs.onBackground)
+                }
             }
-            IconButton(onClick = { importer.launch(arrayOf("application/zip", "text/*", "application/x-tex", "application/octet-stream")) }, modifier = Modifier.testTag("import_project")) {
-                Icon(Icons.Filled.UploadFile, t("import"), tint = cs.onBackground)
-            }
-            IconButton(onClick = onSettings, modifier = Modifier.testTag("open_settings")) {
-                Icon(Icons.Filled.Settings, t("settings"), tint = cs.onBackground)
-            }
-        }
-        Spacer(Modifier.height(8.dp))
-        Box(Modifier.weight(1f)) {
-            LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                itemsIndexed(vm.projects, key = { _, p -> p.name }) { i, p ->
+            TextField(
+                value = query, onValueChange = { query = it }, singleLine = true,
+                placeholder = { Text(t("search.projects"), maxLines = 1, overflow = TextOverflow.Ellipsis) },
+                leadingIcon = { Icon(Icons.Filled.Search, null) },
+                shape = RoundedCornerShape(28.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent,
+                    focusedContainerColor = cs.surfaceContainerHighest, unfocusedContainerColor = cs.surfaceContainerHighest,
+                ),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).testTag("search_projects"),
+            )
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(320.dp), modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 96.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                if (vm.projects.isEmpty()) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Surface(shape = RoundedCornerShape(20.dp), color = cs.primaryContainer, modifier = Modifier.fillMaxWidth()) {
+                            Text(t("no.projects"), Modifier.padding(20.dp), color = cs.onSurface)
+                        }
+                    }
+                }
+                itemsIndexed(shown, key = { _, p -> p.name }) { i, p ->
                     var menu by remember { mutableStateOf(false) }
+                    val engine = remember(p) { runCatching { vm.store.meta(p).engine }.getOrDefault("xetex") }
+                    val date = remember(p) { DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(p.modified)) }
                     Surface(
-                        onClick = { vm.openProject(p) }, shape = RoundedCornerShape(16.dp), color = cs.surface,
+                        onClick = { vm.openProject(p) }, shape = RoundedCornerShape(20.dp), color = cs.surface,
                         border = BorderStroke(1.dp, cs.outlineVariant), modifier = Modifier.fillMaxWidth().testTag("project_$i"),
                     ) {
-                        Row(Modifier.padding(start = 16.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                            Surface(shape = RoundedCornerShape(12.dp), color = cs.primary.copy(alpha = 0.14f), modifier = Modifier.size(44.dp)) {
-                                Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.Description, null, tint = cs.primary, modifier = Modifier.size(24.dp)) }
-                            }
-                            Column(Modifier.weight(1f).padding(start = 14.dp)) {
-                                Text(p.name, style = MaterialTheme.typography.titleMedium, color = cs.onSurface, maxLines = 1)
-                                Text(
-                                    "${p.fileCount} ${t("files")}  ·  " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(p.modified)),
-                                    style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant,
-                                )
+                        Row(Modifier.padding(start = 14.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                            PageGlyph()
+                            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text(p.name, style = MaterialTheme.typography.titleMedium, color = cs.onSurface, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                                Text(date, style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, maxLines = 1)
+                                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    InfoChip(t(if (engine == "xetex") "engine.xetex.short" else "engine.pdftex.short"))
+                                    InfoChip("${p.fileCount} ${t("files")}")
+                                }
                             }
                             Box {
                                 IconButton(onClick = { menu = true }) { Icon(Icons.Filled.MoreVert, null, tint = cs.onSurfaceVariant) }
@@ -127,14 +163,14 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
                     }
                 }
             }
-            Surface(
-                onClick = { creating = true }, shape = RoundedCornerShape(18.dp), color = cs.primary, shadowElevation = 4.dp,
-                modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp).testTag("new_project"),
-            ) {
-                Row(Modifier.padding(horizontal = 18.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(Icons.Filled.Add, null, tint = cs.onPrimary)
-                    Text(t("new.project"), color = cs.onPrimary, style = MaterialTheme.typography.labelLarge)
-                }
+        }
+        Surface(
+            onClick = { creating = true }, shape = RoundedCornerShape(20.dp), color = cs.primary, shadowElevation = 6.dp,
+            modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp).testTag("new_project"),
+        ) {
+            Row(Modifier.padding(horizontal = 20.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Icon(Icons.Filled.Add, null, tint = cs.onPrimary)
+                Text(t("new.project"), color = cs.onPrimary, style = MaterialTheme.typography.labelLarge)
             }
         }
     }
@@ -196,4 +232,25 @@ private fun NewProjectDialog(vm: EditorViewModel, onDismiss: () -> Unit) {
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(t("cancel")) } },
     )
+}
+
+/** A small drawn page, used as the project's picture. */
+@Composable
+private fun PageGlyph() {
+    val cs = MaterialTheme.colorScheme
+    Column(
+        Modifier.size(width = 56.dp, height = 72.dp).clip(RoundedCornerShape(8.dp)).background(Color.White).padding(8.dp),
+        verticalArrangement = Arrangement.spacedBy(4.dp),
+    ) {
+        Box(Modifier.fillMaxWidth(0.6f).height(5.dp).clip(RoundedCornerShape(3.dp)).background(cs.primary))
+        for (i in 0 until 6) Box(Modifier.fillMaxWidth(if (i == 5) 0.55f else 1f).height(2.dp).clip(RoundedCornerShape(1.dp)).background(Color(0xFFD5D8E2)))
+    }
+}
+
+@Composable
+private fun InfoChip(text: String) {
+    val cs = MaterialTheme.colorScheme
+    Surface(shape = RoundedCornerShape(10.dp), color = cs.primaryContainer) {
+        Text(text, Modifier.padding(horizontal = 8.dp, vertical = 3.dp), color = cs.onSurface, style = MaterialTheme.typography.labelSmall, maxLines = 1)
+    }
 }

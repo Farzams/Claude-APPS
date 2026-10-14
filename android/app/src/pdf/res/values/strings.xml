@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PDFora</string>
+    <string name="app_accent">#C8372D</string>
 </resources>
