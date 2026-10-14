@@ -28,4 +28,27 @@ done
 mkdir -p "$A/extras/fonts"
 cp ../pdftoolkit/fonts/Vazirmatn-Regular.ttf ../pdftoolkit/fonts/Vazirmatn-Bold.ttf "$A/extras/fonts/"
 (cd "$A/extras" && find . -type f | sed 's|^\./||' | sort | python3 -c "import sys, json; json.dump([l.strip() for l in sys.stdin], open('../extras.json', 'w'))")
+# More LaTeX the BusyTeX bundles do not have, loaded only when a project uses it:
+# TikZ, pgfplots and circuitikz (texlive-pictures), and the IEEE, Elsevier and Springer classes (texlive-publishers).
+X=$(mktemp -d)
+(cd "$X" && apt-get download texlive-pictures texlive-publishers >/dev/null && for d in ./*.deb; do dpkg-deb -x "$d" x; done)
+SRC="$X/x/usr/share/texlive/texmf-dist"
+json_of() { (cd "$A/$1" && find . -type f | sed 's|^\./||' | sort | python3 -c "import sys, json; json.dump([l.strip() for l in sys.stdin], open('../$1.json', 'w'))"); }
+copy_pkgs() {
+  local out="$1"; shift
+  mkdir -p "$A/$out"
+  for pkg in "$@"; do
+    find "$SRC/tex" -mindepth 2 -maxdepth 2 -type d -name "$pkg" | while read -r d; do
+      rel=${d#"$SRC"/}
+      mkdir -p "$A/$out/texmf/texmf-dist/$rel"
+      cp -r "$d/." "$A/$out/texmf/texmf-dist/$rel/"
+    done
+  done
+  json_of "$out"
+}
+copy_pkgs extras_pgf pgf pgfplots circuitikz
+copy_pkgs extras_pub IEEEtran elsarticle 'svjour*'
+mkdir -p "$A/extras_bst"
+find "$SRC/bibtex/bst" -type f \( -name 'IEEEtran.bst' -o -name 'elsarticle-*.bst' -o -name 'sp*.bst' \) -exec cp {} "$A/extras_bst/" \;
+json_of extras_bst
 echo "TeX assets ready:"; du -sh "$A"

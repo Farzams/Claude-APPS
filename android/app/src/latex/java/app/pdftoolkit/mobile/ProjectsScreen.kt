@@ -207,8 +207,13 @@ private fun NewProjectDialog(vm: EditorViewModel, onDismiss: () -> Unit) {
                 OutlinedTextField(name, { name = it }, label = { Text(t("project.name")) }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("project_name"))
                 Spacer(Modifier.height(6.dp))
                 Text(t("templates"), style = MaterialTheme.typography.titleSmall, color = cs.onSurfaceVariant)
-                Column(Modifier.fillMaxWidth().height(240.dp).verticalScroll(androidx.compose.foundation.rememberScrollState())) {
+                Column(Modifier.fillMaxWidth().height(300.dp).verticalScroll(androidx.compose.foundation.rememberScrollState()).testTag("template_list")) {
+                    var lastGroup = ""
                     for (tpl in Templates.ALL) {
+                        if (tpl.group != lastGroup) {
+                            lastGroup = tpl.group
+                            Text(t("tpl.group.$lastGroup"), Modifier.padding(top = 10.dp, bottom = 2.dp), style = MaterialTheme.typography.labelLarge, color = cs.primary)
+                        }
                         Row(Modifier.fillMaxWidth().clickable { choice = tpl.key }.testTag("tpl_${tpl.key}"), verticalAlignment = Alignment.CenterVertically) {
                             RadioButton(selected = choice == tpl.key, onClick = { choice = tpl.key })
                             Text(t(tpl.key), color = cs.onSurface)

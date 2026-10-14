@@ -24,15 +24,16 @@ function ensureWorker() {
                       preload_data_packages_js: PACKAGES.slice(0, 1), data_packages_js: PACKAGES});
 }
 
-async function loadExtras() {            // Persian packages (xepersian, bidi) and fonts, shipped inside the app
-  if (extras) return extras;
-  const list = await (await fetch(D + 'extras.json')).json();
+const extraCache = {};
+async function loadExtras(name = 'extras') {   // optional packages shipped inside the app, loaded only when a project needs them
+  if (extraCache[name]) return extraCache[name];
+  const list = await (await fetch(D + name + '.json')).json();
   const out = [];
   for (const rel of list) {
-    const r = await fetch(D + 'extras/' + rel);
-    out.push({path: rel, contents: new Uint8Array(await r.arrayBuffer())});
+    const r = await fetch(D + name + '/' + rel);
+    out.push({path: name === 'extras_bst' ? rel : rel, contents: new Uint8Array(await r.arrayBuffer())});
   }
-  extras = out;
+  extraCache[name] = out;
   return out;
 }
 
@@ -46,7 +47,11 @@ window.compileProject = async function (jsonStr) {
     Android.onLog('compileProject: ' + req.files.length + ' files');
     ensureWorker();
     const files = req.files.map(f => ({path: f.path, contents: f.text !== undefined ? f.text : b64ToBytes(f.b64)}));
-    if (req.files.some(f => f.text && /xepersian|bidi|Path=fonts|Vazirmatn/i.test(f.text))) files.push(...await loadExtras());
+    const mentions = re => req.files.some(f => f.text && re.test(f.text));
+    if (mentions(/xepersian|bidi|Path=fonts|Vazirmatn/i)) files.push(...await loadExtras('extras'));
+    if (mentions(/\\usepackage[^\n]*\b(tikz|pgf|pgfplots|circuitikz)\b|\\usetikzlibrary|\\begin\{(tikzpicture|axis|circuitikz)\}/)) files.push(...await loadExtras('extras_pgf'));
+    if (mentions(/\\documentclass[^\n]*\{(IEEEtran|elsarticle|svjour3)\}/)) files.push(...await loadExtras('extras_pub'));
+    if (mentions(/\\bibliographystyle\{(IEEEtran|elsarticle[^}]*|spmpsci|spbasic|spphys)\}/)) files.push(...await loadExtras('extras_bst'));
     Android.onLog('posting to the worker');
     const res = await new Promise((resolve, reject) => {
       pending = {resolve, reject};

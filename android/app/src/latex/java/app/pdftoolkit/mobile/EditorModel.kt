@@ -340,6 +340,90 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
         field = field.copy(selection = TextRange(idx))
     }
 
+    // ------------------------------------------------------------ insert helpers
+    /** Adds a package line after \documentclass in the main file unless some \usepackage already loads it. */
+    fun ensurePackage(pkg: String, line: String = "\\usepackage{$pkg}") {
+        val p = project ?: return
+        val main = meta.main
+        val text = if (current == main) field.text else buffers[main]?.text ?: runCatching { File(p.dir, main).readText() }.getOrDefault("")
+        if (Regex("\\\\usepackage(\\[[^\\]]*\\])?\\{[^}]*\\b${Regex.escape(pkg)}\\b[^}]*\\}").containsMatchIn(text)) return
+        val dc = text.indexOf("\\documentclass")
+        if (dc < 0) return
+        val eol = text.indexOf('\n', dc).let { if (it < 0) text.length else it }
+        val added = (if (eol >= text.length) "\n" else "") + line + "\n"
+        val insertAt = if (eol >= text.length) text.length else eol + 1
+        val next = text.substring(0, insertAt) + added + text.substring(insertAt)
+        if (current == main) {
+            val sel = field.selection
+            val shift = if (sel.min >= insertAt) added.length else 0
+            onChange(TextFieldValue(next, TextRange(sel.start + shift, sel.end + shift)))
+        } else {
+            buffers[main] = TextFieldValue(next)
+            runCatching { File(p.dir, main).writeText(next) }
+        }
+    }
+
+    /** Copies a picture into the project's figures folder and writes the figure environment at the cursor. */
+    fun addPicture(name: String, bytes: ByteArray) {
+        val p = project ?: return
+        val stored = store.importFile(p, "figures/$name", bytes)
+        refreshFiles()
+        ensurePackage("graphicx")
+        val label = stored.substringAfterLast('/').substringBeforeLast('.')
+        insert("\\begin{figure}[ht]\n  \\centering\n  \\includegraphics[width=0.8\\linewidth]{$stored}\n  \\caption{‸}\n  \\label{fig:$label}\n\\end{figure}\n")
+    }
+
+    /** Appends a BibTeX entry to the project's first .bib file (refs.bib is made when there is none) and cites it here. */
+    fun addBibEntry(entry: String) {
+        val p = project ?: return
+        val bibName = files.firstOrNull { it.endsWith(".bib") } ?: "refs.bib"
+        val f = File(p.dir, bibName)
+        f.parentFile?.mkdirs()
+        var key = Regex("^@\\w+\\{([^,]+),").find(entry)?.groupValues?.get(1) ?: return
+        val existing = if (f.exists()) f.readText() else ""
+        var e = entry
+        if (bibKeys(existing).contains(key)) {
+            val base = key
+            var n = 2
+            while (bibKeys(existing).contains(base + ('a' + n - 2))) n++
+            key = base + ('a' + n - 2)
+            e = entry.replaceFirst(Regex("^(@\\w+\\{)[^,]+,"), "$1$key,")
+        }
+        f.writeText(existing + (if (existing.isNotEmpty() && !existing.endsWith("\n\n")) "\n" else "") + e)
+        refreshFiles(); refreshBib()
+        insert("\\cite{$key}")
+    }
+
+    /** Sets (or adds) the \bibliographystyle line of the main file. */
+    fun setBibStyle(style: String) {
+        val p = project ?: return
+        val main = meta.main
+        val text = if (current == main) field.text else buffers[main]?.text ?: runCatching { File(p.dir, main).readText() }.getOrDefault("")
+        val has = Regex("\\\\bibliographystyle\\{[^}]*\\}")
+        val next = when {
+            has.containsMatchIn(text) -> has.replace(text) { "\\bibliographystyle{$style}" }
+            "\\bibliography{" in text -> text.replaceFirst("\\bibliography{", "\\bibliographystyle{$style}\n\\bibliography{")
+            else -> return
+        }
+        if (current == main) onChange(TextFieldValue(next, TextRange(minOf(field.selection.start, next.length))))
+        else { buffers[main] = TextFieldValue(next); runCatching { File(p.dir, main).writeText(next) } }
+    }
+
+    /** The check of the whole project: current editor text for the open file, saved text for the others. */
+    fun runCheck(): List<CheckIssue> {
+        val p = project ?: return emptyList()
+        flush()
+        val all = files.toSet()
+        val tex = files.filter { it.endsWith(".tex") }.associateWith { f -> if (f == current) field.text else runCatching { File(p.dir, f).readText() }.getOrDefault("") }
+        val bib = files.filter { it.endsWith(".bib") }.associateWith { f -> runCatching { File(p.dir, f).readText() }.getOrDefault("") }
+        return ProjectCheck.run(tex, bib, all, meta.main, log)
+    }
+
+    fun goTo(file: String?, line: Int?) {
+        if (file != null && file != current && file in files && isTextFile(file)) openFile(file)
+        line?.let { goToLine(it) }
+    }
+
     fun goToError(e: TexError) {
         val f = e.file
         if (f != null && f != current && f in files && isTextFile(f)) openFile(f)

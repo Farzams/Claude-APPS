@@ -1,5 +1,9 @@
 package app.pdftoolkit.mobile
 
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import androidx.compose.runtime.rememberCoroutineScope
 import android.content.Intent
 import android.graphics.Paint
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -185,6 +189,12 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
     var newName by remember { mutableStateOf("") }
     var snipLabel by remember { mutableStateOf("") }
     var snipText by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    var csv by remember { mutableStateOf<CsvData?>(null) }
+    var doiText by remember { mutableStateOf("") }
+    var doiBusy by remember { mutableStateOf(false) }
+    var doiError by remember { mutableStateOf("") }
+    var toast by remember { mutableStateOf("") }
 
     val savePdf = rememberSavePicker("application/pdf") { if (it != null) vm.savePdfTo(it) }
     val exportZip = rememberSavePicker("application/zip") { uri ->
@@ -195,6 +205,20 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
         if (uri != null) runCatching {
             val bytes = ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: return@runCatching
             vm.importFile(displayName(ctx, uri), bytes)
+        }
+    }
+
+    val csvPick = rememberAnyPicker { uri ->
+        if (uri != null) scope.launch {
+            val text = withContext(Dispatchers.IO) { runCatching { ctx.contentResolver.openInputStream(uri)?.use { String(it.readBytes().take(1_000_000).toByteArray(), Charsets.UTF_8) } }.getOrNull() }
+            val d = text?.let { DataInsert.parse(it) }
+            if (d == null || d.header.isEmpty()) toast = t("csv.bad") else csv = d
+        }
+    }
+    val picPick = rememberAnyPicker { uri ->
+        if (uri != null) scope.launch {
+            val pic = withContext(Dispatchers.IO) { runCatching { PictureImport.prepare(ctx, uri) }.getOrNull() }
+            if (pic == null) toast = t("picture.bad") else vm.addPicture(pic.name, pic.bytes)
         }
     }
 
@@ -223,6 +247,7 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
                     fun item(key: String, tag: String = key, action: () -> Unit) =
                         DropdownMenuItem(text = { Text(t(key)) }, onClick = { menu = false; action() }, modifier = Modifier.testTag("menu_$tag"))
                     item("comment") { vm.toggleComment() }
+                    item("insert.tools", "tools") { dialog = "tools" }
                     if (vm.bibKeysList.isNotEmpty()) item("insert.citation") { dialog = "cite" }
                     item("new.file") { newName = ""; dialog = "newfile" }
                     item("import.file") { importFile.launch(arrayOf("*/*")) }
@@ -252,6 +277,90 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
     }
 
     when (dialog) {
+        "tools" -> AlertDialog(
+            onDismissRequest = { dialog = "" },
+            title = { Text(t("insert.tools")) },
+            text = {
+                Column(Modifier.verticalScroll(rememberScrollState())) {
+                    for ((tag, key, hint, action) in listOf(
+                        listOf("tool_csv", "tool.csv", "tool.csv.d") to { csvPick.launch(arrayOf("text/csv")); dialog = "" },
+                        listOf("tool_picture", "tool.picture", "tool.picture.d") to { picPick.launch(arrayOf("image/*")); dialog = "" },
+                        listOf("tool_doi", "tool.doi", "tool.doi.d") to { doiText = ""; doiError = ""; dialog = "doi" },
+                        listOf("tool_style", "tool.style", "tool.style.d") to { dialog = "bibstyle" },
+                        listOf("tool_check", "tool.check", "tool.check.d") to { dialog = "check" },
+                    ).map { (k, a) -> Quad(k[0], k[1], k[2], a) }) {
+                        Column(Modifier.fillMaxWidth().clickable { action() }.padding(vertical = 10.dp).testTag(tag)) {
+                            Text(t(key), color = cs.onSurface, style = MaterialTheme.typography.titleSmall)
+                            Text(t(hint), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                        }
+                        HorizontalDivider(color = cs.outlineVariant)
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { dialog = "" }) { Text(t("cancel")) } },
+        )
+        "doi" -> AlertDialog(
+            onDismissRequest = { if (!doiBusy) dialog = "" },
+            title = { Text(t("tool.doi")) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(doiText, { doiText = it; doiError = "" }, label = { Text("DOI") }, placeholder = { Text("10.1000/xyz123") }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("doi_field"))
+                    Text(t("doi.online"), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                    if (doiBusy) LinearProgressIndicator(Modifier.fillMaxWidth())
+                    if (doiError.isNotEmpty()) Text(doiError, color = cs.error, style = MaterialTheme.typography.bodySmall)
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = !doiBusy && doiText.isNotBlank(),
+                    onClick = {
+                        val doi = Doi.clean(doiText)
+                        if (doi == null) { doiError = t("doi.bad"); return@TextButton }
+                        scope.launch {
+                            doiBusy = true
+                            val r = withContext(Dispatchers.IO) { Doi.fetch(doi) }
+                            doiBusy = false
+                            r.onSuccess { vm.addBibEntry(it); dialog = "" }.onFailure { doiError = t("doi.fail") }
+                        }
+                    },
+                    modifier = Modifier.testTag("doi_add"),
+                ) { Text(t("doi.add")) }
+            },
+            dismissButton = { TextButton(onClick = { dialog = "" }, enabled = !doiBusy) { Text(t("cancel")) } },
+        )
+        "bibstyle" -> AlertDialog(
+            onDismissRequest = { dialog = "" },
+            title = { Text(t("tool.style")) },
+            text = {
+                Column {
+                    Text(t("style.hint"), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                    for ((id, label) in listOf("plain" to "style.plain", "unsrt" to "style.unsrt", "alpha" to "style.alpha", "abbrv" to "style.abbrv", "IEEEtran" to "style.ieee")) {
+                        Text(t(label), Modifier.fillMaxWidth().clickable { vm.setBibStyle(id); dialog = "" }.padding(vertical = 12.dp).testTag("style_$id"), color = cs.onSurface)
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { dialog = "" }) { Text(t("cancel")) } },
+        )
+        "check" -> {
+            val issues = remember { vm.runCheck() }
+            AlertDialog(
+                onDismissRequest = { dialog = "" },
+                title = { Text(t("tool.check")) },
+                text = {
+                    Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()).testTag("check_list")) {
+                        Text(if (issues.isEmpty()) t("check.none") else "${issues.size} ${t("check.found")}", Modifier.testTag("check_summary"), color = if (issues.isEmpty()) cs.primary else cs.onSurface, style = MaterialTheme.typography.titleSmall)
+                        for ((i, iss) in issues.withIndex()) {
+                            Column(Modifier.fillMaxWidth().clickable { vm.goTo(iss.file, iss.line); dialog = "" }.padding(vertical = 9.dp).testTag("check_row_$i")) {
+                                Text(t(iss.kind), color = cs.onSurface, style = MaterialTheme.typography.bodyMedium)
+                                Text(iss.detail + (iss.file?.let { f -> "  ·  $f" + (iss.line?.let { l -> ":$l" } ?: "") } ?: ""), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+                            }
+                            HorizontalDivider(color = cs.outlineVariant)
+                        }
+                    }
+                },
+                confirmButton = { TextButton(onClick = { dialog = "" }) { Text(t("ok.button")) } },
+            )
+        }
         "outline" -> {
             val items = vm.outline()
             val pages = remember(vm.pdfVersion) {
@@ -372,7 +481,23 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
             confirmButton = { TextButton(onClick = { dialog = "" }) { Text(t("ok.button")) } },
         )
     }
+    csv?.let { d ->
+        DataDialog(
+            d,
+            onInsert = { code, plot ->
+                if (plot) { vm.ensurePackage("pgfplots", "\\usepackage{pgfplots}\n\\pgfplotsset{compat=1.17}") } else vm.ensurePackage("booktabs")
+                vm.insert(code)
+                csv = null
+            },
+            onDismiss = { csv = null },
+        )
+    }
+    if (toast.isNotEmpty()) {
+        AlertDialog(onDismissRequest = { toast = "" }, text = { Text(toast) }, confirmButton = { TextButton(onClick = { toast = "" }) { Text(t("ok.button")) } })
+    }
 }
+
+private data class Quad(val a: String, val b: String, val c: String, val d: () -> Unit)
 
 private fun sharePdf(ctx: android.content.Context, vm: EditorViewModel) {
     val f = vm.pdfFile ?: return

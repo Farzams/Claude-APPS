@@ -1,7 +1,7 @@
 package app.pdftoolkit.mobile
 
 /** A starting point for a new project: its files, which one is compiled, and the engine. */
-data class Template(val key: String, val files: Map<String, String>, val main: String = "main.tex", val engine: String = "xetex")
+data class Template(val key: String, val files: Map<String, String>, val main: String = "main.tex", val engine: String = "xetex", val group: String = "general")
 
 object Templates {
     val ARTICLE = """\documentclass[11pt,a4paper]{article}
@@ -177,6 +177,12 @@ Write the body of the letter here.
 \end{document}
 """
 
+    private fun sci(key: String, tex: String, bib: Boolean = false) =
+        Template(key, mapOf("main.tex" to tex) + if (bib) mapOf("refs.bib" to REFS) else emptyMap(), engine = "pdftex", group = "science")
+
+    private fun journal(key: String, tex: String) =
+        Template(key, mapOf("main.tex" to tex, "refs.bib" to REFS), engine = "pdftex", group = "journal")
+
     val ALL = listOf(
         Template("tpl.article", mapOf("main.tex" to ARTICLE)),
         Template("tpl.bib", mapOf("main.tex" to ARTICLE_BIB, "refs.bib" to REFS)),
@@ -185,5 +191,17 @@ Write the body of the letter here.
         Template("tpl.beamer", mapOf("main.tex" to BEAMER)),
         Template("tpl.letter", mapOf("main.tex" to LETTER)),
         Template("tpl.blank", mapOf("main.tex" to BLANK)),
+        sci("tpl.physics", TemplatesMore.PHYSICS),
+        sci("tpl.chem", TemplatesMore.CHEM),
+        sci("tpl.cs", TemplatesMore.CS),
+        sci("tpl.eng", TemplatesMore.ENG),
+        sci("tpl.bio", TemplatesMore.BIO, bib = true),
+        sci("tpl.plots", TemplatesMore.PLOTS),
+        journal("tpl.ieee", TemplatesMore.IEEE),
+        journal("tpl.elsevier", TemplatesMore.ELSEVIER),
+        journal("tpl.springer", TemplatesMore.SPRINGER),
+        Template("tpl.apa", mapOf("main.tex" to TemplatesMore.APA), engine = "pdftex", group = "journal"),
+        Template("tpl.thesis", mapOf("main.tex" to TemplatesMore.THESIS, "refs.bib" to REFS), engine = "pdftex", group = "journal"),
+        Template("tpl.poster", mapOf("main.tex" to TemplatesMore.POSTER), engine = "pdftex", group = "journal"),
     )
-}
+}}
