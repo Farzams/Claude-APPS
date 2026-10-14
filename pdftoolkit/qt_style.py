@@ -239,6 +239,7 @@ QFrame#paper {{ background: #ffffff; border-radius: 12px; }}
 QLabel {{ background: transparent; }}
 QLabel#heroTitle {{ color: {hero_title}; font-size: {sz(19 if flat else 21)}; font-weight: 700; }}
 QLabel#heroSub {{ color: {hero_sub}; font-size: {sz(10.5)}; }}
+QLabel[role="form"] {{ color: {P['muted']}; font-weight: 500; }}
 QLabel[role="muted"] {{ color: {P['muted']}; }}
 QLabel[role="h"] {{ font-size: {sz(12)}; font-weight: 700; }}
 QLabel[role="good"] {{ color: {P['good']}; }}
@@ -249,10 +250,10 @@ QPushButton#recentrow {{ background: transparent; border: 1px solid {border}; bo
 QPushButton#recentrow:hover {{ background: {P['hover']}; }}
 QLabel#logoText {{ font-size: {sz(15)}; font-weight: 700; }}
 
-QPushButton {{ background: {field}; border: 1px solid {fb}; border-radius: 11px; padding: 8px 16px; font-weight: 500; }}
+QPushButton {{ background: {field}; border: 1px solid {fb}; border-radius: 10px; padding: 7px 16px; min-height: 20px; font-weight: 500; }}
 QPushButton:hover {{ background: {P['hover']}; }}
 QPushButton:pressed {{ background: {mix(P['hover'], P['accent'], 0.25)}; }}
-QPushButton[kind="primary"] {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 700; border: 1px solid {P['accent']}; }}
+QPushButton[kind="primary"] {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 600; border: 1px solid {P['accent']}; }}
 QPushButton[kind="primary"]:hover {{ background: {P['accent_hover']}; }}
 QPushButton:disabled {{ background: {field}; color: {P['muted']}; }}
 QPushButton[kind="primary"]:disabled {{ background: {field}; color: {P['muted']}; }}
@@ -283,7 +284,7 @@ QToolButton[sym="true"] {{ background: {field}; border: 1px solid {fb}; border-r
 QToolButton[sym="true"]:hover {{ background: {P['accent']}; color: {P['on_accent']}; }}
 
 QLineEdit, QPlainTextEdit, QTextEdit, QTextBrowser, QListWidget, QTreeWidget {{
-    background: {field}; border: 1.5px solid {fb}; border-radius: 11px; padding: 6px 10px;
+    background: {field}; border: 1px solid {fb}; border-radius: 10px; padding: 6px 11px;
     selection-background-color: {P['accent']}; selection-color: {P['on_accent']}; }}
 QLineEdit:focus, QPlainTextEdit:focus, QTextEdit:focus {{ border: 1.5px solid {P['accent']}; }}
 QListWidget, QTreeWidget {{ padding: 4px; }}
@@ -293,18 +294,21 @@ QTreeWidget::item:selected {{ background: {P['accent']}; color: {P['on_accent']}
 QListWidget::item {{ padding: 7px 10px; border-radius: 8px; }}
 QListWidget::item:hover {{ background: {P['hover']}; }}
 QListWidget::item:selected {{ background: {P['accent']}; color: {P['on_accent']}; }}
-QComboBox {{ background: {field}; border: 1.5px solid {fb}; border-radius: 11px; padding: 7px 14px; min-height: 22px; }}
+QComboBox {{ background: {field}; border: 1px solid {fb}; border-radius: 10px; padding: 6px 12px; min-height: 22px; }}
 QComboBox:hover {{ background: {P['hover']}; }}
 QComboBox::drop-down {{ border: none; width: 28px; }}
 QComboBox::down-arrow {{ image: url({arrow}); width: 14px; height: 14px; }}
-QComboBox QAbstractItemView {{ background: {P['card']}; border: 1px solid {border}; border-radius: 10px; padding: 4px;
-    selection-background-color: {P['accent']}; selection-color: {P['on_accent']}; outline: 0; }}
+QComboBoxPrivateContainer {{ background: transparent; border: none; }}
+QComboBox QAbstractItemView {{ background: {P['card']}; border: 1px solid {border}; border-radius: 10px; padding: 5px; outline: 0;
+    selection-background-color: {rgba(P['accent'], 0.16)}; selection-color: {P['text']}; }}
+QComboBox QAbstractItemView::item {{ min-height: 28px; padding: 3px 10px; border-radius: 7px; }}
+QComboBox QAbstractItemView::item:hover {{ background: {P['hover']}; }}
 QCheckBox {{ spacing: 10px; background: transparent; }}
-QCheckBox::indicator {{ width: 20px; height: 20px; border-radius: 7px; border: 2px solid {P['muted']}; background: transparent; }}
+QCheckBox::indicator {{ width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid {P['muted']}; background: transparent; }}
 QCheckBox::indicator:hover {{ border-color: {P['accent']}; }}
 QCheckBox::indicator:checked {{ background: {P['accent']}; border-color: {P['accent']}; image: url({chk}); }}
-QProgressBar {{ background: {field}; border: 1px solid {fb}; border-radius: 5px; max-height: 10px; min-height: 10px; text-align: center; color: transparent; }}
-QProgressBar::chunk {{ background: {P['accent']}; border-radius: 5px; }}
+QProgressBar {{ background: {P['hover']}; border: none; border-radius: 3px; max-height: 6px; min-height: 6px; text-align: center; color: transparent; }}
+QProgressBar::chunk {{ background: {P['accent']}; border-radius: 3px; }}
 QScrollBar:vertical {{ width: 12px; background: transparent; margin: 2px; }}
 QScrollBar::handle:vertical {{ background: {P['hover']}; border-radius: 5px; min-height: 36px; }}
 QScrollBar::handle:vertical:hover {{ background: {P['accent']}; }}

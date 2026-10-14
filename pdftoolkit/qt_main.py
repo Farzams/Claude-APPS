@@ -303,6 +303,7 @@ class MainWindow(QMainWindow):
         self.qss = ""
         self._stamp = 0
         self.last_dir = None
+        self._job_seen = False
 
         self.backdrop = qt_style.Backdrop()
         self.setCentralWidget(self.backdrop)
@@ -450,7 +451,7 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(pg)
         self.current = key
         (self.nav.get(key) or self.nav.get("tools") or next(iter(self.nav.values()))).setChecked(True)
-        self.foot.setVisible(key not in ("settings", "help", "home", "tools"))        # these pages want the full height
+        self.foot.setVisible(self._job_seen and key not in ("settings", "help", "home", "tools"))   # progress card appears after the first job
         pg.on_show()
 
     def palette_entries(self):
@@ -575,6 +576,8 @@ class MainWindow(QMainWindow):
         return self.jobs.run(job, done)
 
     def _job_started(self):
+        self._job_seen = True
+        self.foot.setVisible(self.current not in ("settings", "help", "home", "tools"))
         self.bar.setValue(0)
         self.open_btn.setEnabled(False)
 

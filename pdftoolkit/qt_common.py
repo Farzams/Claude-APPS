@@ -43,6 +43,9 @@ def mkcombo(items: dict | list, current=None) -> QComboBox:
     c = QComboBox()
     c.setSizeAdjustPolicy(QComboBox.AdjustToMinimumContentsLengthWithIcon)
     c.setMinimumContentsLength(14)
+    popup = c.view().window()                     # the drop-down list: no square black frame or system shadow around it
+    popup.setWindowFlag(Qt.NoDropShadowWindowHint, True)
+    popup.setAttribute(Qt.WA_TranslucentBackground, True)
     pairs = items.items() if isinstance(items, dict) else [(i, i) for i in items]
     for disp, val in pairs:
         c.addItem(disp, val)
@@ -148,7 +151,7 @@ class Form(QGridLayout):
             else:
                 self.addLayout(widget, self._r, 0, 1, 2)
         else:
-            lab = mklabel(text)
+            lab = mklabel(text, "form")
             lab.setMinimumWidth(self.label_width)
             lab.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Preferred)
             self.addWidget(lab, self._r, 0)
@@ -339,9 +342,13 @@ class Tool(QWidget):
 
     def run_button(self, text, cb):
         b = mkbutton(text, cb, "primary")
-        b.setMinimumHeight(46)
+        b.setMinimumHeight(40)
+        b.setMinimumWidth(190)
         self.body.addSpacing(6)
-        self.body.addWidget(b)
+        row = QHBoxLayout()
+        row.addWidget(b)
+        row.addStretch(1)
+        self.body.addLayout(row)
         return b
 
     def note(self, text: str) -> QLabel:
