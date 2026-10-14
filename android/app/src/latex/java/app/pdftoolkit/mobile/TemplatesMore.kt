@@ -4,7 +4,6 @@ package app.pdftoolkit.mobile
 object TemplatesMore {
     val PHYSICS = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{physics}
 \usepackage{siunitx}
@@ -43,7 +42,6 @@ Faraday's law and the absence of magnetic monopoles read
 
     val CHEM = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage[version=4]{mhchem}
 \usepackage{siunitx}
@@ -85,7 +83,6 @@ A solution of \SI{0.10}{\mole\per\liter} \ce{HCl} has a pH of 1.
 
     val CS = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
@@ -139,7 +136,6 @@ def bsearch(a, k):
 
     val ENG = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{siunitx}
 \usepackage{booktabs}
@@ -196,7 +192,6 @@ With \SI{1}{\kilo\ohm} and \SI{1}{\micro\farad} the time constant is ${'$'}\tau 
 
     val BIO = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[numbers]{natbib}
@@ -244,7 +239,6 @@ Interpret the results and name the limits of the experiment.
 
     val PLOTS = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{booktabs}
 \usepackage{pgfplots}
@@ -426,7 +420,6 @@ Thank the people and institutions that helped.
 
     val APA = """\documentclass[12pt,a4paper]{article}
 \usepackage[margin=2.54cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{mathptmx}
 \usepackage{amsmath}
 \usepackage{setspace}
@@ -473,7 +466,6 @@ Level 3 headings are bold italic and flush left.
 
     val THESIS = """\documentclass[12pt,a4paper,oneside]{report}
 \usepackage[margin=3cm]{geometry}
-\usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{setspace}
@@ -529,7 +521,6 @@ Long proofs, data tables and code go here.
 """
 
     val POSTER = """\documentclass[a0,landscape]{a0poster}
-\usepackage[T1]{fontenc}
 \usepackage[paperwidth=118.9cm,paperheight=84.1cm,margin=3cm]{geometry}
 \usepackage{multicol}
 \usepackage{graphicx}

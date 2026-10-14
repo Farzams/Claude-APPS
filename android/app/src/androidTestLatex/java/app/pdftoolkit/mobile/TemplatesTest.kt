@@ -66,7 +66,7 @@ class TemplatesTest {
         val end = System.currentTimeMillis() + 4 * 60_000
         while (System.currentTimeMillis() < end) {
             if (device.hasObject(By.res("pdf_page_0"))) { Thread.sleep(1200); shot(name); return true }
-            if (device.hasObject(By.res("compile_failed"))) { shot(name + "_FAILED"); return false }
+            if (device.hasObject(By.res("compile_failed")) || device.hasObject(By.text("Compile failed"))) { shot(name + "_FAILED"); return false }
             Thread.sleep(1000)
         }
         shot(name + "_TIMEOUT")
