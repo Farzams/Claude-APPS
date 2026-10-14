@@ -523,7 +523,6 @@ private fun CodeEditor(vm: EditorViewModel, view: ViewOptions) {
                         textStyle = TextStyle(color = cs.onSurface, fontFamily = FontFamily.Monospace, fontSize = view.size.sp, lineHeight = lineHeightSp.sp, textDirection = TextDirection.Content),
                         cursorBrush = SolidColor(cs.primary),
                         visualTransformation = hl,
-                        softWrap = view.wrap,
                         onTextLayout = { layout = it },
                         keyboardOptions = KeyboardOptions(autoCorrectEnabled = false),
                     )
