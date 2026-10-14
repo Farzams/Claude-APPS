@@ -6,11 +6,14 @@ const PACKAGES = ['texlive-basic.js', 'ubuntu-texlive-latex-base.js', 'ubuntu-te
                   'ubuntu-texlive-latex-extra.js', 'ubuntu-texlive-science.js'].map(f => D + f);
 let worker = null, pending = null, extras = null;
 
+window.onerror = (m, src, line) => { try { Android.onLog('JS error: ' + m + ' @' + line); } catch (e) {} };
+window.addEventListener('unhandledrejection', e => { try { Android.onLog('JS rejection: ' + e.reason); } catch (x) {} });
 function status(s) { try { Android.onStatus(s); } catch (e) {} }
 
 function ensureWorker() {
   if (worker) return;
   worker = new Worker(D + 'tex_worker.js');
+  worker.onerror = e => Android.onLog('worker error: ' + e.message + ' @' + e.lineno);
   worker.onmessage = ({data}) => {
     if (data.print) { Android.onLog(String(data.print)); }
     else if (data.initialized) { status('ready'); }
@@ -40,9 +43,11 @@ window.compileProject = async function (jsonStr) {
   try {
     const req = JSON.parse(jsonStr);
     status('compiling');
+    Android.onLog('compileProject: ' + req.files.length + ' files');
     ensureWorker();
     const files = req.files.map(f => ({path: f.path, contents: f.text !== undefined ? f.text : b64ToBytes(f.b64)}));
     if (req.files.some(f => f.text && /xepersian|bidi|Path=fonts|Vazirmatn/i.test(f.text))) files.push(...await loadExtras());
+    Android.onLog('posting to the worker');
     const res = await new Promise((resolve, reject) => {
       pending = {resolve, reject};
       worker.postMessage({files, main_tex_path: req.main, verbose: 'silent', bibtex: null, driver: req.driver || 'xetex_bibtex8_dvipdfmx', data_packages_js: null});

@@ -3,6 +3,7 @@ package app.pdftoolkit.mobile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Base64
+import android.util.Log
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
@@ -56,6 +57,14 @@ object TexEngine {
             wv.webViewClient = object : WebViewClient() {
                 override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
                     assetResponse(request)
+
+                override fun onRenderProcessGone(view: WebView, detail: android.webkit.RenderProcessGoneDetail): Boolean {
+                    Log.e("PDFTK", "WebView render process gone, crashed=${detail.didCrash()}")
+                    _status.value = "engine-crashed"
+                    pending?.complete(CompileResult(false, -1, "The TeX engine stopped (not enough memory?).", null))
+                    pending = null
+                    return true
+                }
             }
             wv.addJavascriptInterface(Bridge(), "Android")
             wv.loadUrl("https://$HOST/assets/tex/tex_host.html")
@@ -90,8 +99,8 @@ object TexEngine {
 
     private class Bridge {
         @JavascriptInterface fun onReady() { ready.complete(Unit); _status.value = "ready" }
-        @JavascriptInterface fun onLog(s: String) { logs.tryEmit(s) }
-        @JavascriptInterface fun onStatus(s: String) { _status.value = s }
+        @JavascriptInterface fun onLog(s: String) { logs.tryEmit(s); Log.i("PDFTK", "tex: " + s.take(300)) }
+        @JavascriptInterface fun onStatus(s: String) { _status.value = s; Log.i("PDFTK", "engine status: $s") }
         @JavascriptInterface fun onPdf(b64: String) { lastPdf = Base64.decode(b64, Base64.DEFAULT) }
         @JavascriptInterface fun onDone(json: String) {
             val o = JSONObject(json)

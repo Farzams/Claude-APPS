@@ -57,6 +57,7 @@ jobs:
             shots
             pdftk.log
             chromium.log
+            system.log
             android/app/build/reports/androidTests
       - name: Publish screenshots to the branch android-ci-shots (so they can be looked at)
         if: always()
@@ -64,7 +65,7 @@ jobs:
         run: |
           mkdir -p /tmp/pub/shots
           cp -r shots/. /tmp/pub/shots/ 2>/dev/null || true
-          cp pdftk.log chromium.log /tmp/pub/ 2>/dev/null || true
+          cp pdftk.log chromium.log system.log /tmp/pub/ 2>/dev/null || true
           echo "run ${{ github.run_number }} commit ${{ github.sha }}" > /tmp/pub/RUN.txt
           cd /tmp/pub
           git init -q

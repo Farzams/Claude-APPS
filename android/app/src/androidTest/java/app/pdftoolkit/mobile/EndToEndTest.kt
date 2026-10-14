@@ -32,7 +32,7 @@ class EndToEndTest {
 
     private fun compileAndWait(name: String): Boolean {
         click("compile")
-        val end = System.currentTimeMillis() + 9 * 60_000
+        val end = System.currentTimeMillis() + 5 * 60_000
         while (System.currentTimeMillis() < end) {
             if (device.hasObject(By.res("pdf_page_0"))) { Thread.sleep(1500); shot(name); return true }
             if (device.hasObject(By.res("compile_failed"))) { shot(name + "_FAILED"); return false }
