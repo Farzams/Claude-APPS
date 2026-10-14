@@ -15,6 +15,7 @@ android/local.properties
 android/app/src/latex/assets/tex/*
 !android/app/src/latex/assets/tex/tex_host.html
 !android/app/src/latex/assets/tex/tex_worker.js
+!android/app/src/latex/assets/tex/tex_passes.js
 android/djvu/src/main/cpp/djvulibre/
 android/djvu/.cxx/
 android/djvu/build/

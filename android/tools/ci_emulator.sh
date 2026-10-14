@@ -23,10 +23,10 @@ PY
     i=$((i+1)); sleep 10
   done ) &
 REC=$!
-./gradlew --no-daemon connectedPdfDebugAndroidTest
-echo $? > ../test_exit_pdf.txt
-./gradlew --no-daemon connectedLatexDebugAndroidTest
-echo $? > ../test_exit.txt
+./gradlew --no-daemon connectedPdfDebugAndroidTest 2>&1 | tee ../gradle_pdf.log
+echo ${PIPESTATUS[0]} > ../test_exit_pdf.txt
+./gradlew --no-daemon connectedLatexDebugAndroidTest 2>&1 | tee ../gradle_latex.log
+echo ${PIPESTATUS[0]} > ../test_exit.txt
 kill $REC 2>/dev/null || true
 mkdir -p ../shots
 adb shell ls -l /data/local/tmp/shots > ../shots/_ls.txt 2>&1 || true
@@ -34,6 +34,8 @@ adb pull /data/local/tmp/shots ../_pulled > ../shots/_pull.txt 2>&1 || true
 cp -r ../_pulled/. ../shots/ 2>/dev/null || true
 adb exec-out screencap -p > ../shots/final.png || true
 adb logcat -d -s PDFTK:I > ../pdftk.log || true
+adb logcat -d -s TestRunner:I AndroidRuntime:E System.err:W DEBUG:F > ../testrunner.log || true
+cp -r app/build/outputs/androidTest-results ../shots/results 2>/dev/null || true
 adb logcat -d -s chromium:I cr_ConsoleLog:I > ../chromium.log || true
 adb logcat -d | grep -iE "lowmemorykiller|oom|out of memory|killed|FATAL|ANR|crash|render process" | tail -80 > ../system.log || true
 exit 0

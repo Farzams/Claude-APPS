@@ -1,5 +1,6 @@
 // Web worker around BusyTeX. It looks at ALL project files (not only the main one) to decide which TeX data packages to load.
 importScripts('busytex_pipeline.js');
+importScripts('tex_passes.js');      // fixes the repeated TeX passes and adds automatic re-runs for references, contents and bibliographies
 const HINTS = ['fontspec'];
 const origResolve = BusytexDataPackageResolver.prototype.resolve;
 BusytexDataPackageResolver.prototype.resolve = function (files, main_tex_path, data_packages_js = null) {
@@ -22,7 +23,7 @@ onmessage = async ({data: {files, main_tex_path, bibtex, busytex_wasm, busytex_j
         msg => postMessage({print: msg}), v => postMessage({initialized: v}), preload, BusytexPipeline.ScriptLoaderWorker);
     } catch (err) { postMessage({exception: 'Exception during initialization: ' + err + '\n' + err.stack}); }
   } else if (files && self.pipeline) {
-    try { postMessage(await self.pipeline.compile(files, main_tex_path, bibtex, verbose, driver, data_packages_js)); }
+    try { postMessage(await compileWithPasses(self.pipeline, files, main_tex_path, bibtex, verbose, driver, data_packages_js, msg => postMessage({print: msg}))); }
     catch (err) { postMessage({exception: 'Exception during compilation: ' + err + '\n' + err.stack}); }
   }
 };

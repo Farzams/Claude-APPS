@@ -81,7 +81,7 @@ jobs:
         run: |
           mkdir -p /tmp/pub/shots
           cp -r shots/. /tmp/pub/shots/ 2>/dev/null || true
-          cp pdftk.log chromium.log system.log /tmp/pub/ 2>/dev/null || true
+          cp pdftk.log chromium.log system.log testrunner.log gradle_pdf.log gradle_latex.log /tmp/pub/ 2>/dev/null || true
           { echo "== df"; df -h; echo "== free"; free -m; echo "== avd"; ls -la ~/.android/avd 2>&1; du -sh ~/.android 2>&1; echo "== kvm"; ls -l /dev/kvm 2>&1; } > /tmp/pub/diag.txt 2>&1 || true
           echo "run ${{ github.run_number }} commit ${{ github.sha }}" > /tmp/pub/RUN.txt
           cd /tmp/pub
