@@ -14,4 +14,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "PDFToolkitMobile"
-include(":app")
+include(":app", ":djvu")

@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Compress
 import androidx.compose.material.icons.filled.ContentCut
 import androidx.compose.material.icons.filled.GridView
@@ -44,7 +45,7 @@ import androidx.compose.ui.unit.dp
 private data class Card(val key: String, val icon: ImageVector)
 
 private val CARDS = listOf(
-    Card("merge", Icons.Filled.MergeType), Card("split", Icons.Filled.ContentCut),
+    Card("docs2pdf", Icons.Filled.AutoStories), Card("merge", Icons.Filled.MergeType), Card("split", Icons.Filled.ContentCut),
     Card("organize", Icons.Filled.GridView), Card("compress", Icons.Filled.Compress),
     Card("img2pdf", Icons.Filled.Image), Card("pdf2img", Icons.Filled.PictureAsPdf),
     Card("protect", Icons.Filled.Lock), Card("watermark", Icons.Filled.WaterDrop), Card("numbers", Icons.Filled.FormatListNumbered),

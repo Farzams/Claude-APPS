@@ -209,6 +209,7 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
                     }
                     item("view.options") { dialog = "view" }
                     HorizontalDivider()
+                    if (vm.pdfFile != null) item("pdf.to.latex.menu", "pdf_to_latex") { dialog = "ptl" }
                     item("share.pdf") { sharePdf(ctx, vm) }
                     item("save.pdf") { savePdf.launch((vm.project?.name ?: "document") + ".pdf") }
                     item("export.project") { exportZip.launch((vm.project?.name ?: "project") + ".zip") }
@@ -217,6 +218,7 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
         }
     }
 
+    if (dialog == "ptl") PdfToLatexDialog(vm, uri = null, file = vm.pdfFile, name = (vm.project?.name ?: "document") + " (LaTeX)", onDismiss = { dialog = "" })
     when (dialog) {
         "newfile" -> AlertDialog(
             onDismissRequest = { dialog = "" },

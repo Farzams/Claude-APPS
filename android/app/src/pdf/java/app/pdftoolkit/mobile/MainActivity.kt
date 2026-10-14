@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
                         "protect" -> ProtectScreen(home)
                         "watermark" -> WatermarkScreen(home)
                         "numbers" -> NumbersScreen(home)
+                        "docs2pdf" -> ConvertScreen(home)
                         "settings" -> SettingsScreen(prefs, refresh) { screen = "home" }
                         else -> HomeScreen({ screen = it }, { screen = "settings" })
                     }

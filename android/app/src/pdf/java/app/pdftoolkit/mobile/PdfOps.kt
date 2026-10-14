@@ -154,7 +154,7 @@ object PdfOps {
         }
     }
 
-    private fun addPicture(doc: PDDocument, bmp: Bitmap, widthPt: Float, heightPt: Float, quality: Float) {
+    internal fun addPicture(doc: PDDocument, bmp: Bitmap, widthPt: Float, heightPt: Float, quality: Float) {
         val page = PDPage(PDRectangle(widthPt, heightPt))
         doc.addPage(page)
         val img = JPEGFactory.createFromImage(doc, bmp, quality)

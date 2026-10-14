@@ -561,3 +561,34 @@ fun NumbersScreen(onBack: () -> Unit) {
         JobStatus(job)
     }
 }
+
+
+// ---------------------------------------------------------------- books and documents -> PDF
+
+@Composable
+fun ConvertScreen(onBack: () -> Unit) {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val job = remember { ToolJob() }
+    var uri by remember { mutableStateOf<Uri?>(null) }
+    var name by remember { mutableStateOf("") }
+    val kind = DocConvert.kindOf(name)
+    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+        if (it != null) { uri = it; name = PdfOps.nameOf(ctx, it); job.message = "" }
+    }
+    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+        val src = uri
+        if (out != null && src != null) job.run(scope) {
+            (ctx.contentResolver.openOutputStream(out) ?: error("Cannot write")).use { DocConvert.convert(ctx, src, name, it) }
+            t("saved")
+        }
+    }
+    ToolPage(t("docs2pdf"), onBack) {
+        Hint(t("docs.hint"))
+        OutlinedButton(onClick = { pick.launch(arrayOf("*/*")) }, modifier = Modifier.testTag("pick_file")) { Text(t(if (uri == null) "choose.file" else "change.file")) }
+        FileLine(ctx, uri, if (kind != null) "  ·  $kind" else "")
+        if (uri != null && kind == null) Text(t("unsupported"), color = MaterialTheme.colorScheme.error)
+        PrimaryButton(t("run.save"), "run", uri != null && kind != null && !job.busy) { save.launch(name.substringBeforeLast('.') + ".pdf") }
+        JobStatus(job)
+    }
+}
