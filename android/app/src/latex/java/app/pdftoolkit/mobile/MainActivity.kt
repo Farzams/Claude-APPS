@@ -30,7 +30,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        com.tom_roush.pdfbox.android.PDFBoxResourceLoader.init(applicationContext)
         val prefs = Prefs(this)
         Strings.lang = prefs.lang
 

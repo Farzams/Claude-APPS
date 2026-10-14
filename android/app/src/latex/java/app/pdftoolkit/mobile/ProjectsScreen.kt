@@ -25,7 +25,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.UploadFile
 import androidx.compose.material3.AlertDialog
@@ -39,7 +38,6 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,8 +59,6 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
     var renaming by remember { mutableStateOf<Project?>(null) }
     var deleting by remember { mutableStateOf<Project?>(null) }
     var exporting by remember { mutableStateOf<Project?>(null) }
-    var pdfPick by remember { mutableStateOf<Uri?>(null) }
-    val pdfPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { if (it != null) pdfPick = it }
 
     val importer = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
@@ -90,9 +86,6 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
             Column(Modifier.weight(1f)) {
                 Text(t("app.latex"), style = MaterialTheme.typography.headlineMedium, color = cs.onBackground)
                 Text(t("latex.sub"), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
-            }
-            IconButton(onClick = { pdfPicker.launch(arrayOf("application/pdf")) }, modifier = Modifier.testTag("pdf_to_latex")) {
-                Icon(Icons.Filled.PictureAsPdf, t("pdf.to.latex"), tint = cs.onBackground)
             }
             IconButton(onClick = { importer.launch(arrayOf("application/zip", "text/*", "application/x-tex", "application/octet-stream")) }, modifier = Modifier.testTag("import_project")) {
                 Icon(Icons.Filled.UploadFile, t("import"), tint = cs.onBackground)
@@ -147,7 +140,6 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
     }
 
     if (creating) NewProjectDialog(vm, onDismiss = { creating = false })
-    pdfPick?.let { u -> PdfToLatexDialog(vm, uri = u, file = null, name = displayName(ctx, u).substringBeforeLast('.'), onDismiss = { pdfPick = null }) }
     renaming?.let { p ->
         var name by remember(p) { mutableStateOf(p.name) }
         AlertDialog(
@@ -203,51 +195,5 @@ private fun NewProjectDialog(vm: EditorViewModel, onDismiss: () -> Unit) {
             ) { Text(t("create")) }
         },
         dismissButton = { TextButton(onClick = onDismiss) { Text(t("cancel")) } },
-    )
-}
-
-
-/** Options and progress for turning a PDF into a LaTeX project. */
-@Composable
-fun PdfToLatexDialog(vm: EditorViewModel, uri: Uri?, file: java.io.File?, name: String, onDismiss: () -> Unit) {
-    val cs = MaterialTheme.colorScheme
-    var eq by remember { mutableStateOf(true) }
-    var pages by remember { mutableStateOf(true) }
-    var started by remember { mutableStateOf(false) }
-    // when the conversion finished the editor opens by itself; an error stays visible here
-    androidx.compose.runtime.LaunchedEffect(vm.converting, vm.project) {
-        if (started && vm.converting.isEmpty() && vm.convertError.isEmpty()) onDismiss()
-    }
-    AlertDialog(
-        onDismissRequest = { if (vm.converting.isEmpty()) onDismiss() },
-        title = { Text(t("pdf.to.latex")) },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (vm.converting.isNotEmpty()) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        androidx.compose.material3.CircularProgressIndicator(Modifier.size(22.dp), strokeWidth = 2.dp)
-                        Text("${t("ptl.working")} ${vm.converting}", color = cs.onSurface)
-                    }
-                } else {
-                    Text(t("ptl.note"), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
-                    Row(Modifier.fillMaxWidth().clickable { eq = !eq }, verticalAlignment = Alignment.CenterVertically) {
-                        androidx.compose.material3.Checkbox(checked = eq, onCheckedChange = { eq = it })
-                        Text(t("ptl.eq"), color = cs.onSurface, style = MaterialTheme.typography.bodyMedium)
-                    }
-                    Row(Modifier.fillMaxWidth().clickable { pages = !pages }, verticalAlignment = Alignment.CenterVertically) {
-                        androidx.compose.material3.Checkbox(checked = pages, onCheckedChange = { pages = it })
-                        Text(t("ptl.pages"), color = cs.onSurface, style = MaterialTheme.typography.bodyMedium)
-                    }
-                    if (vm.convertError.isNotEmpty()) Text(vm.convertError, color = cs.error)
-                }
-            }
-        },
-        confirmButton = {
-            if (vm.converting.isEmpty()) TextButton(
-                onClick = { started = true; vm.pdfToLatex(uri, file, name.ifBlank { "PDF" }, PdfToLatex.Options(eq, pages)) },
-                modifier = Modifier.testTag("ptl_start"),
-            ) { Text(t("ptl.start")) }
-        },
-        dismissButton = { if (vm.converting.isEmpty()) TextButton(onClick = onDismiss) { Text(t("cancel")) } },
     )
 }

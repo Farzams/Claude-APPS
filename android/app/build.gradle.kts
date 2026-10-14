@@ -57,7 +57,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     // PDF tools app: page editing, merging, encryption (PdfBox) and picking a folder (DocumentFile)
     "pdfImplementation"("com.tom-roush:pdfbox-android:2.0.27.0")
-    "latexImplementation"("com.tom-roush:pdfbox-android:2.0.27.0")
     "pdfImplementation"("androidx.documentfile:documentfile:1.0.1")
     "pdfImplementation"(project(":djvu"))
 }

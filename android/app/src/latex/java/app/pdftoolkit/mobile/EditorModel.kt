@@ -92,11 +92,6 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
     var matchIndex by mutableIntStateOf(0)
 
     var bibKeysList by mutableStateOf(listOf<String>())
-
-    // PDF to LaTeX
-    var converting by mutableStateOf("")                 // progress text; empty when idle
-    var convertError by mutableStateOf("")
-    var convertNotes by mutableStateOf(listOf<String>())
     var misspelled by mutableStateOf(listOf<IntRange>())
     var spellLang by mutableStateOf("")          // "" = off, otherwise a language tag such as "en" or "fa"
     var spellMissing by mutableStateOf(false)    // the phone has no spell checker for that language
@@ -431,34 +426,6 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
             android.util.Log.i("PDFTK", "compile ok=${res.ok} exit=${res.exit} errors=${errors.size} pdfBytes=${res.pdf?.size}")
             if (!res.ok) android.util.Log.i("PDFTK", "log tail: " + res.log.takeLast(2500))
             compiling = false
-        }
-    }
-
-    /** Makes a new project from a PDF (a picked file, or the one just compiled). */
-    fun pdfToLatex(uri: Uri?, file: File?, name: String, opts: PdfToLatex.Options) {
-        if (converting.isNotEmpty()) return
-        converting = "…"
-        convertError = ""
-        convertNotes = emptyList()
-        viewModelScope.launch {
-            try {
-                val out = withContext(Dispatchers.Default) {
-                    val src = File(app.cacheDir, "convert_in.pdf")
-                    if (uri != null) {
-                        (app.contentResolver.openInputStream(uri) ?: error("Cannot open the file")).use { i -> src.outputStream().use { i.copyTo(it) } }
-                    } else file!!.copyTo(src, overwrite = true)
-                    PdfToLatex(app.cacheDir).convert(src, name, opts) { converting = it }
-                }
-                val p = store.create(name, Template("tpl.pdf", mapOf("main.tex" to out.tex)))
-                for ((f, b) in out.files) File(p.dir, f).also { it.parentFile?.mkdirs() }.writeBytes(b)
-                refreshProjects()
-                openProject(p)
-                convertNotes = out.notes
-            } catch (e: Throwable) {
-                convertError = e.message ?: e.toString()
-            } finally {
-                converting = ""
-            }
         }
     }
 
