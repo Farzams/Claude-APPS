@@ -128,6 +128,7 @@ class EditorViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun compile() {
+        android.util.Log.i("PDFTK", "compile() called, compiling=$compiling")
         if (compiling) return
         compiling = true
         compileOk = null
@@ -137,6 +138,7 @@ class EditorViewModel(app: Application) : AndroidViewModel(app) {
             val files = withContext(Dispatchers.IO) {
                 projectDir.walkTopDown().filter { it.isFile }.map { ProjFile(it.relativeTo(projectDir).path.replace('\\', '/'), it.readBytes()) }.toList()
             }
+            android.util.Log.i("PDFTK", "calling the engine with ${files.size} files")
             val res = TexEngine.compile(files, current)
             log = res.log
             errors = parseErrors(res.log)

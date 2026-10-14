@@ -111,7 +111,9 @@ object TexEngine {
     }
 
     suspend fun compile(files: List<ProjFile>, main: String, driver: String = "xetex_bibtex8_dvipdfmx"): CompileResult {
+        Log.i("PDFTK", "TexEngine.compile: waiting for the engine page")
         ready.await()
+        Log.i("PDFTK", "TexEngine.compile: page ready, sending the project")
         return withContext(Dispatchers.Main) {
             val wv = webView ?: return@withContext CompileResult(false, -1, "The TeX engine is not available.", null)
             if (pending != null) return@withContext CompileResult(false, -1, "A compilation is already running.", null)
@@ -127,7 +129,7 @@ object TexEngine {
                 arr.put(o)
             }
             val req = JSONObject().put("main", main).put("driver", driver).put("files", arr)
-            wv.evaluateJavascript("compileProject(" + JSONObject.quote(req.toString()) + ")", null)
+            wv.evaluateJavascript("compileProject(" + JSONObject.quote(req.toString()) + ")") { Log.i("PDFTK", "evaluateJavascript returned: $it") }
             done.await()
         }
     }
