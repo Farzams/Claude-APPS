@@ -49,6 +49,8 @@ class MainActivity : ComponentActivity() {
                         "img2pdf" -> PicturesToPdfScreen(home)
                         "pdf2img" -> PdfToPicturesScreen(home)
                         "protect" -> ProtectScreen(home)
+                        "watermark" -> WatermarkScreen(home)
+                        "numbers" -> NumbersScreen(home)
                         "settings" -> SettingsScreen(prefs, refresh) { screen = "home" }
                         else -> HomeScreen({ screen = it }, { screen = "settings" })
                     }

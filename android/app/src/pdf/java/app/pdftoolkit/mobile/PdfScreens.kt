@@ -42,6 +42,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -460,6 +461,103 @@ fun ProtectScreen(onBack: () -> Unit) {
             visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth().testTag("password_field"),
         )
         PrimaryButton(t("run.save"), "run", uri != null && (password.isNotEmpty() || !add) && !job.busy) { save.launch(if (add) "protected.pdf" else "unprotected.pdf") }
+        JobStatus(job)
+    }
+}
+
+
+// ---------------------------------------------------------------- watermark
+
+@Composable
+fun WatermarkScreen(onBack: () -> Unit) {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val job = remember { ToolJob() }
+    var uri by remember { mutableStateOf<Uri?>(null) }
+    var text by remember { mutableStateOf("CONFIDENTIAL") }
+    var opacity by remember { mutableStateOf(0.25f) }
+    var size by remember { mutableStateOf(0.6f) }
+    var diagonal by remember { mutableStateOf(true) }
+    var color by remember { mutableStateOf("gray") }
+    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { if (it != null) { uri = it; job.message = "" } }
+    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+        val src = uri
+        if (out != null && src != null) job.run(scope) {
+            val argb = when (color) { "red" -> 0xFFD62828.toInt(); "blue" -> 0xFF1D4ED8.toInt(); "black" -> 0xFF000000.toInt(); else -> 0xFF6B7280.toInt() }
+            (ctx.contentResolver.openOutputStream(out) ?: error("Cannot write")).use {
+                PdfOps.watermark(ctx, src, text, opacity, size, if (diagonal) 45f else 0f, argb, it)
+            }
+            t("saved")
+        }
+    }
+    ToolPage(t("watermark"), onBack) {
+        OutlinedButton(onClick = { pick.launch(arrayOf(PDF)) }, modifier = Modifier.testTag("pick_file")) { Text(t(if (uri == null) "choose.pdf" else "change.file")) }
+        FileLine(ctx, uri)
+        OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text(t("wm.text")) }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("wm_text"))
+        Text("${t("wm.opacity")}: ${(opacity * 100).toInt()}%", color = MaterialTheme.colorScheme.onBackground)
+        Slider(value = opacity, onValueChange = { opacity = it }, valueRange = 0.08f..0.8f)
+        Text("${t("wm.size")}: ${(size * 100).toInt()}%", color = MaterialTheme.colorScheme.onBackground)
+        Slider(value = size, onValueChange = { size = it }, valueRange = 0.25f..0.95f)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = diagonal, onClick = { diagonal = true }, label = { Text(t("wm.diag")) })
+            FilterChip(selected = !diagonal, onClick = { diagonal = false }, label = { Text(t("wm.flat")) })
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            for ((k, label) in listOf("gray" to "col.gray", "red" to "col.red", "blue" to "col.blue", "black" to "col.black")) {
+                FilterChip(selected = color == k, onClick = { color = k }, label = { Text(t(label)) })
+            }
+        }
+        PrimaryButton(t("run.save"), "run", uri != null && text.isNotBlank() && !job.busy) { save.launch("watermarked.pdf") }
+        JobStatus(job)
+    }
+}
+
+// ---------------------------------------------------------------- page numbers
+
+@Composable
+fun NumbersScreen(onBack: () -> Unit) {
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val job = remember { ToolJob() }
+    var uri by remember { mutableStateOf<Uri?>(null) }
+    var format by remember { mutableStateOf("n") }
+    var top by remember { mutableStateOf(false) }
+    var align by remember { mutableStateOf(1) }
+    var start by remember { mutableStateOf("1") }
+    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { if (it != null) { uri = it; job.message = "" } }
+    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+        val src = uri
+        if (out != null && src != null) job.run(scope) {
+            (ctx.contentResolver.openOutputStream(out) ?: error("Cannot write")).use {
+                PdfOps.numberPages(ctx, src, format, top, align, start.toIntOrNull() ?: 1, 11f, it)
+            }
+            t("saved")
+        }
+    }
+    ToolPage(t("numbers"), onBack) {
+        OutlinedButton(onClick = { pick.launch(arrayOf(PDF)) }, modifier = Modifier.testTag("pick_file")) { Text(t(if (uri == null) "choose.pdf" else "change.file")) }
+        FileLine(ctx, uri)
+        Text(t("num.format"), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onBackground)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            for ((k, label) in listOf("n" to "1", "n/N" to "1 / 12", "page" to "Page 1 of 12")) {
+                FilterChip(selected = format == k, onClick = { format = k }, label = { Text(label) })
+            }
+        }
+        Text(t("num.pos"), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.onBackground)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterChip(selected = !top, onClick = { top = false }, label = { Text(t("num.bottom")) })
+            FilterChip(selected = top, onClick = { top = true }, label = { Text(t("num.top")) })
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            for ((k, label) in listOf(0 to "num.left", 1 to "num.center", 2 to "num.right")) {
+                FilterChip(selected = align == k, onClick = { align = k }, label = { Text(t(label)) })
+            }
+        }
+        OutlinedTextField(
+            value = start, onValueChange = { start = it.filter(Char::isDigit).take(4) }, label = { Text(t("num.start")) }, singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth().testTag("start_field"),
+        )
+        PrimaryButton(t("run.save"), "run", uri != null && !job.busy) { save.launch("numbered.pdf") }
         JobStatus(job)
     }
 }

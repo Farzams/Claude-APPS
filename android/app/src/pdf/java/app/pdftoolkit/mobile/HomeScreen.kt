@@ -26,7 +26,9 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.MergeType
 import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.FormatListNumbered
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,7 +47,7 @@ private val CARDS = listOf(
     Card("merge", Icons.Filled.MergeType), Card("split", Icons.Filled.ContentCut),
     Card("organize", Icons.Filled.GridView), Card("compress", Icons.Filled.Compress),
     Card("img2pdf", Icons.Filled.Image), Card("pdf2img", Icons.Filled.PictureAsPdf),
-    Card("protect", Icons.Filled.Lock),
+    Card("protect", Icons.Filled.Lock), Card("watermark", Icons.Filled.WaterDrop), Card("numbers", Icons.Filled.FormatListNumbered),
 )
 
 @Composable

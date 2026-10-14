@@ -42,14 +42,23 @@ class EndToEndTest {
         return false
     }
 
+    private fun openNewProject(template: String) {
+        click("new_project")
+        assertTrue("template list", device.wait(Until.hasObject(By.text(template)), 10_000))
+        device.findObject(By.text(template)).click()
+        Thread.sleep(300)
+        device.findObject(By.text("Create")).click()
+        assertTrue(device.wait(Until.hasObject(By.res("compile")), 15_000))
+    }
+
     @Test
     fun compilesEnglishAndPersianThenThemes() {
         val ctx = instr.targetContext
         val intent = ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ctx.startActivity(intent)
-        assertTrue(device.wait(Until.hasObject(By.res("card_latex")), 30_000))
-        shot("01_home")
-        click("card_latex")
+        assertTrue(device.wait(Until.hasObject(By.res("project_0")), 30_000))
+        shot("01_projects")
+        click("project_0")
         assertTrue(device.wait(Until.hasObject(By.res("compile")), 15_000))
         shot("02_editor")
 
@@ -57,12 +66,24 @@ class EndToEndTest {
         val en = compileAndWait("03_preview_english")
         Log.i("PDFTK", "English compile ok=$en in ${(System.currentTimeMillis() - t0) / 1000}s")
         assertTrue("English document did not compile", en)
+        assertTrue("page indicator", device.hasObject(By.res("page_indicator")))
+        click("zoom_in")
+        click("night_mode")
+        Thread.sleep(1200)
+        shot("03b_preview_zoomed_night")
+        click("night_mode")
 
         click("tab_editor")
-        click("templates")
-        assertTrue(device.wait(Until.hasObject(By.text("Persian article (XeLaTeX)")), 5_000))
-        device.findObject(By.text("Persian article (XeLaTeX)")).click()
+        click("find")
+        assertTrue(device.wait(Until.hasObject(By.res("find_field")), 5_000))
+        device.findObject(By.res("find_field")).text = "section"
         Thread.sleep(500)
+        shot("03c_find")
+        click("find")
+
+        click("back")
+        assertTrue(device.wait(Until.hasObject(By.res("new_project")), 10_000))
+        openNewProject("Persian article (XeLaTeX)")
         shot("04_persian_source")
         val t1 = System.currentTimeMillis()
         val fa = compileAndWait("05_preview_persian")
@@ -70,6 +91,16 @@ class EndToEndTest {
         assertTrue("Persian document did not compile", fa)
 
         click("back")
+        assertTrue(device.wait(Until.hasObject(By.res("new_project")), 10_000))
+        openNewProject("Article with bibliography")
+        shot("05b_bib_source")
+        val t2 = System.currentTimeMillis()
+        val bib = compileAndWait("05c_preview_bib")
+        Log.i("PDFTK", "Bibliography compile ok=$bib in ${(System.currentTimeMillis() - t2) / 1000}s")
+        assertTrue("Bibliography document did not compile", bib)
+
+        click("back")
+        assertTrue(device.wait(Until.hasObject(By.res("new_project")), 10_000))
         click("open_settings")
         click("mode_dark")
         shot("06_settings_dark")
@@ -79,7 +110,7 @@ class EndToEndTest {
         click("lang_fa")
         shot("08_settings_persian")
         click("back")
-        assertTrue(device.wait(Until.hasObject(By.res("card_latex")), 10_000))
-        shot("09_home_persian_dark")
+        assertTrue(device.wait(Until.hasObject(By.res("new_project")), 10_000))
+        shot("09_projects_persian_dark")
     }
 }

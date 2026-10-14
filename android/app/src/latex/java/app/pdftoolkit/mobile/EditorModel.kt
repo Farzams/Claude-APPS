@@ -1,6 +1,7 @@
 package app.pdftoolkit.mobile
 
 import android.app.Application
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,13 +17,34 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-data class TexError(val line: Int?, val message: String)
+data class TexError(val line: Int?, val message: String, val file: String? = null)
 
-/** Parses the XeTeX log: "! message" followed (a few lines later) by "l.<number> ...". */
+/**
+ * Parses the TeX log: "! message" followed (a few lines later) by "l.<number> ...".
+ * The file an error belongs to is found by following the "(./file.tex" ... ")" nesting in the log.
+ */
 fun parseErrors(log: String): List<TexError> {
     val lines = log.lines()
     val out = ArrayList<TexError>()
     val lre = Regex("^l\\.(\\d+)")
+    val stack = ArrayList<String?>()
+    val fileAt = arrayOfNulls<String>(lines.size)
+    val open = Regex("\\((\\.?/?[^\\s()]+\\.(?:tex|bib|sty|cls))")
+    for ((i, l) in lines.withIndex()) {
+        var k = 0
+        while (k < l.length) {
+            val c = l[k]
+            if (c == '(') {
+                val m = open.matchAt(l, k)
+                if (m != null) { stack.add(m.groupValues[1].removePrefix("./")); k += m.value.length; continue }
+                stack.add(null)
+            } else if (c == ')' && stack.isNotEmpty()) {
+                stack.removeAt(stack.size - 1)
+            }
+            k++
+        }
+        fileAt[i] = stack.lastOrNull { it != null }
+    }
     for ((i, l) in lines.withIndex()) {
         if (!l.startsWith("! ")) continue
         var ln: Int? = null
@@ -32,17 +54,26 @@ fun parseErrors(log: String): List<TexError> {
         }
         val msg = l.substring(2).trim()
         if (out.lastOrNull()?.message == msg && out.lastOrNull()?.line == ln) continue
-        out += TexError(ln, msg)
+        out += TexError(ln, msg, if (i > 0) fileAt[i - 1] else fileAt[i])
     }
     return out
 }
 
-class EditorViewModel(app: Application) : AndroidViewModel(app) {
-    private val projectDir = File(app.filesDir, "projects/default").also { it.mkdirs() }
+/** Citation keys found in the project's .bib files. */
+fun bibKeys(text: String): List<String> =
+    Regex("@\\w+\\s*\\{\\s*([^,\\s]+)\\s*,").findAll(text).map { it.groupValues[1] }.toList()
+
+class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
+    val store = ProjectStore(app)
     private val outPdf = File(app.cacheDir, "preview.pdf")
 
+    var projects by mutableStateOf(listOf<Project>())
+    var project by mutableStateOf<Project?>(null)
+    var meta by mutableStateOf(Meta())
+    var files by mutableStateOf(listOf<String>())
     var current by mutableStateOf("main.tex")
     var field by mutableStateOf(TextFieldValue(""))
+
     var compiling by mutableStateOf(false)
     var status by mutableStateOf("")
     var log by mutableStateOf("")
@@ -53,46 +84,185 @@ class EditorViewModel(app: Application) : AndroidViewModel(app) {
     var canUndo by mutableStateOf(false)
     var canRedo by mutableStateOf(false)
 
-    private val undo = ArrayDeque<TextFieldValue>()
-    private val redo = ArrayDeque<TextFieldValue>()
-    private var lastPush = 0L
+    // find and replace
+    var findOpen by mutableStateOf(false)
+    var findText by mutableStateOf("")
+    var replaceText by mutableStateOf("")
+    var matchCase by mutableStateOf(false)
+    var matchIndex by mutableIntStateOf(0)
+
+    var bibKeysList by mutableStateOf(listOf<String>())
+    var misspelled by mutableStateOf(listOf<IntRange>())
+
+    private class History { val undo = ArrayDeque<TextFieldValue>(); val redo = ArrayDeque<TextFieldValue>(); var lastPush = 0L }
+    private val histories = HashMap<String, History>()
+    private val buffers = HashMap<String, TextFieldValue>()
     private var saveJob: Job? = null
 
     init {
-        val f = File(projectDir, "main.tex")
-        val text = if (f.exists()) f.readText() else Templates.ARTICLE
-        field = TextFieldValue(text)
+        refreshProjects()
+        if (projects.isEmpty()) {
+            store.create("Welcome", Templates.ALL.first())
+            refreshProjects()
+        }
     }
+
+    fun refreshProjects() { projects = store.list() }
+
+    // ------------------------------------------------------------ projects
+    fun openProject(p: Project) {
+        flush()
+        project = p
+        buffers.clear(); histories.clear()
+        current = ""
+        field = TextFieldValue("")
+        meta = store.meta(p)
+        refreshFiles()
+        pdfFile = null; compileOk = null; log = ""; errors = emptyList(); status = ""
+        findOpen = false
+        openFile(if (meta.main in files) meta.main else files.firstOrNull { isTextFile(it) } ?: meta.main)
+        refreshBib()
+    }
+
+    fun closeProject() {
+        flush()
+        project = null
+        refreshProjects()
+    }
+
+    fun createProject(name: String, template: Template) {
+        val p = store.create(name, template)
+        refreshProjects()
+        openProject(p)
+    }
+
+    fun renameProject(p: Project, name: String) { store.rename(p, name); refreshProjects() }
+    fun duplicateProject(p: Project) { store.duplicate(p); refreshProjects() }
+    fun deleteProject(p: Project) { store.delete(p); refreshProjects() }
+
+    fun importProjectZip(name: String, input: java.io.InputStream) {
+        val p = store.importZip(name, input)
+        refreshProjects()
+        openProject(p)
+    }
+
+    // ------------------------------------------------------------ files
+    private fun refreshFiles() {
+        val p = project ?: return
+        files = store.files(p, meta.main)
+    }
+
+    fun refreshBib() {
+        val p = project ?: return
+        bibKeysList = files.filter { it.endsWith(".bib") }.flatMap { bibKeys(runCatching { File(p.dir, it).readText() }.getOrDefault("")) }
+    }
+
+    private fun history(name: String) = histories.getOrPut(name) { History() }
+
+    fun openFile(name: String) {
+        val p = project ?: return
+        if (current.isNotEmpty()) { buffers[current] = field; flushFile(current) }
+        current = name
+        val v = buffers[name] ?: TextFieldValue(
+            if (isTextFile(name)) runCatching { File(p.dir, name).readText() }.getOrDefault("") else "",
+        )
+        field = v
+        syncHistoryFlags()
+    }
+
+    private fun syncHistoryFlags() {
+        val h = history(current)
+        canUndo = h.undo.isNotEmpty(); canRedo = h.redo.isNotEmpty()
+    }
+
+    fun newFile(name: String) {
+        val p = project ?: return
+        val n = name.trim().ifEmpty { return }
+        val f = File(p.dir, n)
+        f.parentFile?.mkdirs()
+        if (!f.exists()) f.writeText(if (n.endsWith(".bib")) "@article{key2024,\n  author  = {Author},\n  title   = {Title},\n  journal = {Journal},\n  year    = {2024}\n}\n" else "")
+        refreshFiles(); refreshBib()
+        openFile(n)
+    }
+
+    fun importFile(name: String, bytes: ByteArray) {
+        val p = project ?: return
+        val n = store.importFile(p, name, bytes)
+        refreshFiles(); refreshBib()
+        if (isTextFile(n)) openFile(n)
+    }
+
+    fun deleteFile(name: String) {
+        val p = project ?: return
+        if (name == meta.main) return
+        File(p.dir, name).delete()
+        buffers.remove(name); histories.remove(name)
+        refreshFiles(); refreshBib()
+        if (current == name) openFile(meta.main)
+    }
+
+    fun renameFile(name: String, to: String) {
+        val p = project ?: return
+        val n = to.trim().ifEmpty { return }
+        if (File(p.dir, n).exists()) return
+        flushFile(current)
+        File(p.dir, name).renameTo(File(p.dir, n))
+        buffers.remove(name); histories.remove(name)
+        if (meta.main == name) { meta = meta.copy(main = n); store.saveMeta(p, meta) }
+        refreshFiles(); refreshBib()
+        if (current == name) openFile(n)
+    }
+
+    fun setMain(name: String) {
+        val p = project ?: return
+        meta = meta.copy(main = name)
+        store.saveMeta(p, meta)
+        refreshFiles()
+    }
+
+    fun setEngine(engine: String) {
+        val p = project ?: return
+        meta = meta.copy(engine = engine)
+        store.saveMeta(p, meta)
+    }
+
+    // ------------------------------------------------------------ editing
+    var autoPairs = true
+
+    /** What the keyboard sends: brackets, indentation and \begin completion are handled first. */
+    fun onType(v: TextFieldValue) = onChange(if (autoPairs) smartEdit(field, v) else v)
 
     fun onChange(v: TextFieldValue) {
         if (v.text != field.text) {
+            val h = history(current)
             val now = System.currentTimeMillis()
-            if (now - lastPush > 700 || undo.isEmpty()) {
-                undo.addLast(field)
-                if (undo.size > 200) undo.removeFirst()
+            if (now - h.lastPush > 700 || h.undo.isEmpty()) {
+                h.undo.addLast(field)
+                if (h.undo.size > 200) h.undo.removeFirst()
             }
-            lastPush = now
-            redo.clear()
+            h.lastPush = now
+            h.redo.clear()
             scheduleSave()
         }
         field = v
-        canUndo = undo.isNotEmpty()
-        canRedo = redo.isNotEmpty()
+        syncHistoryFlags()
     }
 
     fun undo() {
-        val prev = undo.removeLastOrNull() ?: return
-        redo.addLast(field)
+        val h = history(current)
+        val prev = h.undo.removeLastOrNull() ?: return
+        h.redo.addLast(field)
         field = prev
-        canUndo = undo.isNotEmpty(); canRedo = true
+        syncHistoryFlags()
         scheduleSave()
     }
 
     fun redo() {
-        val next = redo.removeLastOrNull() ?: return
-        undo.addLast(field)
+        val h = history(current)
+        val next = h.redo.removeLastOrNull() ?: return
+        h.undo.addLast(field)
         field = next
-        canUndo = true; canRedo = redo.isNotEmpty()
+        syncHistoryFlags()
         scheduleSave()
     }
 
@@ -106,7 +276,26 @@ class EditorViewModel(app: Application) : AndroidViewModel(app) {
         onChange(TextFieldValue(before + s + after, TextRange(before.length + if (caret >= 0) caret else s.length)))
     }
 
-    fun loadTemplate(text: String) {
+    fun moveCaret(delta: Int) {
+        val i = (field.selection.end + delta).coerceIn(0, field.text.length)
+        field = field.copy(selection = TextRange(i))
+    }
+
+    /** Puts "% " in front of the selected lines, or removes it when they are all comments already. */
+    fun toggleComment() {
+        val t = field.text
+        val a = t.lastIndexOf('\n', (field.selection.min - 1).coerceAtLeast(0)).let { if (field.selection.min == 0) 0 else it + 1 }
+        var b = t.indexOf('\n', field.selection.max)
+        if (b < 0) b = t.length
+        val block = t.substring(a, b).split('\n')
+        val allComments = block.all { it.trimStart().startsWith("%") || it.isBlank() }
+        val changed = block.joinToString("\n") {
+            if (allComments) it.replaceFirst(Regex("^(\\s*)% ?"), "$1") else "% $it"
+        }
+        onChange(TextFieldValue(t.substring(0, a) + changed + t.substring(b), TextRange(a, a + changed.length)))
+    }
+
+    fun loadTemplateText(text: String) {
         onChange(TextFieldValue(text, TextRange(0)))
         errors = emptyList(); log = ""; compileOk = null
     }
@@ -119,27 +308,83 @@ class EditorViewModel(app: Application) : AndroidViewModel(app) {
         field = field.copy(selection = TextRange(idx))
     }
 
+    fun goToError(e: TexError) {
+        val f = e.file
+        if (f != null && f != current && f in files && isTextFile(f)) openFile(f)
+        e.line?.let { goToLine(it) }
+    }
+
+    // ------------------------------------------------------------ find and replace
+    fun matches(): List<Int> {
+        val q = findText
+        if (q.isEmpty()) return emptyList()
+        val out = ArrayList<Int>()
+        var i = field.text.indexOf(q, 0, ignoreCase = !matchCase)
+        while (i >= 0 && out.size < 5000) {
+            out.add(i)
+            i = field.text.indexOf(q, i + q.length.coerceAtLeast(1), ignoreCase = !matchCase)
+        }
+        return out
+    }
+
+    fun findStep(dir: Int) {
+        val m = matches()
+        if (m.isEmpty()) return
+        matchIndex = ((matchIndex + dir) % m.size + m.size) % m.size
+        field = field.copy(selection = TextRange(m[matchIndex], m[matchIndex] + findText.length))
+    }
+
+    fun replaceOne() {
+        val m = matches()
+        if (m.isEmpty()) return
+        val i = matchIndex.coerceIn(0, m.size - 1)
+        val t = field.text
+        onChange(TextFieldValue(t.substring(0, m[i]) + replaceText + t.substring(m[i] + findText.length), TextRange(m[i] + replaceText.length)))
+    }
+
+    fun replaceAll() {
+        if (findText.isEmpty()) return
+        onChange(TextFieldValue(field.text.replace(findText, replaceText, ignoreCase = !matchCase), TextRange(0)))
+        matchIndex = 0
+    }
+
+    // ------------------------------------------------------------ saving and compiling
     private fun scheduleSave() {
         saveJob?.cancel()
+        val p = project
+        val name = current
         saveJob = viewModelScope.launch(Dispatchers.IO) {
             delay(800)
-            File(projectDir, current).writeText(field.text)
+            if (p != null && isTextFile(name)) File(p.dir, name).writeText(field.text)
         }
     }
 
+    private fun flushFile(name: String) {
+        val p = project ?: return
+        if (isTextFile(name) && name == current) runCatching { File(p.dir, name).writeText(field.text) }
+    }
+
+    fun flush() {
+        saveJob?.cancel()
+        flushFile(current)
+    }
+
     fun compile() {
+        val p = project ?: return
         android.util.Log.i("PDFTK", "compile() called, compiling=$compiling")
         if (compiling) return
         compiling = true
         compileOk = null
         status = t("compiling")
         viewModelScope.launch {
-            withContext(Dispatchers.IO) { File(projectDir, current).writeText(field.text) }
-            val files = withContext(Dispatchers.IO) {
-                projectDir.walkTopDown().filter { it.isFile }.map { ProjFile(it.relativeTo(projectDir).path.replace('\\', '/'), it.readBytes()) }.toList()
+            withContext(Dispatchers.IO) { flush(); refreshBib() }
+            val list = withContext(Dispatchers.IO) {
+                p.dir.walkTopDown().filter { it.isFile && !it.name.startsWith(".") }
+                    .map { ProjFile(it.relativeTo(p.dir).path.replace('\\', '/'), it.readBytes()) }.toList()
             }
-            android.util.Log.i("PDFTK", "calling the engine with ${files.size} files")
-            val res = TexEngine.compile(files, current)
+            android.util.Log.i("PDFTK", "calling the engine with ${list.size} files, engine ${meta.engine}")
+            val driver = if (meta.engine == "pdftex") "pdftex_bibtex8" else "xetex_bibtex8_dvipdfmx"
+            val res = TexEngine.compile(list, meta.main, driver)
             log = res.log
             errors = parseErrors(res.log)
             if (res.ok && res.pdf != null) {
@@ -156,5 +401,12 @@ class EditorViewModel(app: Application) : AndroidViewModel(app) {
             if (!res.ok) android.util.Log.i("PDFTK", "log tail: " + res.log.takeLast(2500))
             compiling = false
         }
+    }
+
+    fun savePdfTo(uri: Uri): Boolean {
+        val f = pdfFile ?: return false
+        return runCatching {
+            app.contentResolver.openOutputStream(uri)?.use { o -> f.inputStream().use { it.copyTo(o) } }
+        }.isSuccess
     }
 }

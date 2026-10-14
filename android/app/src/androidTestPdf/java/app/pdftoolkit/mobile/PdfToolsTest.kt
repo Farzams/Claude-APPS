@@ -104,6 +104,17 @@ class PdfToolsTest {
         val fromPics = toUri("pics.pdf", bytes { PdfOps.picturesToPdf(ctx, pics, it) })
         assertEquals("pictures to pdf", 2, PdfOps.pageCount(ctx, fromPics))
         Log.i("PDFTK", "pictures ok")
+
+        val marked = toUri("marked.pdf", bytes { PdfOps.watermark(ctx, merged, "CONFIDENTIAL", 0.3f, 0.6f, 45f, Color.RED, it) })
+        assertEquals("watermark", 5, PdfOps.pageCount(ctx, marked))
+        assertTrue("watermark adds content", PdfOps.sizeOf(ctx, marked) > PdfOps.sizeOf(ctx, merged))
+        val persian = toUri("persian.pdf", bytes { PdfOps.watermark(ctx, a, "محرمانه", 0.3f, 0.5f, 0f, Color.BLUE, it) })
+        assertEquals("persian watermark", 3, PdfOps.pageCount(ctx, persian))
+        Log.i("PDFTK", "watermark ok")
+
+        val numbered = toUri("numbered.pdf", bytes { PdfOps.numberPages(ctx, merged, "page", false, 1, 1, 11f, it) })
+        assertEquals("numbers", 5, PdfOps.pageCount(ctx, numbered))
+        Log.i("PDFTK", "numbers ok")
     }
 
     @Test
@@ -112,7 +123,7 @@ class PdfToolsTest {
         ctx.startActivity(intent)
         assertTrue(device.wait(Until.hasObject(By.res("card_merge")), 30_000))
         shot("p01_home")
-        for (key in listOf("merge", "split", "organize", "compress", "img2pdf", "pdf2img", "protect")) {
+        for (key in listOf("merge", "split", "organize", "compress", "img2pdf", "pdf2img", "protect", "watermark", "numbers")) {
             device.findObject(By.res("card_$key")).click()
             assertTrue("screen $key did not open", device.wait(Until.hasObject(By.res("back")), 10_000))
             shot("p02_$key")

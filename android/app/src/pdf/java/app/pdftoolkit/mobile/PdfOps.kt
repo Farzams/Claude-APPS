@@ -3,7 +3,9 @@ package app.pdftoolkit.mobile
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.pdf.PdfRenderer
 import android.net.Uri
 import android.provider.OpenableColumns
@@ -17,7 +19,11 @@ import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
 import com.tom_roush.pdfbox.pdmodel.common.PDRectangle
 import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
 import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
+import com.tom_roush.pdfbox.pdmodel.font.PDType1Font
 import com.tom_roush.pdfbox.pdmodel.graphics.image.JPEGFactory
+import com.tom_roush.pdfbox.pdmodel.graphics.image.LosslessFactory
+import com.tom_roush.pdfbox.pdmodel.graphics.state.PDExtendedGraphicsState
+import com.tom_roush.pdfbox.util.Matrix
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
@@ -226,6 +232,70 @@ object PdfOps {
         override fun close() {
             runCatching { renderer.close() }
             runCatching { pfd.close() }
+        }
+    }
+
+    /** The text drawn by Android itself (so Persian and other scripts join correctly), on a transparent picture. */
+    private fun textBitmap(text: String, color: Int): Bitmap {
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { textSize = 180f; this.color = color; isSubpixelText = true }
+        val w = paint.measureText(text).toInt().coerceAtLeast(8) + 40
+        val fm = paint.fontMetrics
+        val h = (fm.descent - fm.ascent).toInt() + 40
+        val bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+        Canvas(bmp).drawText(text, 20f, 20f - fm.ascent, paint)
+        return bmp
+    }
+
+    fun watermark(ctx: Context, uri: Uri, text: String, opacity: Float, sizeFraction: Float, angle: Float, color: Int, out: OutputStream) {
+        load(ctx, uri).use { doc ->
+            val bmp = textBitmap(text, color)
+            val img = LosslessFactory.createFromImage(doc, bmp)
+            val gs = PDExtendedGraphicsState()
+            gs.setNonStrokingAlphaConstant(opacity)
+            gs.setStrokingAlphaConstant(opacity)
+            for (page in doc.pages) {
+                val box = page.mediaBox
+                val cx = box.lowerLeftX + box.width / 2f
+                val cy = box.lowerLeftY + box.height / 2f
+                val w = box.width * sizeFraction
+                val h = w * bmp.height / bmp.width
+                PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true, true).use { cs ->
+                    cs.saveGraphicsState()
+                    cs.setGraphicsStateParameters(gs)
+                    cs.transform(Matrix.getTranslateInstance(cx, cy))
+                    cs.transform(Matrix.getRotateInstance(Math.toRadians(angle.toDouble()), 0f, 0f))
+                    cs.drawImage(img, -w / 2f, -h / 2f, w, h)
+                    cs.restoreGraphicsState()
+                }
+            }
+            bmp.recycle()
+            doc.save(out)
+        }
+    }
+
+    /** format: "n" = 1, "n/N" = 1 / 12, "page" = Page 1 of 12. top/right: where the number goes. */
+    fun numberPages(ctx: Context, uri: Uri, format: String, top: Boolean, align: Int, start: Int, fontSize: Float, out: OutputStream) {
+        load(ctx, uri).use { doc ->
+            val total = doc.numberOfPages
+            val font = PDType1Font.HELVETICA
+            for ((i, page) in doc.pages.withIndex()) {
+                val n = start + i
+                val label = when (format) { "n/N" -> "$n / ${start + total - 1}"; "page" -> "Page $n of ${start + total - 1}"; else -> "$n" }
+                val box = page.mediaBox
+                val tw = font.getStringWidth(label) / 1000f * fontSize
+                val margin = 28f
+                val x = when (align) { 0 -> box.lowerLeftX + margin; 2 -> box.upperRightX - margin - tw; else -> box.lowerLeftX + (box.width - tw) / 2f }
+                val y = if (top) box.upperRightY - margin - fontSize else box.lowerLeftY + margin
+                PDPageContentStream(doc, page, PDPageContentStream.AppendMode.APPEND, true, true).use { cs ->
+                    cs.beginText()
+                    cs.setFont(font, fontSize)
+                    cs.setNonStrokingColor(60, 60, 60)
+                    cs.newLineAtOffset(x, y)
+                    cs.showText(label)
+                    cs.endText()
+                }
+            }
+            doc.save(out)
         }
     }
 

@@ -1,5 +1,8 @@
 package app.pdftoolkit.mobile
 
+/** A starting point for a new project: its files, which one is compiled, and the engine. */
+data class Template(val key: String, val files: Map<String, String>, val main: String = "main.tex", val engine: String = "xetex")
+
 object Templates {
     val ARTICLE = """\documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.5cm]{geometry}
@@ -121,18 +124,66 @@ Hello, ${'$'}e^{i\pi}+1=0${'$'}.
 \end{document}
 """
 
-    val ALL = listOf("tpl.article" to ARTICLE, "tpl.persian" to PERSIAN, "tpl.report" to REPORT, "tpl.beamer" to BEAMER, "tpl.blank" to BLANK)
+    val ARTICLE_BIB = """\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+
+\title{An article with references}
+\author{Author Name}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Typesetting is both an art and a science~\cite{knuth84}. A good introduction to the system is given in~\cite{lamport94}.
+
+\bibliographystyle{plain}
+\bibliography{refs}
+
+\end{document}
+"""
+
+    val REFS = """@book{knuth84,
+  author    = {Donald E. Knuth},
+  title     = {The {\TeX}book},
+  publisher = {Addison-Wesley},
+  year      = {1984}
 }
 
-/** Symbol bar: label to snippet. `‸` marks where the cursor goes. */
-val SNIPPETS = listOf(
-    "\$ \$" to "\$‸\$", "\\[ \\]" to "\\[\n  ‸\n\\]", "\\frac" to "\\frac{‸}{}", "\\sqrt" to "\\sqrt{‸}", "x²" to "^{‸}", "xᵢ" to "_{‸}",
-    "∫" to "\\int_{‸}^{}", "∑" to "\\sum_{‸}^{}", "lim" to "\\lim_{‸}", "{ }" to "{‸}", "( )" to "\\left(‸\\right)",
-    "α" to "\\alpha ", "β" to "\\beta ", "γ" to "\\gamma ", "δ" to "\\delta ", "ε" to "\\varepsilon ", "θ" to "\\theta ", "λ" to "\\lambda ",
-    "μ" to "\\mu ", "π" to "\\pi ", "σ" to "\\sigma ", "φ" to "\\varphi ", "ω" to "\\omega ", "Ω" to "\\Omega ", "∞" to "\\infty ",
-    "≤" to "\\le ", "≥" to "\\ge ", "≠" to "\\ne ", "≈" to "\\approx ", "→" to "\\to ", "⇒" to "\\Rightarrow ", "∈" to "\\in ", "⊂" to "\\subset ",
-    "∀" to "\\forall ", "∃" to "\\exists ", "ℝ" to "\\mathbb{R}", "ℕ" to "\\mathbb{N}", "‖‖" to "\\|‸\\|", "∂" to "\\partial ",
-    "equation" to "\\begin{equation}\n  ‸\n\\end{equation}", "align" to "\\begin{align}\n  ‸\n\\end{align}",
-    "itemize" to "\\begin{itemize}\n  \\item ‸\n\\end{itemize}", "theorem" to "\\begin{theorem}\n  ‸\n\\end{theorem}",
-    "proof" to "\\begin{proof}\n  ‸\n\\end{proof}", "section" to "\\section{‸}", "\\cite" to "\\cite{‸}", "\\label" to "\\label{‸}",
-)
+@book{lamport94,
+  author    = {Leslie Lamport},
+  title     = {{\LaTeX}: A Document Preparation System},
+  publisher = {Addison-Wesley},
+  edition   = {2},
+  year      = {1994}
+}
+"""
+
+    val LETTER = """\documentclass[11pt,a4paper]{letter}
+\usepackage[margin=2.5cm]{geometry}
+\signature{Your Name}
+\address{Your Street \\ Your City}
+
+\begin{document}
+\begin{letter}{Recipient Name \\ Street \\ City}
+\opening{Dear Sir or Madam,}
+
+Write the body of the letter here.
+
+\closing{Yours sincerely,}
+\end{letter}
+\end{document}
+"""
+
+    val ALL = listOf(
+        Template("tpl.article", mapOf("main.tex" to ARTICLE)),
+        Template("tpl.bib", mapOf("main.tex" to ARTICLE_BIB, "refs.bib" to REFS)),
+        Template("tpl.persian", mapOf("main.tex" to PERSIAN)),
+        Template("tpl.report", mapOf("main.tex" to REPORT)),
+        Template("tpl.beamer", mapOf("main.tex" to BEAMER)),
+        Template("tpl.letter", mapOf("main.tex" to LETTER)),
+        Template("tpl.blank", mapOf("main.tex" to BLANK)),
+    )
+}

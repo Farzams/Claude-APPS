@@ -83,12 +83,12 @@ jobs:
           latex=$(find android -name "*.apk" -path "*outputs/apk/latex/*" ! -name "*androidTest*" | head -1)
           pdf=$(find android -name "*.apk" -path "*outputs/apk/pdf/*" ! -name "*androidTest*" | head -1)
           echo "APKs found: $latex $pdf"; find android -name "*.apk" | head
-          cp "$latex" PDFToolkit-LaTeX.apk
-          cp "$pdf" PDFToolkit-PDF.apk
-          gh release view $tag --repo $repo >/dev/null 2>&1 || gh release create $tag --repo $repo --title "PDF Toolkit for Android (latest build)" --target "${{ github.sha }}" --notes "Two apps: PDFToolkit-PDF.apk (PDF tools, small) and PDFToolkit-LaTeX.apk (LaTeX editor with the offline TeX engine, large). Install either or both; allow installs from your browser or file manager when asked."
-          gh release edit $tag --repo $repo --notes "Two apps: PDFToolkit-PDF.apk (PDF tools, small) and PDFToolkit-LaTeX.apk (LaTeX editor with the offline TeX engine, large). Install either or both; allow installs from your browser or file manager when asked." || true
-          gh release delete-asset $tag PDFToolkit-Android.apk -y --repo $repo || true
-          for f in PDFToolkit-PDF.apk PDFToolkit-LaTeX.apk; do
+          cp "$latex" TeXora.apk
+          cp "$pdf" PDFora.apk
+          gh release view $tag --repo $repo >/dev/null 2>&1 || gh release create $tag --repo $repo --title "TeXora and PDFora for Android (latest build)" --target "${{ github.sha }}" --notes "Two apps: PDFora.apk (PDF tools, small) and TeXora.apk (LaTeX editor with the offline TeX engine, large). Install either or both; allow installs from your browser or file manager when asked."
+          gh release edit $tag --repo $repo --title "TeXora and PDFora for Android (latest build)" --notes "Two apps: PDFora.apk (PDF tools, small) and TeXora.apk (LaTeX editor with the offline TeX engine, large). Install either or both; allow installs from your browser or file manager when asked." || true
+          for old in PDFToolkit-Android.apk PDFToolkit-PDF.apk PDFToolkit-LaTeX.apk; do gh release delete-asset $tag $old -y --repo $repo || true; done
+          for f in PDFora.apk TeXora.apk; do
             for i in 1 2 3 4 5; do gh release upload $tag $f --clobber --repo $repo && break; sleep $((10*i)); done
           done
           gh release view $tag --repo $repo --json assets --jq ".assets[] | [.name, .size] | @tsv"

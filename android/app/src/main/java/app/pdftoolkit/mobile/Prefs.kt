@@ -19,4 +19,16 @@ class Prefs(ctx: Context) {
     var editorSize: Int
         get() = sp.getInt("editor_size", 15)
         set(v) = sp.edit().putInt("editor_size", v).apply()
+    var lineNumbers: Boolean
+        get() = sp.getBoolean("line_numbers", true)
+        set(v) = sp.edit().putBoolean("line_numbers", v).apply()
+    var wrap: Boolean
+        get() = sp.getBoolean("wrap", true)
+        set(v) = sp.edit().putBoolean("wrap", v).apply()
+    var autoPairs: Boolean
+        get() = sp.getBoolean("auto_pairs", true)
+        set(v) = sp.edit().putBoolean("auto_pairs", v).apply()
+    var palette: Boolean
+        get() = sp.getBoolean("palette", true)
+        set(v) = sp.edit().putBoolean("palette", v).apply()
 }
