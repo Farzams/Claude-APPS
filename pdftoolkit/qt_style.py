@@ -298,8 +298,8 @@ QComboBox {{ background: {field}; border: 1px solid {fb}; border-radius: 10px; p
 QComboBox:hover {{ background: {P['hover']}; }}
 QComboBox::drop-down {{ border: none; width: 28px; }}
 QComboBox::down-arrow {{ image: url({arrow}); width: 14px; height: 14px; }}
-QComboBoxPrivateContainer {{ background: transparent; border: none; }}
-QComboBox QAbstractItemView {{ background: {P['card']}; border: 1px solid {border}; border-radius: 10px; padding: 5px; outline: 0;
+QComboBoxPrivateContainer {{ background: {P['card']}; border: 1px solid {border}; margin: 0; padding: 0; }}
+QComboBox QAbstractItemView {{ background: {P['card']}; border: none; border-radius: 0; padding: 4px; outline: 0; margin: 0;
     selection-background-color: {rgba(P['accent'], 0.16)}; selection-color: {P['text']}; }}
 QComboBox QAbstractItemView::item {{ min-height: 28px; padding: 3px 10px; border-radius: 7px; }}
 QComboBox QAbstractItemView::item:hover {{ background: {P['hover']}; }}

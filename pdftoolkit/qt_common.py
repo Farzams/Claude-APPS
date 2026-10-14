@@ -45,7 +45,7 @@ def mkcombo(items: dict | list, current=None) -> QComboBox:
     c.setMinimumContentsLength(14)
     popup = c.view().window()                     # the drop-down list: no square black frame or system shadow around it
     popup.setWindowFlag(Qt.NoDropShadowWindowHint, True)
-    popup.setAttribute(Qt.WA_TranslucentBackground, True)
+    popup.setAutoFillBackground(True)
     pairs = items.items() if isinstance(items, dict) else [(i, i) for i in items]
     for disp, val in pairs:
         c.addItem(disp, val)
