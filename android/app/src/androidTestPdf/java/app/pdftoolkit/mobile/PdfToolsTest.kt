@@ -314,6 +314,14 @@ class PdfToolsTest {
         assertTrue("merged file exists", merged.exists() && merged.length() > 0)
         assertEquals("merged pages", 5, PdfOps.pageCount(ctx, Uri.fromFile(merged)))
         Log.i("PDFTK", "filemanager merge ok")
+        // the result can be read inside the app (the viewer opens in its own window, so look for its page counter)
+        assertTrue("read button", device.wait(Until.hasObject(By.res("read_result")), 5_000))
+        device.findObject(By.res("read_result")).click()
+        assertTrue("reader shows the merged file", device.wait(Until.hasObject(By.text("1 / 5")), 15_000))
+        shot("p11_reader")
+        Log.i("PDFTK", "reader ok")
+        device.pressBack()
+        Thread.sleep(500)
         merged.delete(); fa.delete(); fb.delete()
     }
 }

@@ -245,6 +245,7 @@ object Strings {
         "fm.perm.text" to ("To browse and save PDFs, books and LaTeX files in any folder, Android asks you to allow \"All files access\" for this app. Your files stay on your phone." to "برای مرور و ذخیرهٔ PDF، کتاب و فایل‌های لاتک در هر پوشه، اندروید می‌خواهد «دسترسی به همهٔ فایل‌ها» را برای این برنامه مجاز کنید. فایل‌های شما روی گوشی می‌مانند."),
         "fm.perm.button" to ("Open settings to allow" to "باز کردن تنظیمات برای اجازه"),
         "fm.perm.system" to ("Use Android's file picker instead" to "به‌جای آن از انتخاب‌گر اندروید استفاده شود"),
+        "read" to ("Read" to "خواندن"),
         "files.saved" to ("files saved." to "فایل ذخیره شد."),
         "home" to ("Home" to "خانه"),
         "files.tab" to ("Files" to "فایل‌ها"),

@@ -49,7 +49,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Image as ImageIcon
-import androidx.compose.material.icons.filled.OpenInNew
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.RotateRight
 import androidx.compose.material.icons.filled.Share
@@ -94,6 +94,10 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import android.content.Context
+import java.io.File
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -170,6 +174,7 @@ private fun ToolPage(
 private fun JobStatus(job: ToolJob) {
     val cs = MaterialTheme.colorScheme
     val ctx = LocalContext.current
+    var reading by remember { mutableStateOf<File?>(null) }
     if (job.busy) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             LinearProgressIndicator(Modifier.fillMaxWidth())
@@ -186,18 +191,44 @@ private fun JobStatus(job: ToolJob) {
                 val out = job.output
                 if (good && out != null) {
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        OutlinedButton(onClick = { openPdf(ctx, out) }, modifier = Modifier.testTag("open_result")) {
-                            Icon(Icons.Filled.OpenInNew, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text(t("open"))
+                        OutlinedButton(onClick = { reading = readableFile(ctx, out) }, modifier = Modifier.testTag("read_result")) {
+                            Icon(Icons.Filled.MenuBook, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text(t("read"))
                         }
                         OutlinedButton(onClick = { sharePdfFile(ctx, out) }, modifier = Modifier.testTag("share_result")) {
                             Icon(Icons.Filled.Share, null, Modifier.size(18.dp)); Spacer(Modifier.width(6.dp)); Text(t("share"))
                         }
                     }
+                    reading?.let { f -> ReaderDialog(f, onShare = { sharePdfFile(ctx, out) }, onClose = { reading = null }) }
                 }
             }
         }
     }
 }
+
+/** The file the tool just made, read inside the app: page frame, zoom and night mode come with the viewer. */
+@Composable
+private fun ReaderDialog(file: File, onShare: () -> Unit, onClose: () -> Unit) {
+    val cs = MaterialTheme.colorScheme
+    Dialog(onDismissRequest = onClose, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Surface(Modifier.fillMaxSize(), color = cs.background) {
+            Column(Modifier.fillMaxSize()) {
+                Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
+                    IconButton(onClick = onClose, modifier = Modifier.testTag("reader_close")) { Icon(Icons.AutoMirrored.Filled.ArrowBack, t("back"), tint = cs.onBackground) }
+                    Text(file.name, Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = cs.onBackground, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    IconButton(onClick = onShare) { Icon(Icons.Filled.Share, t("share"), tint = cs.onBackground) }
+                }
+                Box(Modifier.weight(1f).fillMaxWidth()) { PdfPreview(file, file.lastModified().toInt()) }
+            }
+        }
+    }
+}
+
+/** A plain file for the viewer: the saved file itself, or a copy when the result lives behind an Android content address. */
+private fun readableFile(ctx: Context, uri: Uri): File? = fileOf(uri) ?: runCatching {
+    val f = File(ctx.cacheDir, "reader.pdf")
+    ctx.contentResolver.openInputStream(uri)?.use { i -> f.outputStream().use { i.copyTo(it) } }
+    f
+}.getOrNull()
 
 @Composable
 private fun PrimaryButton(text: String, tag: String, enabled: Boolean, onClick: () -> Unit) {
