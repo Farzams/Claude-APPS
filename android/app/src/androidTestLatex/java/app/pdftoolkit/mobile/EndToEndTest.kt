@@ -45,13 +45,15 @@ class EndToEndTest {
     }
 
     private fun click(res: String, wait: Long = 20_000) {
-        // long menus and pages: swipe up (on the right side, where the editor menu sits) until the item exists
+        // give a slow emulator the full time first, then swipe up (long pages) until the item exists
+        var found = device.wait(Until.hasObject(By.res(res)), wait)
         var tries = 0
-        while (!device.wait(Until.hasObject(By.res(res)), if (tries == 0) wait / 4 else 600) && tries < 8) {
+        while (!found && tries < 8) {
             device.swipe(device.displayWidth * 3 / 4, device.displayHeight * 3 / 5, device.displayWidth * 3 / 4, device.displayHeight / 4, 20)
+            found = device.wait(Until.hasObject(By.res(res)), 600)
             tries++
         }
-        assertTrue("not found: $res", device.wait(Until.hasObject(By.res(res)), 3_000))
+        assertTrue("not found: $res", found)
         scrollTo(res)
         device.findObject(By.res(res)).click()
     }
