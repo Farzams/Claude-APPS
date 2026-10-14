@@ -231,7 +231,6 @@ private fun FileBrowserBody(
     var desc by remember { mutableStateOf(memory.descending) }
     var grid by remember { mutableStateOf(memory.grid) }
     val selected = remember { mutableStateListOf<String>() }
-    var clip by remember { mutableStateOf<Pair<List<File>, Boolean>?>(null) }      // files and whether they are moved
     var dialog by remember { mutableStateOf("") }
     var nameText by remember { mutableStateOf(suggestedName) }
     var menu by remember { mutableStateOf("") }
@@ -303,7 +302,7 @@ private fun FileBrowserBody(
 
     fun onItemClick(it: Item) {
         when {
-            selected.isNotEmpty() && (mode == BrowserMode.MANAGE || !it.isDir) -> toggle(it.file)
+            selected.isNotEmpty() && !it.isDir -> toggle(it.file)
             it.isDir -> openDir(it.file)
             mode == BrowserMode.OPEN -> if (multi) toggle(it.file) else finishPick(listOf(it.file))
             mode == BrowserMode.SAVE -> nameText = it.name
@@ -313,22 +312,7 @@ private fun FileBrowserBody(
     }
 
     fun onItemLong(it: Item) {
-        when {
-            mode == BrowserMode.MANAGE -> toggle(it.file)
-            mode == BrowserMode.OPEN && multi && !it.isDir -> toggle(it.file)
-            else -> {}
-        }
-    }
-
-    fun share() {
-        val files = selectedFiles().filter { it.isFile }
-        if (files.isEmpty()) return
-        val uris = ArrayList(files.map { contentUri(ctx, it) })
-        val send = if (uris.size == 1) Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_STREAM, uris[0])
-        else Intent(Intent.ACTION_SEND_MULTIPLE).putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
-        val mime = if (files.size == 1) MimeTypeMap.getSingleton().getMimeTypeFromExtension(files[0].extension.lowercase()) ?: "*/*" else "*/*"
-        send.setType(mime).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        runCatching { ctx.startActivity(Intent.createChooser(send, null).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
+        if (mode == BrowserMode.OPEN && multi && !it.isDir) toggle(it.file)
     }
 
     fun trySave(replace: Boolean, keepBoth: Boolean) {
@@ -348,18 +332,7 @@ private fun FileBrowserBody(
 
     Column(Modifier.fillMaxSize()) {
         // ------------------------------------------------------------------ top bar
-        if (selected.isNotEmpty() && mode == BrowserMode.MANAGE) {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = { selected.clear() }) { Icon(Icons.Filled.Close, t("cancel"), tint = cs.onBackground) }
-                Text("${selected.size} ${t("fm.selected")}", Modifier.weight(1f), style = MaterialTheme.typography.titleMedium, color = cs.onBackground)
-                IconButton(onClick = { items?.forEach { if (it.absolutePathNotIn(selected)) selected.add(it.file.absolutePath) } }) { Icon(Icons.Filled.SelectAll, t("fm.select.all"), tint = cs.onBackground) }
-                IconButton(onClick = { share() }, modifier = Modifier.testTag("fm_share")) { Icon(Icons.Filled.Share, t("share"), tint = cs.onBackground) }
-                IconButton(onClick = { clip = selectedFiles() to false; selected.clear() }, modifier = Modifier.testTag("fm_copy")) { Icon(Icons.Filled.ContentCopy, t("fm.copy"), tint = cs.onBackground) }
-                IconButton(onClick = { clip = selectedFiles() to true; selected.clear() }, modifier = Modifier.testTag("fm_cut")) { Icon(Icons.Filled.ContentCut, t("fm.move"), tint = cs.onBackground) }
-                if (selected.size == 1) IconButton(onClick = { nameText = File(selected[0]).name; dialog = "rename" }, modifier = Modifier.testTag("fm_rename")) { Icon(Icons.Filled.Edit, t("fm.rename"), tint = cs.onBackground) }
-                IconButton(onClick = { dialog = "delete" }, modifier = Modifier.testTag("fm_delete")) { Icon(Icons.Filled.Delete, t("delete"), tint = cs.error) }
-            }
-        } else {
+        run {
             Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                 if (dir != null || onClose != null) {
                     IconButton(onClick = { goBack() }, modifier = Modifier.testTag("fm_back")) {
@@ -412,7 +385,7 @@ private fun FileBrowserBody(
                         IconButton(onClick = { menu = "more" }, modifier = Modifier.testTag("fm_more")) { Icon(Icons.Filled.MoreVert, null, tint = cs.onBackground) }
                         DropdownMenu(expanded = menu == "more", onDismissRequest = { menu = "" }) {
                             val d = dir
-                            if (d != null && mode != BrowserMode.OPEN) {
+                            if (d != null && mode == BrowserMode.SAVE) {
                                 DropdownMenuItem(text = { Text(t("fm.new.folder")) }, onClick = { menu = ""; nameText = ""; dialog = "newfolder" }, modifier = Modifier.testTag("fm_new_folder"))
                             }
                             if (d != null) {
@@ -495,23 +468,6 @@ private fun FileBrowserBody(
         }
 
         // ------------------------------------------------------------------ bottom bars
-        val c = clip
-        if (c != null && dir != null) {
-            Surface(color = cs.primaryContainer, modifier = Modifier.fillMaxWidth()) {
-                Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Icon(Icons.Filled.ContentPaste, null, tint = cs.primary)
-                    Text("${c.first.size}  ·  " + t(if (c.second) "fm.move" else "fm.copy"), Modifier.weight(1f), color = cs.onSurface)
-                    TextButton(onClick = { clip = null }) { Text(t("cancel")) }
-                    Button(onClick = {
-                        val d = dir
-                        if (d != null) {
-                            c.first.forEach { f -> if (c.second) Storage.move(f, d) else Storage.copy(f, d) }
-                            clip = null; reload++
-                        }
-                    }, modifier = Modifier.testTag("fm_paste")) { Text(t("fm.paste")) }
-                }
-            }
-        }
         if (mode == BrowserMode.OPEN && multi && selected.isNotEmpty()) {
             BottomBar {
                 Text("${selected.size} ${t("fm.selected")}", Modifier.weight(1f), style = MaterialTheme.typography.titleSmall, color = cs.onSurface)
@@ -541,28 +497,6 @@ private fun FileBrowserBody(
 
     // ---------------------------------------------------------------------- dialogs
     when (dialog) {
-        "rename" -> AlertDialog(
-            onDismissRequest = { dialog = "" }, title = { Text(t("fm.rename")) },
-            text = { OutlinedTextField(nameText, { nameText = it }, singleLine = true, modifier = Modifier.testTag("fm_rename_field")) },
-            confirmButton = {
-                TextButton(onClick = {
-                    selected.firstOrNull()?.let { Storage.rename(File(it), nameText) }
-                    selected.clear(); dialog = ""; reload++
-                }, modifier = Modifier.testTag("fm_rename_ok")) { Text(t("ok.button")) }
-            },
-            dismissButton = { TextButton(onClick = { dialog = "" }) { Text(t("cancel")) } },
-        )
-        "delete" -> AlertDialog(
-            onDismissRequest = { dialog = "" }, title = { Text(t("delete")) },
-            text = { Text(t("fm.delete.confirm")) },
-            confirmButton = {
-                TextButton(onClick = {
-                    selectedFiles().forEach { Storage.delete(it) }
-                    selected.clear(); dialog = ""; reload++
-                }, modifier = Modifier.testTag("fm_delete_ok")) { Text(t("delete"), color = cs.error) }
-            },
-            dismissButton = { TextButton(onClick = { dialog = "" }) { Text(t("cancel")) } },
-        )
         "newfolder" -> AlertDialog(
             onDismissRequest = { dialog = "" }, title = { Text(t("fm.new.folder")) },
             text = { OutlinedTextField(nameText, { nameText = it }, singleLine = true, label = { Text(t("fm.folder.name")) }, modifier = Modifier.testTag("fm_folder_field")) },

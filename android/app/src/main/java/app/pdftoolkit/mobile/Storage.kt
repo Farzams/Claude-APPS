@@ -127,27 +127,6 @@ object Storage {
         while (f.exists()) { f = File(dir, "$base ($n)$ext"); n++ }
         return f
     }
-
-    fun rename(f: File, newName: String): Boolean {
-        val n = newName.trim()
-        if (n.isEmpty() || '/' in n) return false
-        val target = File(f.parentFile, n)
-        return !target.exists() && f.renameTo(target)
-    }
-
-    fun delete(f: File): Boolean = f.deleteRecursively()
-
-    fun copy(f: File, destDir: File): Boolean = runCatching {
-        val target = unique(destDir, f.name)
-        if (f.isDirectory) f.copyRecursively(target, overwrite = false) else { f.copyTo(target); true }
-    }.getOrDefault(false)
-
-    fun move(f: File, destDir: File): Boolean {
-        if (f.isDirectory && destDir.absolutePath.startsWith(f.absolutePath)) return false
-        val target = unique(destDir, f.name)
-        if (f.renameTo(target)) return true
-        return copy(f, destDir) && f.deleteRecursively()
-    }
 }
 
 /** Small things the file manager remembers: last folder, pinned folders, recent files, sort order, view. */
