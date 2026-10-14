@@ -32,6 +32,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: wrapper }
       - name: Build the APK
+        timeout-minutes: 25   # a normal build takes 2 to 6 minutes; a hung runner should fail quickly instead of blocking everything
         working-directory: android
         env: { APP_VERSION_CODE: "${{ github.run_number }}" }
         run: ./gradlew --no-daemon assembleLatexDebug assemblePdfDebug
