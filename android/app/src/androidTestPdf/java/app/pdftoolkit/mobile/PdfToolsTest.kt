@@ -251,10 +251,10 @@ class PdfToolsTest {
         Log.i("PDFTK", "about ok")
 
         // every theme: pick it in Settings, look at the home page for one frame, check the tools are still there
-        for ((i, k) in listOf("paper", "ocean", "forest", "sunset", "graphite", "quiet").withIndex()) {
-            if (i > 0) {
-                device.findObject(By.res("open_settings")).click()
-            }
+        device.findObject(By.res("back")).click()
+        for (k in listOf("paper", "ocean", "forest", "sunset", "graphite", "quiet")) {
+            assertTrue(device.wait(Until.hasObject(By.res("open_settings")), 10_000))
+            device.findObject(By.res("open_settings")).click()
             assertTrue(device.wait(Until.hasObject(By.res("style_$k")), 10_000))
             device.findObject(By.res("style_$k")).click()
             Thread.sleep(600)
