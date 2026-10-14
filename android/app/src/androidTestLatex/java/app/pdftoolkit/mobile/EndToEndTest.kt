@@ -83,7 +83,7 @@ class EndToEndTest {
         assertTrue("page indicator", device.hasObject(By.res("page_indicator")))
         click("zoom_in")
         Thread.sleep(800)
-        val pct = device.findObject(By.res("zoom_percent"))?.text
+        val pct = device.findObject(By.textMatches("\\d+%"))?.text
         Log.i("PDFTK", "zoom percent after zoom in: $pct")
         assertTrue("zoom percent should change, was $pct", pct != null && pct != "100%")
         Log.i("PDFTK", "zoom ok")
