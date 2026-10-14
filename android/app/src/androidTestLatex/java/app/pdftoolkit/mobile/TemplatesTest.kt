@@ -50,8 +50,8 @@ class TemplatesTest {
         assertTrue("dialog", device.wait(Until.hasObject(By.text("Templates")), 10_000))
         var tries = 0
         while (!device.hasObject(By.text(template)) && tries < 30) {
-            // the list sits in the lower half of the dialog
-            device.swipe(device.displayWidth / 2, device.displayHeight * 82 / 100, device.displayWidth / 2, device.displayHeight * 70 / 100, 25)
+            // the template list sits between 40% and 70% of the screen height
+            device.swipe(device.displayWidth / 2, device.displayHeight * 65 / 100, device.displayWidth / 2, device.displayHeight * 47 / 100, 25)
             Thread.sleep(300)
             tries++
         }
