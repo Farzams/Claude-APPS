@@ -131,7 +131,7 @@ class SettingsTool(Tool):
 
     SECTIONS = [("appearance", "settings", "Appearance"), ("general", "home", "General"),
                 ("ocr", "ocr", "OCR languages"),
-                ("shortcuts", "search", "Shortcuts"), ("storage", "security", "Storage and privacy"),
+                ("shortcuts", "search", "Shortcuts"), ("privacy", "security", "Privacy"),
                 ("about", "help", "About")]
 
     def build(self):
@@ -185,8 +185,6 @@ class SettingsTool(Tool):
         self.stack.setCurrentWidget(self.scrolls[key])
         self.navbtns[key].setChecked(True)
         self.refresh()
-        if key == "storage":
-            self.refresh_storage()
 
     # ------------------------------------------------------------ Appearance
     def sec_appearance(self, lay):
@@ -348,40 +346,15 @@ class SettingsTool(Tool):
             k.setStyleSheet(f"QLabel {{ border: 1px solid {theme.STATE.pal['line']}; border-radius: 7px; padding: 3px 9px; background: {theme.STATE.pal['field']}; }}")
             lay.addWidget(Row(what, "", k))
 
-    # ------------------------------------------------------------ Storage and privacy
-    def sec_storage(self, lay):
-        import texengine
-        self.store_labels = {}
-        for key, label, hint, path_fn in (
-                ("tex", "LaTeX packages", "Used when you convert a .tex file to PDF", texengine.cache_dir),):
-            val = mklabel("…", "muted", translate=False)
-            self.store_labels[key] = (val, path_fn)
-            lay.addWidget(Row(label, hint, val, mkbutton("Clear", lambda k=key: self._clear(k))))
+    # ------------------------------------------------------------ Privacy
+    def sec_privacy(self, lay):
         lay.addWidget(Row("Privacy", "Nothing is sent anywhere. The app works fully offline.", mklabel("Everything stays on this computer", "good")))
-
-    def refresh_storage(self):
-        for key, (lb, fn) in self.store_labels.items():
-            try:
-                lb.setText(human(dir_size(Path(fn()))))
-            except Exception:
-                lb.setText("-")
-
-    def _clear(self, key: str):
-        val, fn = self.store_labels[key]
-        try:
-            p = Path(fn())
-            for child in p.iterdir():
-                shutil.rmtree(child, ignore_errors=True) if child.is_dir() else child.unlink(missing_ok=True)
-        except OSError:
-            pass
-        self.refresh_storage()
-        self.win.toast("Cleared")
 
     # ------------------------------------------------------------ About
     def sec_about(self, lay):
         lay.addWidget(Row("Version", "", mklabel(APP_VERSION, translate=False)))
         lay.addWidget(Row("What is inside", "Free software, bundled so it works offline",
-                          mklabel("PyMuPDF, Qt for Python, Tesseract OCR, Ghostscript, pikepdf, OpenCV, pdf2docx, DjVuLibre, Tectonic. "
+                          mklabel("PyMuPDF, Qt for Python, Tesseract OCR, Ghostscript, pikepdf, OpenCV, pdf2docx, DjVuLibre. "
                                   "Fonts: Inter, Vazirmatn, Noto Sans Arabic.", "muted", wrap=True, translate=False)))
         lay.addWidget(Row("Releases and licences", "Full licence texts are in the licences folder of the installation.",
                           mklabel("github.com/Farzams/Claude-APPS", "muted", translate=False)))

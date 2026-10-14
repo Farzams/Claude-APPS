@@ -1,12 +1,11 @@
 # PDF Toolkit
 
-Split, merge, compress, convert (EPUB, MOBI, FB2, DjVu, XPS, CBZ, HTML, TXT, TeX), images to PDF, page tools, OCR and more.
+Split, merge, compress, convert (EPUB, MOBI, FB2, DjVu, XPS, CBZ, HTML, TXT), images to PDF, page tools, OCR and more.
 
 The Windows build bundles everything, so nothing else needs installing:
 - **DjVuLibre** (`ddjvu`, GPL-2.0, https://djvu.sourceforge.net) – DjVu conversion
 - **Ghostscript** (AGPL-3.0, https://ghostscript.com) – strong PDF compression
 - **Tesseract OCR** (Apache-2.0, https://github.com/tesseract-ocr/tesseract) with `tessdata_best` Persian/Arabic and `tessdata_fast` English models – OCR (English, Persian, Arabic)
-- **Tectonic** (MIT) – converts `.tex` files to PDF; its package cache is pre-filled at build time so common packages work offline
 - **Noto Sans Arabic** (SIL OFL 1.1), **Vazirmatn**, **Inter** and **DejaVu Sans** fonts in `fonts/` – interface, Persian/Arabic page rendering and OCR text layer
 
 Each tool runs as a separate, unmodified program. Calibre is optional and only needed for legacy `.doc`, `.lit`, `.pdb`, `.cbr`.

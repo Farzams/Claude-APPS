@@ -201,11 +201,10 @@ def _keep_smaller(src: str, tmp: str, dst: str, orig: int) -> tuple[int, int]:
 NATIVE_FORMATS = {".epub", ".mobi", ".fb2", ".xps", ".oxps", ".cbz", ".svg",
                   ".txt", ".png", ".jpg", ".jpeg", ".bmp", ".gif", ".tif",
                   ".tiff", ".webp", ".html", ".htm", ".xhtml"}
-TEX_FORMATS = {".tex", ".ltx"}
 MOBI_LIKE = {".azw", ".azw3"}  # tried natively first, Calibre as fallback
 CALIBRE_FORMATS = {".azw", ".azw3", ".doc", ".lit", ".pdb", ".cbr", ".htmlz", ".txtz"}
 DJVU_FORMATS = {".djvu", ".djv"}
-ALL_FORMATS = sorted(NATIVE_FORMATS | TEX_FORMATS | CALIBRE_FORMATS | DJVU_FORMATS)
+ALL_FORMATS = sorted(NATIVE_FORMATS | CALIBRE_FORMATS | DJVU_FORMATS)
 
 
 def _find_tool(names: list[str], extra_dirs: list[str]) -> str | None:
@@ -281,17 +280,6 @@ def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
             html_to_pdf(read_text_file(src), str(out), page_size, font_size,
                         base_dirs=[str(s.parent)])
         return out
-
-    if ext in TEX_FORMATS:
-        import texengine
-        res = texengine.compile_tex(str(s), out_dir)
-        if not res.ok:
-            msg = res.errors[0].message if res.errors else "compile failed"
-            raise RuntimeError(f"LaTeX error: {msg}")
-        final = unique_path(Path(out_dir) / (s.stem + ".pdf")) if Path(res.pdf).resolve() != out.resolve() else out
-        if Path(res.pdf).resolve() != final.resolve():
-            shutil.copyfile(res.pdf, final)
-        return final
 
     if ext in MOBI_LIKE:  # KF8/AZW3 often opens as MOBI; fall through to Calibre if not
         try:

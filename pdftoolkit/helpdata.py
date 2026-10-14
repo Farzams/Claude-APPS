@@ -32,7 +32,7 @@ Interface: Settings > General switches the app to Persian; Settings > Appearance
     ('Convert to PDF', """
 Add one or more files, choose the output folder and press Convert.
 
-Works without extra software: EPUB, MOBI, FB2, XPS, CBZ, HTML, TXT, DjVu, LaTeX (.tex) and common picture formats.
+Works without extra software: EPUB, MOBI, FB2, XPS, CBZ, HTML, TXT, DjVu and common picture formats.
 
 For ebooks you can choose page size and font size. A5 with size 11 is comfortable on a tablet.
 
@@ -76,8 +76,6 @@ Press Ctrl+K anywhere to open the search box. Type a few letters of a tool ("wat
 Settings > Appearance: choose Light, Dark or Match Windows; a design style (Quiet Pro is flat and calm, Paper is warm like a book, Classic is the original look); an accent colour for buttons and links; any of the 13 colour themes; one of four icon styles; the text size; and the Persian font.
 
 Language: Settings > General switches between English and فارسی. The app restarts to switch language; the Persian interface is laid out right-to-left.
-
-Settings > Storage shows how much space the LaTeX package cache uses and clears it. Nothing you save is touched.
 """),
     ('Questions and problems', """
 The app feels slow? Close big files in other programs. Long jobs such as OCR of a whole book run in the background and use all processor cores; the window stays responsive while they work.
@@ -90,7 +88,7 @@ Windows says the app is unknown: it is not digitally signed. Choose More info, t
 
 Your settings are stored in the folder %APPDATA%\\PDFToolkit."""),
     ('About and licences', """
-PDF Toolkit uses these free programs, each running separately and unmodified: PyMuPDF (reading, layout), Tesseract (OCR), Ghostscript (compression), DjVuLibre (DjVu), Tectonic (LaTeX files).
+PDF Toolkit uses these free programs, each running separately and unmodified: PyMuPDF (reading, layout), Tesseract (OCR), Ghostscript (compression), DjVuLibre (DjVu).
 
 Fonts: Inter, Vazirmatn, Noto Sans Arabic (SIL Open Font License) and DejaVu Sans. Full licence texts are in the fonts folder and in the project README.
 """),
@@ -128,7 +126,7 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
     ('تبدیل به PDF', """
 یک یا چند فایل را اضافه کنید، پوشهٔ خروجی را انتخاب کنید و «تبدیل» را بزنید.
 
-بدون نرم‌افزار اضافه کار می‌کند: EPUB، MOBI، FB2، XPS، CBZ، HTML، TXT، DjVu، لاتک (tex) و قالب‌های رایج تصویر.
+بدون نرم‌افزار اضافه کار می‌کند: EPUB، MOBI، FB2، XPS، CBZ، HTML، TXT، DjVu و قالب‌های رایج تصویر.
 
 برای کتاب‌های الکترونیکی می‌توانید اندازهٔ صفحه و اندازهٔ قلم را انتخاب کنید. A5 با اندازهٔ ۱۱ برای تبلت راحت است.
 
@@ -172,8 +170,6 @@ PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها
 تنظیمات > ظاهر: حالت روشن، تیره یا هم‌رنگ با ویندوز؛ سبک طراحی (آرام و حرفه‌ای تخت و ساده است، کاغذ گرم و شبیه کتاب است و کلاسیک همان ظاهر اولیه است)؛ رنگ تأکید برای دکمه‌ها و پیوندها؛ هر کدام از ۱۳ تم رنگی؛ یکی از چهار سبک آیکن؛ اندازهٔ متن و قلم فارسی.
 
 زبان: «تنظیمات > عمومی» بین English و فارسی جابه‌جا می‌کند. برای تغییر زبان برنامه دوباره باز می‌شود و رابط فارسی راست‌به‌چپ چیده می‌شود.
-
-تنظیمات > فضای ذخیره نشان می‌دهد حافظهٔ بسته‌های LaTeX چقدر جا می‌گیرد و آن را پاک می‌کند. به فایل‌های شما دست نمی‌زند.
 """),
     ('پرسش\u200cها و مشکل\u200cها', """
 برنامه کند است؟ فایل‌های بزرگ را در برنامه‌های دیگر ببندید. کارهای طولانی مثل OCR یک کتاب کامل در پس‌زمینه و با همهٔ هسته‌های پردازنده اجرا می‌شوند و پنجره در این مدت پاسخگو می‌ماند.
@@ -186,7 +182,7 @@ OCR چیزی پیدا نکرد؟ زبان را بررسی کنید و ۴۰۰ dpi
 
 تنظیمات شما در پوشهٔ %APPDATA%\\PDFToolkit ذخیره می‌شود."""),
     ('دربارهٔ برنامه و مجوزها', """
-جعبه‌ابزار PDF از این برنامه‌های رایگان استفاده می‌کند که هر کدام جدا و بدون تغییر اجرا می‌شوند: PyMuPDF (خواندن و صفحه‌آرایی)، Tesseract (OCR)، Ghostscript (فشرده‌سازی)، DjVuLibre (DjVu) و Tectonic (فایل‌های لاتک).
+جعبه‌ابزار PDF از این برنامه‌های رایگان استفاده می‌کند که هر کدام جدا و بدون تغییر اجرا می‌شوند: PyMuPDF (خواندن و صفحه‌آرایی)، Tesseract (OCR)، Ghostscript (فشرده‌سازی)، DjVuLibre (DjVu).
 
 قلم‌ها: Inter، Vazirmatn، Noto Sans Arabic (مجوز SIL Open Font) و DejaVu Sans. متن کامل مجوزها در پوشهٔ fonts و فایل README پروژه است.
 """),

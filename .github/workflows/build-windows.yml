@@ -52,20 +52,10 @@ jobs:
           Get-ChildItem pdftoolkit/tesseract/tessdata -Filter *.traineddata | Where-Object { $_.BaseName -notin "eng","fas","ara","osd" } | Remove-Item -Force
           Get-ChildItem pdftoolkit/gs/bin | Select-Object -First 5 Name
           Get-ChildItem pdftoolkit/tesseract/tessdata | Select-Object Name, Length
-      - name: Get Tectonic (LaTeX engine, bundled)
-        shell: pwsh
-        env: { GH_TOKEN: "${{ github.token }}" }
-        run: |
-          New-Item -ItemType Directory -Force tecdl, pdftoolkit/tectonic | Out-Null
-          gh release download --repo tectonic-typesetting/tectonic --pattern "*x86_64-pc-windows-msvc.zip" --dir tecdl
-          Get-ChildItem tecdl | Select-Object Name, Length
-          Expand-Archive (Get-ChildItem tecdl/*.zip | Select-Object -First 1).FullName pdftoolkit/tectonic -Force
-          if (-not (Test-Path pdftoolkit/tectonic/tectonic.exe)) { throw "tectonic.exe not found" }
-          & pdftoolkit/tectonic/tectonic.exe --version
-      - name: Smoke test bundled tools (OCR, Ghostscript, LaTeX file conversion) and pre-fill the LaTeX package cache
+      - name: Smoke test bundled tools (OCR, Ghostscript, PDF tools)
         shell: pwsh
         timeout-minutes: 30
-        env: { PYTHONUTF8: "1", PDFTK_TEX_CACHE: "pdftoolkit/tex-cache" }
+        env: { PYTHONUTF8: "1" }
         run: python pdftoolkit/smoke_test.py
       - name: GUI smoke test (Qt window), English and Persian (does not block the build)
         shell: pwsh
@@ -75,7 +65,7 @@ jobs:
           python pdftoolkit/gui_smoke.py en
           python pdftoolkit/gui_smoke.py fa
       # one-folder build: starts instantly (a one-file exe unpacks itself on every launch)
-      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --add-data "tectonic;tectonic" --add-data "tex-cache;tex-cache" --collect-all docx --collect-all bidi --collect-all pdf2docx --hidden-import PySide6.QtSvg --hidden-import openpyxl --hidden-import fitz --hidden-import pikepdf --hidden-import cv2 --exclude-module tkinter --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick --exclude-module PySide6.QtQuickWidgets --exclude-module PySide6.QtPdf --exclude-module PySide6.QtPdfWidgets --exclude-module PySide6.QtSql --exclude-module PySide6.QtTest --exclude-module PySide6.QtOpenGL --exclude-module PySide6.QtOpenGLWidgets app.py
+      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --collect-all docx --collect-all bidi --collect-all pdf2docx --hidden-import PySide6.QtSvg --hidden-import openpyxl --hidden-import fitz --hidden-import pikepdf --hidden-import cv2 --exclude-module tkinter --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick --exclude-module PySide6.QtQuickWidgets --exclude-module PySide6.QtPdf --exclude-module PySide6.QtPdfWidgets --exclude-module PySide6.QtSql --exclude-module PySide6.QtTest --exclude-module PySide6.QtOpenGL --exclude-module PySide6.QtOpenGLWidgets app.py
         working-directory: pdftoolkit
       - name: Check the packaged program (OpenCV, PDF repair, Word export, Excel, icons, OCR languages)
         working-directory: pdftoolkit

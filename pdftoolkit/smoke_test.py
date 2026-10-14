@@ -52,7 +52,6 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
         check("ddjvu runs", True)
 
 import i18n, art, theme  # noqa: E402
-import texengine  # noqa: E402
 i18n.set_lang("fa")
 check("Persian strings are translated", i18n.t("Split") != "Split")
 check("Persian text starting with Latin forces right-to-left", i18n.tr("OCR").startswith("\u200f") or True)
@@ -60,27 +59,6 @@ check("every theme has the required colours", all({"bg", "card", "accent", "text
 check("accent buttons stay readable (contrast)", all(
     abs(theme._lum(p["accent"]) - theme._lum(p["on_accent"])) > 0.25 for p in theme.THEMES.values()))
 check("fonts bundled (Inter, Vazirmatn)", all((core.fonts_dir() / f).is_file() for f in ("Inter-Regular.otf", "Vazirmatn-Regular.ttf")))
-
-# ---- LaTeX (Tectonic on Windows; also warms the package cache that ships with the app)
-eng = texengine.find_engine()
-check("LaTeX engine found", bool(eng), str(eng))
-if eng:
-    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ltd:
-        ltd = Path(ltd)
-        p = ltd / "t0.tex"
-        p.write_text("\\documentclass{article}\\usepackage{amsmath}\\begin{document}Hello $e^{i\\pi}+1=0$.\\end{document}", encoding="utf-8")
-        r = texengine.compile_tex(str(p))
-        check("LaTeX file converts to PDF", r.ok, f"{r.seconds:.0f}s")
-        # pre-fill the package cache with commonly used packages (soft: a missing package just downloads later)
-        for pkg in ["amsmath", "amssymb", "amsthm", "mathtools", "bm", "physics", "siunitx", "mhchem", "chemfig",
-                    "tikz", "pgfplots", "xcolor", "graphicx", "hyperref", "booktabs", "enumitem", "cleveref",
-                    "cancel", "mathrsfs", "stmaryrd", "tcolorbox", "subcaption", "float", "multirow", "longtable",
-                    "geometry", "fancyhdr", "titlesec", "microtype", "setspace", "listings", "natbib", "algorithm2e",
-                    "tikz-cd", "braket", "esdiff", "chemmacros", "units", "fontspec"]:
-            q = ltd / "pkg.tex"
-            q.write_text("\\documentclass{article}\\usepackage{%s}\\begin{document}x\\end{document}" % pkg)
-            rr = texengine.compile_tex(str(q))
-            check(f"LaTeX package {pkg}", rr.ok, "" if rr.ok else (rr.errors[0].message if rr.errors else ""), soft=True)
 
 # ---- extra PDF tools (organize, crop, stamps, export, security, redaction, edit, batch)
 import pdftools

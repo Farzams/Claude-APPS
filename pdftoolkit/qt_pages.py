@@ -6,7 +6,6 @@ from pathlib import Path
 from PySide6.QtWidgets import QHBoxLayout, QLineEdit
 
 import core
-import texengine
 from i18n import rtl, t, tr, trf
 from qt_common import (FileList, FileRow, Form, Tool, mkcheck, mkcombo, mklabel)
 
@@ -41,8 +40,7 @@ def tess_lang(code: str, also_english: bool) -> str:
 
 def missing_tools() -> str:
     names = [n for n, ok in [("DjVu", core.find_ddjvu()),
-                             ("OCR", core.find_tesseract()), ("Ghostscript", core.find_gs()),
-                             ("LaTeX", texengine.find_engine())] if not ok]
+                             ("OCR", core.find_tesseract()), ("Ghostscript", core.find_gs())] if not ok]
     return ", ".join(names)
 
 
