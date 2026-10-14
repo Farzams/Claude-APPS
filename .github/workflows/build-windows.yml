@@ -35,8 +35,23 @@ jobs:
       - name: Get Ghostscript (bundled)
         shell: pwsh
         run: |
-          choco install ghostscript -y --no-progress
-          $gsexe = Get-ChildItem "${env:ProgramFiles}\gs" -Recurse -Filter gswin64c.exe -ErrorAction Stop | Select-Object -First 1
+          $gsdir = "$env:RUNNER_TEMP\gsinst"
+          $ok = $false
+          for ($i = 1; $i -le 3 -and -not $ok; $i++) {
+            choco install ghostscript -y --no-progress
+            if (Test-Path "${env:ProgramFiles}\gs") { $ok = $true } else { Start-Sleep -Seconds (10 * $i) }
+          }
+          if ($ok) {
+            $gsexe = Get-ChildItem "${env:ProgramFiles}\gs" -Recurse -Filter gswin64c.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+          } else {
+            # Chocolatey is down: take the installer straight from the Ghostscript releases
+            $inst = "$env:RUNNER_TEMP\gs-setup.exe"
+            for ($i = 1; $i -le 4; $i++) {
+              try { Invoke-WebRequest "https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10080/gs10080w64.exe" -OutFile $inst -TimeoutSec 300; break } catch { Start-Sleep -Seconds (10 * $i) }
+            }
+            Start-Process $inst -ArgumentList "/S", "/D=$gsdir" -Wait
+            $gsexe = Get-ChildItem $gsdir -Recurse -Filter gswin64c.exe -ErrorAction Stop | Select-Object -First 1
+          }
           New-Item -ItemType Directory -Force pdftoolkit/gs | Out-Null
           Copy-Item "$($gsexe.Directory.Parent.FullName)\*" pdftoolkit/gs -Recurse
           Get-ChildItem pdftoolkit/gs/bin | Select-Object -First 5 Name
