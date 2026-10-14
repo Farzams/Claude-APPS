@@ -40,10 +40,12 @@ object PdfOps {
             if (it.moveToFirst()) it.getString(0) else null
         } ?: (uri.lastPathSegment ?: "file")
 
-    fun sizeOf(ctx: Context, uri: Uri): Long =
-        ctx.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use {
+    fun sizeOf(ctx: Context, uri: Uri): Long {
+        if (uri.scheme == "file") return uri.path?.let { File(it).length() } ?: -1L
+        return ctx.contentResolver.query(uri, arrayOf(OpenableColumns.SIZE), null, null, null)?.use {
             if (it.moveToFirst() && !it.isNull(0)) it.getLong(0) else -1L
         } ?: -1L
+    }
 
     private fun input(ctx: Context, uri: Uri): InputStream =
         ctx.contentResolver.openInputStream(uri) ?: error("Cannot open ${nameOf(ctx, uri)}")
