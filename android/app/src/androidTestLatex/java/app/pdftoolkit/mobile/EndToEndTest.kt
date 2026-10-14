@@ -38,6 +38,12 @@ class EndToEndTest {
         }
     }
 
+    /** Menus and dialogs are separate windows without resource ids, so they are found by their visible text. */
+    private fun clickText(text: String) {
+        assertTrue("not found: $text", device.wait(Until.hasObject(By.text(text)), 8_000))
+        device.findObject(By.text(text)).click()
+    }
+
     private fun click(res: String, wait: Long = 20_000) {
         // long menus and pages: swipe up (on the right side, where the editor menu sits) until the item exists
         var tries = 0
@@ -99,15 +105,14 @@ class EndToEndTest {
         click("night_mode")
 
         click("tab_editor")
-        click("more"); click("menu_outline")
-        assertTrue("outline dialog", device.wait(Until.hasObject(By.res("outline_stats")), 8_000))
+        click("more"); clickText("Outline")
+        assertTrue("outline dialog", device.wait(Until.hasObject(By.textContains(" words")), 8_000))
         shot("03d_outline")
         Log.i("PDFTK", "outline ok")
         device.pressBack()
         Thread.sleep(500)
-        click("more"); click("menu_history")
-        assertTrue("history dialog", device.wait(Until.hasObject(By.res("history_list")), 8_000))
-        assertTrue("a version was saved by the compile", device.wait(Until.hasObject(By.res("history_row_0")), 5_000))
+        click("more"); clickText("Version history")
+        assertTrue("history dialog with a saved version", device.wait(Until.hasObject(By.textContains("Tap a version")), 8_000))
         shot("03e_history")
         Log.i("PDFTK", "history ok")
         device.pressBack()
@@ -146,9 +151,7 @@ class EndToEndTest {
         click("accent_#0F766E")
         shot("07_settings_paper_dark_teal")
         scrollTo("about_author")
-        val author = device.findObject(By.res("about_author"))?.text
-        Log.i("PDFTK", "about author: $author")
-        assertTrue("about shows the author", author == "Farzam Sadri")
+        assertTrue("about shows the author", device.wait(Until.hasObject(By.text("Farzam Sadri")), 5_000))
         shot("07b_about")
         Log.i("PDFTK", "about ok")
         click("lang_fa")

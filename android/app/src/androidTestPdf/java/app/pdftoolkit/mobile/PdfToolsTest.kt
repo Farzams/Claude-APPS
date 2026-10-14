@@ -246,9 +246,7 @@ class PdfToolsTest {
             Thread.sleep(350)
             tries++
         }
-        val author = device.findObject(By.res("about_author"))?.text
-        Log.i("PDFTK", "about author: $author")
-        assertEquals("Farzam Sadri", author)
+        assertTrue("about shows the author", device.wait(Until.hasObject(By.text("Farzam Sadri")), 5_000))
         shot("p05_about")
         Log.i("PDFTK", "about ok")
     }
