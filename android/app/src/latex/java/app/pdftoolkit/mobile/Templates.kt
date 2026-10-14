@@ -204,4 +204,4 @@ Write the body of the letter here.
         Template("tpl.thesis", mapOf("main.tex" to TemplatesMore.THESIS, "refs.bib" to REFS), engine = "pdftex", group = "journal"),
         Template("tpl.poster", mapOf("main.tex" to TemplatesMore.POSTER), engine = "pdftex", group = "journal"),
     )
-}}
+}
