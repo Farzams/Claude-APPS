@@ -251,7 +251,7 @@ class SettingsTool(Tool):
             app_tiles.append(tile)
         lay.addWidget(Row("App icons", "Flat colour: Start menu, taskbar and shortcuts", *app_tiles))
 
-        self.scale = mkcombo({"90 %": 0.9, "100 %": 1.0, "110 %": 1.1, "125 %": 1.25, "140 %": 1.4}, self.win.cfg.get("text_scale", 1.0))
+        self.scale = mkcombo({"80 %": 0.8, "90 %": 0.9, "100 %": 1.0, "110 %": 1.1, "125 %": 1.25, "140 %": 1.4}, self.win.cfg.get("text_scale", 1.0))
         self.scale.activated.connect(lambda _i: win.set_text_scale(self.scale.currentData()))
         lay.addWidget(Row("Text size", "Everything scales together", self.scale))
         self.fa_box, self.fa_btns = pills([(k, k) for k in qt_style.FA_FONTS], self.win.cfg.get("fa_font", "Vazirmatn"), win.set_fa_font)

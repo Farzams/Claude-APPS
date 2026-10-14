@@ -40,7 +40,7 @@ def ui_family() -> str:
     return FA_FONT["name"] if i18n.rtl() else "Inter"
 
 
-def apply_app_font(app: QApplication, size: float = 10.5) -> None:
+def apply_app_font(app: QApplication, size: float = 9.5) -> None:
     f = QFont(ui_family())
     f.setFamilies([ui_family(), "Inter", "Vazirmatn", "Segoe UI", "Tahoma"])
     f.setPointSizeF((size + (0.5 if i18n.rtl() else 0)) * TEXT_SCALE["scale"])   # Persian letters need a little more size to stay crisp
@@ -59,7 +59,7 @@ def set_tooltip_palette(P: dict) -> None:
     QToolTip.setPalette(pal)
 
 
-def mono_font(size: float = 10.5) -> QFont:
+def mono_font(size: float = 9.5) -> QFont:
     for fam in ("Cascadia Mono", "Consolas", "DejaVu Sans Mono", "Menlo", "Courier New"):
         if fam in QFontDatabase.families():
             f = QFont(fam)
@@ -194,7 +194,9 @@ def _glyph_png(kind: str, color: str, size: int = 24) -> str:
 
 
 @lru_cache(maxsize=48)
-def build_qss(theme_name: str, strength: str, rtl: bool, accent: str = "", fa_font: str = "Vazirmatn") -> str:
+def build_qss(theme_name: str, strength: str, rtl: bool, accent: str = "", fa_font: str = "Vazirmatn", scale: float = 1.0) -> str:
+    def sz(x: float) -> str:          # font sizes in the style sheet follow the text-size setting
+        return f"{x * 0.88 * scale:.1f}pt"
     P = theme.resolve(theme_name, accent)
     flat = P["flat"]
     fam = ui_family()
@@ -235,17 +237,17 @@ QFrame#tile:hover {{ {tile_hover} }}
 QFrame#hero {{ {hero_css} }}
 QFrame#paper {{ background: #ffffff; border-radius: 12px; }}
 QLabel {{ background: transparent; }}
-QLabel#heroTitle {{ color: {hero_title}; font-size: {'19' if flat else '21'}pt; font-weight: 700; }}
-QLabel#heroSub {{ color: {hero_sub}; font-size: 10.5pt; }}
+QLabel#heroTitle {{ color: {hero_title}; font-size: {sz(19 if flat else 21)}; font-weight: 700; }}
+QLabel#heroSub {{ color: {hero_sub}; font-size: {sz(10.5)}; }}
 QLabel[role="muted"] {{ color: {P['muted']}; }}
-QLabel[role="h"] {{ font-size: 12pt; font-weight: 700; }}
+QLabel[role="h"] {{ font-size: {sz(12)}; font-weight: 700; }}
 QLabel[role="good"] {{ color: {P['good']}; }}
-QLabel[role="tileTitle"] {{ font-size: 11.5pt; font-weight: 700; }}
+QLabel[role="tileTitle"] {{ font-size: {sz(11.5)}; font-weight: 700; }}
 QPushButton#searchbar {{ background: {field}; border: 1px solid {fb}; border-radius: 12px; padding: 0 16px; text-align: {align}; color: {P['muted']}; font-weight: 400; }}
 QPushButton#searchbar:hover {{ border-color: {P['accent']}; }}
 QPushButton#recentrow {{ background: transparent; border: 1px solid {border}; border-radius: 10px; padding: 9px 14px; text-align: left; font-weight: 500; }}
 QPushButton#recentrow:hover {{ background: {P['hover']}; }}
-QLabel#logoText {{ font-size: 15pt; font-weight: 700; }}
+QLabel#logoText {{ font-size: {sz(15)}; font-weight: 700; }}
 
 QPushButton {{ background: {field}; border: 1px solid {fb}; border-radius: 11px; padding: 8px 16px; font-weight: 500; }}
 QPushButton:hover {{ background: {P['hover']}; }}
@@ -255,10 +257,10 @@ QPushButton[kind="primary"]:hover {{ background: {P['accent_hover']}; }}
 QPushButton:disabled {{ background: {field}; color: {P['muted']}; }}
 QPushButton[kind="primary"]:disabled {{ background: {field}; color: {P['muted']}; }}
 QPushButton#nav {{ background: transparent; border: 1px solid transparent; text-align: {align}; padding: 10px 12px; border-radius: 13px;
-                  font-size: 10.5pt; font-weight: 500; }}
+                  font-size: {sz(10.5)}; font-weight: 500; }}
 QPushButton#nav:hover {{ background: {P['hover']}; }}
 QPushButton#nav:checked {{ background: {nav_on_bg}; }}
-QLabel#navText {{ font-size: 10.5pt; font-weight: 500; }}
+QLabel#navText {{ font-size: {sz(10.5)}; font-weight: 500; }}
 QLabel#navText[active="true"] {{ color: {nav_on_text}; font-weight: 700; }}
 QPushButton[pill="true"] {{ background: {field}; border: 1px solid {fb}; border-radius: 15px; padding: 7px 22px; min-width: 76px; }}
 QPushButton[pill="true"]:checked {{ background: {P['accent']}; color: {P['on_accent']}; font-weight: 700; }}

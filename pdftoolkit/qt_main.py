@@ -211,6 +211,7 @@ class ToolsTool(Tool):
             tiles = []
             for key, icon, name, desc in items:
                 t = Tile(self.win, key, name, desc, icon)
+                t.setParent(inner)          # never leave a tile without a parent: it would pop up as its own window
                 t._search = (tr(name) + " " + tr(desc) + " " + name + " " + desc).lower()
                 tiles.append(t)
             self.vl.addWidget(head)
@@ -227,10 +228,10 @@ class ToolsTool(Tool):
             while grid.count():
                 grid.takeAt(0)
             shown = [t for t in tiles if not q or q in t._search]
-            for t in tiles:
-                t.setVisible(t in shown)
             for i, t in enumerate(shown):
                 grid.addWidget(t, i // 3, i % 3)
+            for t in tiles:
+                t.setVisible(t in shown)
             head.setVisible(bool(shown))
         for c in range(3):
             for _h, grid, _t in self.groups:
@@ -499,7 +500,7 @@ class MainWindow(QMainWindow):
         strength = "off"                                                           # solid colours, no picture
         qt_style.ICON["style"] = qt_style.effective_icon_style(self.cfg.get("icon_style", "auto"), P["flat"])
         # Only the visible parts are restyled now; hidden pages catch up when shown (keeps theme changes fast).
-        self.qss = qt_style.build_qss(theme.STATE.name, strength, i18n.rtl(), theme.STATE.accent, qt_style.FA_FONT["name"])
+        self.qss = qt_style.build_qss(theme.STATE.name, strength, i18n.rtl(), theme.STATE.accent, qt_style.FA_FONT["name"], qt_style.TEXT_SCALE["scale"])
         self._stamp += 1
         for w in (self.side, self.foot, self.toast_lbl):
             w.setStyleSheet(self.qss)
