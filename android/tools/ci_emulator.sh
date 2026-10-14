@@ -5,6 +5,10 @@ cd "$(dirname "$0")/.."
 adb shell settings put global window_animation_scale 0 || true
 adb shell settings put global transition_animation_scale 0 || true
 adb shell settings put global animator_duration_scale 0 || true
+adb shell settings put global hide_error_dialogs 1 || true
+adb shell settings put secure anr_show_background 0 || true
+adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS >/dev/null 2>&1 || true
+sleep 20
 pip install -q pillow 2>/dev/null || true
 mkdir -p ../shots
 ( i=0; while true; do
@@ -16,7 +20,7 @@ im = Image.open("/tmp/frame.png").convert("RGB")
 im.thumbnail((420, 900))
 im.save("../shots/frame_%03d.jpg" % int(sys.argv[1]), quality=70)
 PY
-    i=$((i+1)); sleep 15
+    i=$((i+1)); sleep 10
   done ) &
 REC=$!
 ./gradlew --no-daemon connectedDebugAndroidTest
