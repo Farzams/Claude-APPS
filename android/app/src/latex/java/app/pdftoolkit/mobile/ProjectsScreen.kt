@@ -37,6 +37,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -97,23 +98,19 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
 
     Box(Modifier.fillMaxSize().statusBarsPadding().navigationBarsPadding(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.widthIn(max = 1000.dp).fillMaxSize()) {
-            Row(Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp, top = 12.dp), verticalAlignment = Alignment.CenterVertically) {
-                Column(Modifier.weight(1f)) {
-                    Text(t("app.latex"), style = MaterialTheme.typography.headlineMedium, color = cs.onBackground)
-                    Text(t("latex.sub"), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
-                }
+            ThemedHeader(t("app.latex"), t("latex.sub")) {
                 IconButton(onClick = { importer.launch(arrayOf("application/zip", "text/*", "application/x-tex", "application/octet-stream")) }, modifier = Modifier.testTag("import_project")) {
-                    Icon(Icons.Filled.UploadFile, t("import"), tint = cs.onBackground)
+                    Icon(Icons.Filled.UploadFile, t("import"), tint = LocalContentColor.current)
                 }
                 IconButton(onClick = onSettings, modifier = Modifier.testTag("open_settings")) {
-                    Icon(Icons.Filled.Settings, t("settings"), tint = cs.onBackground)
+                    Icon(Icons.Filled.Settings, t("settings"), tint = LocalContentColor.current)
                 }
             }
             TextField(
                 value = query, onValueChange = { query = it }, singleLine = true,
                 placeholder = { Text(t("search.projects"), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                 leadingIcon = { Icon(Icons.Filled.Search, null) },
-                shape = RoundedCornerShape(28.dp),
+                shape = MaterialTheme.shapes.extraLarge,
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent,
                     focusedContainerColor = cs.surfaceContainerHighest, unfocusedContainerColor = cs.surfaceContainerHighest,
@@ -127,7 +124,7 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
             ) {
                 if (vm.projects.isEmpty()) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
-                        Surface(shape = RoundedCornerShape(20.dp), color = cs.primaryContainer, modifier = Modifier.fillMaxWidth()) {
+                        Surface(shape = MaterialTheme.shapes.large, color = cs.primaryContainer, modifier = Modifier.fillMaxWidth()) {
                             Text(t("no.projects"), Modifier.padding(20.dp), color = cs.onSurface)
                         }
                     }
@@ -137,8 +134,8 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
                     val engine = remember(p) { runCatching { vm.store.meta(p).engine }.getOrDefault("xetex") }
                     val date = remember(p) { DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(p.modified)) }
                     Surface(
-                        onClick = { vm.openProject(p) }, shape = RoundedCornerShape(20.dp), color = cs.surface,
-                        border = BorderStroke(1.dp, cs.outlineVariant), modifier = Modifier.fillMaxWidth().testTag("project_$i"),
+                        onClick = { vm.openProject(p) }, shape = MaterialTheme.shapes.large, color = cs.surface,
+                        border = cardStroke(), modifier = Modifier.fillMaxWidth().testTag("project_$i"),
                     ) {
                         Row(Modifier.padding(start = 14.dp, top = 12.dp, bottom = 12.dp, end = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
                             PageGlyph()
@@ -165,7 +162,7 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
             }
         }
         Surface(
-            onClick = { creating = true }, shape = RoundedCornerShape(20.dp), color = cs.primary, shadowElevation = 6.dp,
+            onClick = { creating = true }, shape = MaterialTheme.shapes.large, color = cs.primary, shadowElevation = 6.dp,
             modifier = Modifier.align(Alignment.BottomEnd).padding(20.dp).testTag("new_project"),
         ) {
             Row(Modifier.padding(horizontal = 20.dp, vertical = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

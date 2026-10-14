@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 themeKey = prefs.theme; accent = prefs.accent; lang = prefs.lang; Strings.lang = prefs.lang; tick++
             }
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
-                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).imePadding().semantics { testTagsAsResourceId = true }) {
+                Box(Modifier.fillMaxSize().themeBackground().imePadding().semantics { testTagsAsResourceId = true }) {
                     FilePickerHost(picker) {
                         if (tick >= 0) when {
                             settings -> SettingsScreen(prefs, refresh, { settings = false }, tagline = t("about.tag.latex")) { EditorSettingsCard(prefs) }

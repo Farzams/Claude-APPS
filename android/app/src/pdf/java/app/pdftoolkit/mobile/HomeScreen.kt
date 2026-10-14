@@ -2,6 +2,8 @@ package app.pdftoolkit.mobile
 
 import android.net.Uri
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -46,7 +48,9 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -65,6 +69,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -113,11 +120,19 @@ fun PdfShell(selected: String, onNav: (String) -> Unit, content: @Composable () 
         } else {
             Column(Modifier.fillMaxSize().statusBarsPadding()) {
                 Box(Modifier.weight(1f)) { content() }
-                NavigationBar {
+                val st = LocalStyle.current
+                val cs = MaterialTheme.colorScheme
+                val itemColors = if (st.icons == IconStyle.BARE) NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent, selectedIconColor = cs.primary, selectedTextColor = cs.primary,
+                ) else NavigationBarItemDefaults.colors()
+                NavigationBar(
+                    modifier = if (st.floatingNav) Modifier.padding(horizontal = 14.dp).padding(bottom = 6.dp)
+                        .shadow(10.dp, RoundedCornerShape(28.dp)).clip(RoundedCornerShape(28.dp)) else Modifier,
+                ) {
                     for ((key, icon, label) in items) {
                         NavigationBarItem(
                             selected = selected == key, onClick = { onNav(key) },
-                            icon = { Icon(icon, null) }, label = { Text(label, maxLines = 1) },
+                            icon = { Icon(icon, null) }, label = { Text(label, maxLines = 1) }, colors = itemColors,
                             modifier = Modifier.testTag(if (key == "settings") "open_settings" else "nav_$key"),
                         )
                     }
@@ -129,9 +144,53 @@ fun PdfShell(selected: String, onNav: (String) -> Unit, content: @Composable () 
 
 @Composable
 private fun ToolIcon(card: Card, index: Int, size: Int = 48) {
+    val st = LocalStyle.current
+    val cs = MaterialTheme.colorScheme
     val tone = toneOf(index)
-    Surface(shape = RoundedCornerShape(16.dp), color = tone.container, modifier = Modifier.size(size.dp)) {
-        Box(contentAlignment = Alignment.Center) { Icon(card.icon, null, tint = tone.icon, modifier = Modifier.size((size / 2).dp)) }
+    when (st.icons) {
+        IconStyle.SOFT -> Surface(shape = st.iconShape, color = tone.container, modifier = Modifier.size(size.dp)) {
+            Box(contentAlignment = Alignment.Center) { Icon(card.icon, null, tint = tone.icon, modifier = Modifier.size((size / 2).dp)) }
+        }
+        IconStyle.GRADIENT -> Box(
+            Modifier.size(size.dp).background(Brush.linearGradient(listOf(cs.primary, lerp(cs.primary, Color.White, 0.35f))), st.iconShape),
+            contentAlignment = Alignment.Center,
+        ) { Icon(card.icon, null, tint = cs.onPrimary, modifier = Modifier.size((size / 2).dp)) }
+        IconStyle.BARE -> Box(Modifier.size(size.dp), contentAlignment = Alignment.Center) {
+            Icon(card.icon, null, tint = if (st.key == "paper") cs.primary else cs.onSurface, modifier = Modifier.size((size * 0.55f).dp))
+        }
+    }
+}
+
+/** One tool on the home page. Tiles, tinted tiles or a plain list row, depending on the theme. */
+@Composable
+private fun ToolTile(c: Card, i: Int, onOpen: (String) -> Unit) {
+    val cs = MaterialTheme.colorScheme
+    val st = LocalStyle.current
+    if (st.tiles == TileStyle.LIST) {
+        Column(Modifier.fillMaxWidth().clickable { onOpen(c.key) }.testTag("card_${c.key}")) {
+            Row(Modifier.padding(vertical = 12.dp, horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                ToolIcon(c, i, 36)
+                Column(Modifier.weight(1f)) {
+                    Text(t(c.key), style = MaterialTheme.typography.titleSmall, color = cs.onSurface, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(t("d." + c.key), style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                }
+            }
+            HorizontalDivider(color = lerp(cs.outlineVariant, cs.onSurface, st.borderStrength * 0.4f))
+        }
+    } else {
+        Surface(
+            onClick = { onOpen(c.key) }, shape = MaterialTheme.shapes.large,
+            color = if (st.tiles == TileStyle.FILLED) toneOf(i).container else cs.surface, border = cardStroke(),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 140.dp).testTag("card_${c.key}"),
+        ) {
+            Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                ToolIcon(c, i)
+                Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Text(t(c.key), style = MaterialTheme.typography.titleSmall, color = cs.onSurface, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(t("d." + c.key), style = MaterialTheme.typography.bodySmall, color = cs.onSurface.copy(alpha = 0.7f), maxLines = 2, overflow = TextOverflow.Ellipsis)
+                }
+            }
+        }
     }
 }
 
@@ -142,26 +201,24 @@ fun HomeScreen(onOpen: (String) -> Unit) {
     var query by remember { mutableStateOf("") }
     var recents by remember { mutableStateOf(Recents.list(ctx)) }
     var chosen by remember { mutableStateOf<Recent?>(null) }
+    val list = LocalStyle.current.tiles == TileStyle.LIST
     val q = query.trim()
     val tools = CARDS.withIndex().filter { (_, c) -> q.isEmpty() || t(c.key).contains(q, true) || t("d." + c.key).contains(q, true) }
 
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(160.dp), modifier = Modifier.widthIn(max = 1000.dp).fillMaxSize(),
+            columns = GridCells.Adaptive(if (list) 600.dp else 160.dp), modifier = Modifier.widthIn(max = 1000.dp).fillMaxSize(),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(if (list) 0.dp else 12.dp),
         ) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Column(Modifier.padding(horizontal = 4.dp)) {
-                        Text(t("app"), style = MaterialTheme.typography.headlineMedium, color = cs.onBackground)
-                        Text(t("pdf.sub"), style = MaterialTheme.typography.bodyMedium, color = cs.onSurfaceVariant)
-                    }
+                    ThemedHeader(t("app"), t("pdf.sub"))
                     TextField(
                         value = query, onValueChange = { query = it }, singleLine = true,
                         placeholder = { Text(t("search.tools"), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                         leadingIcon = { Icon(Icons.Filled.Search, null) },
-                        shape = RoundedCornerShape(28.dp),
+                        shape = MaterialTheme.shapes.extraLarge,
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent, disabledIndicatorColor = Color.Transparent,
                             focusedContainerColor = cs.surfaceContainerHighest, unfocusedContainerColor = cs.surfaceContainerHighest,
@@ -186,21 +243,7 @@ fun HomeScreen(onOpen: (String) -> Unit) {
             if (tools.isEmpty()) {
                 item(span = { GridItemSpan(maxLineSpan) }) { Text(t("no.match"), color = cs.onSurfaceVariant, modifier = Modifier.padding(4.dp)) }
             }
-            gridItems(tools, key = { it.value.key }) { (i, c) ->
-                Surface(
-                    onClick = { onOpen(c.key) }, shape = RoundedCornerShape(20.dp),
-                    color = cs.surface, border = BorderStroke(1.dp, cs.outlineVariant),
-                    modifier = Modifier.fillMaxWidth().heightIn(min = 140.dp).testTag("card_${c.key}"),
-                ) {
-                    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                        ToolIcon(c, i)
-                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text(t(c.key), style = MaterialTheme.typography.titleSmall, color = cs.onSurface, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                            Text(t("d." + c.key), style = MaterialTheme.typography.bodySmall, color = cs.onSurfaceVariant, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                        }
-                    }
-                }
-            }
+            gridItems(tools, key = { it.value.key }) { (i, c) -> ToolTile(c, i, onOpen) }
         }
     }
     chosen?.let { r ->
@@ -212,7 +255,7 @@ fun HomeScreen(onOpen: (String) -> Unit) {
 private fun RecentCard(r: Recent, onClick: () -> Unit) {
     val cs = MaterialTheme.colorScheme
     val thumb by rememberPdfThumb(Uri.parse(r.uri), 240)
-    Surface(onClick = onClick, shape = RoundedCornerShape(16.dp), color = cs.surface, border = BorderStroke(1.dp, cs.outlineVariant), modifier = Modifier.width(112.dp).testTag("recent_card")) {
+    Surface(onClick = onClick, shape = MaterialTheme.shapes.medium, color = cs.surface, border = cardStroke(), modifier = Modifier.width(112.dp).testTag("recent_card")) {
         Column(Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Box(Modifier.fillMaxWidth().height(128.dp).clip(RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center) {
                 val b = thumb
@@ -237,7 +280,7 @@ private fun RecentChooser(r: Recent, onClose: () -> Unit, onRemove: () -> Unit, 
                 for (key in FILE_TOOLS) {
                     val idx = CARDS.indexOfFirst { it.key == key }
                     Surface(
-                        onClick = { PendingFile.uri = Uri.parse(r.uri); onClose(); onOpen(key) }, shape = RoundedCornerShape(14.dp),
+                        onClick = { PendingFile.uri = Uri.parse(r.uri); onClose(); onOpen(key) }, shape = MaterialTheme.shapes.small,
                         color = Color.Transparent, modifier = Modifier.fillMaxWidth().testTag("choose_$key"),
                     ) {
                         Row(Modifier.padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {

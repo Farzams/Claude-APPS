@@ -182,7 +182,7 @@ private fun JobStatus(job: ToolJob) {
         }
     } else if (job.message.isNotEmpty()) {
         val good = job.ok
-        Surface(shape = RoundedCornerShape(16.dp), color = if (good) cs.primaryContainer else cs.errorContainer, modifier = Modifier.fillMaxWidth()) {
+        Surface(shape = MaterialTheme.shapes.medium, color = if (good) cs.primaryContainer else cs.errorContainer, modifier = Modifier.fillMaxWidth()) {
             Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     Icon(if (good) Icons.Filled.CheckCircle else Icons.Filled.ErrorOutline, null, tint = if (good) cs.primary else cs.error)
@@ -232,7 +232,7 @@ private fun readableFile(ctx: Context, uri: Uri): File? = fileOf(uri) ?: runCatc
 
 @Composable
 private fun PrimaryButton(text: String, tag: String, enabled: Boolean, onClick: () -> Unit) {
-    Button(onClick = onClick, enabled = enabled, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag(tag)) {
+    Button(onClick = onClick, enabled = enabled, shape = LocalStyle.current.button, modifier = Modifier.fillMaxWidth().heightIn(min = 52.dp).testTag(tag)) {
         Text(text, style = MaterialTheme.typography.titleSmall, textAlign = TextAlign.Center)
     }
 }
@@ -251,7 +251,7 @@ private fun PickCard(
 ) {
     val cs = MaterialTheme.colorScheme
     Surface(
-        onClick = onPick, shape = RoundedCornerShape(20.dp),
+        onClick = onPick, shape = MaterialTheme.shapes.large,
         color = if (chosen) cs.surface else cs.primaryContainer,
         border = BorderStroke(1.dp, if (chosen) cs.outlineVariant else cs.primary.copy(alpha = 0.35f)),
         modifier = Modifier.fillMaxWidth().testTag(tag),
@@ -297,7 +297,7 @@ private fun Options(opts: List<Opt>, selected: String, onSelect: (String) -> Uni
         for (o in opts) {
             val on = o.key == selected
             Surface(
-                onClick = { onSelect(o.key) }, shape = RoundedCornerShape(16.dp),
+                onClick = { onSelect(o.key) }, shape = MaterialTheme.shapes.medium,
                 color = if (on) cs.primaryContainer else cs.surface,
                 border = BorderStroke(if (on) 1.5.dp else 1.dp, if (on) cs.primary else cs.outlineVariant),
                 modifier = Modifier.fillMaxWidth().testTag("opt_${o.key}"),
@@ -346,7 +346,7 @@ private fun FileRow(number: Int, uri: Uri, image: Boolean, onRemove: () -> Unit,
     val name = remember(uri) { PdfOps.nameOf(ctx, uri) }
     val st = if (image) rememberImageThumb(uri, 160) else rememberPdfThumb(uri, 160)
     val thumb = st.value
-    Surface(shape = RoundedCornerShape(16.dp), color = cs.surface, border = BorderStroke(1.dp, cs.outlineVariant), modifier = modifier.fillMaxWidth().testTag("file_row")) {
+    Surface(shape = MaterialTheme.shapes.medium, color = cs.surface, border = cardStroke(), modifier = modifier.fillMaxWidth().testTag("file_row")) {
         Row(Modifier.padding(start = 10.dp, top = 8.dp, bottom = 8.dp, end = 2.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Icon(Icons.Filled.DragHandle, null, tint = cs.onSurfaceVariant)
             Box(Modifier.size(width = 40.dp, height = 52.dp).clip(RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center) {
@@ -574,7 +574,7 @@ fun OrganizeScreen(onBack: () -> Unit) {
 private fun PageCard(thumbs: PdfOps.Thumbs, item: PageItem, number: Int, onTurn: () -> Unit, onDelete: () -> Unit, modifier: Modifier) {
     val cs = MaterialTheme.colorScheme
     val bmp by produceState<Bitmap?>(null, item.index) { value = withContext(Dispatchers.IO) { runCatching { thumbs.get(item.index, 260) }.getOrNull() } }
-    Surface(shape = RoundedCornerShape(16.dp), color = cs.surface, border = BorderStroke(1.dp, cs.outlineVariant), modifier = modifier.testTag("page_card")) {
+    Surface(shape = MaterialTheme.shapes.medium, color = cs.surface, border = cardStroke(), modifier = modifier.testTag("page_card")) {
         Column(Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Box(Modifier.fillMaxWidth().aspectRatio(0.78f), contentAlignment = Alignment.Center) {
                 val b = bmp

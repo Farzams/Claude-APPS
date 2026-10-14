@@ -139,7 +139,7 @@ private fun EditorBottomBar(vm: EditorViewModel, tab: Int, onTab: (Int) -> Unit,
                 Row(Modifier.weight(1f).height(46.dp).clip(RoundedCornerShape(23.dp)).background(cs.surfaceContainerHighest).padding(3.dp)) {
                     for ((i, key) in listOf(0 to "editor", 1 to "preview")) {
                         Surface(
-                            onClick = { onTab(i) }, shape = RoundedCornerShape(20.dp),
+                            onClick = { onTab(i) }, shape = MaterialTheme.shapes.large,
                             color = if (tab == i) cs.primary else Color.Transparent,
                             modifier = Modifier.weight(1f).fillMaxHeight().testTag(if (i == 0) "tab_editor" else "tab_pdf"),
                         ) {
@@ -157,7 +157,7 @@ private fun EditorBottomBar(vm: EditorViewModel, tab: Int, onTab: (Int) -> Unit,
                 Icon(Icons.AutoMirrored.Filled.Redo, t("redo"), tint = cs.onSurface.copy(alpha = if (vm.canRedo) 1f else 0.3f))
             }
             Surface(
-                onClick = { vm.compile() }, enabled = !vm.compiling, shape = RoundedCornerShape(16.dp), color = cs.primary,
+                onClick = { vm.compile() }, enabled = !vm.compiling, shape = MaterialTheme.shapes.medium, color = cs.primary,
                 modifier = Modifier.defaultMinSize(minWidth = 56.dp, minHeight = 48.dp).testTag("compile"),
             ) {
                 Row(Modifier.padding(horizontal = if (switch) 16.dp else 20.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -516,7 +516,7 @@ private fun SymbolBar(vm: EditorViewModel) {
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 6.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
             for ((i, g) in groups.withIndex()) {
                 Surface(
-                    onClick = { group = i }, shape = RoundedCornerShape(16.dp),
+                    onClick = { group = i }, shape = MaterialTheme.shapes.medium,
                     color = if (group == i) cs.primary else cs.surfaceVariant, modifier = Modifier.testTag("group_$i"),
                 ) {
                     Text(t(g.first), Modifier.padding(horizontal = 12.dp, vertical = 5.dp), color = if (group == i) cs.onPrimary else cs.onSurface, style = MaterialTheme.typography.labelMedium)
@@ -539,12 +539,12 @@ private fun SymbolBar(vm: EditorViewModel) {
                 }
                 if (mine) {
                     Surface(
-                        shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = BorderStroke(1.dp, cs.outlineVariant),
+                        shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = cardStroke(),
                         modifier = Modifier.testTag("snippet_$idx").combinedClickable(onClick = { vm.insert(snippet) }, onLongClick = { deleting = idx }),
                         content = chip,
                     )
                 } else {
-                    Surface(onClick = { vm.insert(snippet) }, shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = BorderStroke(1.dp, cs.outlineVariant), content = chip)
+                    Surface(onClick = { vm.insert(snippet) }, shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = cardStroke(), content = chip)
                 }
             }
         }

@@ -249,6 +249,21 @@ class PdfToolsTest {
         assertTrue("about shows the author", device.wait(Until.hasObject(By.text("Farzam Sadri")), 5_000))
         shot("p05_about")
         Log.i("PDFTK", "about ok")
+
+        // every theme: pick it in Settings, look at the home page for one frame, check the tools are still there
+        for (k in listOf("paper", "ocean", "forest", "sunset", "graphite", "quiet")) {
+            device.findObject(By.res("back")).click()
+            assertTrue(device.wait(Until.hasObject(By.res("open_settings")), 10_000))
+            device.findObject(By.res("open_settings")).click()
+            assertTrue(device.wait(Until.hasObject(By.res("style_$k")), 10_000))
+            device.findObject(By.res("style_$k")).click()
+            Thread.sleep(600)
+            device.findObject(By.res("back")).click()
+            assertTrue("home shows the tools in theme $k", device.wait(Until.hasObject(By.res("card_merge")), 10_000))
+            Thread.sleep(10_500)
+            Log.i("PDFTK", "theme $k shown")
+        }
+        Log.i("PDFTK", "themes ok")
     }
 
     private fun grantFiles() {

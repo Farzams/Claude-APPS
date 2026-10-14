@@ -67,22 +67,28 @@ fun parseColor(hex: String): Color? = runCatching { Color(android.graphics.Color
 
 private val Vazir = FontFamily(Font(R.font.vazirmatn_regular, FontWeight.Normal), Font(R.font.vazirmatn_bold, FontWeight.Bold))
 
-private fun typography(fa: Boolean): Typography {
+private fun typography(fa: Boolean, st: ThemeStyle): Typography {
     val plain = Typography()
-    val base = plain.copy(
-        headlineMedium = plain.headlineMedium.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = (-0.4).sp),
+    val titleStyle = if (st.titleItalic) androidx.compose.ui.text.font.FontStyle.Italic else androidx.compose.ui.text.font.FontStyle.Normal
+    var base = plain.copy(
+        headlineMedium = plain.headlineMedium.copy(fontWeight = st.titleWeight, fontStyle = titleStyle, letterSpacing = (-0.4).sp),
+        headlineSmall = plain.headlineSmall.copy(fontWeight = st.titleWeight, fontStyle = titleStyle),
         titleLarge = plain.titleLarge.copy(fontWeight = FontWeight.Bold),
         titleMedium = plain.titleMedium.copy(fontWeight = FontWeight.SemiBold),
     )
-    if (!fa) return base
-    fun f(s: TextStyle) = s.copy(fontFamily = Vazir)
-    return base.copy(
-        displayLarge = f(base.displayLarge), displayMedium = f(base.displayMedium), displaySmall = f(base.displaySmall),
-        headlineLarge = f(base.headlineLarge), headlineMedium = f(base.headlineMedium), headlineSmall = f(base.headlineSmall),
-        titleLarge = f(base.titleLarge), titleMedium = f(base.titleMedium), titleSmall = f(base.titleSmall),
-        bodyLarge = f(base.bodyLarge), bodyMedium = f(base.bodyMedium), bodySmall = f(base.bodySmall),
-        labelLarge = f(base.labelLarge), labelMedium = f(base.labelMedium), labelSmall = f(base.labelSmall),
-    )
+    fun withFont(t: Typography, ff: FontFamily): Typography {
+        fun f(s: TextStyle) = s.copy(fontFamily = ff)
+        return t.copy(
+            displayLarge = f(t.displayLarge), displayMedium = f(t.displayMedium), displaySmall = f(t.displaySmall),
+            headlineLarge = f(t.headlineLarge), headlineMedium = f(t.headlineMedium), headlineSmall = f(t.headlineSmall),
+            titleLarge = f(t.titleLarge), titleMedium = f(t.titleMedium), titleSmall = f(t.titleSmall),
+            bodyLarge = f(t.bodyLarge), bodyMedium = f(t.bodyMedium), bodySmall = f(t.bodySmall),
+            labelLarge = f(t.labelLarge), labelMedium = f(t.labelMedium), labelSmall = f(t.labelSmall),
+        )
+    }
+    st.font?.let { base = withFont(base, it) }
+    if (fa) base = withFont(base, Vazir)
+    return base
 }
 
 @Composable
@@ -90,26 +96,20 @@ fun AppTheme(pal: Palette, accentHex: String, fa: Boolean, content: @Composable 
     val appAccent = parseColor(LocalContext.current.getString(R.string.app_accent))
     val accent = parseColor(accentHex) ?: defaultAccent(pal, appAccent)
     val onAccent = if (accent.luminance() > 0.40f) Color(0xFF14110A) else Color.White
+    val st = styleByKey(styleOf(pal.key))
     val base: ColorScheme = if (pal.dark) darkColorScheme() else lightColorScheme()
     val scheme = base.copy(
         primary = accent, onPrimary = onAccent,
         primaryContainer = accent.copy(alpha = 0.16f), onPrimaryContainer = pal.text,
         secondaryContainer = accent.copy(alpha = 0.16f), onSecondaryContainer = pal.text,
         background = pal.bg, onBackground = pal.text,
-        surface = pal.card, onSurface = pal.text,
+        surface = if (st.glass) pal.card.copy(alpha = 0.62f) else pal.card, onSurface = pal.text,
         surfaceVariant = pal.field, onSurfaceVariant = pal.muted,
         surfaceContainer = pal.card, surfaceContainerHigh = pal.card, surfaceContainerHighest = pal.hover,
         outline = pal.muted, outlineVariant = pal.line,
         error = Color(0xFFDC2626),
     )
-    CompositionLocalProvider(LocalLayoutDirection provides if (fa) LayoutDirection.Rtl else LayoutDirection.Ltr) {
-        MaterialTheme(
-            colorScheme = scheme, typography = typography(fa),
-            shapes = Shapes(
-                extraSmall = RoundedCornerShape(8.dp), small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(16.dp),
-                large = RoundedCornerShape(24.dp), extraLarge = RoundedCornerShape(28.dp),
-            ),
-            content = content,
-        )
+    CompositionLocalProvider(LocalLayoutDirection provides if (fa) LayoutDirection.Rtl else LayoutDirection.Ltr, LocalStyle provides st) {
+        MaterialTheme(colorScheme = scheme, typography = typography(fa, st), shapes = st.shapes, content = content)
     }
 }

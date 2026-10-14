@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
             val home = { screen = "home" }
             val picker = remember { FilePicker() }
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
-                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).semantics { testTagsAsResourceId = true }) {
+                Box(Modifier.fillMaxSize().themeBackground().semantics { testTagsAsResourceId = true }) {
                     FilePickerHost(picker) { AnimatedContent(
                         targetState = screen, label = "screen",
                         transitionSpec = {

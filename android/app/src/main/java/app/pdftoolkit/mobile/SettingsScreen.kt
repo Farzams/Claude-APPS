@@ -51,10 +51,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun SettingsCard(title: String, icon: ImageVector, content: @Composable ColumnScope.() -> Unit) {
     val cs = MaterialTheme.colorScheme
-    Surface(shape = RoundedCornerShape(22.dp), color = cs.surface, border = BorderStroke(1.dp, cs.outlineVariant), modifier = Modifier.fillMaxWidth()) {
+    Surface(shape = MaterialTheme.shapes.large, color = cs.surface, border = cardStroke(), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Surface(shape = RoundedCornerShape(12.dp), color = cs.primaryContainer, modifier = Modifier.size(38.dp)) {
+                Surface(shape = MaterialTheme.shapes.small, color = cs.primaryContainer, modifier = Modifier.size(38.dp)) {
                     Box(contentAlignment = Alignment.Center) { Icon(icon, null, tint = cs.primary, modifier = Modifier.size(20.dp)) }
                 }
                 Text(title, style = MaterialTheme.typography.titleMedium, color = cs.onSurface)
@@ -79,7 +79,7 @@ fun SwitchRow(label: String, checked: Boolean, tag: String, onChange: (Boolean) 
 fun SettingsChip(label: String, selected: Boolean, tag: String, onClick: () -> Unit) {
     val cs = MaterialTheme.colorScheme
     Surface(
-        onClick = onClick, shape = RoundedCornerShape(20.dp),
+        onClick = onClick, shape = MaterialTheme.shapes.large,
         color = if (selected) cs.primary else cs.surface,
         border = BorderStroke(1.dp, if (selected) cs.primary else cs.outlineVariant), modifier = Modifier.testTag(tag),
     ) {
@@ -89,22 +89,22 @@ fun SettingsChip(label: String, selected: Boolean, tag: String, onClick: () -> U
 
 /** A small preview of a theme in the colours it will use. */
 @Composable
-private fun ThemeTile(name: String, pal: Palette, accent: Color, selected: Boolean, tag: String, onClick: () -> Unit) {
+private fun ThemeTile(name: String, pal: Palette, accent: Color, style: ThemeStyle, selected: Boolean, tag: String, onClick: () -> Unit) {
     val cs = MaterialTheme.colorScheme
     Surface(
-        onClick = onClick, shape = RoundedCornerShape(16.dp), color = pal.bg,
+        onClick = onClick, shape = style.shapes.medium, color = pal.bg,
         border = BorderStroke(if (selected) 2.5.dp else 1.dp, if (selected) cs.primary else cs.outlineVariant),
         modifier = Modifier.width(104.dp).testTag(tag),
     ) {
         Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Surface(shape = RoundedCornerShape(8.dp), color = pal.card, border = BorderStroke(1.dp, pal.line)) {
+            Surface(shape = style.shapes.small, color = pal.card, border = BorderStroke(1.dp, pal.line)) {
                 Column(Modifier.fillMaxWidth().padding(8.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Box(Modifier.fillMaxWidth(0.55f).height(6.dp).clip(RoundedCornerShape(3.dp)).background(accent))
                     Box(Modifier.fillMaxWidth().height(3.dp).clip(RoundedCornerShape(2.dp)).background(pal.muted.copy(alpha = 0.55f)))
                     Box(Modifier.fillMaxWidth(0.7f).height(3.dp).clip(RoundedCornerShape(2.dp)).background(pal.muted.copy(alpha = 0.55f)))
                 }
             }
-            Text(name, color = pal.text, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(name, color = pal.text, style = MaterialTheme.typography.labelMedium, fontFamily = style.font, fontWeight = style.titleWeight, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -142,7 +142,7 @@ fun SettingsScreen(
                         for ((k, pair) in STYLES) {
                             val key = if (pal.dark) pair.second else pair.first
                             val p = paletteOf(key)
-                            ThemeTile(t(k), p, defaultAccent(p, appAccent), style == k, "style_$k") { prefs.theme = key; onChanged() }
+                            ThemeTile(t(k), p, defaultAccent(p, appAccent), styleByKey(k), style == k, "style_$k") { prefs.theme = key; onChanged() }
                         }
                     }
                     SettingsLabel(t("accent"))

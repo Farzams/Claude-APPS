@@ -279,7 +279,7 @@ fun PdfPreview(file: File?, version: Int, modifier: Modifier = Modifier) {
             }
         }
         Surface(
-            onClick = { jump = true }, shape = RoundedCornerShape(16.dp), color = cs.surface.copy(alpha = 0.94f), shadowElevation = 3.dp,
+            onClick = { jump = true }, shape = MaterialTheme.shapes.medium, color = cs.surface.copy(alpha = 0.94f), shadowElevation = 3.dp,
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 14.dp).testTag("page_indicator"),
         ) {
             Text("$current / ${doc.pageCount}", Modifier.padding(horizontal = 14.dp, vertical = 7.dp), color = cs.onSurface, style = MaterialTheme.typography.labelLarge)

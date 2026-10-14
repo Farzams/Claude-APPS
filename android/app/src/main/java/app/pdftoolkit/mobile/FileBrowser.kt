@@ -196,7 +196,7 @@ private fun PermissionPage(onAllow: () -> Unit, onSystem: (() -> Unit)?, onClose
         Column(
             Modifier.fillMaxSize().padding(horizontal = 28.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
         ) {
-            Surface(shape = RoundedCornerShape(24.dp), color = cs.primaryContainer, modifier = Modifier.size(84.dp)) {
+            Surface(shape = MaterialTheme.shapes.large, color = cs.primaryContainer, modifier = Modifier.size(84.dp)) {
                 Box(contentAlignment = Alignment.Center) { Icon(Icons.Filled.Folder, null, tint = cs.primary, modifier = Modifier.size(42.dp)) }
             }
             Spacer(Modifier.size(20.dp))
@@ -342,7 +342,7 @@ private fun FileBrowserBody(
                 if (searching) {
                     TextField(
                         value = query, onValueChange = { query = it }, singleLine = true, placeholder = { Text(t("fm.search"), maxLines = 1, overflow = TextOverflow.Ellipsis) },
-                        shape = RoundedCornerShape(24.dp),
+                        shape = MaterialTheme.shapes.large,
                         colors = TextFieldDefaults.colors(
                             focusedIndicatorColor = Color.Transparent, unfocusedIndicatorColor = Color.Transparent,
                             focusedContainerColor = cs.surfaceContainerHighest, unfocusedContainerColor = cs.surfaceContainerHighest,
@@ -565,7 +565,7 @@ private fun ItemCell(
     }
     val border = BorderStroke(if (selected) 2.dp else 1.dp, if (selected) cs.primary else cs.outlineVariant)
     Surface(
-        shape = RoundedCornerShape(16.dp), color = if (selected) cs.primaryContainer else cs.surface, border = border,
+        shape = MaterialTheme.shapes.medium, color = if (selected) cs.primaryContainer else cs.surface, border = border,
         modifier = modifier.fillMaxWidth().combinedClickable(onClick = onClick, onLongClick = onLong).testTag("fm_item"),
     ) {
         if (grid) {
@@ -611,9 +611,9 @@ private fun StartPage(
     @Composable
     fun placeRow(icon: ImageVector, tone: Int, label: String, sub: String, tag: String, trailing: (@Composable () -> Unit)? = null, onClick: () -> Unit) {
         val tn = toneOf(tone)
-        Surface(onClick = onClick, shape = RoundedCornerShape(16.dp), color = cs.surface, border = BorderStroke(1.dp, cs.outlineVariant), modifier = Modifier.fillMaxWidth().testTag(tag)) {
+        Surface(onClick = onClick, shape = MaterialTheme.shapes.medium, color = cs.surface, border = cardStroke(), modifier = Modifier.fillMaxWidth().testTag(tag)) {
             Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Surface(shape = RoundedCornerShape(12.dp), color = tn.container, modifier = Modifier.size(44.dp)) {
+                Surface(shape = MaterialTheme.shapes.small, color = tn.container, modifier = Modifier.size(44.dp)) {
                     Box(contentAlignment = Alignment.Center) { Icon(icon, null, tint = tn.icon, modifier = Modifier.size(24.dp)) }
                 }
                 Column(Modifier.weight(1f)) {
