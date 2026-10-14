@@ -49,10 +49,11 @@ class TemplatesTest {
         // the dialog is a separate window without resource ids: look for the template by its name, swiping its list up
         assertTrue("dialog", device.wait(Until.hasObject(By.text("Templates")), 10_000))
         var tries = 0
-        while (!device.hasObject(By.text(template)) && tries < 30) {
-            // the template list sits between 40% and 70% of the screen height
-            device.swipe(device.displayWidth / 2, device.displayHeight * 65 / 100, device.displayWidth / 2, device.displayHeight * 47 / 100, 25)
-            Thread.sleep(300)
+        while (!device.hasObject(By.text(template)) && tries < 45) {
+            // the template list is the smallest scrollable thing on screen; move it a little at a time so nothing is skipped
+            val list = device.findObjects(By.scrollable(true)).minByOrNull { it.visibleBounds.height() }
+            if (list != null) list.scroll(androidx.test.uiautomator.Direction.DOWN, 0.3f, 600) else device.swipe(device.displayWidth / 2, device.displayHeight * 65 / 100, device.displayWidth / 2, device.displayHeight * 55 / 100, 40)
+            Thread.sleep(350)
             tries++
         }
         clickText(template)
