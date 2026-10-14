@@ -46,15 +46,18 @@ class MainActivity : ComponentActivity() {
             var settings by rememberSaveable { mutableStateOf(false) }
             var tick by remember { mutableIntStateOf(0) }          // bump to recompose texts after a language change
             Strings.lang = lang
+            val picker = remember { FilePicker() }
             val refresh: () -> Unit = {
                 themeKey = prefs.theme; accent = prefs.accent; lang = prefs.lang; Strings.lang = prefs.lang; tick++
             }
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
                 Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).imePadding().semantics { testTagsAsResourceId = true }) {
-                    if (tick >= 0) when {
-                        settings -> SettingsScreen(prefs, refresh, { settings = false }, tagline = t("about.tag.latex")) { EditorSettingsCard(prefs) }
-                        editor.project != null -> EditorScreen(editor, prefs) { }
-                        else -> ProjectsScreen(editor) { settings = true }
+                    FilePickerHost(picker) {
+                        if (tick >= 0) when {
+                            settings -> SettingsScreen(prefs, refresh, { settings = false }, tagline = t("about.tag.latex")) { EditorSettingsCard(prefs) }
+                            editor.project != null -> EditorScreen(editor, prefs) { }
+                            else -> ProjectsScreen(editor) { settings = true }
+                        }
                     }
                 }
             }

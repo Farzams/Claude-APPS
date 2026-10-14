@@ -51,11 +51,11 @@ object PendingFile {
     fun take(): Uri? = uri.also { uri = null }
 }
 
-/** Opens the system file picker for one PDF and remembers the choice in the recent list. */
+/** Opens the in-app file manager for one PDF and remembers the choice in the recent list. */
 @Composable
-fun rememberPdfPicker(onPicked: (Uri) -> Unit): ManagedActivityResultLauncher<Array<String>, Uri?> {
+fun rememberPdfPicker(onPicked: (Uri) -> Unit): Launcher<Array<String>> {
     val ctx = LocalContext.current
-    return rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { u ->
+    return rememberAnyPicker { u ->
         if (u != null) {
             Recents.add(ctx, u, PdfOps.nameOf(ctx, u))
             onPicked(u)
@@ -92,7 +92,11 @@ fun rememberImageThumb(uri: Uri, px: Int): State<Bitmap?> {
     }
 }
 
-fun openPdf(ctx: Context, uri: Uri) {
+/** Plain files have to go through the file provider before another app may read them. */
+private fun shareable(ctx: Context, uri: Uri): Uri = fileOf(uri)?.let { contentUri(ctx, it) } ?: uri
+
+fun openPdf(ctx: Context, uriIn: Uri) {
+    val uri = shareable(ctx, uriIn)
     runCatching {
         ctx.startActivity(
             Intent(Intent.ACTION_VIEW).setDataAndType(uri, "application/pdf")
@@ -101,7 +105,8 @@ fun openPdf(ctx: Context, uri: Uri) {
     }
 }
 
-fun sharePdfFile(ctx: Context, uri: Uri) {
+fun sharePdfFile(ctx: Context, uriIn: Uri) {
+    val uri = shareable(ctx, uriIn)
     runCatching {
         val send = Intent(Intent.ACTION_SEND).setType("application/pdf")
             .putExtra(Intent.EXTRA_STREAM, uri).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

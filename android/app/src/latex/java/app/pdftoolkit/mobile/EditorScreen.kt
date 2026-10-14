@@ -184,12 +184,12 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
     var snipLabel by remember { mutableStateOf("") }
     var snipText by remember { mutableStateOf("") }
 
-    val savePdf = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { if (it != null) vm.savePdfTo(it) }
-    val exportZip = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
+    val savePdf = rememberSavePicker("application/pdf") { if (it != null) vm.savePdfTo(it) }
+    val exportZip = rememberSavePicker("application/zip") { uri ->
         val p = vm.project
         if (uri != null && p != null) { vm.flush(); runCatching { ctx.contentResolver.openOutputStream(uri)?.use { vm.store.exportZip(p, it) } } }
     }
-    val importFile = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    val importFile = rememberAnyPicker { uri ->
         if (uri != null) runCatching {
             val bytes = ctx.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: return@runCatching
             vm.importFile(displayName(ctx, uri), bytes)

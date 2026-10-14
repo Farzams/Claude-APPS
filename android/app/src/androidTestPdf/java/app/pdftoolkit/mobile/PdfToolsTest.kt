@@ -250,4 +250,70 @@ class PdfToolsTest {
         shot("p05_about")
         Log.i("PDFTK", "about ok")
     }
+
+    private fun grantFiles() {
+        val pfd = instr.uiAutomation.executeShellCommand("appops set ${ctx.packageName} MANAGE_EXTERNAL_STORAGE allow")
+        ParcelFileDescriptor.AutoCloseInputStream(pfd).use { it.readBytes() }
+        Thread.sleep(800)
+    }
+
+    private fun copyTo(src: Uri, dir: File, name: String): File {
+        val f = File(dir, name)
+        File(src.path!!).copyTo(f, overwrite = true)
+        return f
+    }
+
+    /** The in-app file manager: browse, search, pick two PDFs for a merge and save the result next to them. */
+    @Test
+    fun fileManagerMergeFlow() {
+        PdfOps.init(ctx)
+        grantFiles()
+        val dl = File(android.os.Environment.getExternalStorageDirectory(), "Download").also { it.mkdirs() }
+        val fa = copyTo(makePdf("fm_a.pdf", 3), dl, "fm_a.pdf")
+        val fb = copyTo(makePdf("fm_b.pdf", 2), dl, "fm_b.pdf")
+        val merged = File(dl, "merged.pdf").also { it.delete() }
+        launchApp()
+
+        // the Files tab
+        device.findObject(By.res("nav_files")).click()
+        assertTrue("files tab", device.wait(Until.hasObject(By.res("fm_start")), 10_000))
+        shot("p06_files_start")
+        device.findObject(By.res("place_downloads")).click()
+        assertTrue("download folder lists the pdf", device.wait(Until.hasObject(By.text("fm_a.pdf")), 10_000))
+        shot("p07_files_downloads")
+        device.findObject(By.res("fm_search_button")).click()
+        assertTrue(device.wait(Until.hasObject(By.res("fm_search")), 5_000))
+        device.findObject(By.res("fm_search")).text = "fm_b"
+        assertTrue("search finds fm_b", device.wait(Until.hasObject(By.text("fm_b.pdf")), 8_000))
+        Thread.sleep(800)
+        assertTrue("search hides fm_a", !device.hasObject(By.text("fm_a.pdf")))
+        shot("p08_files_search")
+        Log.i("PDFTK", "filemanager browse ok")
+
+        // merge through the in-app picker
+        launchApp()
+        clickCard("merge")
+        assertTrue(device.wait(Until.hasObject(By.res("pick_files")), 10_000))
+        device.findObject(By.res("pick_files")).click()
+        assertTrue("in-app picker opened", device.wait(Until.hasObject(By.res("file_browser")), 10_000))
+        if (device.hasObject(By.res("fm_start"))) device.findObject(By.res("place_downloads")).click()
+        assertTrue(device.wait(Until.hasObject(By.text("fm_a.pdf")), 10_000))
+        device.findObject(By.text("fm_a.pdf")).click()
+        device.findObject(By.text("fm_b.pdf")).click()
+        shot("p09_pick_two")
+        assertTrue(device.wait(Until.hasObject(By.res("fm_add")), 5_000))
+        device.findObject(By.res("fm_add")).click()
+        assertTrue("two files in the merge list", device.wait(Until.hasObject(By.res("file_row")), 10_000))
+        Thread.sleep(500)
+        assertEquals(2, device.findObjects(By.res("file_row")).size)
+        device.findObject(By.res("run")).click()
+        assertTrue("save picker", device.wait(Until.hasObject(By.res("fm_save")), 10_000))
+        shot("p10_save_here")
+        device.findObject(By.res("fm_save")).click()
+        assertTrue("merge finished", device.wait(Until.hasObject(By.res("result_ok")), 30_000))
+        assertTrue("merged file exists", merged.exists() && merged.length() > 0)
+        assertEquals("merged pages", 5, PdfOps.pageCount(ctx, Uri.fromFile(merged)))
+        Log.i("PDFTK", "filemanager merge ok")
+        merged.delete(); fa.delete(); fb.delete()
+    }
 }

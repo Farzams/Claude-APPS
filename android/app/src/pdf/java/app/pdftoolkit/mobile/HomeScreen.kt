@@ -253,38 +253,26 @@ private fun RecentChooser(r: Recent, onClose: () -> Unit, onRemove: () -> Unit, 
     )
 }
 
+/** The Files tab: the in-app file manager. Tapping a file offers the tools that fit it. */
 @Composable
 fun FilesScreen(onOpen: (String) -> Unit) {
     val ctx = LocalContext.current
-    val cs = MaterialTheme.colorScheme
-    var recents by remember { mutableStateOf(Recents.list(ctx)) }
+    val memory = remember { FileMemory(ctx) }
     var chosen by remember { mutableStateOf<Recent?>(null) }
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
-        LazyVerticalGrid(
-            columns = GridCells.Adaptive(112.dp), modifier = Modifier.widthIn(max = 1000.dp).fillMaxSize(),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Row(Modifier.fillMaxWidth().padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Text(t("recent"), style = MaterialTheme.typography.headlineMedium, color = cs.onBackground, modifier = Modifier.weight(1f))
-                    if (recents.isNotEmpty()) TextButton(onClick = { Recents.clear(ctx); recents = emptyList() }) { Text(t("clear")) }
-                }
+    FileBrowser(
+        mode = BrowserMode.MANAGE, allowed = null, multi = true, suggestedName = "", start = FileMemory.startFor(null), memory = memory,
+        onClose = null, onDone = {}, onUseSystemPicker = null,
+        onOpenFile = { f ->
+            val uri = android.net.Uri.fromFile(f)
+            when (kindOf(f)) {
+                Kind.PDF -> { Recents.add(ctx, uri, f.name); chosen = Recent(uri.toString(), f.name, System.currentTimeMillis()) }
+                Kind.BOOK -> { PendingFile.uri = uri; onOpen("docs2pdf") }
+                Kind.IMAGE -> { PendingFile.uri = uri; onOpen("img2pdf") }
+                else -> {}
             }
-            if (recents.isEmpty()) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Surface(shape = RoundedCornerShape(20.dp), color = cs.primaryContainer, modifier = Modifier.fillMaxWidth()) {
-                        Column(Modifier.padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Icon(Icons.Filled.Folder, null, tint = cs.primary, modifier = Modifier.size(40.dp))
-                            Text(t("no.recent"), color = cs.onSurface, textAlign = TextAlign.Center)
-                        }
-                    }
-                }
-            }
-            gridItems(recents, key = { it.uri }) { r -> RecentCard(r) { chosen = r } }
-        }
-    }
+        },
+    )
     chosen?.let { r ->
-        RecentChooser(r, onClose = { chosen = null }, onRemove = { Recents.remove(ctx, r.uri); recents = Recents.list(ctx); chosen = null }, onOpen = onOpen)
+        RecentChooser(r, onClose = { chosen = null }, onRemove = { chosen = null }, onOpen = onOpen)
     }
 }

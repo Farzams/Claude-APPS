@@ -45,9 +45,10 @@ class MainActivity : ComponentActivity() {
                 themeKey = prefs.theme; accent = prefs.accent; lang = prefs.lang; Strings.lang = prefs.lang; tick++
             }
             val home = { screen = "home" }
+            val picker = remember { FilePicker() }
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
                 Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).semantics { testTagsAsResourceId = true }) {
-                    AnimatedContent(
+                    FilePickerHost(picker) { AnimatedContent(
                         targetState = screen, label = "screen",
                         transitionSpec = {
                             if (targetState == "home" || targetState == "files") fadeIn(tween(180)) togetherWith fadeOut(tween(120))
@@ -69,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             "files" -> PdfShell("files", { screen = it }) { FilesScreen { screen = it } }
                             else -> PdfShell("home", { screen = it }) { HomeScreen { screen = it } }
                         }
-                    }
+                    } }
                 }
             }
             BackHandler(enabled = screen != "home") { screen = "home" }

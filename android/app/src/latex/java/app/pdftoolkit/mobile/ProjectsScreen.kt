@@ -71,7 +71,7 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
     var deleting by remember { mutableStateOf<Project?>(null) }
     var exporting by remember { mutableStateOf<Project?>(null) }
 
-    val importer = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    val importer = rememberAnyPicker { uri ->
         if (uri != null) {
             val name = displayName(ctx, uri)
             runCatching {
@@ -86,7 +86,7 @@ fun ProjectsScreen(vm: EditorViewModel, onSettings: () -> Unit) {
             }
         }
     }
-    val exporter = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
+    val exporter = rememberSavePicker("application/zip") { uri ->
         val p = exporting
         if (uri != null && p != null) runCatching { ctx.contentResolver.openOutputStream(uri)?.use { vm.store.exportZip(p, it) } }
         exporting = null

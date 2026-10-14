@@ -33,6 +33,10 @@ data class PageItem(val index: Int, val turn: Int = 0)
 
 /** The PDF operations behind the tool screens. Everything here runs on a background thread. */
 object PdfOps {
+    /** A folder given either as a plain path (the in-app file manager) or as an Android tree address. */
+    fun folderOf(ctx: Context, folder: Uri): DocumentFile? =
+        fileOf(folder)?.let { DocumentFile.fromFile(it) } ?: DocumentFile.fromTreeUri(ctx, folder)
+
     fun init(ctx: Context) = PDFBoxResourceLoader.init(ctx.applicationContext)
 
     fun nameOf(ctx: Context, uri: Uri): String =
@@ -101,7 +105,7 @@ object PdfOps {
 
     /** Writes each range as its own file into [folder]. Returns the number of files. */
     fun splitToFolder(ctx: Context, uri: Uri, ranges: List<List<Int>>, folder: Uri): Int {
-        val dir = DocumentFile.fromTreeUri(ctx, folder) ?: error("Cannot open that folder")
+        val dir = folderOf(ctx, folder) ?: error("Cannot open that folder")
         val base = nameOf(ctx, uri).removeSuffix(".pdf").removeSuffix(".PDF")
         load(ctx, uri).use { src ->
             for ((i, r) in ranges.withIndex()) {
@@ -197,7 +201,7 @@ object PdfOps {
     }
 
     fun pdfToPictures(ctx: Context, uri: Uri, folder: Uri, png: Boolean, dpi: Int = 150): Int {
-        val dir = DocumentFile.fromTreeUri(ctx, folder) ?: error("Cannot open that folder")
+        val dir = folderOf(ctx, folder) ?: error("Cannot open that folder")
         val base = nameOf(ctx, uri).removeSuffix(".pdf").removeSuffix(".PDF")
         return withRenderer(ctx, uri) { r ->
             for (i in 0 until r.pageCount) {

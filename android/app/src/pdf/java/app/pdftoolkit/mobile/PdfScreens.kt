@@ -371,11 +371,11 @@ fun MergeScreen(onBack: () -> Unit) {
     val job = remember { ToolJob() }
     val seq = remember { AtomicLong() }
     val files = remember { mutableStateListOf<Entry>().also { l -> PendingFile.take()?.let { l.add(Entry(seq.getAndIncrement(), it)) } } }
-    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { list ->
+    val pick = rememberMultiPicker { list ->
         list.forEach { Recents.add(ctx, it, PdfOps.nameOf(ctx, it)) }
         files.addAll(list.map { Entry(seq.getAndIncrement(), it) })
     }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val save = rememberSavePicker(PDF, near = { files.firstOrNull()?.uri }) { out ->
         if (out != null) {
             val list = files.map { it.uri }
             job.run(scope, out) {
@@ -415,7 +415,7 @@ fun SplitScreen(onBack: () -> Unit) {
     }
     LaunchedEffect(Unit) { PendingFile.take()?.let { load(it) } }
     val pick = rememberPdfPicker { load(it) }
-    val saveOne = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val saveOne = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) job.run(scope, out) {
             val r = PdfOps.parseRanges(spec, pages).flatten()
@@ -423,7 +423,7 @@ fun SplitScreen(onBack: () -> Unit) {
             t("saved")
         }
     }
-    val saveFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { dir ->
+    val saveFolder = rememberFolderPicker(near = { uri }) { dir ->
         val src = uri
         if (dir != null && src != null) job.run(scope) {
             val parts = if (mode == "all") (0 until pages).map { listOf(it) } else PdfOps.parseRanges(spec, pages)
@@ -479,7 +479,7 @@ fun OrganizeScreen(onBack: () -> Unit) {
     }
     LaunchedEffect(Unit) { PendingFile.take()?.let { load(it) } }
     val pick = rememberPdfPicker { load(it) }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val save = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) {
             val list = items.toList()
@@ -577,7 +577,7 @@ fun CompressScreen(onBack: () -> Unit) {
     var level by remember { mutableStateOf("medium") }
     val before by produceState(-1L, uri) { value = uri?.let { u -> withContext(Dispatchers.IO) { PdfOps.sizeOf(ctx, u) } } ?: -1L }
     val pick = rememberPdfPicker { uri = it; job.message = "" }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val save = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) job.run(scope, out) {
             val (dpi, q) = when (level) { "light" -> 150 to 0.75f; "strong" -> 80 to 0.5f; else -> 110 to 0.62f }
@@ -608,9 +608,9 @@ fun PicturesToPdfScreen(onBack: () -> Unit) {
     val scope = rememberCoroutineScope()
     val job = remember { ToolJob() }
     val seq = remember { AtomicLong() }
-    val files = remember { mutableStateListOf<Entry>() }
-    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenMultipleDocuments()) { list -> files.addAll(list.map { Entry(seq.getAndIncrement(), it) }) }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val files = remember { mutableStateListOf<Entry>().also { l -> PendingFile.take()?.let { l.add(Entry(seq.getAndIncrement(), it)) } } }
+    val pick = rememberMultiPicker { list -> files.addAll(list.map { Entry(seq.getAndIncrement(), it) }) }
+    val save = rememberSavePicker(PDF, near = { files.firstOrNull()?.uri }) { out ->
         if (out != null) {
             val list = files.map { it.uri }
             job.run(scope, out) {
@@ -642,7 +642,7 @@ fun PdfToPicturesScreen(onBack: () -> Unit) {
     var uri by remember { mutableStateOf<Uri?>(PendingFile.take()) }
     var png by remember { mutableStateOf(true) }
     val pick = rememberPdfPicker { uri = it; job.message = "" }
-    val folder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { dir ->
+    val folder = rememberFolderPicker(near = { uri }) { dir ->
         val src = uri
         if (dir != null && src != null) job.run(scope) { "${PdfOps.pdfToPictures(ctx, src, dir, png)} ${t("files.saved")}" }
     }
@@ -667,7 +667,7 @@ fun ProtectScreen(onBack: () -> Unit) {
     var add by remember { mutableStateOf(true) }
     var password by remember { mutableStateOf("") }
     val pick = rememberPdfPicker { uri = it; job.message = "" }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val save = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) job.run(scope, out) {
             (ctx.contentResolver.openOutputStream(out) ?: error("Cannot write")).use {
@@ -706,7 +706,7 @@ fun WatermarkScreen(onBack: () -> Unit) {
     var diagonal by remember { mutableStateOf(true) }
     var color by remember { mutableStateOf("gray") }
     val pick = rememberPdfPicker { uri = it; job.message = "" }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val save = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) job.run(scope, out) {
             val argb = when (color) { "red" -> 0xFFD62828.toInt(); "blue" -> 0xFF1D4ED8.toInt(); "black" -> 0xFF000000.toInt(); else -> 0xFF6B7280.toInt() }
@@ -746,7 +746,7 @@ fun NumbersScreen(onBack: () -> Unit) {
     var align by remember { mutableStateOf(1) }
     var start by remember { mutableStateOf("1") }
     val pick = rememberPdfPicker { uri = it; job.message = "" }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    val save = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) job.run(scope, out) {
             (ctx.contentResolver.openOutputStream(out) ?: error("Cannot write")).use {
@@ -782,10 +782,11 @@ fun ConvertScreen(onBack: () -> Unit) {
     var uri by remember { mutableStateOf<Uri?>(null) }
     var name by remember { mutableStateOf("") }
     val kind = DocConvert.kindOf(name)
-    val pick = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) {
+    val pick = rememberAnyPicker {
         if (it != null) { uri = it; name = PdfOps.nameOf(ctx, it); job.message = "" }
     }
-    val save = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument(PDF)) { out ->
+    LaunchedEffect(Unit) { PendingFile.take()?.let { uri = it; name = PdfOps.nameOf(ctx, it) } }
+    val save = rememberSavePicker(PDF, near = { uri }) { out ->
         val src = uri
         if (out != null && src != null) job.run(scope, out) {
             (ctx.contentResolver.openOutputStream(out) ?: error("Cannot write")).use { DocConvert.convert(ctx, src, name, it) }

@@ -80,10 +80,19 @@ class EndToEndTest {
     @Test
     fun compilesEnglishAndPersianThenThemes() {
         val ctx = instr.targetContext
+        ParcelFileDescriptor.AutoCloseInputStream(instr.uiAutomation.executeShellCommand("appops set ${ctx.packageName} MANAGE_EXTERNAL_STORAGE allow")).use { it.readBytes() }
+        Thread.sleep(800)
         val intent = ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
         ctx.startActivity(intent)
         assertTrue(device.wait(Until.hasObject(By.res("project_0")), 30_000))
         shot("01_projects")
+        // the in-app file manager opens for importing (all files access is granted for the test)
+        click("import_project")
+        assertTrue("in-app picker", device.wait(Until.hasObject(By.res("file_browser")), 10_000))
+        shot("01b_import_picker")
+        Log.i("PDFTK", "import picker ok")
+        click("fm_back")
+        assertTrue(device.wait(Until.hasObject(By.res("project_0")), 10_000))
         click("project_0")
         assertTrue(device.wait(Until.hasObject(By.res("compile")), 15_000))
         shot("02_editor")
