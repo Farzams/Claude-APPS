@@ -80,7 +80,9 @@ jobs:
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
           repo="${{ github.repository }}"; tag="android-latest"
-          cp android/app/build/outputs/apk/debug/app-debug.apk PDFToolkit-Android.apk
+          apk=$(find android -name "*.apk" -path "*outputs*" ! -name "*androidTest*" | head -1)
+          echo "APK found: $apk"; find android -name "*.apk" | head
+          cp "$apk" PDFToolkit-Android.apk
           gh release view $tag --repo $repo >/dev/null 2>&1 || gh release create $tag --repo $repo --title "PDF Toolkit for Android (latest build)" --target "${{ github.sha }}" --notes "Install PDFToolkit-Android.apk on your phone (allow installs from your browser or file manager when asked)."
           for i in 1 2 3 4 5; do gh release upload $tag PDFToolkit-Android.apk --clobber --repo $repo && break; sleep $((10*i)); done
           gh release view $tag --repo $repo --json assets --jq ".assets[] | [.name, .size] | @tsv"
