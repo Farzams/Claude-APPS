@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 DEFAULTS = {"theme": "indigo_night", "lang": "en", "accent": "", "icon_style": "auto", "follow_system": False,
-            "text_scale": 1.0, "fa_font": "Vazirmatn", "start_page": "home"}
+            "text_scale": 1.0, "fa_font": "Vazirmatn", "recent": []}
 
 
 def _path() -> Path:

@@ -462,4 +462,10 @@ FA.update({
     "The formula model files were not found. Reinstall the app to get them back.": "فایل‌های مدل فرمول پیدا نشد. برنامه را دوباره نصب کنید.",
     "Back to the original look. The language stays.": "بازگشت به ظاهر اولیه. زبان می‌ماند.",
     "Nothing is sent anywhere. The app works fully offline.": "هیچ چیزی به جایی فرستاده نمی‌شود. برنامه کاملاً آفلاین کار می‌کند.",
+    "Recent files": "فایل‌های اخیر", "Files you open will appear here.": "فایل‌هایی که باز می‌کنید اینجا نشان داده می‌شود.",
+    "Search tools and settings…": "جست‌وجوی ابزارها و تنظیمات…",
+    "Reorder, rotate, delete or insert pages": "ترتیب، چرخش، حذف یا درج صفحه‌ها",
+    "PDF to Word, Excel, pictures, HTML or text": "PDF به ورد، اکسل، تصویر، HTML یا متن",
+    "Cut a PDF into parts or ranges": "برش PDF به بخش‌ها یا بازه‌ها",
+    "Use this file with…": "استفاده از این فایل با…",
 })

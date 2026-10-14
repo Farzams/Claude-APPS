@@ -1,4 +1,4 @@
-"""Settings: sections on the left, rows of label + control on the right."""
+"""Settings: one page, Appearance then General, each row a label with its control."""
 from __future__ import annotations
 
 import shutil
@@ -23,7 +23,6 @@ APP_VERSION = "6.1"
 THEME_ORDER = ["qp_light", "qp_dark", "paper", "paper_dark", "daylight", "indigo_night", "ocean", "forest", "sunset",
                "rose", "lavender", "gold", "graphite"]
 SAMPLE_ICONS = ["home", "split", "convert", "merge"]
-SHORTCUTS = [("Ctrl+K", "Search tools and settings")]
 
 
 def dir_size(p: Path) -> int:
@@ -129,60 +128,26 @@ class SettingsTool(Tool):
     key, icon, title = "settings", "settings", "Settings"
     subtitle = "Everything is saved automatically."
 
-    SECTIONS = [("appearance", "settings", "Appearance"), ("general", "home", "General"),
-                ("shortcuts", "search", "Shortcuts"), ("privacy", "security", "Privacy"),
-                ("about", "help", "About")]
-
     def build(self):
         self.body.setContentsMargins(24, 10, 24, 14)
-        wrap = QHBoxLayout()
-        wrap.setSpacing(22)
-        nav = QVBoxLayout()
-        nav.setSpacing(2)
-        self.stack = QStackedWidget()
-        self.navbtns: dict[str, QPushButton] = {}
-        grp = QButtonGroup(self)
-        grp.setExclusive(True)
-        self.sections: dict[str, QWidget] = {}
-        self.scrolls: dict[str, QScrollArea] = {}
-        for key, icon, label in self.SECTIONS:
-            b = QPushButton(" " + tr(label))
-            b.setIconSize(QSize(18, 18))
-            b.setObjectName("nav")
-            b.setCheckable(True)
-            b.setMinimumHeight(40)
-            b.setCursor(Qt.PointingHandCursor)
-            b.clicked.connect(lambda _=False, k=key: self.show_section(k))
-            grp.addButton(b)
-            nav.addWidget(b)
-            self.navbtns[key] = b
-            page = QWidget()
-            lay = QVBoxLayout(page)
-            lay.setContentsMargins(0, 0, 0, 0)
-            lay.setSpacing(6)
-            getattr(self, "sec_" + key)(lay)
-            lay.addStretch(1)
-            self.sections[key] = page
-            sc = QScrollArea()                      # each section scrolls by itself so the section list stays in view
-            sc.setWidgetResizable(True)
-            sc.setFrameShape(QFrame.NoFrame)
-            sc.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            sc.setWidget(page)
-            self.stack.addWidget(sc)
-            self.scrolls[key] = sc
-        nav.addStretch(1)
-        navw = QWidget()
-        navw.setLayout(nav)
-        navw.setFixedWidth(220)
-        wrap.addWidget(navw, 0, Qt.AlignTop)
-        wrap.addWidget(self.stack, 1)
-        self.body.addLayout(wrap, 1)
-        self.show_section("appearance")
-        self.refresh()
-
-    def show_section(self, key: str):
-        self.stack.setCurrentWidget(self.scrolls[key])
-        self.navbtns[key].setChecked(True)
+        sc = QScrollArea()
+        sc.setWidgetResizable(True)
+        sc.setFrameShape(QFrame.NoFrame)
+        sc.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        page = QWidget()
+        lay = QVBoxLayout(page)
+        lay.setContentsMargins(0, 0, 8, 0)
+        lay.setSpacing(6)
+        lay.addWidget(mklabel("Appearance", "h"))
+        self.sec_appearance(lay)
+        lay.addSpacing(18)
+        lay.addWidget(hline())
+        lay.addSpacing(8)
+        lay.addWidget(mklabel("General", "h"))
+        self.sec_general(lay)
+        lay.addStretch(1)
+        sc.setWidget(page)
+        self.body.addWidget(sc, 1)
         self.refresh()
 
     # ------------------------------------------------------------ Appearance
@@ -253,8 +218,6 @@ class SettingsTool(Tool):
         self.scale = mkcombo({"80 %": 0.8, "90 %": 0.9, "100 %": 1.0, "110 %": 1.1, "125 %": 1.25, "140 %": 1.4}, self.win.cfg.get("text_scale", 1.0))
         self.scale.activated.connect(lambda _i: win.set_text_scale(self.scale.currentData()))
         lay.addWidget(Row("Text size", "Everything scales together", self.scale))
-        self.fa_box, self.fa_btns = pills([(k, k) for k in qt_style.FA_FONTS], self.win.cfg.get("fa_font", "Vazirmatn"), win.set_fa_font)
-        lay.addWidget(Row("Persian font", "Used when the language is Persian. Pick what reads best on your screen.", self.fa_box))
 
     def _mode_theme(self, style: str, dark: bool) -> str:
         return theme.STYLES[style][1 if dark else 0]
@@ -308,19 +271,11 @@ class SettingsTool(Tool):
             self.lg.addButton(b)
             langs.append(b)
         lay.addWidget(Row("Language", "The app restarts when you change it. Your files and settings are kept.", *langs))
-        pages = {tr("Home"): "home", tr("Reader"): "read", tr("All tools"): "tools", tr("Math"): "math"}
-        self.start = mkcombo(pages, win.cfg.get("start_page", "home"))
-        self.start.activated.connect(self._start_changed)
-        lay.addWidget(Row("Start with", "Which page opens first in the full window", self.start))
         lay.addWidget(Row("Reset", "Back to the original look. The language stays.", mkbutton("Reset appearance", self._reset)))
-
-    def _start_changed(self, _i):
-        self.win.cfg["start_page"] = self.start.currentData()
-        settings.save(self.win.cfg)
 
     def _reset(self):
         d = settings.DEFAULTS
-        for k in ("theme", "accent", "icon_style", "follow_system", "text_scale", "fa_font"):
+        for k in ("theme", "accent", "icon_style", "follow_system", "text_scale"):
             self.win.cfg[k] = d[k]
         qt_style.TEXT_SCALE["scale"] = 1.0
         qt_style.FA_FONT["name"] = "Vazirmatn"
@@ -329,27 +284,6 @@ class SettingsTool(Tool):
         qt_style.apply_app_font(QApplication.instance())
         self.win.apply_style()
         self.refresh()
-
-    # ------------------------------------------------------------ Shortcuts
-    def sec_shortcuts(self, lay):
-        for keys, what in SHORTCUTS:
-            k = QLabel(keys)
-            k.setProperty("role", "kbd")
-            k.setStyleSheet(f"QLabel {{ border: 1px solid {theme.STATE.pal['line']}; border-radius: 7px; padding: 3px 9px; background: {theme.STATE.pal['field']}; }}")
-            lay.addWidget(Row(what, "", k))
-
-    # ------------------------------------------------------------ Privacy
-    def sec_privacy(self, lay):
-        lay.addWidget(Row("Privacy", "Nothing is sent anywhere. The app works fully offline.", mklabel("Everything stays on this computer", "good")))
-
-    # ------------------------------------------------------------ About
-    def sec_about(self, lay):
-        lay.addWidget(Row("Version", "", mklabel(APP_VERSION, translate=False)))
-        lay.addWidget(Row("What is inside", "Free software, bundled so it works offline",
-                          mklabel("PyMuPDF, Qt for Python, Ghostscript, pikepdf, DjVuLibre. "
-                                  "Fonts: Inter, Vazirmatn, Noto Sans Arabic.", "muted", wrap=True, translate=False)))
-        lay.addWidget(Row("Releases and licences", "Full licence texts are in the licences folder of the installation.",
-                          mklabel("github.com/Farzams/Claude-APPS", "muted", translate=False)))
 
     # ------------------------------------------------------------ state
     def refresh(self):
@@ -366,8 +300,6 @@ class SettingsTool(Tool):
         for s in self.swatches:
             s.restyle()
             s.setChecked(s.color == self.win.cfg.get("accent", ""))
-        for key, icon, _l in self.SECTIONS:
-            self.navbtns[key].setIcon(icons.glyph_icon(icon, P["accent"] if self.navbtns[key].isChecked() else P["muted"], 18))
         eff = qt_style.ICON["style"]
         for style_, btn in self.icon_btns.items():
             btn.setIcon(QIcon(self._icon_preview(style_)))

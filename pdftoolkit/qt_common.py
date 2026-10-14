@@ -162,6 +162,16 @@ class Form(QGridLayout):
         self._r += 1
 
 
+RECENT_HOOK = [None]          # the main window registers itself here to remember the files you pick
+
+
+def note_recent(paths):
+    if RECENT_HOOK[0]:
+        for p in paths:
+            if p and Path(p).is_file():
+                RECENT_HOOK[0](p)
+
+
 class FileRow(QWidget):
     """Entry + Browse button (file to open, file to save, or folder)."""
 
@@ -191,6 +201,8 @@ class FileRow(QWidget):
 
     def set(self, p: str):
         self.edit.setText(p)
+        if self.kind == "open":
+            note_recent([p])
         if self.on_pick:
             self.on_pick(p)
 
@@ -235,6 +247,7 @@ class FileList(QWidget):
         self.add_paths(paths)
 
     def add_paths(self, paths):
+        note_recent(paths)
         have = set(self.files)
         for p in paths:
             if p not in have:

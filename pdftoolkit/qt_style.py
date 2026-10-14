@@ -241,6 +241,9 @@ QLabel#heroTitle {{ color: {hero_title}; font-size: {sz(19 if flat else 21)}; fo
 QLabel#heroSub {{ color: {hero_sub}; font-size: {sz(10.5)}; }}
 QLabel[role="form"] {{ color: {P['muted']}; font-weight: 500; }}
 QLabel[role="muted"] {{ color: {P['muted']}; }}
+QLabel[role="navhead"] {{ color: {P['muted']}; font-size: {sz(8.5)}; font-weight: 700; padding: 12px 12px 3px 12px; }}
+QPushButton#recentrow {{ background: transparent; border: none; border-radius: 8px; padding: 8px 12px; color: {P['text']}; }}
+QPushButton#recentrow:hover {{ background: {P['hover']}; }}
 QLabel[role="h"] {{ font-size: {sz(12)}; font-weight: 700; }}
 QLabel[role="good"] {{ color: {P['good']}; }}
 QLabel[role="tileTitle"] {{ font-size: {sz(11.5)}; font-weight: 700; }}

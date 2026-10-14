@@ -57,9 +57,12 @@ for st in ("line", "soft", "outlined", "gradient", "auto"):
 win.set_text_scale(1.1)
 win.set_text_scale(1.0)
 win.show_page("settings")
-for sec in win.page("settings").sections:
-    win.page("settings").show_section(sec)
-    app.processEvents()
+app.processEvents()
+win.add_recent(__file__)
+win.show_page("home")
+app.processEvents()
+assert win.page("home").recent_box.count() >= 1
+win.show_page("settings")
 win.palette_box.open()
 win.palette_box.edit.setText("water")
 app.processEvents()
