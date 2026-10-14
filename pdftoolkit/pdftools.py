@@ -639,33 +639,14 @@ def to_html_flow(src: str, pages: str = "", images: bool = True) -> str:
 
 
 def export_text_format(src: str, dst: str, fmt: str, pages: str = "") -> str:
-    """fmt: html | rtf | epub | txt. rtf/epub need Pandoc (bundled)."""
+    """fmt: html | txt."""
     fmt = fmt.lower()
     if fmt == "txt":
         core.extract_text(src, dst, "txt")
         return dst
-    html = to_html_flow(src, pages, images=fmt != "rtf")
-    if fmt == "html":
-        Path(dst).write_text(html, encoding="utf-8")
-        return dst
-    pandoc = core.find_pandoc()
-    if not pandoc:
-        raise RuntimeError("Pandoc was not found")
-    import subprocess
-    tmp = os.path.join(tempfile.gettempdir(), f"pdftk_exp_{os.getpid()}.html")
-    Path(tmp).write_text(html, encoding="utf-8")
-    try:
-        args = [pandoc, tmp, "-f", "html", "-o", dst, "--metadata", f"title={Path(src).stem}"]
-        if fmt == "epub":
-            args += ["--metadata", "lang=" + ("fa" if core.is_rtl_text(html) else "en")]
-        r = subprocess.run(args, capture_output=True, text=True, creationflags=core.NO_WINDOW)
-        if r.returncode:
-            raise RuntimeError(r.stderr.strip()[:300] or "Pandoc failed")
-    finally:
-        try:
-            os.remove(tmp)
-        except OSError:
-            pass
+    if fmt != "html":
+        raise ValueError(f"Unsupported format: {fmt}")
+    Path(dst).write_text(to_html_flow(src, pages, images=True), encoding="utf-8")
     return dst
 
 

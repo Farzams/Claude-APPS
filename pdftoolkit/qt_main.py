@@ -19,33 +19,20 @@ import helpdata
 import i18n
 import qt_style
 import settings
-import texengine
 import theme
 from i18n import tr, trf
 from qt_common import Card, JobRunner, Tool, hline, mkbutton, mkcheck, mkcombo, mklabel
-from qt_pages import (CompressTool, ConvertTool, ExtractTool, ImagesTool, MergeTool, OcrTool, PagesTool, SplitTool)
-from qt_reader import ReaderTool
+from qt_pages import (CompressTool, ConvertTool, ImagesTool, MergeTool, OcrTool, PagesTool, SplitTool)
 from qt_tools import (BackgroundTool, BatchTool, BlankTool, CleanScanTool, CropTool, RepairTool, ExportTool, HeaderFooterTool, HiddenTool,
                       SecurityTool, WatermarkTool)
-from qt_formulaocr import FormulaOcrTool
-from qt_math import MathTool
 from qt_pdfedit import CompareTool, EditTool, OrganizeTool, RedactTool
 import qt_palette
 from qt_settings import SettingsTool
-from qt_science import FormulaTool, LatexTool, SymbolPalette, insert_snippet
 
 
-# One program, several windows: the same files, started with --mode, give separate "apps" (own shortcut, icon,
-# taskbar entry) that show only what that job needs.
-from modes import MODES  # noqa: E402
-
-
-def launch(mode: str = "full", files=()):
-    """Start another window of the program (a different mode, or more files in the reader)."""
+def launch():
+    """Start the program again (used after the language changes)."""
     args = [] if getattr(sys, "frozen", False) else [str(Path(__file__).with_name("app.py"))]
-    if mode != "full":
-        args += ["--mode", mode]
-    args += [str(f) for f in files]
     QProcess.startDetached(sys.executable, args)
 
 
@@ -136,20 +123,20 @@ class HomeTool(Tool):
 
     def build(self):
         win = self.win
-        self.search = QPushButton("  " + tr("Search tools, settings and recent files…"))
+        self.search = QPushButton("  " + tr("Search tools and settings…"))
         self.search.setObjectName("searchbar")
         self.search.setCursor(Qt.PointingHandCursor)
         self.search.setMinimumHeight(44)
-        self.search.setText(tr("Search tools, settings and recent files…") + "        Ctrl K")
+        self.search.setText(tr("Search tools and settings…") + "        Ctrl K")
         self.search.clicked.connect(lambda: win.palette_box.open())
         self.body.addWidget(self.search)
         self.body.addSpacing(4)
         grid = QGridLayout()
         grid.setSpacing(12)
-        tasks = [("Open a file", "Read any PDF or book, with search and bookmarks", "read", lambda: win.show_page("read")),
+        tasks = [("Organize pages", "Reorder, rotate, delete or insert pages", "pages", lambda: win.show_page("organize")),
                  ("Combine PDFs", "Join files in any order, then reorder pages", "merge", lambda: win.show_page("merge")),
                  ("Make smaller", "Shrink a PDF for email or upload", "compress", lambda: win.show_page("compress")),
-                 ("Convert", "To or from Word, Excel, pictures, EPUB, DjVu…", "convert", lambda: win.show_page("export")),
+                 ("Convert", "PDF to Word, Excel, pictures, HTML or text", "convert", lambda: win.show_page("export")),
                  ("Make a scan searchable", "OCR for Persian, Arabic and English books", "ocr", lambda: win.show_page("ocr")),
                  ("Edit and protect", "Change text, add a watermark, set a password", "edit", lambda: win.show_page("edit"))]
         for i, (name, desc, icon, cb) in enumerate(tasks):
@@ -161,16 +148,10 @@ class HomeTool(Tool):
         more.addStretch(1)
         more.addWidget(mkbutton("All tools", lambda: win.show_page("tools")))
         self.body.addLayout(more)
-        self.recent_title = mklabel("Continue reading", "h")
-        self.body.addWidget(self.recent_title)
-        self.recent_box = QVBoxLayout()
-        self.recent_box.setSpacing(6)
-        self.body.addLayout(self.recent_box)
         self.body.addStretch(1)
         langs = core.ocr_languages()
         status = [("Persian OCR", "fas" in langs), ("Arabic OCR", "ara" in langs), ("DjVu", bool(core.find_ddjvu())),
-                  ("DOCX / ODT / RTF", bool(core.find_pandoc())), ("Ghostscript", bool(core.find_gs())),
-                  ("LaTeX", bool(texengine.find_engine()))]
+                  ("Ghostscript", bool(core.find_gs()))]
         chips = QHBoxLayout()
         chips.setSpacing(18)
         for n, ok in status:
@@ -180,40 +161,11 @@ class HomeTool(Tool):
         self.body.addLayout(chips)
         self.body.addWidget(mklabel("Tip: drag & drop files onto the window to use them in the open tool.", "muted"))
 
-    def on_show(self):
-        import reader_core
-        while self.recent_box.count():
-            w = self.recent_box.takeAt(0).widget()
-            if w:
-                w.deleteLater()
-        shown = 0
-        try:
-            st = reader_core.load_state()
-            for path in st["recent"]:
-                if shown >= 4:
-                    break
-                if not os.path.exists(path):
-                    continue
-                e = st["books"].get(path, {})
-                pct = f"   {int((e.get('page', 0) + 1) * 100 / max(e.get('pages', 1), 1))}%" if e.get("pages") else ""
-                b = QPushButton(f"{e.get('title') or Path(path).stem}{pct}")
-                b.setObjectName("recentrow")
-                b.setCursor(Qt.PointingHandCursor)
-                b.setToolTip(path)
-                b.setLayoutDirection(Qt.LeftToRight)
-                b.clicked.connect(lambda _=False, p=path: (self.win.show_page("read"), self.win.page("read").open_path(p)))
-                self.recent_box.addWidget(b)
-                shown += 1
-        except Exception:
-            pass
-        self.recent_title.setVisible(shown > 0)
-
 
 class ToolsTool(Tool):
     key, icon, title = "tools", "tools", "All tools"
     subtitle = "Every tool in one place — type to search."
     GROUPS = [
-        ("Read and view", [("read", "read", "Read", "Books and documents in any format, with tabs and search")]),
         ("Organize", [("organize", "pages", "Organize pages", "Drag to reorder, rotate, delete, duplicate, insert"),
                       ("pages", "pages", "Page tools", "Delete, extract, rotate or reverse by page number"),
                       ("split", "split", "Split", "Cut a PDF into parts or ranges"),
@@ -226,7 +178,6 @@ class ToolsTool(Tool):
                      ("export", "export", "PDF to…", "Pictures, Word, Excel, HTML, RTF, EPUB, text"),
                      ("clean", "clean", "Clean scans", "Straighten, denoise and sharpen scanned pages"),
                      ("ocr", "ocr", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
-                     ("extract", "extract", "Extract text", "PDF to clean TXT / Word, with OCR"),
                      ("compress", "compress", "Compress", "Four levels, up to Ghostscript power")]),
         ("Edit and stamp", [("edit", "edit", "Edit PDF", "Replace text, add text and pictures, change pictures"),
                             ("headerfooter", "headerfooter", "Header, footer & Bates", "Page numbers, dates and Bates numbers"),
@@ -236,10 +187,6 @@ class ToolsTool(Tool):
                                 ("redact", "redact", "Redact (black out)", "Permanently remove words and areas"),
                                 ("hidden", "hidden", "Remove hidden data", "Clean metadata, comments, attachments"),
                                 ("compare", "compare", "Compare PDFs", "See what changed between two versions")]),
-        ("Science", [("math", "math", "Math", "Calculator, equations, matrices and plots (SymPy)"),
-                     ("formulaocr", "formulaocr", "Formula from picture", "Photo or screenshot of a formula to LaTeX"),
-                     ("latex", "latex", "LaTeX", "Write and compile .tex to PDF, with templates"),
-                     ("formula", "formula", "Formula", "LaTeX formula to PNG / SVG / PDF")]),
         ("Automate", [("batch", "batch", "Batch process", "Run one operation on a whole folder of files")]),
     ]
 
@@ -327,8 +274,8 @@ class HelpTool(Tool):
 
 
 # ------------------------------------------------------------------ main window
-PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("tools", "All tools", ToolsTool),
-         ("ocr", "OCR", OcrTool), ("extract", "Extract text", ExtractTool), ("convert", "Convert to PDF", ConvertTool),
+PAGES = [("home", "Home", HomeTool), ("tools", "All tools", ToolsTool),
+         ("ocr", "OCR", OcrTool), ("convert", "Convert to PDF", ConvertTool),
          ("split", "Split", SplitTool), ("merge", "Merge", MergeTool), ("compress", "Compress", CompressTool),
          ("images", "Images to PDF", ImagesTool), ("pages", "Page tools", PagesTool),
          ("organize", "Organize pages", OrganizeTool), ("crop", "Crop pages", CropTool),
@@ -338,37 +285,27 @@ PAGES = [("home", "Home", HomeTool), ("read", "Read", ReaderTool), ("tools", "Al
          ("hidden", "Remove hidden data", HiddenTool), ("redact", "Redact (black out)", RedactTool),
          ("clean", "Clean scans", CleanScanTool), ("repair", "Repair & optimize", RepairTool),
          ("edit", "Edit PDF", EditTool), ("compare", "Compare PDFs", CompareTool), ("batch", "Batch process", BatchTool),
-         ("math", "Math", MathTool), ("formulaocr", "Formula from picture", FormulaOcrTool), ("latex", "LaTeX", LatexTool), ("formula", "Formula", FormulaTool),
          ("settings", "Settings", SettingsTool), ("help", "Help", HelpTool)]
 # pages shown in the sidebar; every other tool opens from "All tools" or the Home page
-SIDEBAR = ["home", "read", "tools", "ocr", "extract", "convert", "split", "merge", "compress", "images", "pages",
-           "math", "latex", "formula", "settings", "help"]
+SIDEBAR = ["home", "tools", "ocr", "convert", "split", "merge", "compress", "images", "pages", "settings", "help"]
 
 
 class MainWindow(QMainWindow):
-    def __init__(self, cfg: dict, mode: str = "full"):
+    def __init__(self, cfg: dict):
         super().__init__()
         self.cfg = cfg
-        self.mode = mode if mode in MODES else "full"
-        self.mcfg = MODES[self.mode]
-        self.setWindowTitle(tr(self.mcfg["title"]))
+        self.setWindowTitle(tr("PDF Toolkit"))
         self.resize(1180, 840)
         self.setMinimumSize(1100, 720)
         ico = core._app_dir() / "icon.ico"
-        if self.mcfg["icon"]:
-            import icons
-            self.setWindowIcon(QIcon(icons.app_icon_pixmap(self.mcfg["icon"], 256, 1.0)))
-        elif ico.exists():
+        if ico.exists():
             self.setWindowIcon(QIcon(str(ico)))
         self.setAcceptDrops(True)
-        self.insert_target = None
-        self._palette = None
         self.pages: dict[str, Tool] = {}
         self.current = None
         self.qss = ""
         self._stamp = 0
         self.last_dir = None
-        self._wall_cache: dict = {}
 
         self.backdrop = qt_style.Backdrop()
         self.setCentralWidget(self.backdrop)
@@ -380,7 +317,7 @@ class MainWindow(QMainWindow):
         side = QFrame()
         self.side = side
         side.setObjectName("sidebar")
-        compact = self.mcfg["compact"]
+        compact = False
         side.setFixedWidth(68 if compact else 238)
         sl = QVBoxLayout(side)
         sl.setContentsMargins(14, 20, 14, 14)
@@ -388,11 +325,10 @@ class MainWindow(QMainWindow):
         logo = QHBoxLayout()
         logo.setSpacing(10)
         import icons
-        app_glyph = {"full": "tools", "reader": "read", "math": "math"}[self.mode]
         li = QLabel()
-        li.setPixmap(icons.app_icon_pixmap(app_glyph, 36, 2.0))
+        li.setPixmap(icons.app_icon_pixmap("tools", 36, 2.0))
         li.setFixedSize(36, 36)
-        lt = QLabel(tr("PDF Toolkit" if self.mode == "full" else "Math Studio" if self.mode == "math" else "Reader"))
+        lt = QLabel(tr("PDF Toolkit"))
         lt.setObjectName("logoText")
         logo.addWidget(li)
         logo.addWidget(lt, 1)
@@ -409,15 +345,11 @@ class MainWindow(QMainWindow):
         nl.setContentsMargins(0, 0, 4, 0)
         nl.setSpacing(2)
         titles = {k: t for k, t, _c in PAGES}
-        keys = self.mcfg["sidebar"] or SIDEBAR
+        keys = SIDEBAR
         self.keys = keys
         for key in keys:
             if key in ("settings", "help"):
                 continue
-            if key == "math" and self.mode == "full":
-                nl.addSpacing(6)
-                nl.addWidget(hline())
-                nl.addSpacing(6)
             b = NavButton(key, titles[key], compact)
             b.clicked.connect(lambda _=False, k=key: self.show_page(k))
             self.navgroup.addButton(b)
@@ -433,26 +365,6 @@ class MainWindow(QMainWindow):
         sl.addSpacing(6)
         sl.addWidget(hline())
         sl.addSpacing(6)
-        if self.mode != "full":
-            fb = QPushButton()
-            fb.setObjectName("nav")
-            fb.setCursor(Qt.PointingHandCursor)
-            fb.setMinimumHeight(44)
-            fl_ = QHBoxLayout(fb)
-            fl_.setContentsMargins(8 if compact else 12, 0, 8 if compact else 12, 0)
-            fl_.setSpacing(12)
-            fi = qt_style.IconLabel("tools", 26, "nav")
-            fl_.addWidget(fi)
-            ft = QLabel(tr("Open the full toolkit"))
-            ft.setObjectName("navText")
-            fl_.addWidget(ft, 1)
-            for w in (fi, ft):
-                w.setAttribute(Qt.WA_TransparentForMouseEvents)
-            if compact:
-                ft.hide()
-            fb.setToolTip(tr("Open the full toolkit"))
-            fb.clicked.connect(lambda _=False: launch("full"))
-            sl.addWidget(fb)
         for key in ("settings", "help"):
             b = NavButton(key, titles[key], compact)
             b.clicked.connect(lambda _=False, k=key: self.show_page(k))
@@ -509,8 +421,8 @@ class MainWindow(QMainWindow):
                 pass
         self.palette_box = qt_palette.install(self)
         self.apply_style()
-        start = self.mcfg["start"]
-        if self.mode == "full" and self.cfg.get("start_page") in {k for k, _t, _c in PAGES}:
+        start = "home"
+        if self.cfg.get("start_page") in {k for k, _t, _c in PAGES}:
             start = self.cfg["start_page"]
         self.show_page(start)
         QTimer.singleShot(250, self._prebuild)
@@ -541,17 +453,15 @@ class MainWindow(QMainWindow):
         self.stack.setCurrentWidget(pg)
         self.current = key
         (self.nav.get(key) or self.nav.get("tools") or next(iter(self.nav.values()))).setChecked(True)
-        self.foot.setVisible(key not in ("read", "math", "settings", "help", "home", "tools"))        # these pages want the full height
+        self.foot.setVisible(key not in ("settings", "help", "home", "tools"))        # these pages want the full height
         pg.on_show()
 
     def palette_entries(self):
         """Everything Ctrl+K can reach in this window."""
         from qt_palette import Entry
         out = []
-        have = set(self.keys) | {"settings", "help"}
+        have = {k for k, _t, _c in PAGES}
         seen = set()
-        if self.mode == "full":
-            have = {k for k, _t, _c in PAGES}
         for _g, items in ToolsTool.GROUPS:
             for key, icon, title, desc in items:
                 if key in have and key not in seen:
@@ -578,17 +488,6 @@ class MainWindow(QMainWindow):
         out.append(Entry("زبان: فارسی  (Language: Persian)", "Restarts the app", "settings", "Setting", lambda: self.set_language("fa"), "persian farsi", raw=True))
         for sec, icon, label in SettingsTool.SECTIONS:
             out.append(Entry("Settings: " + label, "", icon, "Setting", lambda s=sec: (self.show_page("settings"), self.page("settings").show_section(s))))
-        # recent files
-        if "read" in have:
-            try:
-                import reader_core
-                st = reader_core.load_state()
-                for path in st["recent"][:8]:
-                    if os.path.exists(path):
-                        title = st["books"].get(path, {}).get("title") or Path(path).stem
-                        out.append(Entry(title, path, "read", "Recent", lambda p=path: (self.show_page("read"), self.page("read").open_path(p)), raw=True))
-            except Exception:
-                pass
         return out
 
     def current_page(self) -> Tool | None:
@@ -597,7 +496,7 @@ class MainWindow(QMainWindow):
     # ---- look
     def apply_style(self):
         P = theme.STATE.pal
-        strength = "off" if P["flat"] else self.cfg.get("strength", "medium")      # flat themes have no picture
+        strength = "off"                                                           # solid colours, no picture
         qt_style.ICON["style"] = qt_style.effective_icon_style(self.cfg.get("icon_style", "auto"), P["flat"])
         # Only the visible parts are restyled now; hidden pages catch up when shown (keeps theme changes fast).
         self.qss = qt_style.build_qss(theme.STATE.name, strength, i18n.rtl(), theme.STATE.accent, qt_style.FA_FONT["name"])
@@ -610,12 +509,7 @@ class MainWindow(QMainWindow):
             cur._stamp = self._stamp
         qt_style.set_tooltip_palette(P)
         qt_style.refresh_icons()
-        style = self.cfg.get("wallpaper", "aurora")
-        key = (style, theme.STATE.name, self.cfg.get("custom_picture", ""))
-        if key not in self._wall_cache:
-            self._wall_cache = {key: qt_style.wallpaper_image(style, P, self.cfg.get("custom_picture", ""))}
-        img = None if strength == "off" else self._wall_cache[key]
-        self.backdrop.set_picture(img, P["bg"], qt_style.OVERLAY.get(strength, 0.66))
+        self.backdrop.set_color(P["bg"])
 
     def set_theme(self, key, follow=None):
         theme.set_theme(key)
@@ -626,9 +520,6 @@ class MainWindow(QMainWindow):
         self.apply_style()
         if self.current_page():
             self.current_page().on_show()
-        if self._palette is not None:
-            self._palette.close()
-            self._palette = None
 
     def sync_system_scheme(self, save: bool = True):
         """"Match Windows": pick the light or dark theme of the current design style."""
@@ -674,24 +565,12 @@ class MainWindow(QMainWindow):
         qt_style.apply_app_font(QApplication.instance())
         self.apply_style()
 
-    def set_wallpaper(self, style, custom=None):
-        self.cfg["wallpaper"] = style
-        if custom:
-            self.cfg["custom_picture"] = custom
-        settings.save(self.cfg)
-        self.apply_style()
-
-    def set_strength(self, s):
-        self.cfg["strength"] = s
-        settings.save(self.cfg)
-        self.apply_style()
-
     def set_language(self, code):
         if code == self.cfg["lang"]:
             return
         self.cfg["lang"] = code
         settings.save(self.cfg)
-        launch(self.mode)
+        launch()
         QApplication.quit()
 
     # ---- jobs / log
@@ -734,27 +613,6 @@ class MainWindow(QMainWindow):
         self.toast_lbl.show()
         self.toast_lbl.raise_()
         QTimer.singleShot(1600, self.toast_lbl.hide)
-
-    def show_palette(self):
-        if self._palette is None:
-            self._palette = SymbolPalette(self)
-            self._palette.setStyleSheet(self.qss)
-        self._palette.show()
-        self._palette.raise_()
-
-    def insert_snippet(self, tex):
-        tgt = self.insert_target
-        if tgt is not None:
-            try:
-                insert_snippet(tgt, tex)
-                return
-            except RuntimeError:
-                self.insert_target = None
-        self.copy_snippet(tex)
-
-    def copy_snippet(self, tex):
-        QApplication.clipboard().setText(tex.replace("▢", ""))
-        self.toast("LaTeX copied")
 
     # ---- drag & drop
     def dragEnterEvent(self, e):

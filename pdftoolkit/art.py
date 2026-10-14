@@ -1,4 +1,4 @@
-"""Procedural artwork: banners with pictures, wallpapers and colourful icons (Pillow only)."""
+"""Procedural artwork: theme previews and icons (Pillow only)."""
 from __future__ import annotations
 
 import math
@@ -11,10 +11,6 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 
 FONT_DIR = Path(getattr(sys, "_MEIPASS", Path(__file__).parent)) / "fonts"
-WALLPAPERS = ["aurora", "waves", "mountains", "lowpoly", "bokeh", "dots", "plain"]
-WALLPAPER_NAMES = {"aurora": "Aurora", "waves": "Waves", "mountains": "Mountains", "lowpoly": "Low-poly",
-                   "bokeh": "Bokeh", "dots": "Dots", "plain": "Plain", "custom": "My picture"}
-
 ICON_COLORS = {
     "home": ("#6366f1", "#06b6d4"), "read": ("#6366f1", "#8b5cf6"), "ocr": ("#ec4899", "#f43f5e"),
     "extract": ("#14b8a6", "#06b6d4"), "convert": ("#f59e0b", "#f97316"), "split": ("#ef4444", "#f97316"),
@@ -77,90 +73,6 @@ def _runs(visual: str):
     return runs
 
 
-# ---------------------------------------------------------------- wallpapers
-def wallpaper(style: str, size: tuple[int, int], accent: str, bg: str, dark: bool, seed=7) -> Image.Image:
-    w, h = size
-    rnd = random.Random(seed)
-    a, b = _hex(accent), _hex(bg)
-    c2 = _mix(a, (255, 80, 160) if dark else (255, 140, 60), 0.55)
-    if style == "plain":
-        return _gradient(size, _mix(b, a, 0.55), _mix(b, c2, 0.35), vertical=False)
-    top = _mix(b, a, 0.35 if dark else 0.55)
-    bottom = _mix(b, c2, 0.25 if dark else 0.45)
-    img = _gradient(size, top, bottom).convert("RGBA")
-    if style == "aurora":
-        layer = Image.new("RGBA", size, (0, 0, 0, 0))
-        d = ImageDraw.Draw(layer)
-        for i, col in enumerate([a, c2, _mix(a, (0, 255, 200), .6), _mix(c2, a, .5)] * 2):
-            cx, cy = rnd.uniform(0, w), rnd.uniform(0, h)
-            r = rnd.uniform(h * .6, h * 1.4)
-            d.ellipse((cx - r * 1.6, cy - r * .7, cx + r * 1.6, cy + r * .7), fill=col + (110,))
-        img = Image.alpha_composite(img, layer.filter(ImageFilter.GaussianBlur(h * .35)))
-    elif style == "waves":
-        d = ImageDraw.Draw(img, "RGBA")
-        for k in range(5):
-            amp, ph = h * (.10 + .03 * k), rnd.uniform(0, 6)
-            base_y = h * (.35 + .13 * k)
-            pts = [(x, base_y + amp * math.sin(x / w * (2.2 + k * .6) * math.pi + ph)) for x in range(0, w + 8, 8)]
-            d.polygon(pts + [(w, h), (0, h)], fill=_mix(a, c2, k / 4) + (70 + 25 * k,))
-    elif style == "mountains":
-        d = ImageDraw.Draw(img, "RGBA")
-        d.ellipse((w * .72, h * .12, w * .72 + h * .34, h * .12 + h * .34), fill=(255, 240, 200, 200 if not dark else 150))
-        for k, shade in enumerate([.25, .45, .65]):
-            col = _mix(_mix(b, a, .6), (10, 10, 30) if dark else (255, 255, 255), 1 - shade * 0.9)
-            y0 = h * (.50 + .12 * k)
-            pts, x = [(0, h)], 0
-            while x <= w + 40:
-                pts.append((x, y0 - rnd.uniform(0, h * (.42 - .1 * k))))
-                x += rnd.uniform(w * .05, w * .12)
-            pts.append((w, h))
-            d.polygon(pts, fill=col + (235,))
-    elif style == "lowpoly":
-        d = ImageDraw.Draw(img, "RGBA")
-        n = max(8, w // 70)
-        cw, ch = w / n, h / max(2, round(h / 56))
-        rows = max(2, round(h / 56))
-        pts = [[(i * cw + rnd.uniform(-cw * .3, cw * .3), j * ch + rnd.uniform(-ch * .3, ch * .3))
-                for i in range(n + 2)] for j in range(rows + 2)]
-        for j in range(rows + 1):
-            for i in range(n + 1):
-                p1, p2, p3, p4 = pts[j][i], pts[j][i + 1], pts[j + 1][i], pts[j + 1][i + 1]
-                for tri in ((p1, p2, p3), (p2, p3, p4)):
-                    v = rnd.uniform(-.14, .14)
-                    d.polygon(tri, fill=_mix(_mix(a, c2, (tri[0][0] / w) % 1), (255, 255, 255) if v > 0 else (0, 0, 0), abs(v)) + (90,))
-    elif style == "bokeh":
-        layer = Image.new("RGBA", size, (0, 0, 0, 0))
-        d = ImageDraw.Draw(layer)
-        for _ in range(22):
-            r = rnd.uniform(h * .08, h * .3)
-            cx, cy = rnd.uniform(0, w), rnd.uniform(-r * .3, h + r * .3)
-            d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=_mix(a, c2, rnd.random()) + (rnd.randint(40, 110),))
-        img = Image.alpha_composite(img, layer.filter(ImageFilter.GaussianBlur(3)))
-    elif style == "dots":
-        d = ImageDraw.Draw(img, "RGBA")
-        step = 22
-        for gy in range(0, h, step):
-            for gx in range(0, w, step):
-                s = (math.sin(gx / w * 5 + gy / h * 3) + 1) / 2
-                r = 1.5 + 4 * s
-                d.ellipse((gx - r, gy - r, gx + r, gy + r), fill=(255, 255, 255, int(22 + 55 * s)))
-    return img.convert("RGB")
-
-
-@lru_cache(maxsize=24)
-def _wall_cached(style, w, h, accent, bg, dark, custom, seed):
-    if style == "custom" and custom and Path(custom).is_file():
-        return _custom_cover(custom, (w, h))
-    return wallpaper(style if style in WALLPAPERS else "aurora", (w, h), accent, bg, dark, seed)
-
-
-def _custom_cover(path: str, size: tuple[int, int]) -> Image.Image:
-    with Image.open(path) as im:
-        im = ImageOps.exif_transpose(im).convert("RGB")
-        return ImageOps.fit(im, size, Image.BILINEAR, centering=(0.5, 0.45))
-
-
-# ---------------------------------------------------------------- icons
 def _glyph(name: str, d: ImageDraw.ImageDraw, s: int):
     """White pictograms on an s x s tile."""
     W = (255, 255, 255, 255)

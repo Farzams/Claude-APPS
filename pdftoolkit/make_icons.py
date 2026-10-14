@@ -1,4 +1,4 @@
-"""Writes icon.ico, reader.ico and math.ico from the vector tiles (run once; the .ico files are committed)."""
+"""Writes icon.ico from the vector tile (run once; the .ico file is committed)."""
 import io
 import os
 import sys
@@ -24,7 +24,7 @@ def tile_image(name: str, px: int) -> Image.Image:
     return Image.open(io.BytesIO(bytes(buf.data()))).convert("RGBA")
 
 
-for name, glyph in (("icon", "tools"), ("reader", "read"), ("math", "math")):
+for name, glyph in (("icon", "tools"),):
     big = tile_image(glyph, 256)
     big.save(Path(__file__).with_name(name + ".ico"), format="ICO",
              sizes=[(256, 256), (128, 128), (64, 64), (48, 48), (32, 32), (24, 24), (16, 16)])

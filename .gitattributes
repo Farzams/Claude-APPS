@@ -1,6 +1,0 @@
-# Dictionaries must keep Unix line endings (Hunspell files break with CRLF on Windows checkouts)
-pdftoolkit/dicts/** -text
-pdftoolkit/dicts/*.txt text eol=lf
-*.ico binary
-*.otf binary
-*.ttf binary

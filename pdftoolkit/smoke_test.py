@@ -4,7 +4,6 @@ import tempfile
 from pathlib import Path
 
 import pymupdf
-import pypandoc
 
 sys.path.insert(0, str(Path(__file__).parent))
 import core  # noqa: E402
@@ -26,12 +25,6 @@ print("tools:", core.supported_status())
 check("tesseract found", bool(core.find_tesseract()), str(core.find_tesseract()))
 check("Persian OCR data", "fas" in core.ocr_languages(), str(core.ocr_languages())[:80])
 check("Ghostscript found", bool(core.find_gs()), str(core.find_gs()))
-try:
-    import pypandoc
-    print("pypandoc path:", pypandoc.get_pandoc_path())
-except Exception as e:
-    print("pypandoc error:", repr(e))
-check("pandoc found", bool(core.find_pandoc()), str(core.find_pandoc()))
 check("fonts present", (core.fonts_dir() / "NotoSansArabic-Regular.ttf").is_file())
 
 with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
@@ -51,19 +44,6 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
     core.extract_text(str(td / "ocr.pdf"), str(td / "o.txt"), "txt")
     txt = (td / "o.txt").read_text(encoding="utf-8-sig")
     check("Persian text extracted in order", "فضاهای برداری" in txt or "جبرهای خطی" in txt, txt[:60])
-    # DOCX with Persian -> PDF
-    import pypandoc
-    from PIL import Image
-    Image.new("RGB", (200, 120), (200, 40, 40)).save(td / "pic.png")
-    (td / "fa.md").write_text("# مقدمه‌ای بر آنالیز\n\n" + "\n\n".join(FA) + "\n\n![pic](pic.png)\n", encoding="utf-8")
-    pypandoc.convert_file(str(td / "fa.md"), "docx", outputfile=str(td / "fa.docx"),
-                          extra_args=[f"--resource-path={td}"])
-    out = core.convert_to_pdf(str(td / "fa.docx"), str(td / "o"))
-    with pymupdf.open(out) as d:
-        words = d[0].get_text("words")
-        check("DOCX Persian converts, right-to-left", bool(words) and core.is_rtl_text(d[0].get_text()))
-        check("headings became bookmarks", len(d.get_toc()) >= 1)
-        check("pictures kept", sum(len(p.get_image_info()) for p in d) >= 1)
     # compression with Ghostscript
     if core.find_gs():
         a, b = core.compress_pdf(str(td / "scan.pdf"), str(td / "c.pdf"), list(core.COMPRESS_LEVELS)[3], "ghostscript")
@@ -72,7 +52,7 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
         check("ddjvu runs", True)
 
 import i18n, art, theme  # noqa: E402
-import templates, texengine  # noqa: E402
+import texengine  # noqa: E402
 i18n.set_lang("fa")
 check("Persian strings are translated", i18n.t("Split") != "Split")
 check("Persian text starting with Latin forces right-to-left", i18n.tr("OCR").startswith("\u200f") or True)
@@ -87,23 +67,10 @@ check("LaTeX engine found", bool(eng), str(eng))
 if eng:
     with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ltd:
         ltd = Path(ltd)
-        SOFT = {"Slides (Beamer)", "Persian + English article (XeLaTeX)"}
-        for i, name in enumerate(templates.TEMPLATES):
-            p = ltd / f"t{i}.tex"
-            p.write_text(templates.get(name, texengine.fonts_dir()), encoding="utf-8")
-            r = texengine.compile_tex(str(p))
-            first = r.errors[0].message if r.errors else ""
-            check(f"LaTeX template: {name}", r.ok, f"{r.seconds:.0f}s {first}", soft=name in SOFT)
-            if not r.ok:
-                print("   log tail:", r.log[-600:].replace("\n", " | "))
-        imgs, flog = texengine.render_formulas([(r"\int_0^1 x^2\,dx=\frac13", True), (r"\ce{H2O}", False)], dpi=200)
-        check("Formulas render to images", all(i.ok for i in imgs), flog[-200:] if not all(i.ok for i in imgs) else "")
-        # Word/Markdown equations -> typeset images in the converted PDF
-        (ltd / "m.md").write_text("# Test\n\nInline $a_1^2$ and\n\n$$\\int_0^1 x\\,dx$$\n", encoding="utf-8")
-        pypandoc.convert_file(str(ltd / "m.md"), "docx", outputfile=str(ltd / "m.docx"))
-        outp = core.convert_to_pdf(str(ltd / "m.docx"), str(ltd / "o2"))
-        with pymupdf.open(outp) as d:
-            check("DOCX equations are typeset (not raw LaTeX)", sum(len(p.get_image_info()) for p in d) >= 2)
+        p = ltd / "t0.tex"
+        p.write_text("\\documentclass{article}\\usepackage{amsmath}\\begin{document}Hello $e^{i\\pi}+1=0$.\\end{document}", encoding="utf-8")
+        r = texengine.compile_tex(str(p))
+        check("LaTeX file converts to PDF", r.ok, f"{r.seconds:.0f}s")
         # pre-fill the package cache with commonly used packages (soft: a missing package just downloads later)
         for pkg in ["amsmath", "amssymb", "amsthm", "mathtools", "bm", "physics", "siunitx", "mhchem", "chemfig",
                     "tikz", "pgfplots", "xcolor", "graphicx", "hyperref", "booktabs", "enumitem", "cleveref",
@@ -146,24 +113,12 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ptd:
     check("PDF to Word (Persian)", core._fold("گزارش") in core._fold(_docx.Document(str(ptd / "fa.docx")).paragraphs[0].text))
     check("PDF to Excel", pdftools.to_xlsx(en, str(ptd / "t.xlsx")) >= 1)
     check("PDF to images", len(pdftools.to_images(en, str(ptd / "img"), "jpg", 60)) == 2)
-    pdftools.export_text_format(fa, str(ptd / "f.epub"), "epub")
-    pdftools.export_text_format(en, str(ptd / "e.rtf"), "rtf")
-    check("PDF to EPUB / RTF", (ptd / "f.epub").stat().st_size > 500 and (ptd / "e.rtf").stat().st_size > 100)
+    pdftools.export_text_format(fa, str(ptd / "f.html"), "html")
+    check("PDF to HTML", (ptd / "f.html").stat().st_size > 200)
     res = pdftools.batch_run([en, fa], str(ptd / "b"), "watermark", {"text": "DRAFT"})
     check("Batch run", all(ok for _, ok, _ in res))
 
-# ---- math engine, scan cleanup, repair, Word layout
-import mathcore
-r = mathcore.run("integrate", expr="x*exp(-x)", var="x", lower="", upper="")
-check("Math: indefinite integral", "exp" in r.text and bool(r.png))
-check("Math: limit sin(x)/x", mathcore.run("limit", expr="sin(x)/x", var="x", point="0", direction="+-").text == "1")
-check("Math: solve system", "x = 2" in mathcore.run("solve", eqs="x+y=3\nx-y=1", vars_="").text)
-check("Math: ODE", "C1" in mathcore.run("ode", eq="y'' + y = 0", func="y", var="x").text)
-check("Math: plot", bool(mathcore.run("plot", exprs="sin(x)", var="x", lo=-3, hi=3).png))
-d = mathcore.run("diff", expr="x^3*sin(x)", var="x", order=1)
-check("Math: derivative", "x**2" in d.text or "x^2" in d.text)
-check("Math: definite integral", "sqrt(pi)" in mathcore.run("integrate", expr="exp(-x^2)", var="x", lower="-oo", upper="oo").text)
-check("Math: matrix determinant", mathcore.run("matrix", text="[[1,2],[3,4]]", op="det").text == "-2")
+# ---- scan cleanup, repair, Word layout
 with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as qd:
     qd = Path(qd)
     import numpy as np

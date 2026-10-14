@@ -1,4 +1,4 @@
-"""Qt look: fonts, colour themes as a style sheet, and the wallpaper behind everything."""
+"""Qt look: fonts, colour themes as a style sheet, and the background."""
 from __future__ import annotations
 
 import sys
@@ -319,63 +319,20 @@ QLabel#toast {{ background: {P['accent']}; color: {P['on_accent']}; border-radiu
 """
 
 
-# ---------------------------------------------------------------- wallpaper
+# ---------------------------------------------------------------- backdrop
 class Backdrop(QWidget):
-    """Window background: the chosen picture under a veil, so cards and text stay readable."""
+    """Window background: one solid colour (the theme's)."""
 
     def __init__(self):
         super().__init__()
         self.setObjectName("root")
-        self._img: QImage | None = None
         self._bg = QColor("#12141a")
-        self._veil = 0.7
-        self._cache: tuple[QSize, QPixmap] | None = None
-        self._timer = QTimer(self)
-        self._timer.setSingleShot(True)
-        self._timer.timeout.connect(self._rescale)
-        self._sharp = True
 
-    def set_picture(self, img: QImage | None, bg: str, veil: float):
-        self._img, self._bg, self._veil = img, QColor(bg), veil
-        self._cache = None
-        self._sharp = True
-        self.update()
-
-    def resizeEvent(self, e):
-        super().resizeEvent(e)
-        self._sharp = False
-        self._timer.start(120)
-
-    def _rescale(self):
-        self._sharp = True
-        self._cache = None
+    def set_color(self, bg: str):
+        self._bg = QColor(bg)
         self.update()
 
     def paintEvent(self, _e):
         p = QPainter(self)
         p.fillRect(self.rect(), self._bg)
-        if self._img is not None and not self._img.isNull():
-            size = self.size() * self.devicePixelRatioF()
-            if self._cache is None or self._cache[0] != size:
-                mode = Qt.SmoothTransformation if self._sharp else Qt.FastTransformation
-                scaled = QPixmap.fromImage(self._img).scaled(size, Qt.KeepAspectRatioByExpanding, mode)
-                x, y = (scaled.width() - size.width()) // 2, (scaled.height() - size.height()) // 2
-                scaled = scaled.copy(x, y, size.width(), size.height())
-                scaled.setDevicePixelRatio(self.devicePixelRatioF())
-                self._cache = (size, scaled)
-            p.drawPixmap(0, 0, self._cache[1])
-            veil = QColor(self._bg)
-            veil.setAlphaF(self._veil)
-            p.fillRect(self.rect(), veil)
         p.end()
-
-
-def wallpaper_image(style: str, pal: dict, custom: str = "") -> QImage | None:
-    """The picture for the chosen style (None = plain colour)."""
-    try:
-        if style == "custom" and custom and Path(custom).is_file():
-            return qimage(art._custom_cover(custom, (1600, 900)))
-        return qimage(art._wall_cached(style if style in art.WALLPAPERS else "aurora", 1280, 720,
-                                       pal["accent"], pal["bg"], pal["dark"], "", 7))
-    except Exception:
-        return None

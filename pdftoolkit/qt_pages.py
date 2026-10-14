@@ -40,7 +40,7 @@ def tess_lang(code: str, also_english: bool) -> str:
 
 
 def missing_tools() -> str:
-    names = [n for n, ok in [("DjVu", core.find_ddjvu()), ("DOCX / ODT / RTF", core.find_pandoc()),
+    names = [n for n, ok in [("DjVu", core.find_ddjvu()),
                              ("OCR", core.find_tesseract()), ("Ghostscript", core.find_gs()),
                              ("LaTeX", texengine.find_engine())] if not ok]
     return ", ".join(names)
@@ -324,49 +324,4 @@ class OcrTool(Tool):
             n, total = core.ocr_pdf(src, out, lang, dpi, skip, 3, prog)
             log(trf("✔ OCR finished: {n} of {total} pages → {name}", n=n, total=total, name=Path(out).name))
             return _stem_dir(out)
-        self.win.run(job)
-
-
-class ExtractTool(Tool):
-    key, icon, title = "extract", "extract", "Extract text"
-    subtitle = "Get the text out of a PDF as a clean .txt or Word file. Scanned pages are read with OCR."
-
-    def build(self):
-        f = Form()
-        self.src = FileRow(on_pick=lambda p: None if self.out.get() else self.out.edit.setText(_stem_dir(p)))
-        self.out = FileRow("dir")
-        f.row("PDF file", self.src)
-        f.row("Output folder", self.out)
-        self.fmt = mkcombo({tr("Text file (.txt)"): "txt", tr("Word document (.docx)"): "docx"})
-        f.row("Format", self.fmt)
-        self.langs = lang_choices()
-        self.ocr = mkcheck("Read scanned pages with OCR", bool(self.langs))
-        f.row("", self.ocr, span=True)
-        self.lang = mkcombo(self.langs or {"English  (eng)": "eng"})
-        f.row("OCR language", self.lang)
-        self.eng = mkcheck("Also recognise English words", True)
-        f.row("", self.eng, span=True)
-        self.rev = mkcheck("Fix backwards Persian/Arabic text (old PDFs that extract reversed)", False)
-        f.row("", self.rev, span=True)
-        self.body.addLayout(f)
-        self.note("Persian letters are normalised (ﻣﻘﺪﻣﻪ → مقدمه) so the text can be searched and pasted anywhere.")
-        self.body.addStretch(1)
-        self.run_button("Extract text", self.run)
-
-    def run(self):
-        src, out = self.src.get(), self.out.get()
-        if not self.need(src, out):
-            return
-        fmt = self.fmt.currentData()
-        lang = tess_lang(self.lang.currentData(), self.eng.isChecked()) if self.ocr.isChecked() and self.langs else None
-        rev = self.rev.isChecked()
-
-        def job(log, prog):
-            dst = core.unique_path(Path(out) / (Path(src).stem + "." + fmt))
-            chars, ocr_pages = core.extract_text(src, str(dst), fmt, lang, rev, prog)
-            log(trf("✔ {name}: {chars} characters", name=dst.name, chars=f"{chars:,}")
-                + (trf(", {n} page(s) read with OCR", n=ocr_pages) if ocr_pages else ""))
-            if chars == 0:
-                log(tr("  (no text found — try enabling OCR)"))
-            return out
         self.win.run(job)

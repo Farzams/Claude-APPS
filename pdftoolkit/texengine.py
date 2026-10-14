@@ -393,25 +393,3 @@ def formula_files(tex: str, display: bool, base: str, formats=("png", "svg", "pd
         return written
     finally:
         shutil.rmtree(td, ignore_errors=True)
-
-
-# ---------------------------------------------------------------- import
-def import_to_latex(src: str, dest_dir: str) -> str:
-    """Word / ODT / Markdown / EPUB / HTML -> standalone .tex (equations stay as LaTeX)."""
-    import core
-    pandoc = core.find_pandoc()
-    if not pandoc:
-        raise RuntimeError("Pandoc is missing from this build.")
-    s = Path(src)
-    fmt = core.PANDOC_FORMATS.get(s.suffix.lower()) or {".html": "html", ".htm": "html"}.get(s.suffix.lower())
-    if not fmt or fmt == "latex":
-        raise ValueError("Choose a Word, ODT, RTF, Markdown, EPUB or HTML file.")
-    d = Path(dest_dir)
-    d.mkdir(parents=True, exist_ok=True)
-    out = core.unique_path(d / (s.stem + ".tex"))
-    r = subprocess.run([pandoc, "-f", fmt, "-t", "latex", "--standalone", "--extract-media=media",
-                        "-o", str(out), str(s)], cwd=str(d), capture_output=True, text=True, encoding="utf-8",
-                       errors="replace", creationflags=NO_WINDOW)
-    if r.returncode != 0 or not out.exists():
-        raise RuntimeError(f"Pandoc failed: {r.stderr.strip()[-300:]}")
-    return str(out)

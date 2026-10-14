@@ -23,11 +23,7 @@ APP_VERSION = "6.1"
 THEME_ORDER = ["qp_light", "qp_dark", "paper", "paper_dark", "daylight", "indigo_night", "ocean", "forest", "sunset",
                "rose", "lavender", "gold", "graphite"]
 SAMPLE_ICONS = ["home", "read", "convert", "ocr"]
-SHORTCUTS = [("Ctrl+K", "Search tools, pages and settings"), ("Ctrl+O", "Open a file in the Reader"),
-             ("Ctrl+F", "Search inside the open book"), ("F3 / Shift+F3", "Next / previous search result"),
-             ("Ctrl+G", "Go to a page"), ("Ctrl+D", "Add a bookmark"), ("Ctrl+W", "Close the current Reader tab"),
-             ("Ctrl+Tab", "Next Reader tab"), ("F11", "Full screen in the Reader"), ("Ctrl+= / Ctrl+-", "Zoom in / out in the Reader"),
-             ("Ctrl+0", "Fit the page to the width"), ("PgUp / PgDn", "Previous / next page"), ("Home / End", "First / last page")]
+SHORTCUTS = [("Ctrl+K", "Search tools and settings")]
 
 
 def dir_size(p: Path) -> int:
@@ -134,7 +130,7 @@ class SettingsTool(Tool):
     subtitle = "Everything is saved automatically."
 
     SECTIONS = [("appearance", "settings", "Appearance"), ("general", "home", "General"),
-                ("writing", "latex", "Writing and OCR"),
+                ("ocr", "ocr", "OCR languages"),
                 ("shortcuts", "search", "Shortcuts"), ("storage", "security", "Storage and privacy"),
                 ("about", "help", "About")]
 
@@ -244,7 +240,7 @@ class SettingsTool(Tool):
         lay.addWidget(Row("Icon style", "The same drawings in four treatments", *self.icon_btns.values()))
 
         app_tiles = []
-        for g, label in (("tools", "PDF Toolkit"), ("read", "Reader"), ("math", "Math Studio")):
+        for g, label in (("tools", "PDF Toolkit"),):
             tile = QWidget()
             col = QVBoxLayout(tile)
             col.setContentsMargins(0, 0, 8, 0)
@@ -263,19 +259,6 @@ class SettingsTool(Tool):
         self.fa_box, self.fa_btns = pills([(k, k) for k in qt_style.FA_FONTS], self.win.cfg.get("fa_font", "Vazirmatn"), win.set_fa_font)
         lay.addWidget(Row("Persian font", "Used when the language is Persian. Pick what reads best on your screen.", self.fa_box))
 
-        self.picture_rows = QWidget()
-        pl = QVBoxLayout(self.picture_rows)
-        pl.setContentsMargins(0, 0, 0, 0)
-        styles = {tr(art.WALLPAPER_NAMES[k]): k for k in art.WALLPAPERS}
-        styles[tr(art.WALLPAPER_NAMES["custom"])] = "custom"
-        self.wp = mkcombo(styles, win.cfg["wallpaper"])
-        self.wp.activated.connect(self._wp_changed)
-        self.strength = mkcombo({tr("No picture"): "off", tr("Subtle"): "subtle", tr("Medium"): "medium", tr("Vivid"): "vivid"},
-                                win.cfg.get("strength", "medium"))
-        self.strength.activated.connect(lambda _i: win.set_strength(self.strength.currentData()))
-        pl.addWidget(Row("Picture backdrop", "Only in the Classic themes", self.wp, self.strength, mkbutton("Choose my picture…", self._pick)))
-        lay.addWidget(self.picture_rows)
-
     def _mode_theme(self, style: str, dark: bool) -> str:
         return theme.STYLES[style][1 if dark else 0]
 
@@ -292,18 +275,6 @@ class SettingsTool(Tool):
 
     def _pick_accent(self, color: str):
         self.win.set_accent(color)
-
-    def _wp_changed(self, _i):
-        key = self.wp.currentData()
-        if key == "custom" and not self.win.cfg.get("custom_picture"):
-            return self._pick()
-        self.win.set_wallpaper(key)
-
-    def _pick(self):
-        f, _ = QFileDialog.getOpenFileName(self, tr("Choose a picture"), "", "Images (*.png *.jpg *.jpeg *.bmp *.webp)")
-        if f:
-            self.win.set_wallpaper("custom", f)
-            self.wp.setCurrentIndex(self.wp.findData("custom"))
 
     def _icon_preview(self, style: str) -> QPixmap:
         P = theme.STATE.pal
@@ -352,7 +323,7 @@ class SettingsTool(Tool):
 
     def _reset(self):
         d = settings.DEFAULTS
-        for k in ("theme", "wallpaper", "strength", "accent", "icon_style", "follow_system", "text_scale", "fa_font"):
+        for k in ("theme", "accent", "icon_style", "follow_system", "text_scale", "fa_font"):
             self.win.cfg[k] = d[k]
         qt_style.TEXT_SCALE["scale"] = 1.0
         qt_style.FA_FONT["name"] = "Vazirmatn"
@@ -362,20 +333,12 @@ class SettingsTool(Tool):
         self.win.apply_style()
         self.refresh()
 
-    # ------------------------------------------------------------ Writing and OCR
-    def sec_writing(self, lay):
-        self.spell = mkcheck("Check spelling in the LaTeX editor (English and Persian)", self.win.cfg.get("spell", True))
-        self.spell.toggled.connect(self._spell_toggled)
-        lay.addWidget(Row("Spell-check", "Red underline in the editor; right-click a word to fix or add it to your dictionary.", self.spell))
+    # ------------------------------------------------------------ OCR
+    def sec_ocr(self, lay):
         langs = core.ocr_languages()
-        names = {"eng": "English", "fas": "Persian", "ara": "Arabic", "fra": "French", "deu": "German", "rus": "Russian",
-                 "spa": "Spanish", "ita": "Italian", "tur": "Turkish"}
+        names = {"eng": "English", "fas": "Persian", "ara": "Arabic"}
         shown = ", ".join(tr(names.get(c, c)) for c in sorted(langs) if c != "osd") or tr("none found")
         lay.addWidget(Row("OCR languages", "Installed with the app. Pick the language on the OCR page.", mklabel(shown, "muted", wrap=True, translate=False)))
-
-    def _spell_toggled(self, on):
-        self.win.cfg["spell"] = bool(on)
-        settings.save(self.win.cfg)
 
     # ------------------------------------------------------------ Shortcuts
     def sec_shortcuts(self, lay):
@@ -387,12 +350,10 @@ class SettingsTool(Tool):
 
     # ------------------------------------------------------------ Storage and privacy
     def sec_storage(self, lay):
-        import reader_core
         import texengine
         self.store_labels = {}
         for key, label, hint, path_fn in (
-                ("reader", "Reader cache", "Converted DjVu, DOCX and other books so they open fast next time", reader_core.cache_dir),
-                ("tex", "LaTeX packages", "Downloaded once, then work offline", texengine.cache_dir)):
+                ("tex", "LaTeX packages", "Used when you convert a .tex file to PDF", texengine.cache_dir),):
             val = mklabel("…", "muted", translate=False)
             self.store_labels[key] = (val, path_fn)
             lay.addWidget(Row(label, hint, val, mkbutton("Clear", lambda k=key: self._clear(k))))
@@ -420,7 +381,7 @@ class SettingsTool(Tool):
     def sec_about(self, lay):
         lay.addWidget(Row("Version", "", mklabel(APP_VERSION, translate=False)))
         lay.addWidget(Row("What is inside", "Free software, bundled so it works offline",
-                          mklabel("PyMuPDF, Qt for Python, Tesseract OCR, Ghostscript, pikepdf, OpenCV, pdf2docx, SymPy, Matplotlib, Tectonic, Hunspell dictionaries. "
+                          mklabel("PyMuPDF, Qt for Python, Tesseract OCR, Ghostscript, pikepdf, OpenCV, pdf2docx, DjVuLibre, Tectonic. "
                                   "Fonts: Inter, Vazirmatn, Noto Sans Arabic.", "muted", wrap=True, translate=False)))
         lay.addWidget(Row("Releases and licences", "Full licence texts are in the licences folder of the installation.",
                           mklabel("github.com/Farzams/Claude-APPS", "muted", translate=False)))
@@ -446,7 +407,6 @@ class SettingsTool(Tool):
         for style_, btn in self.icon_btns.items():
             btn.setIcon(QIcon(self._icon_preview(style_)))
             btn.setChecked(style_ == eff)
-        self.picture_rows.setVisible(not P["flat"])
 
     def on_show(self):
         self.refresh()

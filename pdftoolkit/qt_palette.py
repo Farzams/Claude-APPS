@@ -65,7 +65,7 @@ class CommandPalette(QDialog):
         lay.setContentsMargins(12, 12, 12, 10)
         lay.setSpacing(8)
         self.edit = QLineEdit()
-        self.edit.setPlaceholderText(tr("Search tools, settings and recent files…"))
+        self.edit.setPlaceholderText(tr("Search tools and settings…"))
         self.edit.setMinimumHeight(40)
         self.edit.textChanged.connect(self.refresh)
         self.edit.installEventFilter(self)

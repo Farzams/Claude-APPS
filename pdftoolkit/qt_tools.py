@@ -374,11 +374,10 @@ class BackgroundTool(PdfInOut):
 # ---------------------------------------------------------------- PDF to ...
 class ExportTool(Tool):
     key, icon, title = "export", "export", "PDF to…"
-    subtitle = "Turn a PDF into pictures, Word, Excel, HTML, RTF, EPUB or plain text."
+    subtitle = "Turn a PDF into pictures, Word, Excel, HTML or plain text."
     FORMATS = {"Pictures — PNG": ("png", "img"), "Pictures — JPEG": ("jpg", "img"), "Pictures — TIFF": ("tiff", "img"),
                "Word (.docx)": ("docx", "docx"), "Excel (.xlsx) — tables": ("xlsx", "xlsx"),
-               "Web page (.html)": ("html", "txt"), "Rich text (.rtf)": ("rtf", "txt"),
-               "E-book (.epub)": ("epub", "txt"), "Plain text (.txt)": ("txt", "txt")}
+               "Web page (.html)": ("html", "txt"), "Plain text (.txt)": ("txt", "txt")}
 
     def build(self):
         f = Form()
