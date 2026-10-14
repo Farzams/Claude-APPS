@@ -98,7 +98,7 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
     private val speller = SystemSpell(app)
     private var spellJob: Job? = null
 
-    fun setSpellLang(lang: String) {
+    fun applySpell(lang: String) {
         spellLang = lang
         spellMissing = false
         scheduleSpell(0)

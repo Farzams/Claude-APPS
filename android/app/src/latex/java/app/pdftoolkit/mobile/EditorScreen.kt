@@ -205,7 +205,7 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
                         vm.setEngine(if (vm.meta.engine == "xetex") "pdftex" else "xetex")
                     }
                     item(if (vm.spellLang.isEmpty()) "spell.en" else if (vm.spellLang == "en") "spell.fa" else "spell.off", "spell") {
-                        vm.setSpellLang(if (vm.spellLang.isEmpty()) "en" else if (vm.spellLang == "en") "fa" else "")
+                        vm.applySpell(if (vm.spellLang.isEmpty()) "en" else if (vm.spellLang == "en") "fa" else "")
                     }
                     item("view.options") { dialog = "view" }
                     HorizontalDivider()
