@@ -27,6 +27,7 @@ class TemplatesTest {
 
     private fun launch() {
         val ctx = instr.targetContext
+        Prefs(ctx).apply { lang = "en"; theme = "qp_light"; accent = "" }      // the other tests leave Persian and the dark theme behind
         ParcelFileDescriptor.AutoCloseInputStream(instr.uiAutomation.executeShellCommand("appops set ${ctx.packageName} MANAGE_EXTERNAL_STORAGE allow")).use { it.readBytes() }
         Thread.sleep(800)
         ctx.startActivity(ctx.packageManager.getLaunchIntentForPackage(ctx.packageName)!!.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK))
