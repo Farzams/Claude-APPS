@@ -54,4 +54,23 @@ val SYMBOL_GROUPS: List<Pair<String, List<Pair<String, String>>>> = listOf(
         "maketitle" to "\\maketitle\n", "geometry" to "\\usepackage[margin=2.5cm]{geometry}", "hyperref" to "\\usepackage[hidelinks]{hyperref}",
         "graphicx" to "\\usepackage{graphicx}", "amsmath" to "\\usepackage{amsmath,amssymb,amsthm}",
     ),
+    "sym.thm" to listOf(
+        "theorem" to "\\begin{theorem}\\label{thm:‸}\n  \n\\end{theorem}", "lemma" to "\\begin{lemma}\\label{lem:‸}\n  \n\\end{lemma}",
+        "proposition" to "\\begin{proposition}\\label{prop:‸}\n  \n\\end{proposition}", "corollary" to "\\begin{corollary}\\label{cor:‸}\n  \n\\end{corollary}",
+        "definition" to "\\begin{definition}\\label{def:‸}\n  \n\\end{definition}", "example" to "\\begin{example}\n  ‸\n\\end{example}",
+        "remark" to "\\begin{remark}\n  ‸\n\\end{remark}", "conjecture" to "\\begin{conjecture}\n  ‸\n\\end{conjecture}",
+        "proof" to "\\begin{proof}\n  ‸\n\\end{proof}", "proof ⇔" to "\\begin{proof}\n  ($\\Rightarrow$) ‸\n\n  ($\\Leftarrow$) \n\\end{proof}",
+        "cases" to "\\begin{proof}\n  \\textit{Case 1.} ‸\n\n  \\textit{Case 2.} \n\\end{proof}",
+        "induction" to "\\begin{proof}\n  We argue by induction on \$n\$. \\emph{Base case.} ‸\n\n  \\emph{Inductive step.} \n\\end{proof}",
+        "qed" to "\\qedhere", "newtheorem" to "\\usepackage{amsthm}\n\\theoremstyle{plain}\n\\newtheorem{theorem}{Theorem}[section]\n\\newtheorem{lemma}[theorem]{Lemma}\n\\newtheorem{proposition}[theorem]{Proposition}\n\\newtheorem{corollary}[theorem]{Corollary}\n\\newtheorem{conjecture}[theorem]{Conjecture}\n\\theoremstyle{definition}\n\\newtheorem{definition}[theorem]{Definition}\n\\newtheorem{example}[theorem]{Example}\n\\theoremstyle{remark}\n\\newtheorem{remark}[theorem]{Remark}\n‸",
+    ),
+    "sym.orlicz" to listOf(
+        "Φ" to "\\Phi", "Φ*" to "\\Phi^{*}", "L^Φ" to "L^{\\Phi}", "L^Φ(μ)" to "L^{\\Phi}(\\mu)", "H^Φ" to "H^{\\Phi}", "E^Φ" to "E^{\\Phi}",
+        "‖·‖_Φ" to "\\|‸\\|_{\\Phi}", "ρ_Φ" to "\\rho_{\\Phi}(‸)", "Δ₂" to "\\Delta_2", "∇₂" to "\\nabla_2",
+        "Luxemburg" to "\\|f\\|_{(\\Phi)}=\\inf\\Bigl\\{k>0:\\int_{\\Omega}\\Phi\\Bigl(\\frac{|f|}{k}\\Bigr)\\,d\\mu\\le 1\\Bigr\\}",
+        "Orlicz norm" to "\\|f\\|_{\\Phi}=\\sup\\Bigl\\{\\int_{\\Omega}|fg|\\,d\\mu:\\ \\rho_{\\Phi^{*}}(g)\\le 1\\Bigr\\}",
+        "Young fn" to "\\Phi(t)=\\int_0^{t}\\varphi(s)\\,ds", "conjugate" to "\\Phi^{*}(v)=\\sup_{u\\ge 0}\\,\\bigl(uv-\\Phi(u)\\bigr)",
+        "Young ineq" to "uv\\le \\Phi(u)+\\Phi^{*}(v)", "Δ₂ cond" to "\\Phi(2t)\\le K\\,\\Phi(t)\\quad (t\\ge t_0)",
+        "L^Φ(G)" to "L^{\\Phi}(G)", "convolution" to "(f*g)(x)=\\int_{G}f(y)\\,g(y^{-1}x)\\,dy", "‖f*g‖" to "\\|f*g\\|\\le C\\,\\|f\\|\\,\\|g\\|",
+    ),
 )

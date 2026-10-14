@@ -228,4 +228,28 @@ class PdfToolsTest {
         assertEquals("page 1", after[2])
         Log.i("PDFTK", "drag ok")
     }
+
+    /** Settings has an About group with the author's name, and a theme can be picked. */
+    @Test
+    fun settingsAbout() {
+        launchApp()
+        assertTrue(device.wait(Until.hasObject(By.res("open_settings")), 10_000))
+        device.findObject(By.res("open_settings")).click()
+        assertTrue("settings did not open", device.wait(Until.hasObject(By.res("mode_dark")), 10_000))
+        device.findObject(By.res("style_ocean")).let { assertTrue("theme tile", it != null) }
+        shot("p04_settings")
+        var tries = 0
+        while (tries < 8) {
+            val b = device.findObject(By.res("about_author"))?.visibleBounds
+            if (b != null && !b.isEmpty && b.centerY() in 100 until device.displayHeight - 100) break
+            device.swipe(device.displayWidth / 2, device.displayHeight * 3 / 4, device.displayWidth / 2, device.displayHeight * 2 / 5, 25)
+            Thread.sleep(350)
+            tries++
+        }
+        val author = device.findObject(By.res("about_author"))?.text
+        Log.i("PDFTK", "about author: $author")
+        assertEquals("Farzam Sadri", author)
+        shot("p05_about")
+        Log.i("PDFTK", "about ok")
+    }
 }

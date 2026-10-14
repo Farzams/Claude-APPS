@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
                 Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background).imePadding().semantics { testTagsAsResourceId = true }) {
                     if (tick >= 0) when {
-                        settings -> SettingsScreen(prefs, refresh) { settings = false }
+                        settings -> SettingsScreen(prefs, refresh, { settings = false }, tagline = t("about.tag.latex")) { EditorSettingsCard(prefs) }
                         editor.project != null -> EditorScreen(editor, prefs) { }
                         else -> ProjectsScreen(editor) { settings = true }
                     }

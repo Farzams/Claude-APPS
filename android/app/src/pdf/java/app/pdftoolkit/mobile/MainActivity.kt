@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                             "watermark" -> WatermarkScreen(home)
                             "numbers" -> NumbersScreen(home)
                             "docs2pdf" -> ConvertScreen(home)
-                            "settings" -> SettingsScreen(prefs, refresh) { screen = "home" }
+                            "settings" -> SettingsScreen(prefs, refresh, { screen = "home" }, tagline = t("about.tag.pdf")) { FilesSettingsCard() }
                             "files" -> PdfShell("files", { screen = it }) { FilesScreen { screen = it } }
                             else -> PdfShell("home", { screen = it }) { HomeScreen { screen = it } }
                         }

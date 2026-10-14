@@ -181,6 +181,8 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
     var menu by remember { mutableStateOf(false) }
     var dialog by remember { mutableStateOf("") }
     var newName by remember { mutableStateOf("") }
+    var snipLabel by remember { mutableStateOf("") }
+    var snipText by remember { mutableStateOf("") }
 
     val savePdf = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { if (it != null) vm.savePdfTo(it) }
     val exportZip = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/zip")) { uri ->
@@ -229,6 +231,14 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
                     item(if (vm.spellLang.isEmpty()) "spell.en" else if (vm.spellLang == "en") "spell.fa" else "spell.off", "spell") {
                         vm.applySpell(if (vm.spellLang.isEmpty()) "en" else if (vm.spellLang == "en") "fa" else "")
                     }
+                    item("outline") { dialog = "outline" }
+                    item("history") { dialog = "history" }
+                    item("snippet.save", "snippet") {
+                        val sel = vm.field.selection
+                        snipText = if (sel.collapsed) "" else vm.field.text.substring(sel.min, sel.max)
+                        snipLabel = ""
+                        dialog = "snip"
+                    }
                     item("view.options") { dialog = "view" }
                     HorizontalDivider()
                     item("share.pdf") { sharePdf(ctx, vm) }
@@ -240,6 +250,81 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
     }
 
     when (dialog) {
+        "outline" -> {
+            val items = vm.outline()
+            val pages = remember(vm.pdfVersion) {
+                vm.pdfFile?.let { f ->
+                    runCatching {
+                        android.os.ParcelFileDescriptor.open(f, android.os.ParcelFileDescriptor.MODE_READ_ONLY).use { fd ->
+                            android.graphics.pdf.PdfRenderer(fd).use { it.pageCount }
+                        }
+                    }.getOrNull()
+                }
+            }
+            AlertDialog(
+                onDismissRequest = { dialog = "" },
+                title = { Text(t("outline")) },
+                text = {
+                    Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState())) {
+                        Column(Modifier.testTag("outline_stats"), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                            Text("${vm.countWords(vm.field.text)} ${t("words")}  ·  ${vm.current}", color = cs.onSurface, style = MaterialTheme.typography.bodyMedium)
+                            Text("${t("words.all")}: ${vm.wordsAll()}", color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                            if (pages != null) Text("${t("pdf.pages")}: $pages", color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                        }
+                        HorizontalDivider(Modifier.padding(vertical = 10.dp), color = cs.outlineVariant)
+                        if (items.isEmpty()) Text(t("outline.none"), color = cs.onSurfaceVariant)
+                        for ((i, o) in items.withIndex()) {
+                            Text(
+                                o.title.ifEmpty { "·" }, color = cs.onSurface, maxLines = 2, overflow = TextOverflow.Ellipsis,
+                                style = if (o.level == 0) MaterialTheme.typography.titleSmall else MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.fillMaxWidth().clickable { vm.goToLine(o.line); dialog = "" }
+                                    .padding(start = (o.level * 16).dp, top = 9.dp, bottom = 9.dp).testTag("outline_item_$i"),
+                            )
+                        }
+                    }
+                },
+                confirmButton = { TextButton(onClick = { dialog = "" }) { Text(t("ok.button")) } },
+            )
+        }
+        "history" -> {
+            val versions = remember { vm.versions() }
+            val fmt = remember { java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.MEDIUM, java.text.DateFormat.SHORT) }
+            AlertDialog(
+                onDismissRequest = { dialog = "" },
+                title = { Text(t("history")) },
+                text = {
+                    Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()).testTag("history_list")) {
+                        Text(if (versions.isEmpty()) t("history.none") else t("history.restore"), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                        for ((i, v) in versions.withIndex()) {
+                            val lines = remember(v) { runCatching { vm.history.read(v).lines().size }.getOrDefault(0) }
+                            Column(
+                                Modifier.fillMaxWidth().clickable { vm.restore(v); dialog = "" }.padding(vertical = 10.dp).testTag("history_row_$i"),
+                            ) {
+                                Text(fmt.format(java.util.Date(v.time)), color = cs.onSurface, style = MaterialTheme.typography.bodyMedium)
+                                Text("$lines ${t("lines")}", color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+                            }
+                            HorizontalDivider(color = cs.outlineVariant)
+                        }
+                    }
+                },
+                confirmButton = { TextButton(onClick = { dialog = "" }) { Text(t("ok.button")) } },
+            )
+        }
+        "snip" -> AlertDialog(
+            onDismissRequest = { dialog = "" },
+            title = { Text(t("snippet.save")) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    OutlinedTextField(snipLabel, { snipLabel = it }, label = { Text(t("snippet.label")) }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("snippet_label"))
+                    OutlinedTextField(
+                        snipText, { snipText = it }, label = { Text(t("snippet.text")) }, minLines = 3, maxLines = 6,
+                        textStyle = TextStyle(fontFamily = FontFamily.Monospace), modifier = Modifier.fillMaxWidth().testTag("snippet_text"),
+                    )
+                }
+            },
+            confirmButton = { TextButton(onClick = { vm.addSnippet(snipLabel, snipText); dialog = "" }, modifier = Modifier.testTag("snippet_save")) { Text(t("ok.button")) } },
+            dismissButton = { TextButton(onClick = { dialog = "" }) { Text(t("cancel")) } },
+        )
         "newfile" -> AlertDialog(
             onDismissRequest = { dialog = "" },
             title = { Text(t("new.file")) },
@@ -419,13 +504,17 @@ private fun EditorPane(vm: EditorViewModel, view: ViewOptions) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SymbolBar(vm: EditorViewModel) {
     val cs = MaterialTheme.colorScheme
     var group by remember { mutableIntStateOf(0) }
+    var deleting by remember { mutableIntStateOf(-1) }
+    val groups = SYMBOL_GROUPS + ("sym.mine" to vm.snippets)
+    val mine = group == groups.size - 1
     Column(Modifier.fillMaxWidth().background(cs.surface)) {
         Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 6.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
-            for ((i, g) in SYMBOL_GROUPS.withIndex()) {
+            for ((i, g) in groups.withIndex()) {
                 Surface(
                     onClick = { group = i }, shape = RoundedCornerShape(16.dp),
                     color = if (group == i) cs.primary else cs.surfaceVariant, modifier = Modifier.testTag("group_$i"),
@@ -439,14 +528,36 @@ private fun SymbolBar(vm: EditorViewModel) {
             Surface(onClick = { vm.moveCaret(-1) }, shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant) { Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, null, Modifier.padding(4.dp).size(22.dp), tint = cs.onSurface) }
             Surface(onClick = { vm.moveCaret(1) }, shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant) { Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, null, Modifier.padding(4.dp).size(22.dp), tint = cs.onSurface) }
         }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 6.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            for ((label, snippet) in SYMBOL_GROUPS[group].second) {
-                Surface(onClick = { vm.insert(snippet) }, shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = BorderStroke(1.dp, cs.outlineVariant)) {
-                    Text(label, Modifier.padding(horizontal = 10.dp, vertical = 6.dp), color = cs.onSurface, fontFamily = FontFamily.Monospace, fontSize = 14.sp)
+        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 6.dp, vertical = 4.dp), horizontalArrangement = Arrangement.spacedBy(6.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (mine && vm.snippets.isEmpty()) {
+                Text(t("snippet.empty"), Modifier.padding(horizontal = 6.dp, vertical = 6.dp), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodySmall)
+            }
+            for ((idx, pair) in groups[group].second.withIndex()) {
+                val (label, snippet) = pair
+                val chip: @Composable () -> Unit = {
+                    Text(label, Modifier.padding(horizontal = 10.dp, vertical = 6.dp), color = cs.onSurface, fontFamily = FontFamily.Monospace, fontSize = 14.sp, maxLines = 1)
+                }
+                if (mine) {
+                    Surface(
+                        shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = BorderStroke(1.dp, cs.outlineVariant),
+                        modifier = Modifier.testTag("snippet_$idx").combinedClickable(onClick = { vm.insert(snippet) }, onLongClick = { deleting = idx }),
+                        content = chip,
+                    )
+                } else {
+                    Surface(onClick = { vm.insert(snippet) }, shape = RoundedCornerShape(8.dp), color = cs.surfaceVariant, border = BorderStroke(1.dp, cs.outlineVariant), content = chip)
                 }
             }
         }
         HorizontalDivider(color = cs.outlineVariant)
+    }
+    if (deleting >= 0) {
+        AlertDialog(
+            onDismissRequest = { deleting = -1 },
+            title = { Text(t("snippet.delete")) },
+            text = { Text(vm.snippets.getOrNull(deleting)?.first ?: "") },
+            confirmButton = { TextButton(onClick = { vm.removeSnippet(deleting); deleting = -1 }) { Text(t("delete"), color = cs.error) } },
+            dismissButton = { TextButton(onClick = { deleting = -1 }) { Text(t("cancel")) } },
+        )
     }
 }
 

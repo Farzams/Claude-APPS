@@ -25,8 +25,22 @@ class EndToEndTest {
         Log.i("PDFTK", "screenshot $name")
     }
 
+    /** Swipe up until the item is really on screen (long pages such as Settings scroll). */
+    private fun scrollTo(res: String) {
+        var tries = 0
+        while (tries < 8) {
+            val o = device.findObject(By.res(res))
+            val b = o?.visibleBounds
+            if (b != null && !b.isEmpty && b.centerY() in 100 until device.displayHeight - 100) return
+            device.swipe(device.displayWidth / 2, device.displayHeight * 3 / 4, device.displayWidth / 2, device.displayHeight * 2 / 5, 25)
+            Thread.sleep(350)
+            tries++
+        }
+    }
+
     private fun click(res: String, wait: Long = 20_000) {
         assertTrue("not found: $res", device.wait(Until.hasObject(By.res(res)), wait))
+        scrollTo(res)
         device.findObject(By.res(res)).click()
     }
 
@@ -68,12 +82,30 @@ class EndToEndTest {
         assertTrue("English document did not compile", en)
         assertTrue("page indicator", device.hasObject(By.res("page_indicator")))
         click("zoom_in")
+        Thread.sleep(800)
+        val pct = device.findObject(By.res("zoom_percent"))?.text
+        Log.i("PDFTK", "zoom percent after zoom in: $pct")
+        assertTrue("zoom percent should change, was $pct", pct != null && pct != "100%")
+        Log.i("PDFTK", "zoom ok")
         click("night_mode")
         Thread.sleep(1200)
         shot("03b_preview_zoomed_night")
         click("night_mode")
 
         click("tab_editor")
+        click("more"); click("menu_outline")
+        assertTrue("outline dialog", device.wait(Until.hasObject(By.res("outline_stats")), 8_000))
+        shot("03d_outline")
+        Log.i("PDFTK", "outline ok")
+        device.pressBack()
+        Thread.sleep(500)
+        click("more"); click("menu_history")
+        assertTrue("history dialog", device.wait(Until.hasObject(By.res("history_list")), 8_000))
+        assertTrue("a version was saved by the compile", device.wait(Until.hasObject(By.res("history_row_0")), 5_000))
+        shot("03e_history")
+        Log.i("PDFTK", "history ok")
+        device.pressBack()
+        Thread.sleep(500)
         click("find")
         assertTrue(device.wait(Until.hasObject(By.res("find_field")), 5_000))
         device.findObject(By.res("find_field")).text = "section"
@@ -107,6 +139,12 @@ class EndToEndTest {
         click("style_paper")
         click("accent_#0F766E")
         shot("07_settings_paper_dark_teal")
+        scrollTo("about_author")
+        val author = device.findObject(By.res("about_author"))?.text
+        Log.i("PDFTK", "about author: $author")
+        assertTrue("about shows the author", author == "Farzam Sadri")
+        shot("07b_about")
+        Log.i("PDFTK", "about ok")
         click("lang_fa")
         shot("08_settings_persian")
         click("back")

@@ -65,6 +65,7 @@ fun bibKeys(text: String): List<String> =
 
 class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
     val store = ProjectStore(app)
+    val history = HistoryStore(app)
     private val outPdf = File(app.cacheDir, "preview.pdf")
 
     var projects by mutableStateOf(listOf<Project>())
@@ -159,9 +160,9 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
         openProject(p)
     }
 
-    fun renameProject(p: Project, name: String) { store.rename(p, name); refreshProjects() }
+    fun renameProject(p: Project, name: String) { val np = store.rename(p, name); history.renameProject(p.name, np.name); refreshProjects() }
     fun duplicateProject(p: Project) { store.duplicate(p); refreshProjects() }
-    fun deleteProject(p: Project) { store.delete(p); refreshProjects() }
+    fun deleteProject(p: Project) { store.delete(p); history.deleteProject(p.name); refreshProjects() }
 
     fun importProjectZip(name: String, input: java.io.InputStream) {
         val p = store.importZip(name, input)
@@ -374,6 +375,74 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
         matchIndex = 0
     }
 
+    // ------------------------------------------------------------ own snippets, outline, word count, versions
+    var snippets by mutableStateOf(loadSnippets())
+
+    private fun loadSnippets(): List<Pair<String, String>> = runCatching {
+        val a = org.json.JSONArray(Prefs(app).snippets)
+        (0 until a.length()).map { a.getJSONObject(it).let { o -> o.getString("l") to o.getString("t") } }
+    }.getOrDefault(emptyList())
+
+    private fun saveSnippets() {
+        val a = org.json.JSONArray()
+        snippets.forEach { a.put(org.json.JSONObject().put("l", it.first).put("t", it.second)) }
+        Prefs(app).snippets = a.toString()
+    }
+
+    fun addSnippet(label: String, text: String) {
+        if (label.isBlank() || text.isEmpty()) return
+        snippets = snippets + (label.trim() to text)
+        saveSnippets()
+    }
+
+    fun removeSnippet(i: Int) {
+        snippets = snippets.filterIndexed { j, _ -> j != i }
+        saveSnippets()
+    }
+
+    class OutlineItem(val line: Int, val level: Int, val title: String)
+
+    private val sectionRe = Regex("""\\(part|chapter|section|subsection|subsubsection|paragraph)\*?(?:\[[^\]]*\])?\{(.*)\}""")
+
+    fun outline(): List<OutlineItem> {
+        val levels = listOf("part", "chapter", "section", "subsection", "subsubsection", "paragraph")
+        val raw = field.text.lines().mapIndexedNotNull { i, l ->
+            if (l.trimStart().startsWith("%")) null
+            else sectionRe.find(l)?.let { m -> OutlineItem(i + 1, levels.indexOf(m.groupValues[1]), m.groupValues[2].trim()) }
+        }
+        val base = raw.minOfOrNull { it.level } ?: 0
+        return raw.map { OutlineItem(it.line, it.level - base, it.title) }
+    }
+
+    fun countWords(text: String): Int {
+        val noComments = text.lines().joinToString("\n") { l ->
+            val i = Regex("(?<!\\\\)%").find(l)?.range?.first ?: -1
+            if (i >= 0) l.substring(0, i) else l
+        }
+        val body = noComments.substringAfter("\\begin{document}", noComments).substringBefore("\\end{document}")
+        val stripped = body
+            .replace(Regex("\\x24\\x24?[^\\x24]*\\x24\\x24?"), " ")
+            .replace(Regex("\\\\[a-zA-Z]+\\*?"), " ")
+            .replace(Regex("[{}\\[\\]\\\\^_&~#\\x24%]"), " ")
+        return stripped.split(Regex("\\s+")).count { w -> w.any { it.isLetterOrDigit() } }
+    }
+
+    fun wordsAll(): Int {
+        val p = project ?: return 0
+        return files.filter { it.endsWith(".tex") }.sumOf { f ->
+            countWords(if (f == current) field.text else buffers[f]?.text ?: runCatching { File(p.dir, f).readText() }.getOrDefault(""))
+        }
+    }
+
+    fun versions(): List<Snapshot> = project?.let { history.list(it.name, current) } ?: emptyList()
+
+    /** Bring an earlier version back. The text being replaced is saved as a version first, and Undo still works. */
+    fun restore(s: Snapshot) {
+        val p = project ?: return
+        history.snapshot(p.name, current, field.text)
+        onChange(TextFieldValue(history.read(s), TextRange(0)))
+    }
+
     // ------------------------------------------------------------ saving and compiling
     private fun scheduleSave() {
         saveJob?.cancel()
@@ -407,6 +476,9 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
             val list = withContext(Dispatchers.IO) {
                 p.dir.walkTopDown().filter { it.isFile && !it.name.startsWith(".") }
                     .map { ProjFile(it.relativeTo(p.dir).path.replace('\\', '/'), it.readBytes()) }.toList()
+            }
+            withContext(Dispatchers.IO) {
+                list.filter { isTextFile(it.path) }.forEach { runCatching { history.snapshot(p.name, it.path, String(it.bytes, Charsets.UTF_8)) } }
             }
             android.util.Log.i("PDFTK", "calling the engine with ${list.size} files, engine ${meta.engine}")
             val driver = if (meta.engine == "pdftex") "pdftex_bibtex8" else "xetex_bibtex8_dvipdfmx"

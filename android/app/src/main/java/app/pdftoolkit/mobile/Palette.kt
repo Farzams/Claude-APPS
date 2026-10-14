@@ -31,15 +31,35 @@ data class Palette(
 private fun c(hex: Long) = Color(0xFF000000 or hex)
 
 val PALETTES = listOf(
-    Palette("qp_light", "Quiet Light", false, c(0xF6F7F9), c(0xFFFFFF), c(0xFFFFFF), c(0xEEF0F4), c(0x101828), c(0x667085), c(0x4F46E5), c(0xE4E7EC)),
-    Palette("qp_dark", "Quiet Dark", true, c(0x0D0F13), c(0x14171C), c(0x171A20), c(0x1C2027), c(0xE8EAEE), c(0x8B93A1), c(0x818CF8), c(0x232830)),
-    Palette("paper", "Paper", false, c(0xF3EEE4), c(0xFBF8F2), c(0xFFFDF8), c(0xE9E2D2), c(0x2B2620), c(0x7A6F60), c(0xB4532A), c(0xDDD4C1)),
-    Palette("paper_dark", "Paper Night", true, c(0x1C1814), c(0x26211B), c(0x2B251E), c(0x322B23), c(0xEADFCB), c(0xA39881), c(0xE08A5C), c(0x3A3228)),
+    // Studio: calm and neutral
+    Palette("qp_light", "Studio Light", false, c(0xF6F7F9), c(0xFFFFFF), c(0xFFFFFF), c(0xEEF0F4), c(0x101828), c(0x667085), c(0x4F46E5), c(0xE4E7EC)),
+    Palette("qp_dark", "Studio Dark", true, c(0x0D0F13), c(0x14171C), c(0x171A20), c(0x1C2027), c(0xE8EAEE), c(0x8B93A1), c(0x818CF8), c(0x232830)),
+    // Parchment: warm paper
+    Palette("paper", "Parchment Light", false, c(0xF3EEE4), c(0xFBF8F2), c(0xFFFDF8), c(0xE9E2D2), c(0x2B2620), c(0x7A6F60), c(0xB4532A), c(0xDDD4C1)),
+    Palette("paper_dark", "Parchment Dark", true, c(0x1C1814), c(0x26211B), c(0x2B251E), c(0x322B23), c(0xEADFCB), c(0xA39881), c(0xE08A5C), c(0x3A3228)),
+    // Ocean: cool blue-green
+    Palette("ocean", "Ocean Light", false, c(0xEDF5F8), c(0xFFFFFF), c(0xFFFFFF), c(0xDDECF1), c(0x0B2530), c(0x58727E), c(0x0E7490), c(0xD0E2E9)),
+    Palette("ocean_dark", "Ocean Dark", true, c(0x08171D), c(0x0F232B), c(0x112A33), c(0x16313B), c(0xE3F1F5), c(0x8FAAB5), c(0x2CC1D9), c(0x1B3A46)),
+    // Forest: fresh green
+    Palette("forest", "Forest Light", false, c(0xF0F6F0), c(0xFFFFFF), c(0xFFFFFF), c(0xE1EDE2), c(0x12261A), c(0x5C7363), c(0x15803D), c(0xD3E3D6)),
+    Palette("forest_dark", "Forest Dark", true, c(0x0B1510), c(0x121F18), c(0x14251C), c(0x1A2D22), c(0xE4F1E7), c(0x8FA898), c(0x4ADE80), c(0x213628)),
+    // Sunset: warm rose and orange
+    Palette("sunset", "Sunset Light", false, c(0xFFF3EC), c(0xFFFFFF), c(0xFFFFFF), c(0xFFE5D8), c(0x2D1A14), c(0x86675B), c(0xE4572E), c(0xF2D8CB)),
+    Palette("sunset_dark", "Sunset Dark", true, c(0x1C1210), c(0x271A17), c(0x2D1E1A), c(0x35241F), c(0xF8E8E1), c(0xB79A8E), c(0xFF7F5C), c(0x41302A)),
+    // Graphite: black and white, true black in the dark version
+    Palette("graphite", "Graphite Light", false, c(0xF4F4F4), c(0xFFFFFF), c(0xFFFFFF), c(0xEAEAEA), c(0x111111), c(0x6B6B6B), c(0x111111), c(0xDEDEDE)),
+    Palette("graphite_dark", "Graphite Dark", true, c(0x000000), c(0x0B0B0B), c(0x121212), c(0x1A1A1A), c(0xF2F2F2), c(0x8C8C8C), c(0xFFFFFF), c(0x262626)),
 )
 val ACCENTS = listOf("#4F46E5", "#0F766E", "#BE185D", "#EA580C", "#16A34A", "#E11D48", "#475569", "#CA8A04", "#2563EB")
 
 /** (design style) -> (light theme, dark theme) */
-val STYLES = mapOf("quiet" to ("qp_light" to "qp_dark"), "paper" to ("paper" to "paper_dark"))
+val STYLES = linkedMapOf(
+    "quiet" to ("qp_light" to "qp_dark"), "paper" to ("paper" to "paper_dark"), "ocean" to ("ocean" to "ocean_dark"),
+    "forest" to ("forest" to "forest_dark"), "sunset" to ("sunset" to "sunset_dark"), "graphite" to ("graphite" to "graphite_dark"),
+)
+
+/** The colour used when no accent is picked: Studio takes the app's own colour, every other theme brings its own. */
+fun defaultAccent(pal: Palette, app: Color?): Color = if (pal.key.startsWith("qp_")) app ?: pal.accent else pal.accent
 
 fun paletteOf(key: String): Palette = PALETTES.firstOrNull { it.key == key } ?: PALETTES[0]
 fun styleOf(key: String): String = STYLES.entries.firstOrNull { key == it.value.first || key == it.value.second }?.key ?: "quiet"
@@ -68,7 +88,7 @@ private fun typography(fa: Boolean): Typography {
 @Composable
 fun AppTheme(pal: Palette, accentHex: String, fa: Boolean, content: @Composable () -> Unit) {
     val appAccent = parseColor(LocalContext.current.getString(R.string.app_accent))
-    val accent = parseColor(accentHex) ?: appAccent ?: pal.accent
+    val accent = parseColor(accentHex) ?: defaultAccent(pal, appAccent)
     val onAccent = if (accent.luminance() > 0.40f) Color(0xFF14110A) else Color.White
     val base: ColorScheme = if (pal.dark) darkColorScheme() else lightColorScheme()
     val scheme = base.copy(

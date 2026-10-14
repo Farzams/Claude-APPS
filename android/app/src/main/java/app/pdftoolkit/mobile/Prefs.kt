@@ -31,4 +31,7 @@ class Prefs(ctx: Context) {
     var palette: Boolean
         get() = sp.getBoolean("palette", true)
         set(v) = sp.edit().putBoolean("palette", v).apply()
+    var snippets: String
+        get() = sp.getString("snippets", "[]") ?: "[]"
+        set(v) = sp.edit().putString("snippets", v).apply()
 }
