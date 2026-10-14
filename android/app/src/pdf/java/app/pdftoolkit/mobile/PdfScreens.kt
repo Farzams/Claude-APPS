@@ -71,6 +71,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -113,20 +114,23 @@ class ToolJob {
     var message by mutableStateOf("")
     var ok by mutableStateOf(true)
     var output by mutableStateOf<Uri?>(null)
+    var progress by mutableFloatStateOf(-1f)          // 0..1 while a tool reports it, -1 when it cannot tell
 
     fun run(scope: CoroutineScope, out: Uri? = null, work: () -> String) {
         busy = true
         message = ""
         output = null
+        progress = -1f
         scope.launch {
             try {
-                message = withContext(Dispatchers.IO) { work() }
+                message = withContext(Dispatchers.IO) { PdfOps.onProgress = { progress = it }; work() }
                 ok = true
                 output = out
             } catch (e: Throwable) {
                 message = e.message ?: e.toString()
                 ok = false
             } finally {
+                PdfOps.onProgress = null
                 busy = false
             }
         }
@@ -177,8 +181,10 @@ private fun JobStatus(job: ToolJob) {
     var reading by remember { mutableStateOf<File?>(null) }
     if (job.busy) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            LinearProgressIndicator(Modifier.fillMaxWidth())
-            Text(t("working"), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
+            val pr = job.progress
+            if (pr >= 0f) LinearProgressIndicator(progress = { pr }, modifier = Modifier.fillMaxWidth().testTag("progress_bar"))
+            else LinearProgressIndicator(Modifier.fillMaxWidth())
+            Text(if (pr >= 0f) "${t("working")} ${(pr * 100).toInt()}%" else t("working"), Modifier.testTag("progress_text"), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
         }
     } else if (job.message.isNotEmpty()) {
         val good = job.ok

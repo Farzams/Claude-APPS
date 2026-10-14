@@ -53,6 +53,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -111,7 +112,8 @@ fun EditorScreen(vm: EditorViewModel, prefs: Prefs, onBack: () -> Unit) {
         val wide = maxWidth >= 840.dp
         Column(Modifier.fillMaxSize()) {
             TopBar(vm, onBack, engine, view, ::update)
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            if (vm.compiling) LinearProgressIndicator(progress = { vm.progress }, modifier = Modifier.fillMaxWidth().height(3.dp).testTag("compile_progress"))
+            else HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             FileTabs(vm)
             if (vm.findOpen) FindBar(vm)
             Box(Modifier.weight(1f).fillMaxWidth()) {

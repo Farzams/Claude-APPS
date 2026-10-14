@@ -3,6 +3,7 @@ package app.pdftoolkit.mobile
 import android.app.Application
 import android.net.Uri
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -63,10 +64,11 @@ fun parseErrors(log: String): List<TexError> {
 fun bibKeys(text: String): List<String> =
     Regex("@\\w+\\s*\\{\\s*([^,\\s]+)\\s*,").findAll(text).map { it.groupValues[1] }.toList()
 
+private const val LAST_PDF = ".last.pdf"
+
 class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
     val store = ProjectStore(app)
     val history = HistoryStore(app)
-    private val outPdf = File(app.cacheDir, "preview.pdf")
 
     var projects by mutableStateOf(listOf<Project>())
     var project by mutableStateOf<Project?>(null)
@@ -82,6 +84,7 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
     var pdfFile by mutableStateOf<File?>(null)
     var pdfVersion by mutableIntStateOf(0)
     var compileOk by mutableStateOf<Boolean?>(null)
+    var progress by mutableFloatStateOf(0f)
     var canUndo by mutableStateOf(false)
     var canRedo by mutableStateOf(false)
 
@@ -142,7 +145,9 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
         field = TextFieldValue("")
         meta = store.meta(p)
         refreshFiles()
-        pdfFile = null; compileOk = null; log = ""; errors = emptyList(); status = ""
+        pdfFile = File(p.dir, LAST_PDF).takeIf { it.isFile }      // the last compiled PDF is kept with the project
+        pdfVersion++
+        compileOk = null; log = ""; errors = emptyList(); status = ""
         findOpen = false
         openFile(if (meta.main in files) meta.main else files.firstOrNull { isTextFile(it) } ?: meta.main)
         refreshBib()
@@ -471,6 +476,18 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
         compiling = true
         compileOk = null
         status = t("compiling")
+        val started = System.currentTimeMillis()
+        val prefs = app.getSharedPreferences("texora", android.content.Context.MODE_PRIVATE)
+        val expected = prefs.getLong("compile_ms_${meta.engine}", 40_000L).coerceIn(5_000L, 240_000L)
+        // the engine cannot say how far it is, so the percentage is an estimate from how long the last compile took
+        val ticker = viewModelScope.launch {
+            while (true) {
+                val x = (System.currentTimeMillis() - started).toFloat() / expected
+                progress = (1f - kotlin.math.exp(-1.6f * x)).coerceAtMost(0.95f)
+                status = t("compiling").removeSuffix("…") + " " + (progress * 100).toInt() + "%"
+                delay(500)
+            }
+        }
         viewModelScope.launch {
             withContext(Dispatchers.IO) { flush(); refreshBib() }
             val list = withContext(Dispatchers.IO) {
@@ -483,11 +500,14 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
             android.util.Log.i("PDFTK", "calling the engine with ${list.size} files, engine ${meta.engine}")
             val driver = if (meta.engine == "pdftex") "pdftex_bibtex8" else "xetex_bibtex8_dvipdfmx"
             val res = TexEngine.compile(list, meta.main, driver)
+            ticker.cancel()
+            if (res.ok) prefs.edit().putLong("compile_ms_${meta.engine}", System.currentTimeMillis() - started).apply()
             log = res.log
             errors = parseErrors(res.log)
             if (res.ok && res.pdf != null) {
-                withContext(Dispatchers.IO) { outPdf.writeBytes(res.pdf) }
-                pdfFile = outPdf
+                val out = File(p.dir, LAST_PDF)
+                withContext(Dispatchers.IO) { out.writeBytes(res.pdf) }
+                pdfFile = out
                 pdfVersion++
                 compileOk = true
                 status = t("ok")
@@ -497,6 +517,7 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
             }
             android.util.Log.i("PDFTK", "compile ok=${res.ok} exit=${res.exit} errors=${errors.size} pdfBytes=${res.pdf?.size}")
             if (!res.ok) android.util.Log.i("PDFTK", "log tail: " + res.log.takeLast(2500))
+            ticker.cancel()
             compiling = false
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.calculateCentroid
 import androidx.compose.foundation.gestures.calculateZoom
+import androidx.compose.foundation.gestures.calculatePan
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -160,7 +161,7 @@ fun PdfPreview(file: File?, version: Int, modifier: Modifier = Modifier) {
         val viewWidth = maxWidth
         val basePx = with(density) { viewWidth.toPx() }
         val viewHeightPx = with(density) { maxHeight.toPx() }
-        val padPx = with(density) { 12.dp.toPx() }
+        val padPx = with(density) { 6.dp.toPx() }
         val step = ceil(scale * 2f) / 2f                                   // re-draw the pages sharper in half steps only
         val widthPx = (basePx * step * 1.5f).toInt().coerceIn(600, 3200)
         val current by remember { derivedStateOf { listState.firstVisibleItemIndex + 1 } }
@@ -200,9 +201,13 @@ fun PdfPreview(file: File?, version: Int, modifier: Modifier = Modifier) {
                             val event = awaitPointerEvent(PointerEventPass.Initial)
                             if (event.changes.size >= 2) {
                                 val zoom = event.calculateZoom()
-                                if (zoom != 1f) {
-                                    if (live == 1f) liveOrigin = event.calculateCentroid()
+                                val pan = event.calculatePan()
+                                if (zoom != 1f || pan != Offset.Zero) {
+                                    if (live == 1f && zoom != 1f) liveOrigin = event.calculateCentroid()
                                     live = (live * zoom).coerceIn(1f / scale, 5f / scale)
+                                    // two fingers also drag the document, as they do in any viewer
+                                    hScroll.dispatchRawDelta(-pan.x / live)
+                                    listState.dispatchRawDelta(-pan.y / live)
                                     event.changes.forEach { it.consume() }
                                 }
                             }
@@ -229,7 +234,7 @@ fun PdfPreview(file: File?, version: Int, modifier: Modifier = Modifier) {
             Box(Modifier.fillMaxSize().horizontalScroll(hScroll)) {
                 LazyColumn(
                     Modifier.width(viewWidth * scale).fillMaxSize().testTag("pdf_list"), state = listState,
-                    contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(6.dp), verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     items(doc.pageCount, key = { it }) { i ->
                         var ratio by remember { mutableStateOf(0.7f) }

@@ -33,6 +33,10 @@ data class PageItem(val index: Int, val turn: Int = 0)
 
 /** The PDF operations behind the tool screens. Everything here runs on a background thread. */
 object PdfOps {
+    /** Set by the running job; the loops below report how far they are (done of total). */
+    @Volatile var onProgress: ((Float) -> Unit)? = null
+    private fun report(done: Int, total: Int) { if (total > 0) onProgress?.invoke((done.toFloat() / total).coerceIn(0f, 1f)) }
+
     /** A folder given either as a plain path (the in-app file manager) or as an Android tree address. */
     fun folderOf(ctx: Context, folder: Uri): DocumentFile? =
         fileOf(folder)?.let { DocumentFile.fromFile(it) } ?: DocumentFile.fromTreeUri(ctx, folder)
@@ -76,14 +80,20 @@ object PdfOps {
     }
 
     fun merge(ctx: Context, uris: List<Uri>, out: OutputStream) {
-        val streams = uris.map { input(ctx, it) }
+        val sources = ArrayList<PDDocument>()
         try {
-            val m = PDFMergerUtility()
-            streams.forEach { m.addSource(it) }
-            m.destinationStream = out
-            m.mergeDocuments(MemoryUsageSetting.setupMainMemoryOnly())
+            PDDocument().use { dst ->
+                val m = PDFMergerUtility()
+                for ((n, u) in uris.withIndex()) {
+                    val src = load(ctx, u)
+                    sources.add(src)                                   // must stay open until the result is saved
+                    m.appendDocument(dst, src)
+                    report(n + 1, uris.size)
+                }
+                dst.save(out)
+            }
         } finally {
-            streams.forEach { runCatching { it.close() } }
+            sources.forEach { runCatching { it.close() } }
         }
     }
 
@@ -91,9 +101,10 @@ object PdfOps {
     fun build(ctx: Context, uri: Uri, items: List<PageItem>, out: OutputStream, password: String = "") {
         load(ctx, uri, password).use { src ->
             PDDocument().use { dst ->
-                for (it in items) {
+                for ((n, it) in items.withIndex()) {
                     val page = dst.importPage(src.getPage(it.index))
                     if (it.turn != 0) page.rotation = ((page.rotation + it.turn) % 360 + 360) % 360
+                    report(n + 1, items.size)
                 }
                 dst.save(out)
             }
@@ -115,6 +126,7 @@ object PdfOps {
                     for (idx in r) dst.importPage(src.getPage(idx))
                     (ctx.contentResolver.openOutputStream(file.uri) ?: error("Cannot write")).use { dst.save(it) }
                 }
+                report(i + 1, ranges.size)
             }
         }
         return ranges.size
@@ -176,6 +188,7 @@ object PdfOps {
                     val bmp = renderPage(r, i, dpi / 72f)
                     addPicture(doc, bmp, wPt, hPt, quality)
                     bmp.recycle()
+                    report(i + 1, r.pageCount)
                 }
                 doc.save(out)
             }
@@ -184,7 +197,8 @@ object PdfOps {
 
     fun picturesToPdf(ctx: Context, uris: List<Uri>, out: OutputStream) {
         PDDocument().use { doc ->
-            for (u in uris) {
+            for ((n, u) in uris.withIndex()) {
+                report(n, uris.size)
                 val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
                 input(ctx, u).use { BitmapFactory.decodeStream(it, null, opts) }
                 var sample = 1
@@ -212,6 +226,7 @@ object PdfOps {
                     bmp.compress(if (png) Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG, 92, it)
                 }
                 bmp.recycle()
+                report(i + 1, r.pageCount)
             }
             r.pageCount
         }
@@ -259,7 +274,9 @@ object PdfOps {
             val gs = PDExtendedGraphicsState()
             gs.setNonStrokingAlphaConstant(opacity)
             gs.setStrokingAlphaConstant(opacity)
-            for (page in doc.pages) {
+            val pageTotal = doc.numberOfPages
+            for ((pn, page) in doc.pages.withIndex()) {
+                report(pn, pageTotal)
                 val box = page.mediaBox
                 val cx = box.lowerLeftX + box.width / 2f
                 val cy = box.lowerLeftY + box.height / 2f
@@ -300,6 +317,7 @@ object PdfOps {
                     cs.showText(label)
                     cs.endText()
                 }
+                report(i + 1, total)
             }
             doc.save(out)
         }

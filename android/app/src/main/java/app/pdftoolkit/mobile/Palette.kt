@@ -1,5 +1,10 @@
 package app.pdftoolkit.mobile
 
+import android.app.Activity
+import android.content.ContextWrapper
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -109,6 +114,17 @@ fun AppTheme(pal: Palette, accentHex: String, fa: Boolean, content: @Composable 
         outline = pal.muted, outlineVariant = pal.line,
         error = Color(0xFFDC2626),
     )
+    val view = LocalView.current
+    SideEffect {
+        var c = view.context
+        while (c is ContextWrapper && c !is Activity) c = c.baseContext
+        val w = (c as? Activity)?.window
+        if (w != null) {
+            val ctl = WindowCompat.getInsetsController(w, view)
+            ctl.isAppearanceLightStatusBars = !pal.dark         // dark clock and battery icons on a light theme
+            ctl.isAppearanceLightNavigationBars = !pal.dark
+        }
+    }
     CompositionLocalProvider(LocalLayoutDirection provides if (fa) LayoutDirection.Rtl else LayoutDirection.Ltr, LocalStyle provides st) {
         MaterialTheme(colorScheme = scheme, typography = typography(fa, st), shapes = st.shapes, content = content)
     }
