@@ -84,12 +84,6 @@ jobs:
           if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress; }
           & $iscc installer.iss
           Compress-Archive -Path dist\PDFToolkit\* -DestinationPath dist\PDFToolkit-portable.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: PDFToolkit-windows
-          path: |
-            pdftoolkit/dist/PDFToolkit-Setup.exe
-            pdftoolkit/dist/PDFToolkit-portable.zip
       - name: Publish release (with retries)
         shell: pwsh
         env: { GH_TOKEN: "${{ github.token }}" }

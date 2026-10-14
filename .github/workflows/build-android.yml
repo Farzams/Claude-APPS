@@ -51,6 +51,7 @@ jobs:
           cat pdftk.log 2>/dev/null | tail -60 || true
       - uses: actions/upload-artifact@v4
         if: always()
+        continue-on-error: true
         with:
           name: android-results
           path: |
