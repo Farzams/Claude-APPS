@@ -1,4 +1,4 @@
-"""PDF Toolkit - OCR, convert, split, merge, compress, images, page tools and more.
+"""PDF Toolkit - convert, split, merge, compress, images, page tools and more.
 
 Qt interface: English and Persian (right-to-left), colour themes, icon styles.
 """
@@ -23,10 +23,29 @@ def selftest(outfile: str) -> int:
         except BaseException:
             res[name] = "FAIL: " + traceback.format_exc()[-400:]
 
-    def opencv():
-        import cv2
-        import numpy as np
-        return cv2.fastNlMeansDenoising(np.zeros((40, 40), np.uint8)).shape
+    def window_():
+        import os
+        import tempfile
+        os.environ["APPDATA"] = tempfile.mkdtemp()            # do not touch the user's own settings
+        from PySide6.QtWidgets import QApplication
+        app = QApplication.instance() or QApplication([])
+        app.setStyle("Fusion")
+        import qt_style
+        qt_style.load_fonts()
+        qt_style.apply_app_font(app)
+        from qt_main import PAGES, MainWindow
+        cfg = settings.load()
+        theme.set_theme(cfg["theme"], "")
+        w = MainWindow(cfg)
+        w.show()
+        for _ in range(20):
+            app.processEvents()
+        for key, _title, _cls in PAGES:
+            w.show_page(key)
+            app.processEvents()
+        assert not w.grab().isNull()
+        w.close()
+        return f"{len(PAGES)} pages"
 
     def pikepdf_():
         import pikepdf
@@ -38,9 +57,10 @@ def selftest(outfile: str) -> int:
         with pikepdf.open(io.BytesIO(data)) as p:
             return len(p.pages)
 
-    def pdf2docx_():
-        import pdf2docx  # noqa: F401
-        return "import"
+    def word_():
+        import docx
+        import pdftools  # noqa: F401
+        return docx.Document().element.tag[-8:]
 
     def openpyxl_():
         import openpyxl
@@ -50,18 +70,12 @@ def selftest(outfile: str) -> int:
         from PySide6.QtGui import QGuiApplication
         QGuiApplication.instance() or QGuiApplication([])
         import icons
-        pm = icons.tile_pixmap("read", 48, 2.0)
+        pm = icons.tile_pixmap("convert", 48, 2.0)
         assert not pm.isNull()
         return pm.width()
 
-    def ocr_():
-        import core
-        langs = core.ocr_languages()
-        assert {"eng", "fas", "ara"} <= set(langs), "OCR languages missing: " + str(langs)
-        return ",".join(sorted(langs))
-
-    for name, fn in (("opencv", opencv), ("pikepdf", pikepdf_), ("pdf2docx", pdf2docx_), ("openpyxl", openpyxl_),
-                     ("svg icons", icons_), ("OCR languages", ocr_)):
+    for name, fn in (("main window (all pages)", window_), ("pikepdf", pikepdf_), ("Word export", word_),
+                     ("openpyxl", openpyxl_), ("svg icons", icons_)):
         t(name, fn)
     try:
         with open(outfile, "w", encoding="utf-8") as f:

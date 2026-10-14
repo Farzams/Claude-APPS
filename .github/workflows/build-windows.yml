@@ -32,27 +32,15 @@ jobs:
           Get-ChildItem pdftoolkit/djvu | Select-Object Name, Length
           & pdftoolkit\djvu\ddjvu.exe -help 2>&1 | Select-Object -First 3
           if ($LASTEXITCODE -eq -1073741515) { throw "ddjvu.exe is missing a DLL" }
-      - name: Get Ghostscript, Tesseract and OCR language data (bundled)
+      - name: Get Ghostscript (bundled)
         shell: pwsh
         run: |
-          choco install ghostscript tesseract -y --no-progress
+          choco install ghostscript -y --no-progress
           $gsexe = Get-ChildItem "${env:ProgramFiles}\gs" -Recurse -Filter gswin64c.exe -ErrorAction Stop | Select-Object -First 1
           New-Item -ItemType Directory -Force pdftoolkit/gs | Out-Null
           Copy-Item "$($gsexe.Directory.Parent.FullName)\*" pdftoolkit/gs -Recurse
-          $tess = "${env:ProgramFiles}\Tesseract-OCR"
-          if (-not (Test-Path "$tess\tesseract.exe")) { throw "tesseract.exe not found at $tess" }
-          New-Item -ItemType Directory -Force pdftoolkit/tesseract | Out-Null
-          Copy-Item "$tess\*" pdftoolkit/tesseract -Recurse
-          # best-quality models for Persian and Arabic
-          foreach ($l in "fas","ara") {
-            Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_best/raw/main/$l.traineddata" -OutFile "pdftoolkit/tesseract/tessdata/$l.traineddata"
-          }
-          Invoke-WebRequest "https://github.com/tesseract-ocr/tessdata_fast/raw/main/eng.traineddata" -OutFile "pdftoolkit/tesseract/tessdata/eng.traineddata"
-          # only English, Persian and Arabic are kept (plus orientation data)
-          Get-ChildItem pdftoolkit/tesseract/tessdata -Filter *.traineddata | Where-Object { $_.BaseName -notin "eng","fas","ara","osd" } | Remove-Item -Force
           Get-ChildItem pdftoolkit/gs/bin | Select-Object -First 5 Name
-          Get-ChildItem pdftoolkit/tesseract/tessdata | Select-Object Name, Length
-      - name: Smoke test bundled tools (OCR, Ghostscript, PDF tools)
+      - name: Smoke test bundled tools (Ghostscript, PDF tools)
         shell: pwsh
         timeout-minutes: 30
         env: { PYTHONUTF8: "1" }
@@ -65,9 +53,24 @@ jobs:
           python pdftoolkit/gui_smoke.py en
           python pdftoolkit/gui_smoke.py fa
       # one-folder build: starts instantly (a one-file exe unpacks itself on every launch)
-      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --add-data "tesseract;tesseract" --collect-all docx --collect-all bidi --collect-all pdf2docx --hidden-import PySide6.QtSvg --hidden-import openpyxl --hidden-import fitz --hidden-import pikepdf --hidden-import cv2 --exclude-module tkinter --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick --exclude-module PySide6.QtQuickWidgets --exclude-module PySide6.QtPdf --exclude-module PySide6.QtPdfWidgets --exclude-module PySide6.QtSql --exclude-module PySide6.QtTest --exclude-module PySide6.QtOpenGL --exclude-module PySide6.QtOpenGLWidgets app.py
+      - run: python -m PyInstaller --noconfirm --onedir --windowed --name PDFToolkit --icon icon.ico --add-data "icon.ico;." --add-data "fonts;fonts" --add-data "djvu;djvu" --add-data "gs;gs" --collect-all docx --collect-all bidi --hidden-import PySide6.QtSvg --hidden-import openpyxl --hidden-import fitz --hidden-import pikepdf --exclude-module tkinter --exclude-module PySide6.QtQml --exclude-module PySide6.QtQuick --exclude-module PySide6.QtQuickWidgets --exclude-module PySide6.QtPdf --exclude-module PySide6.QtPdfWidgets --exclude-module PySide6.QtSql --exclude-module PySide6.QtTest --exclude-module PySide6.QtOpenGL --exclude-module PySide6.QtNetwork --exclude-module PySide6.QtDBus --exclude-module PySide6.QtOpenGLWidgets app.py
         working-directory: pdftoolkit
-      - name: Check the packaged program (OpenCV, PDF repair, Word export, Excel, icons, OCR languages)
+      - name: Trim Qt files the program never uses (smaller download)
+        working-directory: pdftoolkit
+        shell: pwsh
+        run: |
+          $q = Get-ChildItem dist\PDFToolkit -Recurse -Directory -Filter PySide6 | Select-Object -First 1
+          $before = (Get-ChildItem dist\PDFToolkit -Recurse -File | Measure-Object Length -Sum).Sum / 1MB
+          foreach ($pat in "opengl32sw.dll","d3dcompiler_47.dll","Qt6Quick*.dll","Qt6Qml*.dll","Qt6Pdf*.dll","Qt6VirtualKeyboard*.dll","Qt6OpenGL*.dll","Qt6Network.dll","Qt6DBus.dll") {
+            Get-ChildItem $q.FullName -Recurse -File -Filter $pat -ErrorAction SilentlyContinue | Remove-Item -Force -Verbose
+          }
+          foreach ($d in "translations","plugins\tls","plugins\networkinformation","plugins\qmltooling") {
+            $p = Join-Path $q.FullName $d
+            if (Test-Path $p) { Remove-Item $p -Recurse -Force; Write-Host "removed $d" }
+          }
+          $after = (Get-ChildItem dist\PDFToolkit -Recurse -File | Measure-Object Length -Sum).Sum / 1MB
+          Write-Host ("program folder: {0:N0} MB -> {1:N0} MB" -f $before, $after)
+      - name: Check the packaged program (main window with every page, PDF repair, Word export, Excel, icons)
         working-directory: pdftoolkit
         shell: pwsh
         env: { PYTHONUTF8: "1" }

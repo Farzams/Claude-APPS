@@ -22,7 +22,7 @@ from qt_common import FlowLayout, Tool, hline, mkbutton, mkcheck, mkcombo, mklab
 APP_VERSION = "6.1"
 THEME_ORDER = ["qp_light", "qp_dark", "paper", "paper_dark", "daylight", "indigo_night", "ocean", "forest", "sunset",
                "rose", "lavender", "gold", "graphite"]
-SAMPLE_ICONS = ["home", "read", "convert", "ocr"]
+SAMPLE_ICONS = ["home", "split", "convert", "merge"]
 SHORTCUTS = [("Ctrl+K", "Search tools and settings")]
 
 
@@ -130,7 +130,6 @@ class SettingsTool(Tool):
     subtitle = "Everything is saved automatically."
 
     SECTIONS = [("appearance", "settings", "Appearance"), ("general", "home", "General"),
-                ("ocr", "ocr", "OCR languages"),
                 ("shortcuts", "search", "Shortcuts"), ("privacy", "security", "Privacy"),
                 ("about", "help", "About")]
 
@@ -331,13 +330,6 @@ class SettingsTool(Tool):
         self.win.apply_style()
         self.refresh()
 
-    # ------------------------------------------------------------ OCR
-    def sec_ocr(self, lay):
-        langs = core.ocr_languages()
-        names = {"eng": "English", "fas": "Persian", "ara": "Arabic"}
-        shown = ", ".join(tr(names.get(c, c)) for c in sorted(langs) if c != "osd") or tr("none found")
-        lay.addWidget(Row("OCR languages", "Installed with the app. Pick the language on the OCR page.", mklabel(shown, "muted", wrap=True, translate=False)))
-
     # ------------------------------------------------------------ Shortcuts
     def sec_shortcuts(self, lay):
         for keys, what in SHORTCUTS:
@@ -354,7 +346,7 @@ class SettingsTool(Tool):
     def sec_about(self, lay):
         lay.addWidget(Row("Version", "", mklabel(APP_VERSION, translate=False)))
         lay.addWidget(Row("What is inside", "Free software, bundled so it works offline",
-                          mklabel("PyMuPDF, Qt for Python, Tesseract OCR, Ghostscript, pikepdf, OpenCV, pdf2docx, DjVuLibre. "
+                          mklabel("PyMuPDF, Qt for Python, Ghostscript, pikepdf, DjVuLibre. "
                                   "Fonts: Inter, Vazirmatn, Noto Sans Arabic.", "muted", wrap=True, translate=False)))
         lay.addWidget(Row("Releases and licences", "Full licence texts are in the licences folder of the installation.",
                           mklabel("github.com/Farzams/Claude-APPS", "muted", translate=False)))

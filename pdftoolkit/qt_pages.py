@@ -1,4 +1,4 @@
-"""The everyday tools: split, merge, compress, convert, images, page tools, OCR, extract text."""
+"""The everyday tools: split, merge, compress, convert, images and page tools."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -9,38 +9,10 @@ import core
 from i18n import rtl, t, tr, trf
 from qt_common import (FileList, FileRow, Form, Tool, mkcheck, mkcombo, mklabel)
 
-LANG_NAMES = {"fas": "Persian (Farsi)", "eng": "English", "ara": "Arabic", "deu": "German", "fra": "French",
-              "spa": "Spanish", "ita": "Italian", "rus": "Russian", "tur": "Turkish", "nld": "Dutch",
-              "por": "Portuguese", "heb": "Hebrew", "ell": "Greek", "chi_sim": "Chinese (Simplified)",
-              "jpn": "Japanese", "kor": "Korean", "urd": "Urdu", "pus": "Pashto", "hin": "Hindi", "ukr": "Ukrainian",
-              "pol": "Polish", "ces": "Czech", "swe": "Swedish", "dan": "Danish", "fin": "Finnish", "hun": "Hungarian",
-              "ron": "Romanian", "bul": "Bulgarian", "lat": "Latin", "aze": "Azerbaijani", "uzb": "Uzbek"}
-FA_LANG_NAMES = {"fas": "فارسی", "eng": "انگلیسی", "ara": "عربی", "deu": "آلمانی", "fra": "فرانسوی",
-                 "spa": "اسپانیایی", "ita": "ایتالیایی", "rus": "روسی", "tur": "ترکی", "nld": "هلندی",
-                 "por": "پرتغالی", "heb": "عبری", "ell": "یونانی", "chi_sim": "چینی", "jpn": "ژاپنی",
-                 "kor": "کره‌ای", "urd": "اردو", "pus": "پشتو", "hin": "هندی", "ukr": "اوکراینی", "pol": "لهستانی",
-                 "ces": "چکی", "swe": "سوئدی", "dan": "دانمارکی", "fin": "فنلاندی", "hun": "مجاری", "ron": "رومانیایی",
-                 "bul": "بلغاری", "lat": "لاتین", "aze": "آذربایجانی", "uzb": "ازبکی"}
-LANG_ORDER = ["fas", "eng", "ara"]
-
-
-def lang_choices() -> dict[str, str]:
-    """{label: code}, Persian first."""
-    codes = core.ocr_languages()
-    codes.sort(key=lambda c: (LANG_ORDER.index(c) if c in LANG_ORDER else 99, LANG_NAMES.get(c, c)))
-    names = FA_LANG_NAMES if rtl() else LANG_NAMES
-    return {f"{names.get(c, c)}  ({c})": c for c in codes}
-
-
-def tess_lang(code: str, also_english: bool) -> str:
-    if also_english and code != "eng" and "eng" in core.ocr_languages():
-        return f"{code}+eng"
-    return code
-
 
 def missing_tools() -> str:
     names = [n for n, ok in [("DjVu", core.find_ddjvu()),
-                             ("OCR", core.find_tesseract()), ("Ghostscript", core.find_gs())] if not ok]
+                             ("Ghostscript", core.find_gs())] if not ok]
     return ", ".join(names)
 
 
@@ -280,46 +252,5 @@ class PagesTool(Tool):
         def job(log, prog):
             n = core.edit_pages(src, out, action, spec, angle)
             log(trf("✔ Saved {name} ({pages} pages)", name=Path(out).name, pages=n))
-            return _stem_dir(out)
-        self.win.run(job)
-
-
-class OcrTool(Tool):
-    key, icon, title = "ocr", "ocr", "OCR"
-    subtitle = ("Turn scanned books and documents into PDFs whose text can be searched and copied. "
-                "Persian (Farsi) and Arabic are fully supported.")
-
-    def build(self):
-        f = Form()
-        self.src = FileRow(on_pick=lambda p: None if self.out.get() else
-                           self.out.edit.setText(str(Path(p).with_name(Path(p).stem + "_ocr.pdf"))))
-        self.out = FileRow("save")
-        f.row("PDF file", self.src)
-        f.row("Save as", self.out)
-        self.langs = lang_choices()
-        self.lang = mkcombo(self.langs or {"English  (eng)": "eng"})
-        f.row("Language", self.lang)
-        self.eng = mkcheck("Also recognise English words (recommended for mixed text)", True)
-        f.row("", self.eng, span=True)
-        self.dpi = mkcombo({tr("200 dpi (fast)"): 200, tr("300 dpi (recommended)"): 300, tr("400 dpi (small print)"): 400}, 300)
-        f.row("Scan quality", self.dpi)
-        self.skip = mkcheck("Skip pages that already contain text", True)
-        f.row("", self.skip, span=True)
-        self.body.addLayout(f)
-        self.note("The original page images stay untouched — only an invisible text layer is added, "
-                  "so the file keeps its quality." if self.langs else "OCR engine is missing from this build.")
-        self.body.addStretch(1)
-        self.run_button("Run OCR", self.run)
-
-    def run(self):
-        src, out = self.src.get(), self.out.get()
-        if not self.need(src, out):
-            return
-        lang = tess_lang(self.lang.currentData(), self.eng.isChecked())
-        dpi, skip = self.dpi.currentData(), self.skip.isChecked()
-
-        def job(log, prog):
-            n, total = core.ocr_pdf(src, out, lang, dpi, skip, 3, prog)
-            log(trf("✔ OCR finished: {n} of {total} pages → {name}", n=n, total=total, name=Path(out).name))
             return _stem_dir(out)
         self.win.run(job)

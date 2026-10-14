@@ -22,8 +22,6 @@ def check(name, ok, extra="", soft=False):
 check.failed = []
 
 print("tools:", core.supported_status())
-check("tesseract found", bool(core.find_tesseract()), str(core.find_tesseract()))
-check("Persian OCR data", "fas" in core.ocr_languages(), str(core.ocr_languages())[:80])
 check("Ghostscript found", bool(core.find_gs()), str(core.find_gs()))
 check("fonts present", (core.fonts_dir() / "NotoSansArabic-Regular.ttf").is_file())
 
@@ -37,13 +35,6 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as td:
         pg = scan.new_page(width=d[0].rect.width, height=d[0].rect.height)
         pg.insert_image(pg.rect, pixmap=pix)
         scan.save(td / "scan.pdf")
-    n, total = core.ocr_pdf(str(td / "scan.pdf"), str(td / "ocr.pdf"), "fas", 300)
-    check("Persian OCR ran", n == 1 and total == 1)
-    hits = core.search_pdf(str(td / "ocr.pdf"), "عملگر")
-    check("Persian text searchable after OCR", hits == [0], str(hits))
-    core.extract_text(str(td / "ocr.pdf"), str(td / "o.txt"), "txt")
-    txt = (td / "o.txt").read_text(encoding="utf-8-sig")
-    check("Persian text extracted in order", "فضاهای برداری" in txt or "جبرهای خطی" in txt, txt[:60])
     # compression with Ghostscript
     if core.find_gs():
         a, b = core.compress_pdf(str(td / "scan.pdf"), str(td / "c.pdf"), list(core.COMPRESS_LEVELS)[3], "ghostscript")
@@ -96,29 +87,16 @@ with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as ptd:
     res = pdftools.batch_run([en, fa], str(ptd / "b"), "watermark", {"text": "DRAFT"})
     check("Batch run", all(ok for _, ok, _ in res))
 
-# ---- scan cleanup, repair, Word layout
+# ---- repair
+import pymupdf as _pm
 with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as qd:
     qd = Path(qd)
-    import numpy as np
-    from PIL import Image
     src = str(qd / "e.pdf")
-    core.html_to_pdf("<p>" + "Scan test line. " * 300 + "</p>", src, "a5")
-    with pymupdf.open(src) as d:
-        pix = d[0].get_pixmap(dpi=150, colorspace=pymupdf.csGRAY)
-    im = Image.frombytes("L", (pix.width, pix.height), pix.samples).rotate(3, fillcolor=255, expand=False)
-    im.save(qd / "k.png")
-    with pymupdf.open() as d:
-        pg = d.new_page(width=pix.width * 72 / 150, height=pix.height * 72 / 150)
-        pg.insert_image(pg.rect, filename=str(qd / "k.png"))
-        d.save(str(qd / "k.pdf"))
-    ang = pdftools.clean_scan(str(qd / "k.pdf"), str(qd / "c.pdf"), "bw", dpi=150)
-    check("Clean scan: skew found (3 degrees)", abs(abs(ang[0]) - 3) < 0.6, f"{ang[0]:.2f}")
+    core.html_to_pdf("<p>" + "Repair test line. " * 300 + "</p>", src, "a5")
     raw = Path(src).read_bytes()
     (qd / "b.pdf").write_bytes(raw[:-250])
     old, new, probs = pdftools.repair_pdf(str(qd / "b.pdf"), str(qd / "f.pdf"))
-    check("Repair damaged PDF", pymupdf.open(str(qd / "f.pdf")).page_count >= 1 and bool(probs))
-    pdftools.to_docx(src, str(qd / "l.docx"), "", True, None, "layout")
-    check("PDF to Word (layout engine)", (qd / "l.docx").stat().st_size > 1000)
+    check("Repair damaged PDF", _pm.open(str(qd / "f.pdf")).page_count >= 1 and bool(probs))
 
 print("FAILED:", check.failed or "none")
 sys.exit(1 if check.failed else 0)

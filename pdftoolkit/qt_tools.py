@@ -12,7 +12,6 @@ import core
 import pdftools
 from i18n import tr, trf
 from qt_common import FileList, FileRow, Form, Tool, mkbutton, mkcheck, mkcombo, mklabel
-from qt_pages import lang_choices, tess_lang
 
 
 def _suffix_path(src: str, suffix: str, ext: str = ".pdf") -> str:
@@ -395,15 +394,6 @@ class ExportTool(Tool):
         self.pages = QLineEdit()
         self.pages.setPlaceholderText(tr("all pages, or e.g. 1-3, 7"))
         f.row("Pages", self.pages)
-        self.engine = mkcombo({tr("Automatic (layout for English, flowing text for Persian)"): "auto",
-                               tr("Keep the page layout (columns, tables) — left-to-right only"): "layout",
-                               tr("Simple flowing text — safest for Persian and Arabic"): "flow"})
-        f.row("Word layout", self.engine)
-        self.ocr = mkcheck("Scanned document: recognise the text first (OCR)", False)
-        f.row("", self.ocr, span=True)
-        self.langs = lang_choices()
-        self.lang = mkcombo(self.langs or {"English  (eng)": "eng"})
-        f.row("OCR language", self.lang)
         self.body.addLayout(f)
         self.note_lb = self.note("")
         self.body.addStretch(1)
@@ -418,9 +408,6 @@ class ExportTool(Tool):
     def _fmt(self):
         kind = self.FORMATS[self.fmt.currentData()][1]
         self.dpi.setEnabled(kind == "img")
-        self.engine.setEnabled(kind == "docx")
-        self.ocr.setEnabled(kind in ("docx", "txt") and self.fmt.currentData() != "Web page (.html)")
-        self.lang.setEnabled(self.ocr.isEnabled())
         self.note_lb.setText(tr(self.NOTES.get(kind, "")))
 
     def _picked(self, p):
@@ -438,19 +425,9 @@ class ExportTool(Tool):
         name = self.fmt.currentData()
         ext, kind = self.FORMATS[name]
         pages, dpi = self.pages.text(), self.dpi.currentData()
-        ocr = self.ocr.isChecked() and self.ocr.isEnabled()
-        lang = tess_lang(self.lang.currentData(), True)
-        eng = self.engine.currentData()
 
         def job(log, prog):
             work = src
-            tmp = None
-            if ocr:
-                import tempfile
-                tmp = str(Path(tempfile.mkdtemp(prefix="pdftk_ex_")) / "ocr.pdf")
-                log(tr("Recognising text…"))
-                core.ocr_pdf(src, tmp, lang, 300, True, 3, lambda i, t: prog(i / max(t, 1) * 0.5, 1))
-                work = tmp
             try:
                 if kind == "img":
                     d = Path(out) / (Path(src).stem + "_pages")
@@ -459,7 +436,7 @@ class ExportTool(Tool):
                     return str(d)
                 dst = str(core.unique_path(Path(out) / f"{Path(src).stem}.{ext}"))
                 if ext == "docx":
-                    pdftools.to_docx(work, dst, pages, True, lambda i, t, n: prog(i, t), eng)
+                    pdftools.to_docx(work, dst, pages, True, lambda i, t, n: prog(i, t))
                 elif ext == "xlsx":
                     n = pdftools.to_xlsx(work, dst, pages)
                     log(trf("{n} table(s) found", n=n))
@@ -468,9 +445,7 @@ class ExportTool(Tool):
                 log(trf("✔ Saved {name}", name=Path(dst).name))
                 return out
             finally:
-                if tmp:
-                    import shutil
-                    shutil.rmtree(Path(tmp).parent, ignore_errors=True)
+                pass
         self.win.run(job)
 
 
@@ -547,7 +522,7 @@ class HiddenTool(PdfInOut):
               "comments": "Comments and annotations", "attachments": "Attached and embedded files",
               "javascript": "JavaScript and actions", "links": "Links", "bookmarks": "Bookmarks",
               "form_data": "Entered form data", "thumbnails": "Page thumbnails",
-              "hidden_text": "Invisible text (also deletes the text layer made by OCR!)"}
+              "hidden_text": "Invisible text (also deletes the hidden text layer of scanned books)"}
 
     def build(self):
         f = Form()
@@ -572,53 +547,6 @@ class HiddenTool(PdfInOut):
             done = pdftools.remove_hidden(src, out, opts)
             log(trf("✔ Saved {name}. Removed: {what}", name=Path(out).name,
                     what=", ".join(tr(self.LABELS[k]) for k in done if k in self.LABELS) or "—"))
-            return _folder(out)
-        self.win.run(job)
-
-
-# ---------------------------------------------------------------- clean scans
-class CleanScanTool(PdfInOut):
-    key, icon, title = "clean", "clean", "Clean scans"
-    subtitle = "Straighten crooked pages, remove noise and shadows, and make scans sharper. Run OCR afterwards."
-    suffix = "_clean"
-
-    def build(self):
-        f = Form()
-        self.pdf_rows(f)
-        self.mode = mkcombo({tr("Grey — natural look"): "gray", tr("Black and white — smallest files"): "bw",
-                             tr("Colour — keep colours"): "color"})
-        f.row("Result", self.mode)
-        self.deskew = mkcheck("Straighten crooked pages", True)
-        self.shadows = mkcheck("Even out lighting and remove shadows", True)
-        f.row("", self.deskew, span=True)
-        f.row("", self.shadows, span=True)
-        self.denoise = mkcombo({tr("None"): "none", tr("Light — dust and specks"): "light",
-                                tr("Strong — grainy or photographed pages (slower)"): "strong"}, "light")
-        f.row("Noise removal", self.denoise)
-        self.dpi = mkcombo({"200": 200, "300": 300, "400": 400}, 300)
-        f.row("Quality (dpi)", self.dpi)
-        self.pages = QLineEdit()
-        self.pages.setPlaceholderText(tr("all pages, or e.g. 1-3, 7"))
-        f.row("Pages", self.pages)
-        self.body.addLayout(f)
-        self.note("The result contains pictures only. Use OCR afterwards to make the text searchable.")
-        self.body.addStretch(1)
-        self.run_button("Clean", self.run)
-
-    def run(self):
-        paths = self.check_paths()
-        if not paths:
-            return
-        src, out = paths
-        a = dict(mode=self.mode.currentData(), deskew=self.deskew.isChecked(), denoise=self.denoise.currentData(),
-                 shadows=self.shadows.isChecked(), dpi=self.dpi.currentData(), pages=self.pages.text())
-
-        def job(log, prog):
-            ang = pdftools.clean_scan(src, out, progress=lambda i, t, n: prog(i, t), **a)
-            tilted = [f"{i + 1}: {x:+.1f}°" for i, x in enumerate(ang) if abs(x) >= 0.3]
-            log(trf("✔ Saved {name} ({pages} pages)", name=Path(out).name, pages=len(ang)))
-            if tilted:
-                log(tr("Straightened:") + " " + ", ".join(tilted[:12]) + (" …" if len(tilted) > 12 else ""))
             return _folder(out)
         self.win.run(job)
 
@@ -683,11 +611,11 @@ class RepairTool(PdfInOut):
 class BatchTool(Tool):
     key, icon, title = "batch", "batch", "Batch process"
     subtitle = "Run one operation on many files at once — a whole folder of PDFs or books."
-    OPS = {"Compress": "compress", "OCR (searchable text)": "ocr", "Convert to PDF": "convert",
+    OPS = {"Compress": "compress", "Convert to PDF": "convert",
            "Password protect": "protect", "Remove password": "unlock", "Crop": "crop",
            "Delete blank pages": "delete_blank", "Watermark": "watermark", "Header / footer / Bates": "header_footer",
            "Page background": "background", "Remove hidden data": "remove_hidden", "PDF to pictures": "to_images",
-           "Clean scans": "clean_scan", "Repair & optimize": "repair", "PDF to Word": "to_docx", "PDF to Excel": "to_xlsx", "PDF to HTML": "to_html", "PDF to text": "to_text"}
+           "Repair & optimize": "repair", "PDF to Word": "to_docx", "PDF to Excel": "to_xlsx", "PDF to HTML": "to_html", "PDF to text": "to_text"}
 
     def build(self):
         self.files = FileList("PDF and documents (*.*)", 5)
@@ -714,8 +642,6 @@ class BatchTool(Tool):
         empty = QWidget()
         self.empty_idx = self.panels.addWidget(empty)
         panel("compress", lambda l: {"level": self._row(l, "Level", mkcombo({tr("Light"): "light", tr("Medium"): "medium", tr("Strong"): "strong"}, "medium"))})
-        self.langs = lang_choices()
-        panel("ocr", lambda l: {"lang": self._row(l, "Language", mkcombo(self.langs or {"English  (eng)": "eng"}))})
         panel("protect", lambda l: {"user": self._row(l, "Password to open the file", self._pw()),
                                     "owner": self._row(l, "Owner password", self._pw())})
         panel("unlock", lambda l: {"password": self._row(l, "Current password", self._pw())})
@@ -758,8 +684,6 @@ class BatchTool(Tool):
         v = {k: val(w) for k, w in o.items()}
         if op == "compress":
             return {"level": v["level"]}
-        if op == "ocr":
-            return {"lang": tess_lang(v["lang"], True)}
         if op == "protect":
             return {"user_pw": v["user"], "owner_pw": v["owner"]}
         if op == "crop":

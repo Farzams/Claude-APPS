@@ -2,7 +2,7 @@
 
 EN = [
     ('Getting started', """
-PDF Toolkit does the everyday jobs with PDFs in one place: OCR, convert, split, merge, compress, turn pictures into PDFs and edit pages.
+PDF Toolkit does the everyday jobs with PDFs in one place: convert, split, merge, compress, turn pictures into PDFs and edit pages.
 
 Pick a tool from the list on the side, or click one of the cards on the Home page. Press Ctrl+K to search every tool. Choose your file with Browse… or simply drag it onto the window.
 
@@ -10,18 +10,8 @@ Long jobs show a progress bar at the bottom. When a job finishes, the log tells 
 
 Everything is built in. Nothing else needs to be installed.
 """),
-    ('OCR: scanned books', """
-OCR adds an invisible text layer to scanned pages so you can search and copy them. The pictures of the pages are not changed.
-
-Choose the language of the book (Persian is the first choice). Keep "Also recognise English words" ticked when the text mixes Persian and English, for example formulas, names and references.
-
-Scan quality: 300 dpi is the best choice for normal books. Use 400 dpi for very small print and 200 dpi for a quick draft.
-
-Pages that already contain text are skipped unless you untick the option. OCR of a long book can take a few minutes; the app uses all processor cores.
-
-Tips for better results: straight, sharp, dark-on-light scans work best. Photos taken at an angle or with shadows reduce accuracy."""),
     ('Persian (Farsi) tips', """
-Searching and copying work on PDFs that contain real text, or after you run OCR on scans.
+Searching and copying work on PDFs that contain real text,.
 
 Converting: EPUB, FB2, TXT and HTML files that contain Persian are shaped (letters joined) and laid out right-to-left automatically. Headings become bookmarks.
 
@@ -57,7 +47,7 @@ Add many pictures, reorder them with ▲ ▼ and choose the page size: A4, A5, L
 
 Photos from a phone are rotated correctly. Transparent PNG pictures get a white background.
 
-Combine this with OCR to turn photos of book pages into a searchable PDF."""),
+"""),
     ('PDF tools: organize, edit, protect', """
 All tools are listed in All tools (type to search).
 
@@ -65,7 +55,7 @@ Organize pages: drag the thumbnails to reorder; rotate, delete, duplicate, extra
 
 Edit PDF: replace text (Persian works), add text or a picture inside a box you draw, replace or remove a picture. Header, footer & Bates adds page numbers, dates, file names and Bates numbers. Watermark stamps text or a picture at any angle. Page background paints a colour or picture behind the content.
 
-PDF to…: pictures (PNG, JPEG, TIFF), Word, Excel (tables), HTML or text. The Word export keeps text, pictures and right-to-left direction but simplifies the exact layout. Scanned PDFs: tick the OCR option first.
+PDF to…: pictures (PNG, JPEG, TIFF), Word, Excel (tables), HTML or text. The Word export keeps text, pictures and right-to-left direction but simplifies the exact layout.
 
 Password & permissions: protects with AES-256 and can forbid printing, copying or editing. A forgotten password cannot be recovered. Remove hidden data cleans author names, comments, attachments and scripts. Redact black out words, patterns (e-mail, phone, card numbers) or drawn areas — the text under the black is deleted for good.
 
@@ -78,9 +68,7 @@ Settings > Appearance: choose Light, Dark or Match Windows; a design style (Quie
 Language: Settings > General switches between English and فارسی. The app restarts to switch language; the Persian interface is laid out right-to-left.
 """),
     ('Questions and problems', """
-The app feels slow? Close big files in other programs. Long jobs such as OCR of a whole book run in the background and use all processor cores; the window stays responsive while they work.
-
-OCR found nothing? Check the language and try 400 dpi. Very dark or blurry scans need better photos.
+The app feels slow? Close big files in other programs. Long jobs such as compressing a big book run in the background and use all processor cores; the window stays responsive while they work.
 
 "Password protected" message: the PDF is encrypted. Remove the password with the program that created it first.
 
@@ -88,7 +76,7 @@ Windows says the app is unknown: it is not digitally signed. Choose More info, t
 
 Your settings are stored in the folder %APPDATA%\\PDFToolkit."""),
     ('About and licences', """
-PDF Toolkit uses these free programs, each running separately and unmodified: PyMuPDF (reading, layout), Tesseract (OCR), Ghostscript (compression), DjVuLibre (DjVu).
+PDF Toolkit uses these free programs, each running separately and unmodified: PyMuPDF (reading, layout), Ghostscript (compression), DjVuLibre (DjVu).
 
 Fonts: Inter, Vazirmatn, Noto Sans Arabic (SIL Open Font License) and DejaVu Sans. Full licence texts are in the fonts folder and in the project README.
 """),
@@ -96,7 +84,7 @@ Fonts: Inter, Vazirmatn, Noto Sans Arabic (SIL Open Font License) and DejaVu San
 
 FA = [
     ('شروع کار', """
-جعبه‌ابزار PDF کارهای روزمرهٔ PDF را یک‌جا انجام می‌دهد: OCR، تبدیل، جداسازی، ادغام، فشرده‌سازی، ساخت PDF از تصویر و ویرایش صفحه‌ها.
+جعبه‌ابزار PDF کارهای روزمرهٔ PDF را یک‌جا انجام می‌دهد: تبدیل، جداسازی، ادغام، فشرده‌سازی، ساخت PDF از تصویر و ویرایش صفحه‌ها.
 
 یکی از ابزارها را از فهرست کناری انتخاب کنید یا روی یکی از کارت‌های صفحهٔ خانه بزنید. با Ctrl+K در همهٔ ابزارها جست‌وجو کنید. فایل را با «مرور…» انتخاب کنید یا فقط روی پنجره بکشید و رها کنید.
 
@@ -104,18 +92,8 @@ FA = [
 
 همه‌چیز داخل برنامه است و به نصب چیز دیگری نیاز ندارید.
 """),
-    ('OCR: کتاب\u200cهای اسکن\u200cشده', """
-OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده می‌افزاید تا بتوانید در آن‌ها جست‌وجو و از آن‌ها کپی کنید. تصویر صفحه‌ها تغییر نمی‌کند.
-
-زبان کتاب را انتخاب کنید (فارسی گزینهٔ اول است). وقتی متن فارسی و انگلیسی با هم است، مثل فرمول‌ها، نام‌ها و منابع، گزینهٔ «کلمه‌های انگلیسی را هم بشناس» را روشن نگه دارید.
-
-کیفیت اسکن: برای کتاب‌های معمولی ۳۰۰ dpi بهترین انتخاب است. برای چاپ بسیار ریز ۴۰۰ و برای پیش‌نویس سریع ۲۰۰ را بزنید.
-
-صفحه‌هایی که از قبل متن دارند رد می‌شوند، مگر این گزینه را خاموش کنید. OCR یک کتاب بلند چند دقیقه طول می‌کشد؛ برنامه از همهٔ هسته‌های پردازنده استفاده می‌کند.
-
-برای نتیجهٔ بهتر: اسکن صاف، واضح و با نوشتهٔ تیره روی زمینهٔ روشن بهترین است. عکس کج یا همراه با سایه دقت را کم می‌کند."""),
     ('نکته\u200cهایی برای فارسی', """
-جست‌وجو و کپی در PDFهایی کار می‌کند که متن واقعی دارند، یا بعد از اجرای OCR روی اسکن‌ها.
+جست‌وجو و کپی در PDFهایی کار می‌کند که متن واقعی دارند.
 
 تبدیل: فایل‌های EPUB، FB2، TXT و HTML که فارسی دارند خودکار حرف‌به‌حرف به هم چسبیده و راست‌به‌چپ چیده می‌شوند. عنوان‌ها به نشانک (bookmark) تبدیل می‌شوند.
 
@@ -151,7 +129,7 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
 
 عکس‌های موبایل درست چرخانده می‌شوند و تصویرهای PNG شفاف زمینهٔ سفید می‌گیرند.
 
-با OCR ترکیبش کنید تا عکس صفحه‌های کتاب به PDF قابل جست‌وجو تبدیل شود."""),
+"""),
     ('ابزارهای PDF: مرتب\u200cسازی، ویرایش، حفاظت', """
 همهٔ ابزارها در «همهٔ ابزارها» فهرست شده‌اند (برای جست‌وجو تایپ کنید).
 
@@ -159,7 +137,7 @@ OCR یک لایهٔ نامرئی متن به صفحه‌های اسکن‌شده
 
 ویرایش PDF: جایگزینی متن (فارسی هم کار می‌کند)، افزودن متن یا تصویر داخل جعبه‌ای که می‌کشید، تعویض یا حذف تصویر. سرصفحه، پاصفحه و باتس شمارهٔ صفحه، تاریخ، نام فایل و شمارهٔ باتس می‌افزاید. واترمارک متن یا تصویر را با هر زاویه می‌زند. پس‌زمینهٔ صفحه رنگ یا تصویری پشت محتوا می‌گذارد.
 
-PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها)، HTML یا متن. خروجی ورد متن، تصویر و جهت راست‌به‌چپ را نگه می‌دارد ولی چیدمان دقیق را ساده می‌کند. برای PDF اسکن‌شده اول گزینهٔ OCR را تیک بزنید.
+PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها)، HTML یا متن. خروجی ورد متن، تصویر و جهت راست‌به‌چپ را نگه می‌دارد ولی چیدمان دقیق را ساده می‌کند.
 
 گذرواژه و دسترسی‌ها: با AES-256 محافظت می‌کند و می‌تواند چاپ، کپی یا ویرایش را ممنوع کند. گذرواژهٔ فراموش‌شده بازیابی نمی‌شود. حذف داده‌های پنهان نام نویسنده، نظرها، پیوست‌ها و اسکریپت‌ها را پاک می‌کند. سانسور واژه‌ها، الگوها (ایمیل، تلفن، کارت) یا ناحیه‌های کشیده‌شده را می‌پوشاند — متن زیر نوار سیاه برای همیشه پاک می‌شود.
 
@@ -172,9 +150,7 @@ PDF به…: تصویر (PNG، JPEG، TIFF)، ورد، اکسل (جدول‌ها
 زبان: «تنظیمات > عمومی» بین English و فارسی جابه‌جا می‌کند. برای تغییر زبان برنامه دوباره باز می‌شود و رابط فارسی راست‌به‌چپ چیده می‌شود.
 """),
     ('پرسش\u200cها و مشکل\u200cها', """
-برنامه کند است؟ فایل‌های بزرگ را در برنامه‌های دیگر ببندید. کارهای طولانی مثل OCR یک کتاب کامل در پس‌زمینه و با همهٔ هسته‌های پردازنده اجرا می‌شوند و پنجره در این مدت پاسخگو می‌ماند.
-
-OCR چیزی پیدا نکرد؟ زبان را بررسی کنید و ۴۰۰ dpi را امتحان کنید. اسکن‌های خیلی تیره یا تار به عکس بهتری نیاز دارند.
+برنامه کند است؟ فایل‌های بزرگ را در برنامه‌های دیگر ببندید. کارهای طولانی مثل فشرده‌سازی یک کتاب بزرگ در پس‌زمینه و با همهٔ هسته‌های پردازنده اجرا می‌شوند و پنجره در این مدت پاسخگو می‌ماند.
 
 پیام «رمزدار است»: PDF رمز دارد. ابتدا رمز را با برنامه‌ای که ساخته برداشید.
 
@@ -182,7 +158,7 @@ OCR چیزی پیدا نکرد؟ زبان را بررسی کنید و ۴۰۰ dpi
 
 تنظیمات شما در پوشهٔ %APPDATA%\\PDFToolkit ذخیره می‌شود."""),
     ('دربارهٔ برنامه و مجوزها', """
-جعبه‌ابزار PDF از این برنامه‌های رایگان استفاده می‌کند که هر کدام جدا و بدون تغییر اجرا می‌شوند: PyMuPDF (خواندن و صفحه‌آرایی)، Tesseract (OCR)، Ghostscript (فشرده‌سازی)، DjVuLibre (DjVu).
+جعبه‌ابزار PDF از این برنامه‌های رایگان استفاده می‌کند که هر کدام جدا و بدون تغییر اجرا می‌شوند: PyMuPDF (خواندن و صفحه‌آرایی)، Ghostscript (فشرده‌سازی)، DjVuLibre (DjVu).
 
 قلم‌ها: Inter، Vazirmatn، Noto Sans Arabic (مجوز SIL Open Font) و DejaVu Sans. متن کامل مجوزها در پوشهٔ fonts و فایل README پروژه است.
 """),

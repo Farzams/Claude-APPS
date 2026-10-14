@@ -22,8 +22,8 @@ import settings
 import theme
 from i18n import tr, trf
 from qt_common import Card, JobRunner, Tool, hline, mkbutton, mkcheck, mkcombo, mklabel
-from qt_pages import (CompressTool, ConvertTool, ImagesTool, MergeTool, OcrTool, PagesTool, SplitTool)
-from qt_tools import (BackgroundTool, BatchTool, BlankTool, CleanScanTool, CropTool, RepairTool, ExportTool, HeaderFooterTool, HiddenTool,
+from qt_pages import (CompressTool, ConvertTool, ImagesTool, MergeTool, PagesTool, SplitTool)
+from qt_tools import (BackgroundTool, BatchTool, BlankTool, CropTool, RepairTool, ExportTool, HeaderFooterTool, HiddenTool,
                       SecurityTool, WatermarkTool)
 from qt_pdfedit import CompareTool, EditTool, OrganizeTool, RedactTool
 import qt_palette
@@ -137,7 +137,7 @@ class HomeTool(Tool):
                  ("Combine PDFs", "Join files in any order, then reorder pages", "merge", lambda: win.show_page("merge")),
                  ("Make smaller", "Shrink a PDF for email or upload", "compress", lambda: win.show_page("compress")),
                  ("Convert", "PDF to Word, Excel, pictures, HTML or text", "convert", lambda: win.show_page("export")),
-                 ("Make a scan searchable", "OCR for Persian, Arabic and English books", "ocr", lambda: win.show_page("ocr")),
+                 ("Split a PDF", "Cut a PDF into parts or ranges", "split", lambda: win.show_page("split")),
                  ("Edit and protect", "Change text, add a watermark, set a password", "edit", lambda: win.show_page("edit"))]
         for i, (name, desc, icon, cb) in enumerate(tasks):
             grid.addWidget(TaskTile(name, desc, icon, cb), i // 3, i % 3)
@@ -149,9 +149,7 @@ class HomeTool(Tool):
         more.addWidget(mkbutton("All tools", lambda: win.show_page("tools")))
         self.body.addLayout(more)
         self.body.addStretch(1)
-        langs = core.ocr_languages()
-        status = [("Persian OCR", "fas" in langs), ("Arabic OCR", "ara" in langs), ("DjVu", bool(core.find_ddjvu())),
-                  ("Ghostscript", bool(core.find_gs()))]
+        status = [("DjVu", bool(core.find_ddjvu())), ("Ghostscript", bool(core.find_gs()))]
         chips = QHBoxLayout()
         chips.setSpacing(18)
         for n, ok in status:
@@ -176,8 +174,6 @@ class ToolsTool(Tool):
         ("Convert", [("convert", "convert", "Convert to PDF", "EPUB, DjVu, DOCX, MOBI, TXT, HTML…"),
                      ("images", "images", "Images to PDF", "Many pictures into one PDF"),
                      ("export", "export", "PDF to…", "Pictures, Word, Excel, HTML, RTF, EPUB, text"),
-                     ("clean", "clean", "Clean scans", "Straighten, denoise and sharpen scanned pages"),
-                     ("ocr", "ocr", "OCR", "Make scanned books searchable (Farsi, Arabic…)"),
                      ("compress", "compress", "Compress", "Four levels, up to Ghostscript power")]),
         ("Edit and stamp", [("edit", "edit", "Edit PDF", "Replace text, add text and pictures, change pictures"),
                             ("headerfooter", "headerfooter", "Header, footer & Bates", "Page numbers, dates and Bates numbers"),
@@ -276,7 +272,7 @@ class HelpTool(Tool):
 
 # ------------------------------------------------------------------ main window
 PAGES = [("home", "Home", HomeTool), ("tools", "All tools", ToolsTool),
-         ("ocr", "OCR", OcrTool), ("convert", "Convert to PDF", ConvertTool),
+         ("convert", "Convert to PDF", ConvertTool),
          ("split", "Split", SplitTool), ("merge", "Merge", MergeTool), ("compress", "Compress", CompressTool),
          ("images", "Images to PDF", ImagesTool), ("pages", "Page tools", PagesTool),
          ("organize", "Organize pages", OrganizeTool), ("crop", "Crop pages", CropTool),
@@ -284,11 +280,11 @@ PAGES = [("home", "Home", HomeTool), ("tools", "All tools", ToolsTool),
          ("watermark", "Watermark", WatermarkTool), ("background", "Page background", BackgroundTool),
          ("export", "PDF to…", ExportTool), ("security", "Password & permissions", SecurityTool),
          ("hidden", "Remove hidden data", HiddenTool), ("redact", "Redact (black out)", RedactTool),
-         ("clean", "Clean scans", CleanScanTool), ("repair", "Repair & optimize", RepairTool),
+         ("repair", "Repair & optimize", RepairTool),
          ("edit", "Edit PDF", EditTool), ("compare", "Compare PDFs", CompareTool), ("batch", "Batch process", BatchTool),
          ("settings", "Settings", SettingsTool), ("help", "Help", HelpTool)]
 # pages shown in the sidebar; every other tool opens from "All tools" or the Home page
-SIDEBAR = ["home", "tools", "ocr", "convert", "split", "merge", "compress", "images", "pages", "settings", "help"]
+SIDEBAR = ["home", "tools", "convert", "split", "merge", "compress", "images", "pages", "settings", "help"]
 
 
 class MainWindow(QMainWindow):

@@ -247,8 +247,7 @@ def find_calibre() -> str | None:
 
 def supported_status() -> str:
     def st(ok): return "built in" if ok else "missing"
-    return (f"DjVu: {st(find_ddjvu())}  |  "
-            f"OCR: {st(find_tessdata())}  |  Ghostscript: {st(find_gs())}")
+    return f"DjVu: {st(find_ddjvu())}  |  Ghostscript: {st(find_gs())}"
 
 
 def convert_to_pdf(src: str, out_dir: str, page_size: str = "a5",
@@ -542,153 +541,13 @@ def html_to_pdf(html: str, dst: str, page_size: str = "a5", font_size: int = 11,
     return n
 
 
-# ---------------------------------------------------------------- OCR (Tesseract)
-
-def find_tesseract() -> str | None:
-    here = _app_dir()
-    cands = [str(here / "tesseract"), str(here)] + _program_dirs("Tesseract-OCR", "Programs/Tesseract-OCR")
-    return _find_tool(["tesseract"], cands)
-
-
-def find_tessdata() -> str | None:
-    exe = find_tesseract()
-    cands = []
-    if os.environ.get("TESSDATA_PREFIX"):
-        cands.append(os.environ["TESSDATA_PREFIX"])
-    if exe:
-        cands.append(str(Path(exe).parent / "tessdata"))
-    cands += ["/usr/share/tesseract-ocr/5/tessdata", "/usr/share/tessdata",
-              "/usr/share/tesseract-ocr/4.00/tessdata"]
-    for c in cands:
-        if c and Path(c).is_dir() and any(Path(c).glob("*.traineddata")):
-            return c
-    return None
-
-
-def ocr_languages() -> list[str]:
-    td = find_tessdata()
-    if not (td and find_tesseract()):
-        return []
-    return sorted(p.stem for p in Path(td).glob("*.traineddata") if p.stem not in ("osd", "equ"))
-
-
-_CJK_RE = re.compile(r"[\u3000-\u30ff\u3400-\u9fff\uac00-\ud7af\uff00-\uffef]")
-
-
-def _tess_words(exe: str, tessdata: str, png: str, lang: str, dpi: int, psm: int):
-    r = subprocess.run([exe, png, "stdout", "-l", lang, "--dpi", str(dpi), "--psm", str(psm),
-                        "--tessdata-dir", tessdata, "tsv"], capture_output=True, text=True,
-                       encoding="utf-8", errors="replace", creationflags=NO_WINDOW,
-                       env={**os.environ, "OMP_THREAD_LIMIT": "1"})
-    if r.returncode != 0:
-        raise RuntimeError(f"Tesseract failed: {r.stderr.strip()[-300:]}")
-    words = []
-    for ln in r.stdout.splitlines()[1:]:
-        c = ln.split("\t", 11)
-        if len(c) == 12 and c[0] == "5" and c[11].strip():
-            words.append((int(c[6]), int(c[7]), int(c[8]), int(c[9]), c[11].strip()))
-    return words
-
-
-def ocr_pdf(src: str, dst: str, lang: str = "eng", dpi: int = 300, skip_text: bool = True,
-            psm: int = 3, progress: Callable[[int, int], None] | None = None) -> tuple[int, int]:
-    """Make a scanned PDF searchable by adding an invisible, correctly ordered text layer.
-
-    Works for right-to-left scripts (Farsi/Arabic/Hebrew): the text can be searched and
-    copied in logical order. Returns (pages_ocrd, total_pages).
-    """
-    from concurrent.futures import ThreadPoolExecutor
-
-    exe, td = find_tesseract(), find_tessdata()
-    if not exe or not td:
-        raise RuntimeError("OCR engine (Tesseract) is missing from this build.")
-    try:
-        from bidi import get_display
-    except Exception:
-        def get_display(x): return x
-    font_path = fonts_dir() / "DejaVuSans.ttf"
-    use_font = font_path.is_file()
-    font = pymupdf.Font(fontfile=str(font_path)) if use_font else pymupdf.Font("helv")
-    cjk_name = "china-s" if "chi_sim" in lang else "china-t" if "chi_tra" in lang else \
-        "japan" if "jpn" in lang else "korea" if "kor" in lang else "china-s"
-
-    done = 0
-    with pymupdf.open(src) as doc, tempfile.TemporaryDirectory() as tmp:
-        if doc.needs_pass:
-            raise ValueError("The PDF is password protected")
-        total = doc.page_count
-        todo = [i for i in range(total)
-                if not (skip_text and len(doc[i].get_text().strip()) > 20)]
-        if not todo:
-            raise ValueError("Every page already contains text. Untick 'skip pages with text' to force OCR.")
-
-        # render serially (PyMuPDF is not thread-safe), run tesseract in parallel
-        workers = max(1, min(os.cpu_count() or 2, 6))
-        results = {}
-        with ThreadPoolExecutor(workers) as pool:
-            futs = []
-            for i in todo:
-                png = os.path.join(tmp, f"p{i}.png")
-                doc[i].get_pixmap(dpi=dpi, colorspace=pymupdf.csGRAY).save(png)
-                futs.append(pool.submit(_tess_words, exe, td, png, lang, dpi, psm))
-            for i, f in zip(todo, futs):
-                results[i] = f.result()
-                done += 1
-                if progress:
-                    progress(done, len(todo))
-
-        k = 72 / dpi
-        for i in todo:
-            page = doc[i]
-            if use_font:
-                page.insert_font(fontname="ocrf", fontfile=str(font_path))
-            for l, t, w, h, txt in results[i]:
-                fs = max(h * k * 0.85, 4)
-                parts = [(txt, l, w)]
-                m = re.match(r"^(.*?)([\.,;:!?\u060c\u061b\u061f\u00bb)]+)$", txt)
-                if m and m.group(1) and RTL_RE.search(m.group(1)):
-                    core_t, punc = m.groups()
-                    pw = w * len(punc) / len(txt)
-                    parts = [(core_t, l + pw, w - pw), (punc, l, pw)]  # punctuation sits at the left
-                for tx, pl, pwid in parts:
-                    if RTL_RE.search(tx):
-                        tx = get_display(tx)  # visual order, so extraction returns logical order
-                    if _CJK_RE.search(tx):
-                        fname, tl = cjk_name, pymupdf.get_text_length(tx, fontname=cjk_name, fontsize=fs)
-                    else:
-                        fname = "ocrf" if use_font else "helv"
-                        tl = font.text_length(tx, fontsize=fs)
-                    if tl <= 0:
-                        continue
-                    pt = pymupdf.Point(pl * k, (t + h) * k - h * k * 0.2) * page.derotation_matrix
-                    try:
-                        page.insert_text(pt, tx, fontname=fname, fontsize=fs, render_mode=3,
-                                         morph=(pt, pymupdf.Matrix(pwid * k / tl, 1)),
-                                         rotate=page.rotation)
-                    except Exception:
-                        continue
-        try:
-            doc.subset_fonts()
-        except Exception:
-            pass
-        doc.save(dst, garbage=3, deflate=True)
-    return len(todo), total
-
-
 # ---------------------------------------------------------------- text extraction
-
-def _tess_text(exe, td, png, lang, dpi):
-    r = subprocess.run([exe, png, "stdout", "-l", lang, "--dpi", str(dpi), "--psm", "3",
-                        "--tessdata-dir", td], capture_output=True, text=True, encoding="utf-8",
-                       errors="replace", creationflags=NO_WINDOW)
-    return r.stdout
-
 
 _PUNCT_ONLY = re.compile(r"^[.,;:!?\u060c\u061b\u061f\u00bb)\]]+$")
 
 
 def _page_text(page) -> str:
-    """Page text in reading order. OCR'd pages store one word per box, so rebuild real lines."""
+    """Page text in reading order (rebuilds real lines when a page stores one word per box)."""
     txt = page.get_text("text")  # stream order keeps Farsi in reading order
     words = page.get_text("words")
     lines = [l for l in txt.splitlines() if l.strip()]
@@ -724,31 +583,24 @@ def _page_text(page) -> str:
     return "\n".join(out)
 
 
-def extract_text(src: str, dst: str, fmt: str = "txt", ocr_lang: str | None = None,
-                 fix_reversed: bool = False,
-                 progress: Callable[[int, int], None] | None = None) -> tuple[int, int]:
-    """PDF -> .txt/.docx. Pages without text are OCR'd when ocr_lang is given.
+def extract_text(src: str, dst: str, fmt: str = "txt", fix_reversed: bool = False,
+                 progress: Callable[[int, int], None] | None = None) -> int:
+    """PDF -> .txt/.docx. Returns the number of characters.
 
-    Returns (chars, ocr_pages). Farsi presentation forms are normalised so the text
-    is searchable/copyable; fix_reversed repairs PDFs whose Farsi comes out backwards.
+    Farsi presentation forms are normalised so the text is searchable/copyable;
+    fix_reversed repairs PDFs whose Farsi comes out backwards.
     """
-    exe, td = find_tesseract(), find_tessdata()
     try:
         from bidi import get_display
     except Exception:
         def get_display(x): return x
-    pages_text, ocr_pages = [], 0
-    with pymupdf.open(src) as doc, tempfile.TemporaryDirectory() as tmp:
+    pages_text = []
+    with pymupdf.open(src) as doc:
         if doc.needs_pass:
             raise ValueError("The PDF is password protected")
         for i, page in enumerate(doc, 1):
             txt = _page_text(page)
-            if len(txt.strip()) < 15 and ocr_lang and exe and td:
-                png = os.path.join(tmp, "p.png")
-                page.get_pixmap(dpi=300, colorspace=pymupdf.csGRAY).save(png)
-                txt = _tess_text(exe, td, png, ocr_lang, 300)
-                ocr_pages += 1
-            elif fix_reversed:
+            if fix_reversed:
                 txt = "\n".join(get_display(l) if RTL_RE.search(l) else l for l in txt.splitlines())
             pages_text.append(normalize_persian(txt).replace("\u200e", "").replace("\u200f", "").strip())
             if progress:
@@ -776,7 +628,7 @@ def extract_text(src: str, dst: str, fmt: str = "txt", ocr_lang: str | None = No
             if pi < len(pages_text) - 1:
                 d.add_page_break()
         d.save(dst)
-    return len(full), ocr_pages
+    return len(full)
 
 
 # ---------------------------------------------------------------- viewer
