@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
             // bump to recompose texts after a language change
             var tick by remember { mutableIntStateOf(0) }
             Strings.lang = lang
-            val refresh = {
+            val refresh: () -> Unit = {
                 themeKey = prefs.theme; accent = prefs.accent; lang = prefs.lang; Strings.lang = prefs.lang; tick++
             }
             AppTheme(paletteOf(themeKey), accent, lang == "fa") {
