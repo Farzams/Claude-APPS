@@ -49,8 +49,9 @@ class TemplatesTest {
         // the dialog is a separate window without resource ids: look for the template by its name, swiping its list up
         assertTrue("dialog", device.wait(Until.hasObject(By.text("Templates")), 10_000))
         var tries = 0
-        while (!device.hasObject(By.text(template)) && tries < 14) {
-            device.swipe(device.displayWidth / 2, device.displayHeight * 6 / 10, device.displayWidth / 2, device.displayHeight * 4 / 10, 20)
+        while (!device.hasObject(By.text(template)) && tries < 30) {
+            // the list sits in the lower half of the dialog
+            device.swipe(device.displayWidth / 2, device.displayHeight * 82 / 100, device.displayWidth / 2, device.displayHeight * 70 / 100, 25)
             Thread.sleep(300)
             tries++
         }
@@ -111,7 +112,7 @@ class TemplatesTest {
         }
         fun pickFromDownloads(name: String) {
             assertTrue("in-app picker", device.wait(Until.hasObject(By.res("file_browser")), 10_000))
-            clickRes("place_downloads")
+            if (device.wait(Until.hasObject(By.res("place_downloads")), 2_500)) device.findObject(By.res("place_downloads")).click()   // later pickers reopen in the last folder
             assertTrue("$name listed", device.wait(Until.hasObject(By.text(name)), 10_000))
             device.findObject(By.text(name)).click()
             Thread.sleep(600)
