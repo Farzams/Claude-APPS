@@ -93,6 +93,29 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
 
     var bibKeysList by mutableStateOf(listOf<String>())
     var misspelled by mutableStateOf(listOf<IntRange>())
+    var spellLang by mutableStateOf("")          // "" = off, otherwise a language tag such as "en" or "fa"
+    var spellMissing by mutableStateOf(false)    // the phone has no spell checker for that language
+    private val speller = SystemSpell(app)
+    private var spellJob: Job? = null
+
+    fun setSpellLang(lang: String) {
+        spellLang = lang
+        spellMissing = false
+        scheduleSpell(0)
+    }
+
+    private fun scheduleSpell(wait: Long = 1200) {
+        spellJob?.cancel()
+        if (spellLang.isEmpty()) { misspelled = emptyList(); return }
+        spellJob = viewModelScope.launch {
+            delay(wait)
+            val src = field.text
+            val ok = speller.check(src, spellLang) { misspelled = if (field.text == src) it else emptyList() }
+            spellMissing = !ok
+        }
+    }
+
+    override fun onCleared() { speller.close(); super.onCleared() }
 
     private class History { val undo = ArrayDeque<TextFieldValue>(); val redo = ArrayDeque<TextFieldValue>(); var lastPush = 0L }
     private val histories = HashMap<String, History>()
@@ -168,6 +191,8 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
         )
         field = v
         syncHistoryFlags()
+        misspelled = emptyList()
+        scheduleSpell(0)
     }
 
     private fun syncHistoryFlags() {
@@ -243,6 +268,7 @@ class EditorViewModel(private val app: Application) : AndroidViewModel(app) {
             h.lastPush = now
             h.redo.clear()
             scheduleSave()
+            scheduleSpell()
         }
         field = v
         syncHistoryFlags()

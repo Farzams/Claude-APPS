@@ -204,6 +204,9 @@ private fun TopBar(vm: EditorViewModel, onBack: () -> Unit, engine: String, view
                     item(if (vm.meta.engine == "xetex") "engine.pdftex" else "engine.xetex", "engine") {
                         vm.setEngine(if (vm.meta.engine == "xetex") "pdftex" else "xetex")
                     }
+                    item(if (vm.spellLang.isEmpty()) "spell.en" else if (vm.spellLang == "en") "spell.fa" else "spell.off", "spell") {
+                        vm.setSpellLang(if (vm.spellLang.isEmpty()) "en" else if (vm.spellLang == "en") "fa" else "")
+                    }
                     item("view.options") { dialog = "view" }
                     HorizontalDivider()
                     item("share.pdf") { sharePdf(ctx, vm) }
@@ -371,6 +374,7 @@ private fun EditorPane(vm: EditorViewModel, view: ViewOptions) {
         val before = vm.field.text.substring(0, sel)
         val pos = "Ln ${before.count { it == '\n' } + 1}, Col ${sel - (before.lastIndexOf('\n') + 1) + 1}"
         Row(Modifier.fillMaxWidth().background(cs.surface).clickable { showLog = !showLog }.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+            if (vm.spellMissing) Text(t("spell.missing") + "   ", color = cs.error, style = MaterialTheme.typography.labelMedium)
             Text(summary.ifEmpty { pos }, Modifier.weight(1f).testTag(when (vm.compileOk) { false -> "compile_failed"; true -> "compile_ok"; null -> "status_line" }),
                 color = if (vm.compileOk == false) cs.error else cs.onSurface, style = MaterialTheme.typography.bodyMedium)
             if (summary.isNotEmpty()) Text(pos + "   ", color = cs.onSurfaceVariant, style = MaterialTheme.typography.labelMedium)
