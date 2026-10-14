@@ -51,8 +51,10 @@ class TemplatesTest {
         var tries = 0
         while (!device.hasObject(By.text(template)) && tries < 45) {
             // the template list is the smallest scrollable thing on screen; move it a little at a time so nothing is skipped
-            val list = device.findObjects(By.scrollable(true)).minByOrNull { it.visibleBounds.height() }
-            if (list != null) list.scroll(androidx.test.uiautomator.Direction.DOWN, 0.3f, 600) else device.swipe(device.displayWidth / 2, device.displayHeight * 65 / 100, device.displayWidth / 2, device.displayHeight * 55 / 100, 40)
+            val list = device.findObjects(By.scrollable(true)).firstOrNull { it.visibleBounds.height() in (device.displayHeight / 5)..(device.displayHeight * 45 / 100) }
+            if (list != null) {
+                if (!list.scroll(androidx.test.uiautomator.Direction.DOWN, 0.3f, 600)) list.scroll(androidx.test.uiautomator.Direction.UP, 1.0f, 4000)   // reached the end: start again from the top
+            } else device.swipe(device.displayWidth / 2, device.displayHeight * 65 / 100, device.displayWidth / 2, device.displayHeight * 55 / 100, 40)
             Thread.sleep(350)
             tries++
         }
@@ -83,12 +85,19 @@ class TemplatesTest {
         )
         val failed = ArrayList<String>()
         for ((i, n) in names.withIndex()) {
-            newProject(n)
-            val t0 = System.currentTimeMillis()
-            val ok = compileOk("t%02d_%s".format(i, n.filter { it.isLetterOrDigit() }))
-            Log.i("PDFTK", "template $n ok=$ok in ${(System.currentTimeMillis() - t0) / 1000}s")
-            if (!ok) failed.add(n)
-            clickRes("back")
+            try {
+                newProject(n)
+                val t0 = System.currentTimeMillis()
+                val ok = compileOk("t%02d_%s".format(i, n.filter { it.isLetterOrDigit() }))
+                Log.i("PDFTK", "template $n ok=$ok in ${(System.currentTimeMillis() - t0) / 1000}s")
+                if (!ok) failed.add(n)
+                clickRes("back")
+            } catch (e: AssertionError) {
+                Log.i("PDFTK", "template $n ok=false (${e.message})")
+                failed.add(n)
+                device.pressBack(); Thread.sleep(500)
+                if (!device.hasObject(By.res("new_project"))) { device.pressBack(); Thread.sleep(500) }
+            }
             assertTrue(device.wait(Until.hasObject(By.res("new_project")), 10_000))
         }
         assertTrue("templates that did not compile: $failed", failed.isEmpty())
@@ -104,7 +113,7 @@ class TemplatesTest {
         launch()
         newProject("Biology lab report")
         // put the cursor in the body of the document, then insert a table from the csv file
-        device.click(device.displayWidth / 2, device.displayHeight * 6 / 10)
+        device.click(device.displayWidth / 2, device.displayHeight * 7 / 10)      // a line of the body, below \\begin{document}
         Thread.sleep(400)
 
         fun tool(label: String) {
@@ -129,7 +138,6 @@ class TemplatesTest {
         Thread.sleep(600)
         Log.i("PDFTK", "csv plot inserted")
 
-        device.click(device.displayWidth / 2, device.displayHeight * 6 / 10)
         tool("Picture")
         pickFromDownloads("tools_pic.png")
         Thread.sleep(1200)
