@@ -189,7 +189,6 @@ object Strings {
         "snippet.delete" to ("Delete this snippet?" to "این قطعه حذف شود؟"),
         "snippet.empty" to ("Your own snippets appear here. Select text, open the menu and choose Save as my snippet." to "قطعه‌های شما اینجا نشان داده می‌شوند. متن را انتخاب کنید و از منو «ذخیره به‌عنوان قطعهٔ من» را بزنید."),
         "sym.thm" to ("Theorems" to "قضیه‌ها"),
-        "sym.orlicz" to ("Orlicz" to "اورلیچ"),
         "sym.mine" to ("Mine" to "من"),
         "files.saved" to ("files saved." to "فایل ذخیره شد."),
         "home" to ("Home" to "خانه"),
