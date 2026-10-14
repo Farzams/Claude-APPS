@@ -3,7 +3,7 @@
 # The files are not stored in git (about 220 MB); the build runs this first.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-A=app/src/main/assets/tex
+A=app/src/latex/assets/tex
 mkdir -p "$A/extras"
 R=build_wasm_4499aa69fd3cf77ad86a47287d9a5193cf5ad993_7936974349_1
 for f in busytex.js busytex.wasm busytex_pipeline.js \

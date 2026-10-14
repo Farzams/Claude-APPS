@@ -9,12 +9,18 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "app.pdftoolkit.mobile"
         minSdk = 26
         targetSdk = 34
         versionCode = (System.getenv("APP_VERSION_CODE") ?: "1").toInt()
         versionName = "0.1.${System.getenv("APP_VERSION_CODE") ?: "0"}"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    // Two apps from one project: the LaTeX editor with the offline TeX engine (large) and the PDF tools (small)
+    flavorDimensions += "product"
+    productFlavors {
+        create("latex") { dimension = "product"; applicationId = "app.pdftoolkit.latex" }
+        create("pdf") { dimension = "product"; applicationId = "app.pdftoolkit.pdf" }
     }
 
     buildTypes {
@@ -48,4 +54,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
+    // PDF tools app: page editing, merging, encryption (PdfBox) and picking a folder (DocumentFile)
+    "pdfImplementation"("com.tom-roush:pdfbox-android:2.0.27.0")
+    "pdfImplementation"("androidx.documentfile:documentfile:1.0.1")
 }

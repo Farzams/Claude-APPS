@@ -23,7 +23,9 @@ PY
     i=$((i+1)); sleep 10
   done ) &
 REC=$!
-./gradlew --no-daemon connectedDebugAndroidTest
+./gradlew --no-daemon connectedPdfDebugAndroidTest
+echo $? > ../test_exit_pdf.txt
+./gradlew --no-daemon connectedLatexDebugAndroidTest
 echo $? > ../test_exit.txt
 kill $REC 2>/dev/null || true
 mkdir -p ../shots

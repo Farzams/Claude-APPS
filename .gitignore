@@ -12,6 +12,6 @@ android/.gradle/
 android/build/
 android/app/build/
 android/local.properties
-android/app/src/main/assets/tex/*
-!android/app/src/main/assets/tex/tex_host.html
-!android/app/src/main/assets/tex/tex_worker.js
+android/app/src/latex/assets/tex/*
+!android/app/src/latex/assets/tex/tex_host.html
+!android/app/src/latex/assets/tex/tex_worker.js
