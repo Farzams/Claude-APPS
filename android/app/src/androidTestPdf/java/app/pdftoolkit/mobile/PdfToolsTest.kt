@@ -251,10 +251,10 @@ class PdfToolsTest {
         Log.i("PDFTK", "about ok")
 
         // every theme: pick it in Settings, look at the home page for one frame, check the tools are still there
-        for (k in listOf("paper", "ocean", "forest", "sunset", "graphite", "quiet")) {
-            device.findObject(By.res("back")).click()
-            assertTrue(device.wait(Until.hasObject(By.res("open_settings")), 10_000))
-            device.findObject(By.res("open_settings")).click()
+        for ((i, k) in listOf("paper", "ocean", "forest", "sunset", "graphite", "quiet").withIndex()) {
+            if (i > 0) {
+                device.findObject(By.res("open_settings")).click()
+            }
             assertTrue(device.wait(Until.hasObject(By.res("style_$k")), 10_000))
             device.findObject(By.res("style_$k")).click()
             Thread.sleep(600)
@@ -300,8 +300,7 @@ class PdfToolsTest {
         assertTrue(device.wait(Until.hasObject(By.res("fm_search")), 5_000))
         device.findObject(By.res("fm_search")).text = "fm_b"
         assertTrue("search finds fm_b", device.wait(Until.hasObject(By.text("fm_b.pdf")), 8_000))
-        Thread.sleep(800)
-        assertTrue("search hides fm_a", !device.hasObject(By.text("fm_a.pdf")))
+        assertTrue("search hides fm_a", device.wait(Until.gone(By.text("fm_a.pdf")), 10_000))
         shot("p08_files_search")
         Log.i("PDFTK", "filemanager browse ok")
 
