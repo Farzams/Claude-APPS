@@ -59,7 +59,8 @@ class TemplatesTest {
         Thread.sleep(800)
         assertTrue("template listed: $template", device.wait(Until.hasObject(By.text(template)), 8_000))
         clickText(template)
-        Thread.sleep(300)
+        Thread.sleep(500)
+        if (!device.hasObject(By.text("Create"))) { device.pressBack(); Thread.sleep(600) }     // the keyboard hides the buttons: close it
         clickText("Create")
         assertTrue(device.wait(Until.hasObject(By.res("compile")), 15_000))
     }
