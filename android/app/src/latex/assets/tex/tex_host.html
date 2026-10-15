@@ -49,9 +49,9 @@ window.compileProject = async function (jsonStr) {
     const files = req.files.map(f => ({path: f.path, contents: f.text !== undefined ? f.text : b64ToBytes(f.b64)}));
     const mentions = re => req.files.some(f => f.text && re.test(f.text));
     if (mentions(/xepersian|bidi|Path=fonts|Vazirmatn/i)) files.push(...await loadExtras('extras'));
-    if (mentions(/\\usepackage[^\n]*\b(tikz|pgf|pgfplots|circuitikz)\b|\\usetikzlibrary|\\begin\{(tikzpicture|axis|circuitikz)\}/)) files.push(...await loadExtras('extras_pgf'));
-    if (mentions(/\\documentclass[^\n]*\{(IEEEtran|elsarticle|svjour3)\}/)) files.push(...await loadExtras('extras_pub'));
-    if (mentions(/\\bibliographystyle\{(IEEEtran|elsarticle[^}]*|spmpsci|spbasic|spphys)\}/)) files.push(...await loadExtras('extras_bst'));
+    if (mentions(/\\usepackage[^\n]*\b(tikz|pgf|pgfplots|circuitikz)\b|\\usetikzlibrary|\\begin\{(tikzpicture|axis|circuitikz)\}|\\usepackage[^\n]*\b(tcolorbox|beamer)\b|\\documentclass[^\n]*\{beamer\}/)) files.push(...await loadExtras('extras_pgf'));
+    if (mentions(/\\documentclass[^\n]*\{(IEEEtran|elsarticle)\}/)) files.push(...await loadExtras('extras_pub'));
+    if (mentions(/\\bibliographystyle\{(IEEEtran|elsarticle[^}]*)\}/)) files.push(...await loadExtras('extras_bst'));
     Android.onLog('posting to the worker');
     const res = await new Promise((resolve, reject) => {
       pending = {resolve, reject};

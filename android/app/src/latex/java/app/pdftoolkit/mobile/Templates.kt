@@ -199,7 +199,6 @@ Write the body of the letter here.
         sci("tpl.plots", TemplatesMore.PLOTS),
         journal("tpl.ieee", TemplatesMore.IEEE),
         journal("tpl.elsevier", TemplatesMore.ELSEVIER),
-        journal("tpl.springer", TemplatesMore.SPRINGER),
         Template("tpl.apa", mapOf("main.tex" to TemplatesMore.APA), engine = "pdftex", group = "journal"),
         Template("tpl.thesis", mapOf("main.tex" to TemplatesMore.THESIS, "refs.bib" to REFS), engine = "pdftex", group = "journal"),
         Template("tpl.poster", mapOf("main.tex" to TemplatesMore.POSTER), engine = "pdftex", group = "journal"),

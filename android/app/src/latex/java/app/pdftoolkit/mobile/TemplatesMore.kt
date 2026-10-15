@@ -378,49 +378,8 @@ Present the results~\cite{lamport94}.
 \end{document}
 """
 
-    val SPRINGER = """\documentclass[twocolumn]{svjour3}
-\smartqed
-\usepackage{graphicx}
-\usepackage{amsmath}
-
-\begin{document}
-
-\title{Title of the paper}
-
-\author{First Author \and Second Author}
-
-\institute{F. Author \at Department, University, Country \\ \email{first.author@example.com} \and S. Author \at Department, University, Country}
-
-\date{Received: date / Accepted: date}
-
-\maketitle
-
-\begin{abstract}
-A short summary of the work.
-\keywords{first keyword \and second keyword}
-\end{abstract}
-
-\section{Introduction}
-\label{intro}
-Introduce the problem and cite earlier work~\cite{knuth84}.
-
-\section{Results}
-\label{sec:1}
-Present the results~\cite{lamport94}.
-
-\begin{acknowledgements}
-Thank the people and institutions that helped.
-\end{acknowledgements}
-
-\bibliographystyle{spmpsci}
-\bibliography{refs}
-
-\end{document}
-"""
-
     val APA = """\documentclass[12pt,a4paper]{article}
 \usepackage[margin=2.54cm]{geometry}
-\usepackage{mathptmx}
 \usepackage{amsmath}
 \usepackage{setspace}
 \usepackage[hidelinks]{hyperref}

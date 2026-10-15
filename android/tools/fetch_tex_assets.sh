@@ -47,8 +47,8 @@ copy_pkgs() {
   json_of "$out"
 }
 copy_pkgs extras_pgf pgf pgfplots circuitikz
-copy_pkgs extras_pub IEEEtran elsarticle 'svjour*'
+copy_pkgs extras_pub ieeetran elsarticle
 mkdir -p "$A/extras_bst"
-find "$SRC/bibtex/bst" -type f \( -name 'IEEEtran.bst' -o -name 'elsarticle-*.bst' -o -name 'sp*.bst' \) -exec cp {} "$A/extras_bst/" \;
+find "$SRC/bibtex/bst" -type f \( -name 'IEEEtran.bst' -o -name 'elsarticle-*.bst' \) -exec cp {} "$A/extras_bst/" \;
 json_of extras_bst
 echo "TeX assets ready:"; du -sh "$A"
