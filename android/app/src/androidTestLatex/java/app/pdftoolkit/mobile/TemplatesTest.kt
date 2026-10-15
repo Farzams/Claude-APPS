@@ -41,18 +41,23 @@ class TemplatesTest {
 
     private fun clickText(text: String) {
         assertTrue("not found: $text", device.wait(Until.hasObject(By.text(text)), 10_000))
-        device.findObject(By.text(text)).click()
+        var o = device.findObject(By.text(text))
+        if (o == null) { Thread.sleep(500); o = device.findObject(By.text(text)) }
+        assertTrue("gone again: $text", o != null)
+        o!!.click()
     }
 
     private fun newProject(template: String) {
         clickRes("new_project")
         // the dialog is a separate window without resource ids: look for the template by its name, swiping its list up
         assertTrue("dialog", device.wait(Until.hasObject(By.text("Templates")), 10_000))
-        // the second text field of the dialog filters the templates, so the one wanted is the only one shown
-        val fields = device.findObjects(By.clazz("android.widget.EditText"))
-        assertTrue("template search field", fields.size >= 2)
-        fields[1].text = template
-        Thread.sleep(600)
+        // the search box of the dialog (found by its hint) narrows the list to the template wanted
+        clickText("Search templates")
+        Thread.sleep(300)
+        val word = template.substringBefore(' ')
+        ParcelFileDescriptor.AutoCloseInputStream(instr.uiAutomation.executeShellCommand("input text $word")).use { it.readBytes() }
+        Thread.sleep(800)
+        assertTrue("template listed: $template", device.wait(Until.hasObject(By.text(template)), 8_000))
         clickText(template)
         Thread.sleep(300)
         clickText("Create")
