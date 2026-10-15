@@ -297,54 +297,6 @@ Use the menu, \emph{Insert and check}, then \emph{Table or plot from CSV} to tur
 \end{document}
 """
 
-    val IEEE = """\documentclass[conference]{IEEEtran}
-% the Times fonts of the real IEEE style are not available offline, so the Computer Modern fonts are used here
-\renewcommand{\rmdefault}{cmr}\renewcommand{\sfdefault}{cmss}\renewcommand{\ttdefault}{cmtt}
-\usepackage{amsmath,amssymb}
-\usepackage{graphicx}
-
-\begin{document}
-
-\title{Paper Title}
-
-\author{\IEEEauthorblockN{First Author}
-\IEEEauthorblockA{Department, University\\
-City, Country\\
-first.author@example.com}
-\and
-\IEEEauthorblockN{Second Author}
-\IEEEauthorblockA{Department, University\\
-City, Country\\
-second.author@example.com}}
-
-\maketitle
-
-\begin{abstract}
-A short summary of the work in about two hundred words.
-\end{abstract}
-
-\begin{IEEEkeywords}
-first keyword, second keyword, third keyword
-\end{IEEEkeywords}
-
-\section{Introduction}
-Introduce the problem and cite earlier work~\cite{knuth84}. The layout, fonts and spacing follow the IEEE conference style.
-
-\section{Method}
-Describe the method. Equations are numbered automatically:
-\begin{equation}
-  E = mc^2 .
-\end{equation}
-
-\section{Conclusion}
-Summarise the result~\cite{lamport94}.
-
-\bibliographystyle{IEEEtran}
-\bibliography{refs}
-
-\end{document}
-"""
-
     val ELSEVIER = """\documentclass[preprint,12pt]{elsarticle}
 \usepackage{amsmath,amssymb}
 \journal{Journal Name}

@@ -82,7 +82,7 @@ class TemplatesTest {
         launch()
         val names = listOf(
             "Physics", "Chemistry", "Computer science", "Engineering", "Biology lab report", "Data and plots",
-            "IEEE conference paper", "Elsevier article", "APA-style paper", "Thesis", "A0 poster",
+            "Elsevier article", "APA-style paper", "Thesis", "A0 poster",
         )
         val failed = ArrayList<String>()
         for ((i, n) in names.withIndex()) {
