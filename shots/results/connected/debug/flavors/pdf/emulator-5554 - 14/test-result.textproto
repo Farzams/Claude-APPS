@@ -1,0 +1,328 @@
+# 2026-10-15T04:52:20.151183589Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 6
+}
+test_status: PASSED
+test_result {
+  test_case {
+    test_class: "PdfToolsTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "everyScreenOpens"
+    start_time {
+      seconds: 1792039744
+      nanos: 945000000
+    }
+    end_time {
+      seconds: 1792039790
+      nanos: 997000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.PdfToolsTest-everyScreenOpens.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "PdfToolsTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "settingsAbout"
+    start_time {
+      seconds: 1792039791
+      nanos: 534000000
+    }
+    end_time {
+      seconds: 1792039893
+      nanos: 533000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.PdfToolsTest-settingsAbout.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "PdfToolsTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "bookFormats"
+    start_time {
+      seconds: 1792039894
+      nanos: 378000000
+    }
+    end_time {
+      seconds: 1792039896
+      nanos: 997000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.PdfToolsTest-bookFormats.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "PdfToolsTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "organizeDragAndDrop"
+    start_time {
+      seconds: 1792039897
+      nanos: 4000000
+    }
+    end_time {
+      seconds: 1792039911
+      nanos: 600000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.PdfToolsTest-organizeDragAndDrop.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "PdfToolsTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "pdfOperations"
+    start_time {
+      seconds: 1792039912
+      nanos: 538000000
+    }
+    end_time {
+      seconds: 1792039915
+      nanos: 9000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.PdfToolsTest-pdfOperations.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "PdfToolsTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "fileManagerMergeFlow"
+    start_time {
+      seconds: 1792039915
+      nanos: 15000000
+    }
+    end_time {
+      seconds: 1792039937
+      nanos: 548000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.PdfToolsTest-fileManagerMergeFlow.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/pdf/emulator-5554 - 14/testlog/test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

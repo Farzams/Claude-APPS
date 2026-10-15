@@ -1,0 +1,3 @@
+10-15 05:11:14.382  3092  3111 I TestRunner: started: doiIsCleanedAndEntryTidied(app.pdftoolkit.mobile.ToolsLogicTest)
+10-15 05:11:14.387  3092  3111 I PDFTK   : doi logic ok
+10-15 05:11:14.387  3092  3111 I TestRunner: finished: doiIsCleanedAndEntryTidied(app.pdftoolkit.mobile.ToolsLogicTest)

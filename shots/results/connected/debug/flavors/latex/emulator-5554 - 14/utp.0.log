@@ -1,0 +1,44 @@
+INFO: Constructing runner from config.
+INFO: Configuring Android Instrumentation driver: android_instrumentation_runtime {
+  instrumentation_info {
+    app_package: "app.pdftoolkit.latex"
+    test_package: "app.pdftoolkit.latex.test"
+    test_runner_class: "androidx.test.runner.AndroidJUnitRunner"
+  }
+  instrumentation_args {
+    args_map {
+      key: "additionalTestOutputDir"
+      value: "/sdcard/Android/media/app.pdftoolkit.latex/additional_test_output"
+    }
+  }
+}
+am_instrument_timeout: 31536000
+
+INFO: Configuring AndroidTestApkInstallerPlugin: apks_to_install {
+  apk_paths: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/apk/latex/debug/app-latex-debug.apk"
+  install_options {
+  }
+  uninstall_after_test: true
+}
+apks_to_install {
+  apk_paths: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/apk/androidTest/latex/debug/app-latex-debug-androidTest.apk"
+  install_options {
+  }
+  uninstall_after_test: true
+}
+
+INFO: No installables found in test fixture. Nothing to install.
+INFO: Installing [/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/apk/latex/debug/app-latex-debug.apk] on device emulator-5554.
+INFO: Installing [/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/apk/androidTest/latex/debug/app-latex-debug-androidTest.apk] on device emulator-5554.
+INFO: Start logcat streaming.
+INFO: Running Android Instrumentation driver.
+INFO: Copying files from device to host: /sdcard/Android/media/app.pdftoolkit.latex/additional_test_output to /home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/connected_android_test_additional_output/latexDebugAndroidTest/connected/emulator-5554 - 14
+INFO: Stop logcat streaming.
+INFO: Uninstalling app.pdftoolkit.latex for device emulator-5554.
+INFO: Uninstalling app.pdftoolkit.latex.test for device emulator-5554.
+INFO: Execute app.pdftoolkit.mobile.EndToEndTest.compilesEnglishAndPersianThenThemes: PASSED
+INFO: Execute app.pdftoolkit.mobile.TemplatesTest.insertToolsMakeCompilableLatex: PASSED
+INFO: Execute app.pdftoolkit.mobile.TemplatesTest.everyNewTemplateCompiles: PASSED
+INFO: Execute app.pdftoolkit.mobile.ToolsLogicTest.csvBecomesTableAndPlot: PASSED
+INFO: Execute app.pdftoolkit.mobile.ToolsLogicTest.checkFindsTheUsualMistakes: PASSED
+INFO: Execute app.pdftoolkit.mobile.ToolsLogicTest.doiIsCleanedAndEntryTidied: PASSED

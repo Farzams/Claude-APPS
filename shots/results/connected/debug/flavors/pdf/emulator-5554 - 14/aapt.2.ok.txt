@@ -1,0 +1,29 @@
+EXECUTING: /usr/local/lib/android/sdk/build-tools/34.0.0/aapt dump badging /home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/apk/androidTest/pdf/debug/app-pdf-debug-androidTest.apk
+CURRENT_WORKING_DIRECTORY: /home/runner/work/Claude-APPS/Claude-APPS/android
+START_TIME: 2026-10-15 04:52:19.728
+START_TIME-NANOS: 2026-10-15 04:52:19.728316950
+ENVIRONMENT:
+
+*****************************************
+STDOUT/STDERR BELOW
+===================
+package: name='app.pdftoolkit.pdf.test' versionCode='' versionName='' platformBuildVersionName='14' platformBuildVersionCode='34' compileSdkVersion='34' compileSdkVersionCodename='14'
+sdkVersion:'26'
+targetSdkVersion:'34'
+uses-permission: name='android.permission.REORDER_TASKS'
+application: label='' icon=''
+application-debuggable
+uses-library:'android.test.runner'
+feature-group: label=''
+  uses-feature: name='android.hardware.faketouch'
+  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'
+other-activities
+supports-screens: 'small' 'normal' 'large' 'xlarge'
+supports-any-density: 'true'
+locales: '--_--'
+densities: '160'
+===================
+END_TIME: 2026-10-15 04:52:19.745
+END_TIME-NANOS: 2026-10-15 04:52:19.745874581
+DURATION: 17ms
+EXIT CODE: 0

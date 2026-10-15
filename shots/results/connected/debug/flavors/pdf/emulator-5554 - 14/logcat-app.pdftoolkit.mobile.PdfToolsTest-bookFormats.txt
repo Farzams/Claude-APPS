@@ -1,0 +1,23 @@
+10-15 04:51:34.150  2655  2674 I TestRunner: started: bookFormats(app.pdftoolkit.mobile.PdfToolsTest)
+10-15 04:51:34.395   816   824 I ndroid.systemui: NativeAlloc concurrent copying GC freed 120195(5732KB) AllocSpace objects, 15(300KB) LOS objects, 49% free, 13MB/26MB, paused 25us,27us total 680.938ms
+10-15 04:51:34.412   816   892 D EGL_emulation: app_time_stats: avg=101662.59ms min=101662.59ms max=101662.59ms count=1
+10-15 04:51:34.466  2655  2674 W .pdftoolkit.pdf: Verification of void com.tom_roush.pdfbox.pdfparser.COSParser.prepareDecryption() took 150.813ms (1206.79 bytecodes/s) (7744B approximate peak alloc)
+10-15 04:51:34.638  2818  2818 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+10-15 04:51:34.640  2818  2818 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+10-15 04:51:34.668   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-15 04:51:34.671  2818  2819 I Gralloc4: mapper 4.x is not supported
+10-15 04:51:34.924  2655  2655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.app.Activity$$ExternalSyntheticLambda0@cd767e7
+10-15 04:51:34.953  2655  2655 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@8fb2f91 in: DESTROYED
+10-15 04:51:34.976  2655  2674 I PDFTK   : txt and html ok
+10-15 04:51:35.039   513   868 W InputManager-JNI: Input channel object '3dc2d15 app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+10-15 04:51:35.075  2655  2662 I .pdftoolkit.pdf: Background young concurrent copying GC freed 100954(4288KB) AllocSpace objects, 8(828KB) LOS objects, 6% free, 12MB/12MB, paused 45us,124us total 847.389ms
+10-15 04:51:35.337  2655  2655 I Choreographer: Skipped 68 frames!  The application may be doing too much work on its main thread.
+10-15 04:51:35.772  2655  2674 I PDFTK   : epub ok
+10-15 04:51:35.943  2655  2674 I PDFTK   : fb2 ok
+10-15 04:51:36.169  2655  2662 I .pdftoolkit.pdf: Background concurrent copying GC freed 89964(4160KB) AllocSpace objects, 17(2048KB) LOS objects, 49% free, 14MB/28MB, paused 14.429ms,17us total 743.301ms
+10-15 04:51:36.280  2655  2674 I PDFTK   : cbz ok
+10-15 04:51:36.341   513   524 I system_server: NativeAlloc concurrent copying GC freed 185333(7832KB) AllocSpace objects, 28(560KB) LOS objects, 49% free, 17MB/35MB, paused 41us,38us total 1.850s
+10-15 04:51:36.347   513   525 W JavaBinder: BinderProxy is being destroyed but the application did not call unlinkToDeath to unlink all of its death recipients beforehand.  Releasing leaked death recipient: com.android.server.am.ActivityManagerService$14
+10-15 04:51:36.350   513   525 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-15 04:51:36.768  2655  2674 I PDFTK   : djvu ok: 114602 bytes
+10-15 04:51:36.768  2655  2674 I TestRunner: finished: bookFormats(app.pdftoolkit.mobile.PdfToolsTest)

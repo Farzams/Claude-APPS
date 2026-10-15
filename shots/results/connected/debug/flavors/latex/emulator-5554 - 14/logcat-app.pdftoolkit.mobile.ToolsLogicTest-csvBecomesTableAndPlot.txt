@@ -1,0 +1,3 @@
+10-15 05:11:14.293  3092  3111 I TestRunner: started: csvBecomesTableAndPlot(app.pdftoolkit.mobile.ToolsLogicTest)
+10-15 05:11:14.338  3092  3111 I PDFTK   : csv logic ok
+10-15 05:11:14.338  3092  3111 I TestRunner: finished: csvBecomesTableAndPlot(app.pdftoolkit.mobile.ToolsLogicTest)

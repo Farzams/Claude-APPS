@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="app.pdftoolkit.mobile.PdfToolsTest" tests="6" failures="0" errors="0" skipped="0" time="194.961" timestamp="2026-10-15T04:52:20" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 14" />
+    <property name="flavor" value="pdf" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="everyScreenOpens" classname="app.pdftoolkit.mobile.PdfToolsTest" time="45.95" />
+  <testcase name="settingsAbout" classname="app.pdftoolkit.mobile.PdfToolsTest" time="102.005" />
+  <testcase name="bookFormats" classname="app.pdftoolkit.mobile.PdfToolsTest" time="2.626" />
+  <testcase name="organizeDragAndDrop" classname="app.pdftoolkit.mobile.PdfToolsTest" time="14.598" />
+  <testcase name="pdfOperations" classname="app.pdftoolkit.mobile.PdfToolsTest" time="2.483" />
+  <testcase name="fileManagerMergeFlow" classname="app.pdftoolkit.mobile.PdfToolsTest" time="22.538" />
+</testsuite>

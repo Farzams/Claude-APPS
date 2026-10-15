@@ -1,0 +1,34 @@
+10-15 04:51:52.236  2655  2674 I TestRunner: started: pdfOperations(app.pdftoolkit.mobile.PdfToolsTest)
+10-15 04:51:52.353  2655  2655 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.app.Activity$$ExternalSyntheticLambda0@9928210
+10-15 04:51:52.353  2655  2655 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@47d525e in: DESTROYED
+10-15 04:51:52.383   513   868 W InputManager-JNI: Input channel object '6732484 app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+10-15 04:51:52.573  2655  2674 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+10-15 04:51:52.575  2655  2674 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+10-15 04:51:52.671  2655  2674 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+10-15 04:51:52.671  2655  2674 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+10-15 04:51:52.671  2655  2674 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+10-15 04:51:52.672  2655  2674 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+10-15 04:51:52.903  2655  2674 I PDFTK   : merge ok
+10-15 04:51:53.080  2655  2674 I PDFTK   : extract ok
+10-15 04:51:53.168  2655  2674 I PDFTK   : organize ok
+10-15 04:51:53.244  2655  2674 I PDFTK   : locked file refused: InvalidPasswordException
+10-15 04:51:53.379  2655  2674 I PDFTK   : protect ok
+10-15 04:51:53.578  2655  2674 I PDFTK   : compress ok: 19818 -> 37592
+10-15 04:51:53.621  2655  2674 I PDFTK   : pictures ok
+10-15 04:51:53.961  2655  2674 I PDFTK   : watermark ok
+10-15 04:51:54.210  2655  2674 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+10-15 04:51:54.210  2655  2674 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+10-15 04:51:54.210  2655  2674 D PdfBox-Android: Type 6 GSUB lookup table is not supported and will be ignored
+10-15 04:51:54.210  2655  2674 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+10-15 04:51:54.211  2655  2674 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+10-15 04:51:54.271  2655  2674 W PdfBox-Android: Using fallback font LiberationSans for base font Times-Bold
+10-15 04:51:54.318  2655  2674 W PdfBox-Android: Using fallback font Roboto-Regular for base font Times-Italic
+10-15 04:51:54.356  2655  2674 W PdfBox-Android: Using fallback font LiberationSans for base font Times-BoldItalic
+10-15 04:51:54.432  2655  2674 W PdfBox-Android: Using fallback font LiberationSans for base font Helvetica-Bold
+10-15 04:51:54.470  2655  2674 W PdfBox-Android: Using fallback font Roboto-Regular for base font Helvetica-Oblique
+10-15 04:51:54.509  2655  2674 W PdfBox-Android: Using fallback font LiberationSans for base font Helvetica-BoldOblique
+10-15 04:51:54.681   816   816 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+10-15 04:51:54.684  2655  2674 W PdfBox-Android: Using fallback font Roboto-Regular for base font Symbol
+10-15 04:51:54.707  2655  2674 W PdfBox-Android: Using fallback font Roboto-Regular for base font ZapfDingbats
+10-15 04:51:54.795  2655  2674 I PDFTK   : numbers ok
+10-15 04:51:54.795  2655  2674 I TestRunner: finished: pdfOperations(app.pdftoolkit.mobile.PdfToolsTest)

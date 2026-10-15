@@ -1,0 +1,90 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.9/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preLatexDebugBuild UP-TO-DATE
+> Task :app:checkLatexDebugAarMetadata UP-TO-DATE
+> Task :app:generateLatexDebugResValues UP-TO-DATE
+> Task :app:mapLatexDebugSourceSetPaths UP-TO-DATE
+> Task :app:generateLatexDebugResources UP-TO-DATE
+> Task :app:mergeLatexDebugResources UP-TO-DATE
+> Task :app:packageLatexDebugResources UP-TO-DATE
+> Task :app:parseLatexDebugLocalResources UP-TO-DATE
+> Task :app:createLatexDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksLatexDebug UP-TO-DATE
+> Task :app:processLatexDebugMainManifest UP-TO-DATE
+> Task :app:processLatexDebugManifest UP-TO-DATE
+> Task :app:processLatexDebugManifestForPackage UP-TO-DATE
+> Task :app:processLatexDebugResources UP-TO-DATE
+> Task :app:compileLatexDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompileLatexDebug UP-TO-DATE
+> Task :app:compileLatexDebugJavaWithJavac NO-SOURCE
+> Task :app:preLatexDebugAndroidTestBuild SKIPPED
+> Task :app:checkLatexDebugAndroidTestAarMetadata
+> Task :app:generateLatexDebugAndroidTestResValues
+> Task :app:mapLatexDebugAndroidTestSourceSetPaths
+> Task :app:generateLatexDebugAndroidTestResources
+> Task :app:bundleLatexDebugClassesToCompileJar
+> Task :app:mergeLatexDebugAndroidTestResources
+> Task :app:processLatexDebugAndroidTestManifest
+> Task :app:javaPreCompileLatexDebugAndroidTest
+> Task :app:mergeLatexDebugShaders UP-TO-DATE
+> Task :app:compileLatexDebugShaders NO-SOURCE
+> Task :app:generateLatexDebugAssets UP-TO-DATE
+> Task :app:mergeLatexDebugAssets UP-TO-DATE
+> Task :app:compressLatexDebugAssets UP-TO-DATE
+> Task :app:processLatexDebugAndroidTestResources
+> Task :app:checkLatexDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarLatexDebugFileDependencies UP-TO-DATE
+> Task :app:mergeExtDexLatexDebug UP-TO-DATE
+> Task :app:dexBuilderLatexDebug UP-TO-DATE
+> Task :app:mergeLatexDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processLatexDebugJavaRes UP-TO-DATE
+> Task :app:mergeLatexDebugJavaResource UP-TO-DATE
+> Task :app:mergeLibDexLatexDebug UP-TO-DATE
+> Task :app:mergeProjectDexLatexDebug UP-TO-DATE
+> Task :app:mergeLatexDebugJniLibFolders UP-TO-DATE
+> Task :app:mergeLatexDebugNativeLibs UP-TO-DATE
+> Task :app:stripLatexDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningLatexDebug UP-TO-DATE
+> Task :app:writeLatexDebugAppMetadata UP-TO-DATE
+> Task :app:writeLatexDebugSigningConfigVersions UP-TO-DATE
+> Task :app:packageLatexDebug UP-TO-DATE
+> Task :app:createLatexDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:mergeLatexDebugAndroidTestShaders
+> Task :app:compileLatexDebugAndroidTestShaders NO-SOURCE
+> Task :app:generateLatexDebugAndroidTestAssets UP-TO-DATE
+> Task :app:mergeLatexDebugAndroidTestAssets
+> Task :app:compressLatexDebugAndroidTestAssets
+> Task :app:checkLatexDebugAndroidTestDuplicateClasses
+> Task :app:desugarLatexDebugAndroidTestFileDependencies
+> Task :app:mergeExtDexLatexDebugAndroidTest
+> Task :app:mergeLibDexLatexDebugAndroidTest
+> Task :app:mergeLatexDebugAndroidTestJniLibFolders
+> Task :app:mergeLatexDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripLatexDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:validateSigningLatexDebugAndroidTest
+> Task :app:writeLatexDebugAndroidTestSigningConfigVersions
+> Task :app:compileLatexDebugAndroidTestKotlin
+> Task :app:compileLatexDebugAndroidTestJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderLatexDebugAndroidTest
+> Task :app:mergeLatexDebugAndroidTestGlobalSynthetics
+> Task :app:processLatexDebugAndroidTestJavaRes
+> Task :app:mergeProjectDexLatexDebugAndroidTest
+> Task :app:mergeLatexDebugAndroidTestJavaResource
+> Task :app:packageLatexDebugAndroidTest
+> Task :app:createLatexDebugAndroidTestApkListingFileRedirect
+[EmulatorConsole]: Failed to start Emulator console for 5554
+
+> Task :app:connectedLatexDebugAndroidTest
+Starting 6 tests on emulator-5554 - 14
+
+emulator-5554 - 14 Tests 0/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 1/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 2/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 6/6 completed. (0 skipped) (0 failed)
+Finished 6 tests on emulator-5554 - 14
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1792039947901.json
+
+BUILD SUCCESSFUL in 18m 55s
+63 actionable tasks: 28 executed, 35 up-to-date

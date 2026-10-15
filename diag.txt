@@ -1,0 +1,23 @@
+== df
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/root        72G   58G   15G  80% /
+tmpfs           3.9G   84K  3.9G   1% /dev/shm
+tmpfs           1.6G 1000K  1.6G   1% /run
+tmpfs           5.0M     0  5.0M   0% /run/lock
+efivarfs        128M   32K  128M   1% /sys/firmware/efi/efivars
+/dev/sda16      881M   64M  756M   8% /boot
+/dev/sda15      105M  6.2M   99M   6% /boot/efi
+tmpfs           794M   12K  794M   1% /run/user/1001
+== free
+               total        used        free      shared  buff/cache   available
+Mem:            7938         894        6768          41         632        7043
+Swap:           3071          46        3025
+== avd
+total 16
+drwxr-xr-x 3 runner runner 4096 Oct 15 04:46 .
+drwxr-xr-x 3 runner runner 4096 Oct 15 04:46 ..
+drwxr-xr-x 4 runner runner 4096 Oct 15 05:11 test.avd
+-rw-r--r-- 1 runner runner   81 Oct 15 04:46 test.ini
+955M	/home/runner/.android
+== kvm
+crw-rw-rw- 1 root kvm 10, 232 Oct 15 05:11 /dev/kvm

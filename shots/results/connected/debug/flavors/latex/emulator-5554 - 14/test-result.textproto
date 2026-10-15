@@ -1,0 +1,328 @@
+# 2026-10-15T05:11:16.592060846Z:
+test_suite_meta_data {
+  scheduled_test_case_count: 6
+}
+test_status: PASSED
+test_result {
+  test_case {
+    test_class: "EndToEndTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "compilesEnglishAndPersianThenThemes"
+    start_time {
+      seconds: 1792039995
+      nanos: 234000000
+    }
+    end_time {
+      seconds: 1792040244
+      nanos: 895000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.EndToEndTest-compilesEnglishAndPersianThenThemes.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TemplatesTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "insertToolsMakeCompilableLatex"
+    start_time {
+      seconds: 1792040246
+      nanos: 51000000
+    }
+    end_time {
+      seconds: 1792040482
+      nanos: 789000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.TemplatesTest-insertToolsMakeCompilableLatex.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "TemplatesTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "everyNewTemplateCompiles"
+    start_time {
+      seconds: 1792040483
+      nanos: 932000000
+    }
+    end_time {
+      seconds: 1792041073
+      nanos: 51000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.TemplatesTest-everyNewTemplateCompiles.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "ToolsLogicTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "csvBecomesTableAndPlot"
+    start_time {
+      seconds: 1792041074
+      nanos: 547000000
+    }
+    end_time {
+      seconds: 1792041074
+      nanos: 574000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.ToolsLogicTest-csvBecomesTableAndPlot.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "ToolsLogicTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "checkFindsTheUsualMistakes"
+    start_time {
+      seconds: 1792041074
+      nanos: 584000000
+    }
+    end_time {
+      seconds: 1792041074
+      nanos: 611000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.ToolsLogicTest-checkFindsTheUsualMistakes.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+test_result {
+  test_case {
+    test_class: "ToolsLogicTest"
+    test_package: "app.pdftoolkit.mobile"
+    test_method: "doiIsCleanedAndEntryTidied"
+    start_time {
+      seconds: 1792041074
+      nanos: 617000000
+    }
+    end_time {
+      seconds: 1792041074
+      nanos: 619000000
+    }
+  }
+  test_status: PASSED
+  output_artifact {
+    label {
+      label: "logcat"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/logcat-app.pdftoolkit.mobile.ToolsLogicTest-doiIsCleanedAndEntryTidied.txt"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/device-info.pb"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.meminfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/meminfo"
+    }
+  }
+  output_artifact {
+    label {
+      label: "device-info.cpuinfo"
+      namespace: "android"
+    }
+    source_path {
+      path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/cpuinfo"
+    }
+  }
+}
+output_artifact {
+  label {
+    label: "test-results.log"
+    namespace: "com.google.testing.platform.runtime.android.driver.AndroidInstrumentationDriver"
+  }
+  source_path {
+    path: "/home/runner/work/Claude-APPS/Claude-APPS/android/app/build/outputs/androidTest-results/connected/debug/flavors/latex/emulator-5554 - 14/testlog/test-results.log"
+  }
+  type: TEST_DATA
+  mime_type: "text/plain"
+}

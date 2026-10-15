@@ -1,0 +1,123 @@
+To honour the JVM settings for this build a single-use Daemon process will be forked. For more on this, please refer to https://docs.gradle.org/8.9/userguide/gradle_daemon.html#sec:disabling_the_daemon in the Gradle documentation.
+Daemon will be stopped at the end of the build 
+> Task :app:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:prePdfDebugBuild UP-TO-DATE
+> Task :djvu:preBuild UP-TO-DATE
+> Task :djvu:preDebugBuild UP-TO-DATE
+> Task :djvu:writeDebugAarMetadata UP-TO-DATE
+> Task :app:checkPdfDebugAarMetadata UP-TO-DATE
+> Task :app:generatePdfDebugResValues UP-TO-DATE
+> Task :djvu:generateDebugResValues UP-TO-DATE
+> Task :djvu:generateDebugResources UP-TO-DATE
+> Task :djvu:packageDebugResources UP-TO-DATE
+> Task :app:mapPdfDebugSourceSetPaths UP-TO-DATE
+> Task :app:generatePdfDebugResources UP-TO-DATE
+> Task :app:mergePdfDebugResources UP-TO-DATE
+> Task :app:packagePdfDebugResources UP-TO-DATE
+> Task :app:parsePdfDebugLocalResources UP-TO-DATE
+> Task :app:createPdfDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksPdfDebug UP-TO-DATE
+> Task :djvu:extractDeepLinksDebug UP-TO-DATE
+> Task :djvu:processDebugManifest UP-TO-DATE
+> Task :app:processPdfDebugMainManifest UP-TO-DATE
+> Task :app:processPdfDebugManifest UP-TO-DATE
+> Task :app:processPdfDebugManifestForPackage UP-TO-DATE
+> Task :djvu:compileDebugLibraryResources UP-TO-DATE
+> Task :djvu:parseDebugLocalResources UP-TO-DATE
+> Task :djvu:generateDebugRFile UP-TO-DATE
+> Task :app:processPdfDebugResources UP-TO-DATE
+> Task :djvu:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :djvu:compileDebugKotlin UP-TO-DATE
+> Task :djvu:javaPreCompileDebug UP-TO-DATE
+> Task :djvu:compileDebugJavaWithJavac NO-SOURCE
+> Task :djvu:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:compilePdfDebugKotlin UP-TO-DATE
+> Task :app:javaPreCompilePdfDebug UP-TO-DATE
+> Task :app:compilePdfDebugJavaWithJavac NO-SOURCE
+> Task :app:prePdfDebugAndroidTestBuild SKIPPED
+> Task :app:checkPdfDebugAndroidTestAarMetadata
+> Task :app:generatePdfDebugAndroidTestResValues
+> Task :app:mapPdfDebugAndroidTestSourceSetPaths
+> Task :app:generatePdfDebugAndroidTestResources
+> Task :app:bundlePdfDebugClassesToCompileJar
+> Task :app:mergePdfDebugAndroidTestResources
+> Task :app:processPdfDebugAndroidTestManifest
+> Task :app:javaPreCompilePdfDebugAndroidTest
+> Task :app:mergePdfDebugShaders UP-TO-DATE
+> Task :app:compilePdfDebugShaders NO-SOURCE
+> Task :app:generatePdfDebugAssets UP-TO-DATE
+> Task :djvu:mergeDebugShaders UP-TO-DATE
+> Task :djvu:compileDebugShaders NO-SOURCE
+> Task :djvu:generateDebugAssets UP-TO-DATE
+> Task :djvu:packageDebugAssets UP-TO-DATE
+> Task :app:mergePdfDebugAssets UP-TO-DATE
+> Task :app:compressPdfDebugAssets UP-TO-DATE
+> Task :app:checkPdfDebugDuplicateClasses UP-TO-DATE
+> Task :app:desugarPdfDebugFileDependencies UP-TO-DATE
+> Task :app:processPdfDebugAndroidTestResources
+> Task :app:mergeExtDexPdfDebug UP-TO-DATE
+> Task :djvu:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeLibDexPdfDebug UP-TO-DATE
+> Task :djvu:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:dexBuilderPdfDebug UP-TO-DATE
+> Task :app:mergePdfDebugGlobalSynthetics UP-TO-DATE
+> Task :app:processPdfDebugJavaRes UP-TO-DATE
+> Task :djvu:processDebugJavaRes UP-TO-DATE
+> Task :app:mergePdfDebugJavaResource UP-TO-DATE
+> Task :app:mergeProjectDexPdfDebug UP-TO-DATE
+> Task :app:mergePdfDebugJniLibFolders UP-TO-DATE
+> Task :djvu:configureCMakeDebug[arm64-v8a]
+> Task :djvu:buildCMakeDebug[arm64-v8a]
+> Task :djvu:configureCMakeDebug[armeabi-v7a]
+> Task :djvu:buildCMakeDebug[armeabi-v7a]
+> Task :djvu:configureCMakeDebug[x86_64]
+> Task :djvu:buildCMakeDebug[x86_64]
+> Task :djvu:mergeDebugJniLibFolders UP-TO-DATE
+> Task :djvu:mergeDebugNativeLibs UP-TO-DATE
+> Task :djvu:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :app:mergePdfDebugNativeLibs UP-TO-DATE
+> Task :app:stripPdfDebugDebugSymbols UP-TO-DATE
+> Task :app:validateSigningPdfDebug UP-TO-DATE
+> Task :app:writePdfDebugAppMetadata UP-TO-DATE
+> Task :app:writePdfDebugSigningConfigVersions UP-TO-DATE
+> Task :app:packagePdfDebug UP-TO-DATE
+> Task :app:createPdfDebugApkListingFileRedirect UP-TO-DATE
+> Task :app:mergePdfDebugAndroidTestShaders
+> Task :app:compilePdfDebugAndroidTestShaders NO-SOURCE
+> Task :app:generatePdfDebugAndroidTestAssets UP-TO-DATE
+> Task :app:mergePdfDebugAndroidTestAssets
+> Task :app:compressPdfDebugAndroidTestAssets
+> Task :app:checkPdfDebugAndroidTestDuplicateClasses
+> Task :app:desugarPdfDebugAndroidTestFileDependencies
+> Task :app:mergeExtDexPdfDebugAndroidTest
+> Task :app:mergeLibDexPdfDebugAndroidTest
+> Task :app:mergePdfDebugAndroidTestJniLibFolders
+> Task :app:mergePdfDebugAndroidTestNativeLibs NO-SOURCE
+> Task :app:stripPdfDebugAndroidTestDebugSymbols NO-SOURCE
+> Task :app:validateSigningPdfDebugAndroidTest
+> Task :app:writePdfDebugAndroidTestSigningConfigVersions
+> Task :app:compilePdfDebugAndroidTestKotlin
+> Task :app:compilePdfDebugAndroidTestJavaWithJavac NO-SOURCE
+> Task :app:dexBuilderPdfDebugAndroidTest
+> Task :app:mergePdfDebugAndroidTestGlobalSynthetics
+> Task :app:processPdfDebugAndroidTestJavaRes
+> Task :app:mergeProjectDexPdfDebugAndroidTest
+> Task :app:mergePdfDebugAndroidTestJavaResource
+> Task :app:packagePdfDebugAndroidTest
+> Task :app:createPdfDebugAndroidTestApkListingFileRedirect
+[EmulatorConsole]: Failed to start Emulator console for 5554
+
+> Task :app:connectedPdfDebugAndroidTest
+Starting 6 tests on emulator-5554 - 14
+
+emulator-5554 - 14 Tests 0/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 1/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 2/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 3/6 completed. (0 skipped) (0 failed)
+emulator-5554 - 14 Tests 5/6 completed. (0 skipped) (0 failed)
+Finished 6 tests on emulator-5554 - 14
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__reactivecircus_android-emulator-runner-1792039696121.json
+
+BUILD SUCCESSFUL in 4m 12s
+89 actionable tasks: 34 executed, 55 up-to-date

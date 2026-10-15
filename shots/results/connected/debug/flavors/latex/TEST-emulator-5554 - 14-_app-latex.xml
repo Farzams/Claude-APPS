@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name="app.pdftoolkit.mobile.EndToEndTest" tests="6" failures="0" errors="0" skipped="0" time="1081.074" timestamp="2026-10-15T05:11:16" hostname="localhost">
+  <properties>
+    <property name="device" value="emulator-5554 - 14" />
+    <property name="flavor" value="latex" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="compilesEnglishAndPersianThenThemes" classname="app.pdftoolkit.mobile.EndToEndTest" time="249.572" />
+  <testcase name="insertToolsMakeCompilableLatex" classname="app.pdftoolkit.mobile.TemplatesTest" time="236.748" />
+  <testcase name="everyNewTemplateCompiles" classname="app.pdftoolkit.mobile.TemplatesTest" time="589.129" />
+  <testcase name="csvBecomesTableAndPlot" classname="app.pdftoolkit.mobile.ToolsLogicTest" time="0.044" />
+  <testcase name="checkFindsTheUsualMistakes" classname="app.pdftoolkit.mobile.ToolsLogicTest" time="0.023" />
+  <testcase name="doiIsCleanedAndEntryTidied" classname="app.pdftoolkit.mobile.ToolsLogicTest" time="0.006" />
+</testsuite>

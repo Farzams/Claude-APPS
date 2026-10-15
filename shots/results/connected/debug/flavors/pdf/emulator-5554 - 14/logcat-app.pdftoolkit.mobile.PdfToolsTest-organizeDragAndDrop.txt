@@ -1,0 +1,72 @@
+10-15 04:51:36.771  2655  2674 I TestRunner: started: organizeDragAndDrop(app.pdftoolkit.mobile.PdfToolsTest)
+10-15 04:51:36.818   816   890 D SplashScreenView: Build android.window.SplashScreenView{bfa007b V.E...... ......ID 0,0-0,0}
+10-15 04:51:36.818   816   890 D SplashScreenView: Icon: view: null drawable: null size: 0
+10-15 04:51:36.818   816   890 D SplashScreenView: Branding: view: android.view.View{fb9de98 G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+10-15 04:51:36.831  2655  2674 D UiDevice: Waiting 30000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+10-15 04:51:36.832  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+10-15 04:51:36.927   392   392 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+10-15 04:51:36.953  2655  2655 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@47d525e in: PRE_ON_CREATE
+10-15 04:51:36.978  2655  2655 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@47d525e in: CREATED
+10-15 04:51:36.981  2655  2655 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@47d525e in: STARTED
+10-15 04:51:36.982  2655  2655 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@47d525e in: RESUMED
+10-15 04:51:37.178  2459  2478 D EGL_emulation: app_time_stats: avg=1213.76ms min=133.77ms max=3194.80ms count=3
+10-15 04:51:37.212  2655  2655 D AutofillManager: Fill dialog is enabled:false, hints=[]
+10-15 04:51:37.426   816   892 D EGL_emulation: app_time_stats: avg=1750.06ms min=548.48ms max=2951.65ms count=2
+10-15 04:51:37.466   816   892 D EGL_emulation: app_time_stats: avg=3053.58ms min=3053.58ms max=3053.58ms count=1
+10-15 04:51:37.667  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+10-15 04:51:37.672  2655  2674 W UiDevice: Active window root not found.
+10-15 04:51:37.678  2655  2674 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=Home, displayId=0, id=3, taskId=7, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=true, active=true, pictureInPicture=false, transitionTime=290063, hasParent=false, isAnchored=false, hasChildren=false]
+10-15 04:51:37.824  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+10-15 04:51:37.866  2655  2745 I OpenGLRenderer: Davey! duration=885ms; Flags=1, FrameTimelineVsyncId=10664, IntendedVsync=293263686235, Vsync=293463686227, InputEventId=0, HandleInputStart=293464834184, AnimationStart=293464837541, PerformTraversalsStart=293464840166, DrawStart=294060279908, FrameDeadline=293280352901, FrameInterval=293464723778, FrameStartTime=16666666, SyncQueued=294091619832, SyncStart=294092451813, IssueDrawCommandsStart=294092542321, SwapBuffers=294093910320, FrameCompleted=294150184995, DequeueBufferDuration=2575, QueueBufferDuration=111117, GpuCompleted=294150184995, SwapBuffersCompleted=294147995385, DisplayPresentTime=0, CommandSubmissionCompleted=294093910320,
+10-15 04:51:37.889   513   536 W ziparchive: Unable to open '/data/app/~~SKvA3EicSuUQECwfE0WoFw==/app.pdftoolkit.pdf-tXR-XVJox7mL9fWz3yz5zQ==/base.dm': No such file or directory
+10-15 04:51:37.896   513   536 I ActivityTaskManager: Displayed app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity for user 0: +1s93ms
+10-15 04:51:37.917   513  2455 W InputManager-JNI: Input channel object '8af7dbb Splash Screen app.pdftoolkit.pdf (client)' was disposed without first being removed with the input manager!
+10-15 04:51:37.941  2459  2481 I ImeTracker: com.android.launcher3:48e46fb8: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+10-15 04:51:37.942  2655  2655 I Choreographer: Skipped 45 frames!  The application may be doing too much work on its main thread.
+10-15 04:51:37.945   513  1721 I ImeTracker: com.android.launcher3:48e46fb8: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-15 04:51:37.996   513  2455 I ImeTracker: app.pdftoolkit.pdf:60f5ec78: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+10-15 04:51:37.996   513  2455 I ImeTracker: app.pdftoolkit.pdf:60f5ec78: onCancelled at PHASE_SERVER_SHOULD_HIDE
+10-15 04:51:38.336  2655  2745 I OpenGLRenderer: Davey! duration=1058ms; Flags=0, FrameTimelineVsyncId=10715, IntendedVsync=293480352893, Vsync=294230352863, InputEventId=0, HandleInputStart=294237160283, AnimationStart=294237163569, PerformTraversalsStart=294267744619, DrawStart=294267977493, FrameDeadline=294180352865, FrameInterval=294236364099, FrameStartTime=16666666, SyncQueued=294270951555, SyncStart=294270992732, IssueDrawCommandsStart=294271115560, SwapBuffers=294353348292, FrameCompleted=294538791732, DequeueBufferDuration=1983, QueueBufferDuration=1332523, GpuCompleted=294538744063, SwapBuffersCompleted=294538791732, DisplayPresentTime=0, CommandSubmissionCompleted=294353348292,
+10-15 04:51:38.587  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_organize\E'].
+10-15 04:51:39.152  2655  2674 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_organize\E']].
+10-15 04:51:39.152  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_organize\E'].
+10-15 04:51:39.160  2655  2674 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_organize\E'].
+10-15 04:51:39.171  2655  2674 D UiObject2: Clicking on (797, 1252).
+10-15 04:51:39.214  2655  2674 W GestureController: Gestures took longer than expected (43ms >> 16ms), device might be in a busy state.
+10-15 04:51:39.215  2655  2674 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qpage_card\E']].
+10-15 04:51:39.216  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qpage_card\E'].
+10-15 04:51:39.336  2655  2679 D EGL_emulation: app_time_stats: avg=365.68ms min=67.29ms max=787.17ms count=4
+10-15 04:51:39.619  2655  2674 D UiDevice: Searching for node with selector: BySelector [RES='\Qpage_card\E'].
+10-15 04:51:40.090  2655  2674 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [DESC='^\Qpage \E.*$']].
+10-15 04:51:40.091  2655  2674 D UiDevice: Searching for node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:41.531   816   816 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+10-15 04:51:41.621  2655  2674 D UiDevice: Retrieving nodes with selector: BySelector [RES='\Qpage_card\E'].
+10-15 04:51:41.652  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:41.655  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:41.659  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:41.662  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:41.665  2655  2674 I PDFTK   : organize order before: [page 1, page 2, page 3, page 4]
+10-15 04:51:42.272  2655  2674 I PDFTK   : screenshot p03_organize_before
+10-15 04:51:42.273  2655  2674 D UiDevice: Retrieving nodes with selector: BySelector [RES='\Qpage_card\E'].
+10-15 04:51:42.307  2655  2674 D UiDevice: Dragging from (284, 991) to (284, 1721) in 60 steps.
+10-15 04:51:43.062  2655  2679 D EGL_emulation: app_time_stats: avg=618.58ms min=56.61ms max=3010.49ms count=6
+10-15 04:51:44.066  2655  2679 D EGL_emulation: app_time_stats: avg=96.10ms min=79.17ms max=107.01ms count=10
+10-15 04:51:45.111  2655  2679 D EGL_emulation: app_time_stats: avg=101.94ms min=81.21ms max=119.14ms count=10
+10-15 04:51:46.127  2655  2679 D EGL_emulation: app_time_stats: avg=97.12ms min=63.80ms max=117.56ms count=10
+10-15 04:51:47.202  2845  2845 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+10-15 04:51:47.203  2845  2845 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+10-15 04:51:47.224  2655  2679 D EGL_emulation: app_time_stats: avg=106.73ms min=96.32ms max=129.02ms count=10
+10-15 04:51:47.368   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+10-15 04:51:47.369  2845  2846 I Gralloc4: mapper 4.x is not supported
+10-15 04:51:48.240  2655  2679 D EGL_emulation: app_time_stats: avg=109.38ms min=83.32ms max=152.98ms count=9
+10-15 04:51:48.705   816   816 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+10-15 04:51:49.289  2655  2679 D EGL_emulation: app_time_stats: avg=114.19ms min=67.84ms max=137.96ms count=9
+10-15 04:51:51.331  2655  2674 I PDFTK   : screenshot p03_organize_after
+10-15 04:51:51.331  2655  2674 D UiDevice: Retrieving nodes with selector: BySelector [RES='\Qpage_card\E'].
+10-15 04:51:51.375  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:51.379  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:51.382  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:51.385  2655  2674 D UiObject2: Retrieving node with selector: BySelector [DESC='^\Qpage \E.*$'].
+10-15 04:51:51.388  2655  2674 I PDFTK   : organize order after: [page 2, page 3, page 1, page 4]
+10-15 04:51:51.388  2655  2674 I PDFTK   : drag ok
+10-15 04:51:51.388  2655  2674 I TestRunner: finished: organizeDragAndDrop(app.pdftoolkit.mobile.PdfToolsTest)
