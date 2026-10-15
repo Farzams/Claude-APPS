@@ -298,6 +298,8 @@ Use the menu, \emph{Insert and check}, then \emph{Table or plot from CSV} to tur
 """
 
     val IEEE = """\documentclass[conference]{IEEEtran}
+% the Times fonts of the real IEEE style are not available offline, so the Computer Modern fonts are used here
+\renewcommand{\rmdefault}{cmr}\renewcommand{\sfdefault}{cmss}\renewcommand{\ttdefault}{cmtt}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 
