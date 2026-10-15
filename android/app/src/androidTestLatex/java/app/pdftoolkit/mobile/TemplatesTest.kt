@@ -48,16 +48,11 @@ class TemplatesTest {
         clickRes("new_project")
         // the dialog is a separate window without resource ids: look for the template by its name, swiping its list up
         assertTrue("dialog", device.wait(Until.hasObject(By.text("Templates")), 10_000))
-        var tries = 0
-        while (!device.hasObject(By.text(template)) && tries < 45) {
-            // the template list is the smallest scrollable thing on screen; move it a little at a time so nothing is skipped
-            val list = device.findObjects(By.scrollable(true)).firstOrNull { it.visibleBounds.height() in (device.displayHeight / 5)..(device.displayHeight * 45 / 100) }
-            if (list != null) {
-                if (!list.scroll(androidx.test.uiautomator.Direction.DOWN, 0.3f, 600)) list.scroll(androidx.test.uiautomator.Direction.UP, 1.0f, 4000)   // reached the end: start again from the top
-            } else device.swipe(device.displayWidth / 2, device.displayHeight * 65 / 100, device.displayWidth / 2, device.displayHeight * 55 / 100, 40)
-            Thread.sleep(350)
-            tries++
-        }
+        // the second text field of the dialog filters the templates, so the one wanted is the only one shown
+        val fields = device.findObjects(By.clazz("android.widget.EditText"))
+        assertTrue("template search field", fields.size >= 2)
+        fields[1].text = template
+        Thread.sleep(600)
         clickText(template)
         Thread.sleep(300)
         clickText("Create")

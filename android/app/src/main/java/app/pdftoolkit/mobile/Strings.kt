@@ -246,6 +246,7 @@ object Strings {
         "fm.perm.button" to ("Open settings to allow" to "باز کردن تنظیمات برای اجازه"),
         "fm.perm.system" to ("Use Android's file picker instead" to "به‌جای آن از انتخاب‌گر اندروید استفاده شود"),
         "read" to ("Read" to "خواندن"),
+        "tpl.search" to ("Search templates" to "جستجوی قالب‌ها"),
         "tpl.group.general" to ("General" to "عمومی"),
         "tpl.group.science" to ("By subject" to "بر اساس رشته"),
         "tpl.group.journal" to ("Journals and layouts" to "مجله‌ها و قالب‌های صفحه"),

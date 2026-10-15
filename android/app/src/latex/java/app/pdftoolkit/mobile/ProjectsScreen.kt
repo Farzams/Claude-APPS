@@ -199,6 +199,7 @@ private fun NewProjectDialog(vm: EditorViewModel, onDismiss: () -> Unit) {
     val cs = MaterialTheme.colorScheme
     var name by remember { mutableStateOf("") }
     var choice by remember { mutableStateOf(Templates.ALL.first().key) }
+    var find by remember { mutableStateOf("") }
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(t("new.project")) },
@@ -207,9 +208,10 @@ private fun NewProjectDialog(vm: EditorViewModel, onDismiss: () -> Unit) {
                 OutlinedTextField(name, { name = it }, label = { Text(t("project.name")) }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("project_name"))
                 Spacer(Modifier.height(6.dp))
                 Text(t("templates"), style = MaterialTheme.typography.titleSmall, color = cs.onSurfaceVariant)
+                OutlinedTextField(find, { find = it }, placeholder = { Text(t("tpl.search")) }, singleLine = true, modifier = Modifier.fillMaxWidth().testTag("template_search"))
                 Column(Modifier.fillMaxWidth().height(300.dp).verticalScroll(androidx.compose.foundation.rememberScrollState()).testTag("template_list")) {
                     var lastGroup = ""
-                    for (tpl in Templates.ALL) {
+                    for (tpl in Templates.ALL.filter { find.isBlank() || t(it.key).contains(find.trim(), ignoreCase = true) }) {
                         if (tpl.group != lastGroup) {
                             lastGroup = tpl.group
                             Text(t("tpl.group.$lastGroup"), Modifier.padding(top = 10.dp, bottom = 2.dp), style = MaterialTheme.typography.labelLarge, color = cs.primary)
