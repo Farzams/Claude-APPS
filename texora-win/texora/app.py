@@ -77,7 +77,8 @@ def selftest(app, engine, out):
         res["ok"] = bool(res.get("compile_ok")) and res.get("pages", 0) >= 1
         with open(out, "w") as f:
             json.dump(res, f, indent=1)
-        app.exit(0 if res["ok"] else 1)
+        sys.stdout.flush()
+        os._exit(0 if res["ok"] else 1)      # WebEngine can crash while the process shuts down: the report is already written
 
     engine.finished.connect(done)
     engine.ready.connect(lambda: engine.compile([(n, c.encode("utf-8")) for n, c in tpl["files"].items()], tpl["main"]))
