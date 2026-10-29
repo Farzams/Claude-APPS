@@ -44,6 +44,10 @@ class FormulaPanel(QtWidgets.QWidget):
         if self.view is not None or not self.available:
             return
         self.view = QWebEngineView(self)
+        # nothing to type here: no focus, no input method (Windows' text services are not needed and not always there)
+        self.view.setFocusPolicy(Qt.NoFocus)
+        self.view.setAttribute(Qt.WA_InputMethodEnabled, False)
+        self.view.setContextMenuPolicy(Qt.NoContextMenu)
         # off the record, like the TeX engine's page: nothing is stored on disk
         self.profile = QWebEngineProfile(self.view)
         self.view.setPage(QWebEnginePage(self.profile, self.view))
