@@ -1,0 +1,80 @@
+name: Build TeXora for Windows
+on:
+  workflow_dispatch:
+  push:
+    paths: ["texora-win/**", ".github/workflows/build-texora-windows.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: build-texora-windows
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: texora-win
+    env:
+      PYTHONUTF8: "1"
+      QTWEBENGINE_CHROMIUM_FLAGS: "--no-sandbox --disable-gpu --disable-gpu-compositing"
+    steps:
+      - uses: actions/checkout@v4
+      # Python 3.8 + PySide2 (Qt 5.15) are the newest versions that still run on Windows 7
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.8", architecture: "x64" }
+      - run: python -m pip install -r requirements.txt
+      - name: Core tests (projects, history, check, CSV, DOI, outline)
+        run: python tests/test_core.py
+      - name: Download the offline TeX engine and packages
+        run: python tools/fetch_assets.py
+      - name: Source run - open every screen, compile a Persian page through the engine, render it
+        timeout-minutes: 20
+        run: python -m texora --selftest selftest-source.json
+      - name: Source run result
+        if: always()
+        shell: pwsh
+        run: if (Test-Path selftest-source.json) { Get-Content selftest-source.json }
+      - name: Package (PyInstaller, one folder)
+        run: >
+          python -m PyInstaller --noconfirm --onedir --windowed --name TeXora --icon icon.ico
+          --add-data "assets/tex;assets/tex" --add-data "texora/fonts;texora/fonts" --add-data "texora/data;texora/data"
+          --add-data "texora/icon.png;texora"
+          --hidden-import PySide2.QtWebEngineWidgets --hidden-import PySide2.QtWebChannel --hidden-import fitz
+          --exclude-module tkinter --exclude-module PySide2.QtQml --exclude-module PySide2.Qt3DCore
+          run_texora.py
+      - name: Self-test of the packaged program
+        timeout-minutes: 20
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath "dist\TeXora\TeXora.exe" -ArgumentList "--selftest","$PWD\selftest-exe.json" -PassThru -Wait
+          Write-Host "exit code $($p.ExitCode)"
+          if (Test-Path selftest-exe.json) { Get-Content selftest-exe.json } else { Write-Host "no result file" }
+          if ($p.ExitCode -ne 0) { throw "the packaged program failed its self-test" }
+      - name: Build installer and portable zip
+        shell: pwsh
+        run: |
+          $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { choco install innosetup -y --no-progress }
+          & $iscc installer.iss
+          if ($LASTEXITCODE -ne 0) { throw "installer build failed" }
+          Compress-Archive -Path dist\TeXora\* -DestinationPath dist\TeXora-portable.zip
+          Get-ChildItem dist | Select-Object Name, @{n="MB";e={[math]::Round($_.Length/1MB)}}
+      - name: Publish release (with retries)
+        shell: pwsh
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          $repo = "${{ github.repository }}"; $tag = "texora-win-latest"
+          gh release view $tag --repo $repo *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --repo $repo --title "TeXora for Windows (latest build)" --target "${{ github.sha }}" --notes "**TeXora-Setup.exe** (installer) or **TeXora-portable.zip** (unzip anywhere, run TeXora.exe). 64-bit Windows 7 SP1 or later. On Windows 7 install the Universal C Runtime update (KB2999226) first."
+          }
+          foreach ($f in "dist/TeXora-Setup.exe", "dist/TeXora-portable.zip") {
+            $ok = $false
+            foreach ($i in 1..5) {
+              gh release upload $tag $f --clobber --repo $repo
+              if ($LASTEXITCODE -eq 0) { $ok = $true; break }
+              Write-Host "Upload of $f failed (attempt $i), retrying..."
+              Start-Sleep -Seconds (10 * $i)
+            }
+            if (-not $ok) { throw "could not upload $f" }
+          }
