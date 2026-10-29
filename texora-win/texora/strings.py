@@ -10,6 +10,9 @@ lang = "en"
 def load():
     with open(os.path.join(_DIR, "strings.json"), encoding="utf-8") as f:
         _table.update(json.load(f))
+    from .extra_strings import EN, FA
+    _table["en"].update(EN)
+    _table["fa"].update(FA)
 
 
 def set_lang(l):

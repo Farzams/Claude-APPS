@@ -3,6 +3,15 @@
 Offline LaTeX editor for maths and science (English and Persian), the Windows sibling of the TeXora Android app.
 It runs the same offline TeX engine (BusyTeX, TeX Live 2023 compiled to WebAssembly), so nothing is installed or downloaded when you compile.
 
+## Features
+
+Menu bar and tool bar, files and document structure beside the source, PDF pages as thumbnails, messages and a live formula
+preview below, status bar (line, column, words, engine).  Command, environment, `\\ref`, `\\cite`, package and file completion;
+quick formatting (Ctrl+B/I/U/E/M); several cursors (Ctrl+D, Alt+click); find and replace with case, whole word and regular
+expressions, also over the whole project; Ctrl+click jumps between source and PDF (matched by text); compile on save or after
+typing stops; PDF zoom, fit width / page, two pages, search, night mode; print; drag and drop; recent projects; folders
+opened in place.
+
 ## Windows 7
 
 * 64-bit Windows 7 **SP1** with the *Universal C Runtime* update (KB2999226) is required (Windows 8.1 and later already have it).

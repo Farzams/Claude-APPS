@@ -25,10 +25,15 @@ WizardStyle=modern
 Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; Flags: unchecked
+Name: "assoc"; Description: "Open .tex files with TeXora (Explorer: right-click, Open with)"; Flags: unchecked
 [Files]
 Source: "dist\TeXora\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 [Icons]
 Name: "{autoprograms}\{#AppName}"; Filename: "{app}\TeXora.exe"
 Name: "{autodesktop}\{#AppName}"; Filename: "{app}\TeXora.exe"; Tasks: desktopicon
+[Registry]
+Root: HKA; Subkey: "Software\Classes\.tex\OpenWithProgids"; ValueType: string; ValueName: "TeXora.tex"; ValueData: ""; Flags: uninsdeletevalue; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\TeXora.tex"; ValueType: string; ValueName: ""; ValueData: "LaTeX document"; Flags: uninsdeletekey; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\TeXora.tex\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """"{app}\TeXora.exe"" ""%1"""; Tasks: assoc
 [Run]
 Filename: "{app}\TeXora.exe"; Description: "Start TeXora"; Flags: nowait postinstall skipifsilent

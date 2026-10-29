@@ -19,6 +19,8 @@ MIME = {".html": "text/html; charset=utf-8", ".js": "application/javascript; cha
 
 class _Handler(BaseHTTPRequestHandler):
     root = ""
+    prefix = "/assets/tex/"
+    extra = {}            # path -> (bytes, content type): pages made in memory
     protocol_version = "HTTP/1.1"
 
     def log_message(self, *args):
@@ -26,7 +28,10 @@ class _Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         path = posixpath.normpath(self.path.split("?", 1)[0])
-        prefix = "/assets/tex/"
+        if path in self.extra:
+            body, ctype = self.extra[path]
+            return self._send(200, body, ctype)
+        prefix = self.prefix
         if not (path + "/").startswith(prefix) or ".." in path.split("/"):
             return self._send(404, b"not found", "text/plain")
         rel = path[len(prefix):] if path != prefix[:-1] else ""
@@ -60,8 +65,8 @@ class _Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
 
-def start_server(root):
-    handler = type("Handler", (_Handler,), {"root": root})
+def start_server(root, prefix="/assets/tex/", extra=None):
+    handler = type("Handler", (_Handler,), {"root": root, "prefix": prefix, "extra": extra or {}})
     srv = ThreadingHTTPServer(("127.0.0.1", 0), handler)
     srv.daemon_threads = True
     t = threading.Thread(target=srv.serve_forever, daemon=True)

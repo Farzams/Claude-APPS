@@ -158,8 +158,28 @@ QProgressBar { background: %(hover)s; border: none; border-radius: 2px; max-heig
 QProgressBar::chunk { background: %(accent)s; border-radius: 2px; }
 QSplitter::handle { background: %(line)s; }
 QScrollArea { border: none; background: transparent; }
+QScrollArea > QWidget > QWidget { background: transparent; }
 QGroupBox { border: %(b)s; border-radius: %(rl)dpx; margin-top: 14px; padding: 12px; background: %(card)s; }
 QGroupBox::title { subcontrol-origin: margin; left: 14px; padding: 0 6px; font-weight: 700; }
+QMenuBar { background: %(card)s; border-bottom: 1px solid %(line)s; padding: 2px 6px; }
+QMenuBar::item { padding: 5px 10px; border-radius: %(rs)dpx; background: transparent; }
+QMenuBar::item:selected { background: %(soft)s; }
+QToolBar { background: %(card)s; border: none; border-bottom: 1px solid %(line)s; spacing: 2px; padding: 3px 6px; }
+QToolBar::separator { background: %(line)s; width: 1px; margin: 4px 6px; }
+QStatusBar { background: %(card)s; border-top: 1px solid %(line)s; }
+QStatusBar::item { border: none; }
+QDockWidget { font-weight: 600; }
+QDockWidget::title { background: %(card)s; padding: 6px 10px; border-bottom: 1px solid %(line)s; }
+QMainWindow::separator { background: %(line)s; width: 1px; height: 1px; }
+QTabBar { background: transparent; }
+QTabBar::tab { background: transparent; padding: 6px 14px; border: none; border-bottom: 2px solid transparent; }
+QTabBar::tab:hover { background: %(hover)s; }
+QTabBar::tab:selected { border-bottom: 2px solid %(accent)s; }
+QTabWidget::pane { border: none; border-top: 1px solid %(line)s; }
+QTreeWidget::item { padding: 3px 2px; border-radius: %(rs)dpx; }
+QTreeWidget::item:hover { background: %(hover)s; }
+QTreeWidget::item:selected { background: %(soft)s; color: %(text)s; }
+QCompleter QAbstractItemView, QListView { background: %(card)s; }
 """ % dict(font=self.font, size=size, text=p.text, bg=p.bg, card=p.card, b=b, rl=rl, rm=rm, rs=rs, accent=a, line=p.line,
            muted=p.muted, hover=p.hover, field=p.field, soft=soft, onacc=self.on_accent, mono=self.mono,
            accent2=lerp(a, "#FFFFFF" if not self.dark else "#000000", 0.12), tsize=size + 8, h2=size + 3)

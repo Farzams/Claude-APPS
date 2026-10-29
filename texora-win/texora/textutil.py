@@ -111,3 +111,51 @@ def _enter(text, pos):
             return ("insert", s, 1 + len(inner))
         return ("insert", "\n" + inner, 1 + len(inner))
     return ("insert", "\n" + indent, 1 + len(indent))
+
+
+_MATH_SPANS = re.compile(
+    r"(?<!\\)\$\$(?P<dd>.+?)(?<!\\)\$\$|(?<![\\$])\$(?P<d>[^$\n]+?)(?<!\\)\$"
+    r"|\\\[(?P<br>.+?)\\\]|\\\((?P<pa>.+?)\\\)"
+    r"|\\begin\{(?P<env>equation|align|gather|multline|eqnarray|displaymath|flalign|alignat)(?P<star>\*?)\}(?P<body>.+?)\\end\{(?P=env)(?P=star)\}",
+    re.S)
+_ALIGN_ENVS = {"align": "aligned", "flalign": "aligned", "alignat": "aligned", "eqnarray": "aligned", "gather": "gathered", "multline": "gathered"}
+
+
+def math_at(text, pos):
+    """The formula that contains position [pos] as (start, end, latex, display), or None.  Comments are ignored."""
+    masked = re.sub(r"(?<!\\)%[^\n]*", lambda m: " " * len(m.group(0)), text)
+    for m in _MATH_SPANS.finditer(masked):
+        if m.start() <= pos <= m.end():
+            if m.group("env"):
+                body = text[m.start("body"):m.end("body")]
+                env = m.group("env")
+                if env in _ALIGN_ENVS:
+                    body = "\\begin{%s}%s\\end{%s}" % (_ALIGN_ENVS[env], re.sub(r"^\s*\{\d+\}", "", body), _ALIGN_ENVS[env])
+                return (m.start(), m.end(), re.sub(r"\\label\{[^}]*\}", "", body).strip(), True)
+            for g, disp in (("dd", True), ("d", False), ("br", True), ("pa", False)):
+                if m.group(g) is not None:
+                    return (m.start(), m.end(), re.sub(r"\\label\{[^}]*\}", "", text[m.start(g):m.end(g)]).strip(), disp)
+    return None
+
+
+def user_macros(text):
+    """\\newcommand / \\renewcommand / \\DeclareMathOperator definitions of the preamble, as KaTeX macros {name: body}."""
+    out = {}
+    pre = text.split("\\begin{document}", 1)[0]
+    for m in re.finditer(r"\\(?:re)?newcommand\*?\{?(\\[A-Za-z]+)\}?(?:\[(\d)\])?\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}", pre):
+        out[m.group(1)] = m.group(3)
+    for m in re.finditer(r"\\DeclareMathOperator(\*?)\{(\\[A-Za-z]+)\}\{([^}]*)\}", pre):
+        out[m.group(2)] = "\\operatorname%s{%s}" % (m.group(1), m.group(3))
+    return out
+
+
+def plain_words(line):
+    """The readable words of a source line: comments, commands, braces and maths removed."""
+    m = re.search(r"(?<!\\)%", line)
+    if m:
+        line = line[:m.start()]
+    line = re.sub(r"\$[^$]*\$", " ", line)
+    line = re.sub(r"\\(?:label|ref|eqref|cite[a-z]*|includegraphics|usepackage|documentclass|input|include)\*?(?:\[[^\]]*\])*\{[^}]*\}", " ", line)
+    line = re.sub(r"\\[A-Za-z@]+\*?", " ", line)
+    line = re.sub(r"[{}\[\]\\^_&~#$%]", " ", line)
+    return re.findall(r"[^\W\d_]{2,}", line)

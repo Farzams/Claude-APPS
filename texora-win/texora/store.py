@@ -33,9 +33,10 @@ def _clean(name):
 
 
 class Project(object):
-    def __init__(self, name, path):
+    def __init__(self, name, path, external=False):
         self.name = name
         self.path = path
+        self.external = external      # a folder somewhere else on the disk, opened in place
 
     def modified(self):
         t = os.path.getmtime(self.path)
@@ -231,7 +232,9 @@ class HistoryStore(object):
 
 class Prefs(object):
     DEFAULTS = {"theme": "qp_light", "accent": "", "lang": "en", "editor_size": 12, "line_numbers": True,
-                "wrap": False, "auto_pairs": True, "symbol_bar": True, "snippets": [], "compile_ms": {}}
+                "wrap": False, "auto_pairs": True, "symbol_bar": True, "snippets": [], "compile_ms": {},
+                "recent": [], "external": [], "autosave_compile": True, "autotype_compile": False, "two_pages": False,
+                "night_pdf": False, "preview_below": False, "layout_v2": "", "geometry": ""}
 
     def __init__(self, path=None):
         self.path = path or os.path.join(data_dir(), "settings.json")

@@ -120,7 +120,10 @@ class ProjectCard(QtWidgets.QFrame):
         more.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         menu = QtWidgets.QMenu(more)
         for key, label in (("rename", "rename"), ("duplicate", "duplicate"), ("export", "export.zip"), ("delete", "delete")):
-            menu.addAction(t(label), lambda k=key: self.menu_action.emit(k, self.project))
+            if self.project.external and key in ("rename", "duplicate"):
+                continue
+            menu.addAction(t("a.remove.list") if (key == "delete" and self.project.external) else t(label),
+                           lambda k=key: self.menu_action.emit(k, self.project))
         more.setMenu(menu)
         lay.addWidget(more)
         self.setMinimumHeight(86)
@@ -138,6 +141,8 @@ class ProjectsPage(QtWidgets.QWidget):
     def __init__(self, store, theme, prefs, parent=None):
         super(ProjectsPage, self).__init__(parent)
         self.store, self.theme, self.prefs = store, theme, prefs
+        self.extras = lambda: []       # projects that live in other folders
+        self.forget = None             # called to take such a project off the list
         self.setObjectName("page")
         outer = QtWidgets.QVBoxLayout(self)
         outer.setContentsMargins(0, 0, 0, 0)
@@ -182,7 +187,7 @@ class ProjectsPage(QtWidgets.QWidget):
                 w.setParent(None)
                 w.deleteLater()
         q = self.search.text().strip().lower()
-        projects = [p for p in self.store.list() if q in p.name.lower()]
+        projects = [p for p in sorted(self.store.list() + list(self.extras()), key=lambda p: p.modified(), reverse=True) if q in p.name.lower()]
         if not projects:
             lab = QtWidgets.QLabel(t("no.projects"))
             lab.setObjectName("muted")
@@ -209,7 +214,10 @@ class ProjectsPage(QtWidgets.QWidget):
         elif key == "duplicate":
             self.store.duplicate(project)
         elif key == "delete":
-            if confirm(self, "%s \"%s\"?" % (t("delete"), project.name)):
+            if project.external:
+                if confirm(self, "%s \"%s\"?" % (t("a.remove.list"), project.name)) and self.forget:
+                    self.forget(project)
+            elif confirm(self, "%s \"%s\"?" % (t("delete"), project.name)):
                 self.store.delete(project)
         elif key == "export":
             path, _ = QtWidgets.QFileDialog.getSaveFileName(self, t("export.zip"), project.name + ".zip", "ZIP (*.zip)")

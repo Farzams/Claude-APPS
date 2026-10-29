@@ -8,23 +8,53 @@ except ImportError:  # pragma: no cover
     fitz = None
 
 
-class _Page(QtWidgets.QLabel):
-    def __init__(self, w, h):
+class _Page(QtWidgets.QWidget):
+    def __init__(self, owner, index, w, h, scale):
         super(_Page, self).__init__()
+        self.owner, self.index, self.scale = owner, index, scale
         self.setFixedSize(w, h)
         self.rendered_key = None
-        self.setStyleSheet("background: white; border: 1px solid rgba(0,0,0,0.25);")
+        self.pixmap = None
+        self.hits = []          # (QRectF in pdf units, current?)
+
+    def setPixmap(self, pm):
+        self.pixmap = pm
+        self.update()
+
+    def paintEvent(self, e):
+        p = QtGui.QPainter(self)
+        p.fillRect(self.rect(), QtGui.QColor("#FFFFFF" if not self.owner.night else "#202124"))
+        if self.pixmap is not None:
+            p.drawPixmap(0, 0, self.pixmap)
+        for r, cur in self.hits:
+            rr = QtCore.QRectF(r.x0 * self.scale, r.y0 * self.scale, (r.x1 - r.x0) * self.scale, (r.y1 - r.y0) * self.scale)
+            p.fillRect(rr, QtGui.QColor(255, 140, 0, 110) if cur else QtGui.QColor(255, 220, 0, 90))
+        p.setPen(QtGui.QColor(0, 0, 0, 60))
+        p.drawRect(self.rect().adjusted(0, 0, -1, -1))
+        p.end()
+
+    def mousePressEvent(self, e):
+        if e.button() == Qt.LeftButton and e.modifiers() & Qt.ControlModifier:
+            self.owner.page_clicked.emit(self.index, e.x() / self.scale, e.y() / self.scale)
+            return
+        e.ignore()
 
 
 class PdfView(QtWidgets.QWidget):
     page_changed = Signal(int, int)
+    page_clicked = Signal(int, float, float)
+    document_loaded = Signal()
 
     def __init__(self, theme, parent=None):
         super(PdfView, self).__init__(parent)
         self.theme = theme
         self.doc = None
         self.path = None
-        self.zoom = 1.0           # 1.0 = pages as wide as the view
+        self.zoom = 1.0           # 1.0 = pages as wide as the view (or half of it with two columns)
+        self.columns = 1
+        self.fit = "width"
+        self.hits = []
+        self.hit_index = -1
         self.night = False
         self.pages = []
         self._cache = {}
@@ -33,7 +63,7 @@ class PdfView(QtWidgets.QWidget):
         self.scroll.setWidgetResizable(False)
         self.scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.holder = QtWidgets.QWidget()
-        self.col = QtWidgets.QVBoxLayout(self.holder)
+        self.col = QtWidgets.QGridLayout(self.holder)
         self.col.setContentsMargins(10, 10, 10, 10)
         self.col.setSpacing(10)
         self.col.setAlignment(Qt.AlignHCenter | Qt.AlignTop)
@@ -59,7 +89,7 @@ class PdfView(QtWidgets.QWidget):
         lay.addWidget(self.percent)
         for text, tip, fn in (("\u2212", "Zoom out", lambda: self.set_zoom(self.zoom / 1.25)),
                               ("+", "Zoom in", lambda: self.set_zoom(self.zoom * 1.25)),
-                              ("\u25a1", "Fit", lambda: self.set_zoom(1.0))):
+                              ("\u25a1", "Fit", lambda: self.set_fit("width"))):
             b = QtWidgets.QToolButton()
             b.setText(text)
             b.setToolTip(tip)
@@ -100,8 +130,10 @@ class PdfView(QtWidgets.QWidget):
             self.doc = None
         self.path = path
         self._cache.clear()
+        self.hits, self.hit_index = [], -1
         self._build_pages()
         self._update_visibility()
+        self.document_loaded.emit()
 
     def close_doc(self):
         if self.doc is not None:
@@ -115,26 +147,56 @@ class PdfView(QtWidgets.QWidget):
     def _clear_pages(self):
         for p in self.pages:
             self.col.removeWidget(p)
+            p.hide()
+            p.setParent(None)
             p.deleteLater()
         self.pages = []
 
+    def _base_width(self):
+        return max(160, (self.scroll.viewport().width() - 20 - 10 * (self.columns - 1)) / float(self.columns) - 20)
+
     def _scale(self):
-        w = max(200, self.scroll.viewport().width() - 40)
-        return w * self.zoom
+        return self._base_width() * self.zoom
+
+    def _fit_zoom(self):
+        if self.doc is None or self.doc.page_count == 0:
+            return self.zoom
+        if self.fit == "page":
+            r = self.doc[0].rect
+            return max(0.25, min(1.0, (self.scroll.viewport().height() - 30) / (self._base_width() * r.height / r.width)))
+        return 1.0
 
     def _build_pages(self):
         self._clear_pages()
         if self.doc is None:
             return
+        if self.fit:
+            self.zoom = self._fit_zoom()
         width = self._scale()
         for i in range(self.doc.page_count):
             r = self.doc[i].rect
             h = int(width * r.height / r.width)
-            pg = _Page(int(width), h)
+            pg = _Page(self, i, int(width), h, width / r.width)
             self.pages.append(pg)
-            self.col.addWidget(pg, 0, Qt.AlignHCenter)
-        self.holder.adjustSize()
+            self.col.addWidget(pg, i // self.columns, i % self.columns, Qt.AlignHCenter)
+            pg.show()
+        self._size_holder()
+        self._apply_hits()
+        self._update_percent()
         self._schedule_render()
+
+    def _size_holder(self):
+        self.col.activate()
+        hint = self.col.sizeHint()
+        self.holder.resize(max(hint.width(), self.scroll.viewport().width()), max(hint.height(), 20))
+
+    def set_fit(self, mode):
+        self.fit = mode
+        self._build_pages()
+
+    def set_columns(self, n):
+        self.columns = 2 if n >= 2 else 1
+        self._build_pages()
 
     def _update_visibility(self):
         has = self.doc is not None and self.doc.page_count > 0
@@ -146,7 +208,8 @@ class PdfView(QtWidgets.QWidget):
 
     # ------------------------------------------------------------ zoom and night
     def set_zoom(self, z, anchor=None):
-        z = max(1.0, min(5.0, z))
+        z = max(0.25, min(6.0, z))
+        self.fit = None
         if abs(z - self.zoom) < 1e-3 or self.doc is None:
             return
         sb = self.scroll.verticalScrollBar()
@@ -158,7 +221,6 @@ class PdfView(QtWidgets.QWidget):
         fx = (hb.value() + ax) / max(1, self.holder.width())
         self.zoom = z
         self._build_pages()
-        self.holder.adjustSize()
         sb.setValue(int(fy * self.holder.height() - ay))
         hb.setValue(int(fx * self.holder.width() - ax))
         self._update_percent()
@@ -219,6 +281,83 @@ class PdfView(QtWidgets.QWidget):
         self._cache[key] = pm
         return pm
 
+    # ------------------------------------------------------------ search, thumbnails and jumping
+    def search(self, q):
+        """Highlights every occurrence of [q] and scrolls to the first; returns how many there are."""
+        self.hits, self.hit_index = [], -1
+        if self.doc is not None and q:
+            for i in range(self.doc.page_count):
+                for r in self.doc[i].search_for(q):
+                    self.hits.append((i, r))
+        self._apply_hits()
+        if self.hits:
+            self.step_hit(1)
+        return len(self.hits)
+
+    def step_hit(self, d):
+        if not self.hits:
+            return
+        self.hit_index = (self.hit_index + d) % len(self.hits)
+        self._apply_hits()
+        page, r = self.hits[self.hit_index]
+        self.show_rect(page, r)
+
+    def _apply_hits(self):
+        for pg in self.pages:
+            pg.hits = [(r, k == self.hit_index) for k, (i, r) in enumerate(self.hits) if i == pg.index]
+            pg.update()
+
+    def show_rect(self, page, rect):
+        if 0 <= page < len(self.pages):
+            pg = self.pages[page]
+            sb = self.scroll.verticalScrollBar()
+            sb.setValue(int(pg.y() + rect.y0 * pg.scale - self.scroll.viewport().height() / 3))
+
+    def flash(self, page, rect):
+        """Marks one place for a moment (used when jumping here from the source)."""
+        self.hits, self.hit_index = [(page, rect)], 0
+        self._apply_hits()
+        self.show_rect(page, rect)
+        QTimer.singleShot(2500, self._unflash)
+
+    def _unflash(self):
+        if len(self.hits) == 1:
+            self.hits, self.hit_index = [], -1
+            self._apply_hits()
+
+    def thumb(self, index, width=110):
+        if self.doc is None or not (0 <= index < self.doc.page_count):
+            return QtGui.QPixmap()
+        page = self.doc[index]
+        s = width / page.rect.width
+        pix = page.get_pixmap(matrix=fitz.Matrix(s, s), alpha=False)
+        return QtGui.QPixmap.fromImage(QtGui.QImage(pix.samples, pix.width, pix.height, pix.stride, QtGui.QImage.Format_RGB888).copy())
+
+    def phrase_at(self, page, x, y, count=4):
+        """The word at a point of a page and the few words after it, for finding the same place in the source."""
+        if self.doc is None:
+            return ""
+        words = self.doc[page].get_text("words")     # x0, y0, x1, y1, text, block, line, word
+        if not words:
+            return ""
+        best, dist = 0, 1e18
+        for i, w in enumerate(words):
+            cx, cy = (w[0] + w[2]) / 2.0, (w[1] + w[3]) / 2.0
+            d = (cx - x) ** 2 + (cy - y) ** 2 * 4
+            if d < dist:
+                best, dist = i, d
+        return " ".join(w[4] for w in words[best:best + count])
+
+    def locate(self, phrase):
+        """First place of the document where [phrase] occurs, as (page index, fitz.Rect), or None."""
+        if self.doc is None or not phrase.strip():
+            return None
+        for i in range(self.doc.page_count):
+            r = self.doc[i].search_for(phrase)
+            if r:
+                return i, r[0]
+        return None
+
     def go_to_page(self, n):
         if 1 <= n <= len(self.pages):
             self.scroll.verticalScrollBar().setValue(self.pages[n - 1].y() - 6)
@@ -229,8 +368,12 @@ class PdfView(QtWidgets.QWidget):
         self.scroll.setGeometry(self.rect())
         self.empty.setGeometry(self.rect())
         self._layout_overlays()
-        if self.doc is not None and self.pages and abs(self.pages[0].width() - int(self._scale())) > 8:
-            self._build_pages()
+        if self.doc is not None and self.pages and (self.fit or abs(self.pages[0].width() - int(self._scale())) > 8):
+            if not hasattr(self, '_rebuild') :
+                self._rebuild = QTimer(self)
+                self._rebuild.setSingleShot(True)
+                self._rebuild.timeout.connect(self._build_pages)
+            self._rebuild.start(120)
 
     def _layout_overlays(self):
         self.bar.adjustSize()

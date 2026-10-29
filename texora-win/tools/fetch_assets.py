@@ -113,6 +113,30 @@ def write_list(folder):
     print(folder, len(files), "files")
 
 
+KATEX = "https://registry.npmjs.org/katex/-/katex-0.16.9.tgz"
+
+
+def fetch_katex(out):
+    """KaTeX (MIT) draws the live formula preview; only the script, the style sheet and the woff2 fonts are kept."""
+    if os.path.isfile(os.path.join(out, "katex.min.js")):
+        return
+    tgz = os.path.join(OUT, "..", "_debs", "katex-0.16.9.tgz")
+    download(KATEX, tgz)
+    shutil.rmtree(out, ignore_errors=True)
+    os.makedirs(os.path.join(out, "fonts"))
+    with tarfile.open(tgz) as tf:
+        for m in tf:
+            n = m.name
+            if not m.isfile():
+                continue
+            if n in ("package/dist/katex.min.js", "package/dist/katex.min.css", "package/LICENSE") or (
+                    n.startswith("package/dist/fonts/") and n.endswith(".woff2")):
+                dst = os.path.join(out, n[len("package/dist/"):] if n.startswith("package/dist/") else os.path.basename(n))
+                with tf.extractfile(m) as src, open(dst, "wb") as d:
+                    shutil.copyfileobj(src, d)
+    print("katex", len(os.listdir(os.path.join(out, "fonts"))), "fonts")
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     for f in BUSYTEX_FILES:
@@ -155,6 +179,8 @@ def main():
             with tf.extractfile(m) as src, open(os.path.join(bst, base), "wb") as dst:
                 shutil.copyfileobj(src, dst)
     write_list("extras_bst")
+    fetch_katex(os.path.normpath(os.path.join(OUT, "..", "katex")))
+
     # Chromium 83 (the browser of Qt 5.15, needed for Windows 7) cannot start the engine as it comes
     sys.path.insert(0, HERE)
     import patch_wasm

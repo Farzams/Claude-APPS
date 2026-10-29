@@ -7,7 +7,7 @@ permissions:
   contents: write
 concurrency:
   group: build-texora-windows
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: windows-latest
@@ -27,6 +27,9 @@ jobs:
         run: python tests/test_core.py
       - name: Download the offline TeX engine and packages
         run: python tools/fetch_assets.py
+      - name: Editor tests (completion, several cursors, find, project search, source/PDF jumps, drag and drop)
+        timeout-minutes: 10
+        run: python tests/test_page.py
       - name: Source run - open every screen, compile a Persian page through the engine, render it
         timeout-minutes: 20
         run: python -m texora --selftest selftest-source.json
@@ -37,9 +40,9 @@ jobs:
       - name: Package (PyInstaller, one folder)
         run: >
           python -m PyInstaller --noconfirm --onedir --windowed --name TeXora --icon icon.ico
-          --add-data "assets/tex;assets/tex" --add-data "texora/fonts;texora/fonts" --add-data "texora/data;texora/data"
+          --add-data "assets/tex;assets/tex" --add-data "assets/katex;assets/katex" --add-data "texora/fonts;texora/fonts" --add-data "texora/data;texora/data"
           --add-data "texora/icon.png;texora"
-          --hidden-import PySide2.QtWebEngineWidgets --hidden-import PySide2.QtWebChannel --hidden-import fitz
+          --hidden-import PySide2.QtWebEngineWidgets --hidden-import PySide2.QtWebChannel --hidden-import PySide2.QtSvg --hidden-import PySide2.QtPrintSupport --hidden-import fitz
           --exclude-module tkinter --exclude-module PySide2.QtQml --exclude-module PySide2.Qt3DCore
           run_texora.py
       - name: Self-test of the packaged program
@@ -63,10 +66,10 @@ jobs:
         shell: pwsh
         env: { GH_TOKEN: "${{ github.token }}" }
         run: |
-          $repo = "${{ github.repository }}"; $tag = "texora-win-latest"
+          $repo = "${{ github.repository }}"; $tag = "texora-win-pro"
           gh release view $tag --repo $repo *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag --repo $repo --title "TeXora for Windows (latest build)" --target "${{ github.sha }}" --notes "**TeXora-Setup.exe** (installer) or **TeXora-portable.zip** (unzip anywhere, run TeXora.exe). 64-bit Windows 7 SP1 or later. On Windows 7 install the Universal C Runtime update (KB2999226) first."
+            gh release create $tag --repo $repo --title "TeXora for Windows - editor edition (latest build)" --target "${{ github.sha }}" --notes "**TeXora-Setup.exe** (installer) or **TeXora-portable.zip** (unzip anywhere, run TeXora.exe). 64-bit Windows 7 SP1 or later. On Windows 7 install the Universal C Runtime update (KB2999226) first."
           }
           foreach ($f in "dist/TeXora-Setup.exe", "dist/TeXora-portable.zip") {
             $ok = $false

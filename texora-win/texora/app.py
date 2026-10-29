@@ -15,12 +15,14 @@ def asset_root():
 def main(argv=None):
     # the engine page needs no graphics card: this also helps on old Windows machines
     os.environ.setdefault("QTWEBENGINE_CHROMIUM_FLAGS", "--disable-gpu --disable-gpu-compositing")
-    from .qt import QtWidgets, QtGui, run_app
+    os.environ.setdefault("QT_QUICK_BACKEND", "software")      # the formula preview then needs no OpenGL driver at all
+    from .qt import QtWidgets, QtGui, run_app, prepare
     from . import theme as th
     from .engine import TexEngine
     from .window import MainWindow
     from . import __version__
 
+    prepare()
     app = QtWidgets.QApplication(list(argv if argv is not None else sys.argv))
     app.setApplicationName("TeXora")
     app.setApplicationVersion(__version__)
@@ -34,6 +36,11 @@ def main(argv=None):
     win = MainWindow(engine)
     win.show()
     engine.start()
+    args = [x for x in sys.argv[1:] if not x.startswith("-")]
+    if args and os.path.isfile(args[0]) and args[0].lower().endswith(".tex"):      # "Open with TeXora" from Explorer
+        win.open_folder(os.path.dirname(os.path.abspath(args[0])), os.path.basename(args[0]))
+    elif args and os.path.isdir(args[0]):
+        win.open_folder(os.path.abspath(args[0]))
     code = run_app(app)
     engine.shutdown()
     return code

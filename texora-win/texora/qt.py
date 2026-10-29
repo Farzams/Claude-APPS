@@ -28,3 +28,12 @@ def run_dialog(dlg):
 
 def run_app(app):
     return app.exec() if hasattr(app, "exec") else app.exec_()
+
+
+def prepare():
+    """Must run before the QApplication is created: QtWebEngine needs shared OpenGL contexts."""
+    QtCore.QCoreApplication.setAttribute(Qt.AA_ShareOpenGLContexts, True)
+    try:
+        QtCore.QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    except Exception:
+        pass
