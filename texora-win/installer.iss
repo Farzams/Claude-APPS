@@ -34,6 +34,6 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\TeXora.exe"; Tasks: desktopic
 [Registry]
 Root: HKA; Subkey: "Software\Classes\.tex\OpenWithProgids"; ValueType: string; ValueName: "TeXora.tex"; ValueData: ""; Flags: uninsdeletevalue; Tasks: assoc
 Root: HKA; Subkey: "Software\Classes\TeXora.tex"; ValueType: string; ValueName: ""; ValueData: "LaTeX document"; Flags: uninsdeletekey; Tasks: assoc
-Root: HKA; Subkey: "Software\Classes\TeXora.tex\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """"{app}\TeXora.exe"" ""%1"""; Tasks: assoc
+Root: HKA; Subkey: "Software\Classes\TeXora.tex\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\TeXora.exe"" ""%1"""; Tasks: assoc
 [Run]
 Filename: "{app}\TeXora.exe"; Description: "Start TeXora"; Flags: nowait postinstall skipifsilent
