@@ -1,0 +1,4 @@
+# Windows 7 needs Python 3.8 (the last version that runs there) and Qt 5.15 (the last Qt that runs there)
+PySide2==5.15.2.1
+PyMuPDF==1.23.26
+pyinstaller==5.13.2
