@@ -63,6 +63,22 @@ def patch_js(path):
     return "patched"
 
 
+def patch_data_packages(root):
+    """The data packages cache themselves in IndexedDB; a half-written cache made Windows runs fail
+    (RangeError while joining chunks).  The files come from a local server, so the cache is not needed: switch it off."""
+    old = "var openRequest = indexedDB.open(DB_NAME, DB_VERSION);"
+    new = "throw new Error('package cache disabled');"
+    n = 0
+    for name in sorted(os.listdir(root)):
+        if name.endswith(".js") and ("texlive" in name):
+            path = os.path.join(root, name)
+            s = open(path, encoding="latin-1").read()          # some of these files are not UTF-8: keep every byte as it is
+            if old in s:
+                open(path, "w", encoding="latin-1").write(s.replace(old, new))
+                n += 1
+    return "patched %d files" % n
+
+
 COMPAT = r"""// Functions newer than Chromium 83 that the engine's scripts use.
 (function (g) {
   if (!String.prototype.replaceAll) String.prototype.replaceAll = function (a, b) {
@@ -94,5 +110,6 @@ def patch_compat(root):
 if __name__ == "__main__":
     root = sys.argv[1]
     print("compat.js", patch_compat(root))
+    print("data packages", patch_data_packages(root))
     print("busytex.wasm", patch_wasm(os.path.join(root, "busytex.wasm")))
     print("busytex.js", patch_js(os.path.join(root, "busytex.js")))

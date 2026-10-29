@@ -187,6 +187,7 @@ def main():
     print("busytex.wasm", patch_wasm.patch_wasm(os.path.join(OUT, "busytex.wasm")))
     print("busytex.js", patch_wasm.patch_js(os.path.join(OUT, "busytex.js")))
     print("compat.js", patch_wasm.patch_compat(OUT))
+    print("data packages", patch_wasm.patch_data_packages(OUT))
     print("assets ready in", OUT)
 
 
