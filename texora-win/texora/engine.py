@@ -10,7 +10,7 @@ import shutil
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from .qt import QObject, QUrl, Signal, Slot, QtCore, QtWebChannel, QWebEnginePage, QWebEngineScript, QWebEngineView
+from .qt import QObject, QUrl, Signal, Slot, QtCore, QtWebChannel, QWebEnginePage, QWebEngineProfile, QWebEngineScript, QWebEngineView
 
 TEXT_EXT = {"tex", "sty", "cls", "bib", "bst", "txt", "def", "cfg", "clo", "fd", "bbx", "cbx", "lbx", "dbx", "ltx", "md", "csv", "dat"}
 MIME = {".html": "text/html; charset=utf-8", ".js": "application/javascript; charset=utf-8", ".json": "application/json; charset=utf-8",
@@ -41,6 +41,10 @@ class _Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(size))
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cache-Control", "no-store")
+        # the engine's memory is shared memory, which newer browsers only give to cross-origin isolated pages
+        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
+        self.send_header("Cross-Origin-Resource-Policy", "same-origin")
         self.end_headers()
         try:
             with open(full, "rb") as f:
@@ -99,7 +103,7 @@ class _Page(QWebEnginePage):
         try:
             msg = args[1]
             if "error" in str(args[0]).lower() or "Error" in msg:
-                print("tex page:", msg)
+                print("tex page:", msg, "@", args[3] if len(args) > 3 else "", args[2] if len(args) > 2 else "")
         except Exception:
             pass
 
@@ -108,7 +112,7 @@ class _Page(QWebEnginePage):
 _SHIM = """
 (function () {
   var queue = [], br = null;
-  function send(m, a) { if (br) br[m](a); else queue.push([m, a]); }
+  function send(m, a) { if (br) { if (a === undefined) br[m](); else br[m](a); } else queue.push([m, a]); }
   window.Android = {
     onReady: function () { send('onReady'); }, onLog: function (s) { send('onLog', String(s)); },
     onStatus: function (s) { send('onStatus', String(s)); }, onPdf: function (b) { send('onPdf', b); },
@@ -152,7 +156,9 @@ class TexEngine(QObject):
         self.server = start_server(self.asset_root)
         port = self.server.server_address[1]
         self.view = QWebEngineView()
-        page = _Page(self.view)
+        # off the record: no cached copy of the engine data that could go stale or break between Qt versions
+        self.profile = QWebEngineProfile(self.view)
+        page = _Page(self.profile, self.view)
         self.view.setPage(page)
         channel = QtWebChannel.QWebChannel(page)
         channel.registerObject("bridge", self.bridge)

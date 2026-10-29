@@ -155,6 +155,12 @@ def main():
             with tf.extractfile(m) as src, open(os.path.join(bst, base), "wb") as dst:
                 shutil.copyfileobj(src, dst)
     write_list("extras_bst")
+    # Chromium 83 (the browser of Qt 5.15, needed for Windows 7) cannot start the engine as it comes
+    sys.path.insert(0, HERE)
+    import patch_wasm
+    print("busytex.wasm", patch_wasm.patch_wasm(os.path.join(OUT, "busytex.wasm")))
+    print("busytex.js", patch_wasm.patch_js(os.path.join(OUT, "busytex.js")))
+    print("compat.js", patch_wasm.patch_compat(OUT))
     print("assets ready in", OUT)
 
 
