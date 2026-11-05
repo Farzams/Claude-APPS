@@ -180,6 +180,12 @@ object LinuxSystem {
   </property>
 </channel>
 """)
+        // GTK icons in menus, buttons and toolbars are fixed pixel sizes (16, 24, 32, 48) that Xft.dpi does not scale: set them from the plan
+        fun px(base: Int) = (base * plan.factor).roundToInt()
+        File(root, "root/.config/gtk-3.0").apply { mkdirs() }
+        File(root, "root/.config/gtk-3.0/settings.ini").writeText("""[Settings]
+gtk-icon-sizes=gtk-menu=${px(16)},${px(16)}:gtk-small-toolbar=${px(16)},${px(16)}:gtk-large-toolbar=${px(24)},${px(24)}:gtk-button=${px(16)},${px(16)}:gtk-dnd=${px(32)},${px(32)}:gtk-dialog=${px(48)},${px(48)}
+""")
         // The panel and the desktop icons are set once the session is running (their settings need the session bus)
         File(root, "root/linuxpad-xfce-tune.sh").writeText("""#!/bin/sh
 export DISPLAY=:0
@@ -187,6 +193,8 @@ for i in `seq 1 60`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break;
 sleep 3
 xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s ${plan.panelSize}
 xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -n -t uint -s 0
+xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s $desktopIcon
+xfconf-query -c xfce4-panel -p /panels/panel-2/icon-size -n -t uint -s 0
 xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t uint -s $desktopIcon
 """)
         val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
