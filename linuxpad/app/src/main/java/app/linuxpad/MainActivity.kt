@@ -45,6 +45,7 @@ import app.linuxpad.x11.X11Server
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)   // long installs must not be cut by the screen turning off
         setContent { MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) { Surface { Calibration(Screens.read(this)) } } }
     }
 }
@@ -163,6 +164,9 @@ private fun Calibration(d: DisplayInfo) {
             Button({ ctx.startActivity(android.content.Intent(ctx, DesktopActivity::class.java)) },
                 enabled = LinuxSystem.installed) { Text("2. Start desktop test") }
         }
+        Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.XFCE_PACKAGES}") },
+            enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("3. Install XFCE desktop (150 to 300 MB, keep the app open)") }
+        Text(if (LinuxSystem.hasXfce(ctx)) "XFCE is installed: step 2 now starts the full desktop." else "XFCE is not installed: step 2 starts the small test (terminal and editor).")
         if (X11Server.state != "stopped") Text("X server: ${X11Server.state} ${X11Server.detail}")
 
         Section("9. Send me the result")
