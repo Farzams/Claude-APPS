@@ -3,6 +3,11 @@ package app.linuxpad
 import android.app.Activity
 import android.os.Bundle
 import android.view.WindowManager
+import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
+import android.view.Gravity
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -28,7 +33,24 @@ class DesktopActivity : Activity() {
             return
         }
         val view = X11DisplayView(this)
-        setContentView(view)
+        // Diagnostics for the first versions: what the finger did and what the X server saw
+        val info = TextView(this).apply {
+            setTextColor(Color.WHITE); setBackgroundColor(0xAA000000.toInt()); textSize = 13f
+            setPadding(16, 8, 16, 8); typeface = android.graphics.Typeface.MONOSPACE
+        }
+        setContentView(FrameLayout(this).apply {
+            addView(view)
+            addView(info, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END))
+        })
+        val ui = Handler(Looper.getMainLooper())
+        ui.post(object : Runnable {
+            override fun run() {
+                info.text = "finger  x=${view.lastX.toInt()} y=${view.lastY.toInt()}  moves=${view.moves} down=${view.downs} up=${view.ups}\n" +
+                    "X server pointer: ${LinuxSystem.pointerText.ifBlank { "(no data yet)" }}\n" +
+                    "renderer connected: ${view.isConnected}  x11: ${X11Server.state}"
+                ui.postDelayed(this, 200)
+            }
+        })
         WindowInsetsControllerCompat(window, view).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(WindowInsetsCompat.Type.systemBars())

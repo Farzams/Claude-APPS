@@ -68,8 +68,11 @@ object LinuxSystem {
 
     private var desktop: Process? = null
 
+    /** The pointer position as the X server sees it (from xdotool in the guest); shown in the desktop overlay. */
+    var pointerText by mutableStateOf(""); private set
+
     /** Packages the graphics test needs: keyboard data for the X server, a terminal, test clients, fonts and a cursor theme. */
-    const val GRAPHICS_PACKAGES = "xkb-data x11-xserver-utils xterm x11-apps fonts-dejavu-core dmz-cursor-theme"
+    const val GRAPHICS_PACKAGES = "xkb-data x11-xserver-utils xterm x11-apps fonts-dejavu-core dmz-cursor-theme xdotool"
 
     /** Starts a small test desktop (xeyes and xterm) in the Linux system, sized from [plan]. */
     fun startDesktop(ctx: Context, plan: ScalePlan) {
@@ -87,6 +90,7 @@ object LinuxSystem {
                     "xrdb -nocpp -merge /root/.Xresources || echo 'xrdb failed'; " +
                     "echo \"Xft.dpi in the server: \$(xrdb -query | grep -i '^Xft.dpi')\"; " +
                     "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
+                    "( while true; do echo \"PTR \$(xdotool getmouselocation 2>&1 | head -1)\"; sleep 0.25; done ) & " +
                     "xeyes -geometry 420x260+60+100 & " +
                     "exec xterm -geometry 80x22+60+420 -fa 'DejaVu Sans Mono' -fs 11 -bg black -fg white"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
@@ -94,7 +98,10 @@ object LinuxSystem {
                     env = mapOf("DISPLAY" to ":0", "XCURSOR_SIZE" to plan.cursorSize.toString()))
                 desktop = p
                 output = "desktop session started\n"
-                p.inputStream.bufferedReader().forEachLine { output = (output + it + "\n").takeLast(20_000) }
+                p.inputStream.bufferedReader().forEachLine { line ->
+                    if (line.startsWith("PTR ")) pointerText = line.removePrefix("PTR ")
+                    else output = (output + line + "\n").takeLast(20_000)
+                }
                 output += "[desktop session ended: exit ${p.waitFor()}]\n"
             } catch (e: Throwable) {
                 output += "${e.javaClass.simpleName}: ${e.message}\n"

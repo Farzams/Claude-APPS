@@ -25,6 +25,9 @@ public class X11DisplayView extends SurfaceView {
     private static final int HAL_PIXEL_FORMAT_BGRA_8888 = 5;
     private static final int BUTTON_LEFT = 1;
     private boolean pressed;
+    /** What this view has sent to the X server, for the on-screen diagnostics. */
+    public volatile int moves, downs, ups;
+    public volatile float lastX, lastY;
     private int guestWidth, guestHeight;
 
     // native code (activity.c / renderer.c), registered in JNI_OnLoad by LinuxPad's patch
@@ -73,6 +76,8 @@ public class X11DisplayView extends SurfaceView {
         sendWindowChange(guestWidth, guestHeight, (int) rate, "builtin");
     }
 
+    public boolean isConnected() { return connected(); }
+
     /** Connects the renderer to the X server; [fd] comes from X11NativeBridge.getXConnection in the server process. */
     public void connectRenderer(int fd) {
         connect(fd);
@@ -90,17 +95,21 @@ public class X11DisplayView extends SurfaceView {
     public boolean onTouchEvent(MotionEvent e) {
         // First version: one finger acts as a mouse (tap = click, drag = press and move). Gestures come later.
         float x = e.getX(), y = e.getY();
+        lastX = x; lastY = y;
         switch (e.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                downs++;
                 sendMouseEvent(x, y, 0, false, false);
                 sendMouseEvent(x, y, BUTTON_LEFT, true, false);
                 pressed = true;
                 return true;
             case MotionEvent.ACTION_MOVE:
+                moves++;
                 sendMouseEvent(x, y, 0, false, false);
                 return true;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                ups++;
                 if (pressed) sendMouseEvent(x, y, BUTTON_LEFT, false, false);
                 pressed = false;
                 return true;
