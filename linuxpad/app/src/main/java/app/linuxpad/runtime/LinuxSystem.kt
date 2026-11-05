@@ -67,6 +67,37 @@ object LinuxSystem {
         }
     }
 
+    /** An installed package the user can remove, with its size. */
+    data class Pkg(val name: String, val sizeKb: Long)
+
+    var packages by mutableStateOf<List<Pkg>>(emptyList()); private set
+    var packagesLoading by mutableStateOf(false); private set
+
+    /**
+     * Lists the packages that were installed on purpose (apt-mark showmanual), biggest first.
+     * Essential and required system packages are left out, so the list cannot break the system.
+     */
+    fun loadPackages(ctx: Context) {
+        if (packagesLoading) return
+        val app = ctx.applicationContext
+        packagesLoading = true
+        scope.launch {
+            try {
+                val lines = ArrayList<String>()
+                Proot.exec(app, root(app), listOf("/bin/bash", "-c",
+                    "apt-mark showmanual | while read p; do dpkg-query -W -f='\${Installed-Size}\t\${Package}\t\${Essential}\t\${Priority}\n' \"\$p\" 2>/dev/null; done")) { lines += it }
+                packages = lines.mapNotNull { line ->
+                    val f = line.split('\t')
+                    if (f.size < 4) return@mapNotNull null
+                    val size = f[0].trim().toLongOrNull() ?: return@mapNotNull null
+                    if (f[2].trim() == "yes" || f[3].trim() == "required") null else Pkg(f[1].trim(), size)
+                }.sortedByDescending { it.sizeKb }
+            } catch (e: Throwable) {
+                error = "package list: ${e.message}"
+            } finally { packagesLoading = false }
+        }
+    }
+
     private var desktop: Process? = null
 
     /** The pointer position as the X server sees it (from xdotool in the guest); shown in the desktop overlay. */
