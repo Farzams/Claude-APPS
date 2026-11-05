@@ -1,6 +1,5 @@
 package app.linuxpad.display
 
-import kotlin.math.abs
 import kotlin.math.hypot
 import kotlin.math.roundToInt
 
@@ -24,7 +23,7 @@ data class ScalePlan(
     val xftDpi: Int,            // Xft.dpi, xrandr --dpi, QT_FONT_DPI
     val qtScaleFactor: Float,   // QT_SCALE_FACTOR (QT_AUTO_SCREEN_SCALE_FACTOR=0)
     val gtkScale: Int,          // GDK_SCALE (integer only); use 1 and let Xft.dpi scale text
-    val cursorSize: Int,        // XCURSOR_SIZE, one of the sizes cursor themes ship
+    val cursorSize: Int,        // XCURSOR_SIZE; rootfs setup generates a theme at this size
     val panelSize: Int,         // XFCE panel height in px
     val iconSize: Int,          // panel / desktop icon size in px
     val minTouchPx: Int,        // smallest comfortable touch target
@@ -40,7 +39,6 @@ object DisplayScale {
     const val DEFAULT_COMFORT = 0.70f   // chosen on the POCO Pad: about 174 dpi
     const val MIN_DPI = 96
     const val MAX_DPI = 320
-    private val cursorSizes = intArrayOf(24, 32, 48, 64, 96, 128)
 
     /** Real pixels per inch. Android's xdpi/ydpi are right on most tablets; fall back to the logical density when they are not. */
     fun physicalPpi(d: DisplayInfo, diagonalInches: Float? = null): Float {
@@ -63,7 +61,7 @@ object DisplayScale {
         val titlebar = if (touchFirst) (mm * 6.5f).roundToInt() else (30 * factor).roundToInt()
         val row = if (touchFirst) (mm * 6.7f).roundToInt() else (19 * factor).roundToInt()
         val icon = (24 * factor).roundToInt()
-        val cursor = cursorSizes.minBy { abs(it - 18 * factor) }   // a little smaller than the desktop default: comfortable with touch
+        val cursor = ((22 * factor) / 4f).roundToInt() * 4   // any size: the session builds a cursor theme at exactly this size (chosen on the device: 40 px at 174 dpi)
         return ScalePlan(
             physicalPpi = ppi,
             factor = factor,

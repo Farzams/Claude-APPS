@@ -19,7 +19,7 @@ class DisplayScaleTest {
         assertEquals(0, p.xftDpi % 2)
         assertEquals(174, p.xftDpi)                                 // the size chosen on the device
         assertEquals(2560, p.guestWidth); assertEquals(1600, p.guestHeight)  // native, sharp
-        assertEquals(32, p.cursorSize)
+        assertEquals(40, p.cursorSize)
         assertTrue(p.panelSize in 66..74)
         assertTrue(p.titlebarPx in 58..70)
         assertTrue(p.rowPx in 60..72)
@@ -49,6 +49,6 @@ class DisplayScaleTest {
     @Test fun environmentCarriesTheValues() {
         val env = DisplayScale.environment(DisplayScale.plan(pocoPad, diagonalInches = 12.1f))
         assertEquals("0", env["QT_AUTO_SCREEN_SCALE_FACTOR"])
-        assertEquals("32", env["XCURSOR_SIZE"])
+        assertEquals("40", env["XCURSOR_SIZE"])
     }
 }
