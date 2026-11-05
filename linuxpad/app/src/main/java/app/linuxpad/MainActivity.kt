@@ -20,6 +20,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import app.linuxpad.runtime.LinuxSystem
+import app.linuxpad.runtime.SharedFolder
 import app.linuxpad.runtime.Proot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +44,10 @@ import app.linuxpad.display.Screens
 import app.linuxpad.x11.X11Server
 
 class MainActivity : ComponentActivity() {
+    companion object { var resumes by mutableIntStateOf(0) }   // bumped when the screen comes back, e.g. from the permission settings
+
+    override fun onResume() { super.onResume(); resumes++ }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)   // long installs must not be cut by the screen turning off
@@ -120,7 +125,13 @@ private fun MainScreen(d: DisplayInfo) {
         Text("To leave the desktop use the back gesture of Android.")
         if (X11Server.state != "stopped") Text("X server: ${X11Server.state} ${X11Server.detail}")
 
-        Section("3. Packages: tap the ones to remove")
+        Section("3. Shared folder (Android and Linux)")
+        val sharedOk = remember(MainActivity.resumes) { SharedFolder.hasAccess() }
+        Text(if (sharedOk) "Shared folder: ready. Android: internal storage > ${SharedFolder.NAME}. Linux: the icon Shared on the desktop (${SharedFolder.GUEST_PATH})."
+             else "Shared folder: needs permission. Android requires \"All files access\" to create the folder ${SharedFolder.NAME} in the internal storage. Linux sees only this one folder.")
+        if (!sharedOk) Button({ ctx.startActivity(SharedFolder.accessIntent(ctx)) }) { Text("Allow access to files") }
+
+        Section("4. Packages: tap the ones to remove")
         val pkgReady = LinuxSystem.installed && !LinuxSystem.running
         val selected = remember { mutableStateListOf<String>() }
         var confirm by remember { mutableStateOf(false) }
@@ -173,7 +184,7 @@ private fun MainScreen(d: DisplayInfo) {
             )
         }
 
-        Section("4. Report for me")
+        Section("5. Report for me")
         OutlinedTextField(note, { note = it }, label = { Text("Your note") }, modifier = Modifier.fillMaxWidth())
         Text(report, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
         Button({

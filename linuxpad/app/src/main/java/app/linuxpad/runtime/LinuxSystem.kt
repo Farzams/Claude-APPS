@@ -77,7 +77,7 @@ object LinuxSystem {
         running = true; output = "$ $command\n"
         scope.launch {
             try {
-                val code = Proot.exec(app, root(app), listOf("/bin/bash", "-lc", command)) { line ->
+                val code = Proot.exec(app, root(app), listOf("/bin/bash", "-lc", command), listOfNotNull(SharedFolder.prepare(root(app)))) { line ->
                     output = (output + line + "\n").takeLast(20_000)
                 }
                 output += "[exit $code]\n"
@@ -162,7 +162,7 @@ object LinuxSystem {
                 File(root, "root/.config/fontconfig/fonts.conf").writeText(
                     "<?xml version=\"1.0\"?>\n<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">\n<fontconfig>\n" +
                         // nicer Latin text (Ubuntu font when installed) with Vazirmatn for Persian
-                        "  <alias><family>sans-serif</family><prefer><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
+                        "  <alias><family>sans-serif</family><prefer><family>Selawik</family><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 // a sample document with English, Persian and mathematics, to judge text on this screen
@@ -171,11 +171,12 @@ object LinuxSystem {
                         "||fg|| <= ||f|| ||g||      \u222B f d\u03BC  \u2264  \u03A6\n\n" +
                         "\u0641\u0636\u0627\u06CC \u0627\u0648\u0631\u0644\u06CC\u0686 \u06CC\u06A9 \u062C\u0628\u0631 \u0628\u0627\u0646\u0627\u062E \u0627\u0633\u062A.\n" +
                         "\u0633\u0644\u0627\u0645\u060C \u0627\u06CC\u0646 \u06CC\u06A9 \u0645\u062A\u0646 \u0622\u0632\u0645\u0627\u06CC\u0634\u06CC \u0627\u0633\u062A \u06F1\u06F2\u06F3\n")
+                installAssets(app, root)
                 val xfce = hasXfce(app)
                 if (xfce) writeXfceConfig(root, plan)
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
-                val common = "export DISPLAY=:0; " +
+                val common = "export DISPLAY=:0; fc-cache -f /usr/local/share/fonts >/dev/null 2>&1; " +
                     "xrdb -nocpp -merge /root/.Xresources || echo 'xrdb failed'; " +
                     "echo \"Xft.dpi in the server: \$(xrdb -query | grep -i '^Xft.dpi')\"; " +
                     "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
@@ -193,7 +194,7 @@ object LinuxSystem {
                         "exec xterm -geometry 80x22+60+420 -fa 'DejaVu Sans Mono' -fs 11 -bg black -fg white"
                 }
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
-                    binds = listOf("${X11Server.runtimeDir(app).absolutePath}/.X11-unix" to "/tmp/.X11-unix"),
+                    binds = listOf("${X11Server.runtimeDir(app).absolutePath}/.X11-unix" to "/tmp/.X11-unix") + listOfNotNull(SharedFolder.prepare(root)),
                     env = mapOf("DISPLAY" to ":0", "XCURSOR_SIZE" to plan.cursorSize.toString()))
                 desktop = p
                 output = "desktop session started\n$cursorNote\n"
@@ -226,7 +227,11 @@ object LinuxSystem {
         val panel = logical(plan.panelSize)
         val themeName = if (File(root, "usr/share/themes/Yaru/gtk-3.0").isDirectory) "Yaru" else "Adwaita"
         val iconName = if (File(root, "usr/share/icons/Papirus").isDirectory) "Papirus" else "Adwaita"
-        val uiFont = if (File(root, "usr/share/fonts/truetype/ubuntu").isDirectory) "Ubuntu 11" else "Sans 10"
+        val uiFont = when {
+            File(root, "usr/local/share/fonts/selawik").listFiles()?.isNotEmpty() == true -> "Selawik 11"
+            File(root, "usr/share/fonts/truetype/ubuntu").isDirectory -> "Ubuntu 11"
+            else -> "Sans 10"
+        }
         File(xml, "xsettings.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Xft" type="empty">
@@ -276,6 +281,13 @@ xfconf-query -c xfce4-panel -p /panels/panel-2/icon-size -n -t uint -s 0
 xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t uint -s $desktopIcon
 xfconf-query -c xfce4-desktop -p /desktop-icons/use-custom-font-size -n -t bool -s true
 xfconf-query -c xfce4-desktop -p /desktop-icons/font-size -n -t double -s 9
+# the default wallpaper is set once; after that the wallpaper is the user's choice
+if [ ! -f /root/.config/linuxpad/wallpaper-set ] && [ -f /usr/share/backgrounds/linuxpad.jpg ]; then
+  for i in `seq 1 20`; do imgs=`xfconf-query -c xfce4-desktop -l | grep 'last-image$'`; [ -n "$imgs" ] && break; sleep 1; done
+  for p in $imgs; do xfconf-query -c xfce4-desktop -p $p -s /usr/share/backgrounds/linuxpad.jpg; done
+  for p in `xfconf-query -c xfce4-desktop -l | grep 'image-style$'`; do xfconf-query -c xfce4-desktop -p $p -s 5; done
+  mkdir -p /root/.config/linuxpad && touch /root/.config/linuxpad/wallpaper-set
+fi
 """)
         val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
         File(autostart, "linuxpad-tune.desktop").writeText("""[Desktop Entry]
@@ -284,5 +296,15 @@ Name=LinuxPad tuning
 Exec=sh /root/linuxpad-xfce-tune.sh
 X-GNOME-Autostart-enabled=true
 """)
+    }
+
+    /** Copies what the app carries into the Linux system: the Selawik fonts and the default wallpaper. */
+    private fun installAssets(app: Context, root: File) {
+        val fonts = File(root, "usr/local/share/fonts/selawik").apply { mkdirs() }
+        app.assets.list("fonts")?.filter { it.endsWith(".ttf", ignoreCase = true) || it.contains("LICENSE") }?.forEach { name ->
+            app.assets.open("fonts/$name").use { input -> File(fonts, name).outputStream().use { input.copyTo(it) } }
+        }
+        val bg = File(root, "usr/share/backgrounds").apply { mkdirs() }
+        runCatching { app.assets.open("wallpaper.jpg").use { input -> File(bg, "linuxpad.jpg").outputStream().use { input.copyTo(it) } } }
     }
 }

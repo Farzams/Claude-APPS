@@ -23,3 +23,4 @@ android/djvu/build/
 # proot is built by CI (tools/build-proot.sh), not stored in git
 linuxpad/app/src/main/jniLibs/
 linuxpad/third_party/
+linuxpad/app/src/main/assets/fonts/*.ttf

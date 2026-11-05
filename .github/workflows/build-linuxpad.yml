@@ -19,6 +19,9 @@ jobs:
         with: { distribution: temurin, java-version: "17" }
       - uses: gradle/actions/setup-gradle@v4
         with: { gradle-version: wrapper }
+      - name: Fetch the Selawik font (official release, SIL OFL)
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: linuxpad/tools/fetch-selawik.sh
       - name: Fetch Termux:X11 (pinned commit, with submodules)
         run: linuxpad/tools/fetch-termux-x11.sh
       - uses: actions/cache@v4

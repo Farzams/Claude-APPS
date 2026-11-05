@@ -53,8 +53,8 @@ object Proot {
         builder(ctx, guestCommand(ctx, rootfs, cmd, binds, env)).start()
 
     /** Runs [cmd] inside the Linux system and streams its output. Returns the exit code. */
-    fun exec(ctx: Context, rootfs: File, cmd: List<String>, onLine: (String) -> Unit): Int {
-        val p = spawn(ctx, rootfs, cmd)
+    fun exec(ctx: Context, rootfs: File, cmd: List<String>, binds: List<Pair<String, String>> = emptyList(), onLine: (String) -> Unit): Int {
+        val p = spawn(ctx, rootfs, cmd, binds)
         p.inputStream.bufferedReader().forEachLine(onLine)
         return p.waitFor()
     }
