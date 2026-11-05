@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import app.linuxpad.runtime.LinuxSystem
 import app.linuxpad.runtime.Proot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -78,6 +79,8 @@ private fun Calibration(d: DisplayInfo) {
         appendLine("touch test: $taps hits, $misses misses")
         if (note.isNotBlank()) appendLine("note: $note")
         if (selfTest.isNotBlank()) appendLine("\n--- PRoot self-test ---\n$selfTest")
+        if (LinuxSystem.output.isNotBlank()) appendLine("\n--- Debian ---\n${LinuxSystem.output.takeLast(3000)}")
+        LinuxSystem.error?.let { appendLine("install error: $it") }
     }
     Column(Modifier.fillMaxSize().systemBarsPadding().verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("LinuxPad: display calibration", style = MaterialTheme.typography.headlineMedium)
@@ -131,7 +134,30 @@ private fun Calibration(d: DisplayInfo) {
         Button({ selfTest = "running..."; scope.launch { selfTest = withContext(Dispatchers.IO) { Proot.selfTest(ctx) } } }) { Text("Run PRoot self-test") }
         if (selfTest.isNotBlank()) Text(selfTest, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
 
-        Section("7. Send me the result")
+        Section("7. Debian (installed inside the app)")
+        LaunchedEffect(Unit) { LinuxSystem.refresh(ctx) }
+        val prog = LinuxSystem.progress
+        when {
+            prog != null -> {
+                Text(prog.phase + if (prog.total > 0) "  ${prog.done / 1_048_576} / ${prog.total / 1_048_576} MB" else "")
+                if (prog.total > 0) LinearProgressIndicator(progress = { prog.done.toFloat() / prog.total }, modifier = Modifier.fillMaxWidth())
+                else LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+            LinuxSystem.installed -> {
+                var cmd by remember { mutableStateOf("cat /etc/os-release | head -3; uname -m; id") }
+                OutlinedTextField(cmd, { cmd = it }, label = { Text("Command to run inside Debian") }, modifier = Modifier.fillMaxWidth())
+                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Button({ LinuxSystem.run(ctx, cmd) }, enabled = !LinuxSystem.running) { Text("Run") }
+                    Button({ cmd = "apt-get update && apt-get install -y --no-install-recommends fastfetch" }, enabled = !LinuxSystem.running) { Text("apt test") }
+                    OutlinedButton({ LinuxSystem.remove(ctx) }, enabled = !LinuxSystem.running) { Text("Delete Debian") }
+                }
+            }
+            else -> Button({ LinuxSystem.install(ctx) }) { Text("Download and install Debian 13 (about 30 MB)") }
+        }
+        LinuxSystem.error?.let { Text("Error: $it", color = MaterialTheme.colorScheme.error) }
+        if (LinuxSystem.output.isNotBlank()) Text(LinuxSystem.output, fontSize = 13.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
+
+        Section("8. Send me the result")
         OutlinedTextField(note, { note = it }, label = { Text("Your note (too small? too big? blurry?)") }, modifier = Modifier.fillMaxWidth())
         Text(report, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
         Button({

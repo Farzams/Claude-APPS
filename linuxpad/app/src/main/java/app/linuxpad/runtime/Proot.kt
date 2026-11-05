@@ -29,6 +29,22 @@ object Proot {
         }
     }
 
+    /** Runs [cmd] inside the Linux system at [rootfs] as (fake) root and streams its output. Returns the exit code. */
+    fun exec(ctx: Context, rootfs: File, cmd: List<String>, onLine: (String) -> Unit): Int {
+        val args = listOf(
+            "--kill-on-exit", "--link2symlink", "-0", "-r", rootfs.path,
+            "-b", "/dev", "-b", "/proc", "-b", "/sys", "-w", "/root",
+            "/usr/bin/env", "-i", "HOME=/root", "USER=root", "LANG=C.UTF-8", "TERM=xterm-256color",
+            "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        ) + cmd
+        val tmp = File(ctx.cacheDir, "proot-tmp").apply { mkdirs() }
+        val pb = ProcessBuilder(listOf(binary(ctx).path) + args).redirectErrorStream(true)
+        pb.environment().apply { put("PROOT_LOADER", loader(ctx).path); put("PROOT_TMP_DIR", tmp.path) }
+        val p = pb.start()
+        p.inputStream.bufferedReader().forEachLine(onLine)
+        return p.waitFor()
+    }
+
     /** Version, then a real sandboxed command, so we know both the binary and the syscall tracing work on this device. */
     fun selfTest(ctx: Context): String {
         val v = run(ctx, listOf("--version"))
