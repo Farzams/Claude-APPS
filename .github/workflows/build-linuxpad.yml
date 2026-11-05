@@ -1,0 +1,38 @@
+name: Build LinuxPad
+# Unit tests and APK for LinuxPad (Linux desktop on Android); the APK is published in the release "linuxpad-latest".
+on:
+  workflow_dispatch:
+  push:
+    paths: ["linuxpad/**", ".github/workflows/build-linuxpad.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: build-linuxpad
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: wrapper }
+      - name: Unit tests and APK
+        working-directory: linuxpad
+        env: { APP_VERSION_CODE: "${{ github.run_number }}" }
+        run: ./gradlew --no-daemon testDebugUnitTest assembleDebug
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linuxpad-reports
+          path: linuxpad/app/build/reports
+      - name: Publish the APK (release linuxpad-latest)
+        if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          repo="${{ github.repository }}"; tag="linuxpad-latest"
+          cp "$(find linuxpad -name '*-debug.apk' | head -1)" LinuxPad.apk
+          gh release view $tag --repo $repo >/dev/null 2>&1 || gh release create $tag --repo $repo --prerelease --title "LinuxPad (latest build)" --target "${{ github.sha }}" --notes "Linux desktop on Android, tuned for tablets. Allow installs from your browser or file manager when asked."
+          for i in 1 2 3; do gh release upload $tag LinuxPad.apk --clobber --repo $repo && break; sleep $((10*i)); done
