@@ -229,9 +229,12 @@ object LinuxSystem {
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
                 val script = "export DISPLAY=:0; fc-cache -f /usr/local/share/fonts >/dev/null 2>&1; " +
                     "xrdb -nocpp -merge /root/.Xresources || echo 'xrdb failed'; " +
-                    "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
+                    "xsetroot -solid '#17161a' -cursor_name left_ptr || echo 'xsetroot failed'; " +
                     "mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root; export XDG_RUNTIME_DIR=/tmp/runtime-root; " +
                     "[ -s /etc/machine-id ] || dbus-uuidgen --ensure=/etc/machine-id; " +
+                    // LinuxPad's settings are written before the desktop starts (a private session bus, ended afterwards), so the first
+                    // frame already has the final panel, wallpaper and icons
+                    "dbus-launch --exit-with-session sh /root/linuxpad-xfce-tune.sh >/dev/null 2>&1; " +
                     "export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11 NO_AT_BRIDGE=1 LIBGL_ALWAYS_SOFTWARE=1 XCURSOR_THEME=LinuxPad; " +
                     "export QT_AUTO_SCREEN_SCALE_FACTOR=0 QT_SCALE_FACTOR=${plan.qtScaleFactor} QT_FONT_DPI=96; " +
                     "exec startxfce4"
@@ -448,13 +451,7 @@ menubar > menuitem { min-height: 28px; padding: 2px 14px; }
         val tune = app.assets.open("tune.sh").bufferedReader().use { it.readText() }
             .replace("@PANEL@", panel.toString()).replace("@DOCK@", dock.toString()).replace("@ICON@", desktopIcon.toString())
         File(root, "root/linuxpad-xfce-tune.sh").writeText(tune)
-        val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
-        File(autostart, "linuxpad-tune.desktop").writeText("""[Desktop Entry]
-Type=Application
-Name=LinuxPad tuning
-Exec=sh /root/linuxpad-xfce-tune.sh
-X-GNOME-Autostart-enabled=true
-""")
+        File(root, "root/.config/autostart/linuxpad-tune.desktop").delete()   // an earlier build ran the script after the desktop started
     }
 
     /** Sets the values of existing properties in an xfconf file; false when one is missing (the caller then writes the whole file). */

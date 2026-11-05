@@ -1,10 +1,10 @@
 #!/bin/sh
-# LinuxPad tuning, run once per desktop start (autostart). Sizes for this screen are set every start; look and layout choices only once,
+# LinuxPad tuning, run before the desktop starts (inside its own session bus, so the settings are on disk when XFCE reads them and
+# nothing changes on screen after the first frame). Sizes for this screen are set every start; look and layout choices only once,
 # so that what the user changes inside XFCE stays. @PANEL@ @DOCK@ @ICON@ are filled in by the app.
 export DISPLAY=:0
 M=/root/.config/linuxpad; mkdir -p "$M"
-for i in `seq 1 60`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break; sleep 1; done
-sleep 3
+for i in `seq 1 30`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break; sleep 1; done
 xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s @PANEL@
 xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -n -t uint -s 0
 xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s @DOCK@
@@ -24,7 +24,6 @@ if [ ! -f "$M/layout-v1" ]; then
   if [ -n "$drop" ] && [ -n "$keep" ]; then
     xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids --force-array $keep
     for id in $drop; do xfconf-query -c xfce4-panel -p /plugins/plugin-$id -r -R; done
-    (xfce4-panel -r >/dev/null 2>&1 &)
   fi
   xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-filesystem -n -t bool -s false
   xfconf-query -c xfce4-desktop -p /desktop-icons/file-icons/show-removable -n -t bool -s false
@@ -45,27 +44,28 @@ if [ ! -f "$M/wallpaper-v2" ] && [ -f "$IMG" ]; then
     done
   done
   for p in `xfconf-query -c xfce4-desktop -l | grep -E 'last-image$'`; do xfconf-query -c xfce4-desktop -p $p -s "$IMG"; done
-  xfdesktop --reload >/dev/null 2>&1
   first=`echo $mons | cut -d' ' -f1`
   [ "`xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$first/workspace0/last-image 2>/dev/null`" = "$IMG" ] && touch "$M/wallpaper-v2"
 fi
 
 # once: a small indicator in the top panel with memory, heat and battery (the app writes /root/.linuxpad/stats.txt every few seconds)
-if [ ! -f "$M/genmon-v1" ] && dpkg -s xfce4-genmon-plugin >/dev/null 2>&1; then
-  sleep 2
+if [ ! -f "$M/genmon-v2" ] && dpkg -s xfce4-genmon-plugin >/dev/null 2>&1; then
   ids=`xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids 2>/dev/null | grep -E '^[0-9]+$'`
-  args=""; put=0
-  for id in $ids; do
-    t=`xfconf-query -c xfce4-panel -p /plugins/plugin-$id 2>/dev/null`
-    if [ "$t" = "clock" ] && [ $put = 0 ]; then args="$args -t int -s 90"; put=1; fi
-    args="$args -t int -s $id"
-  done
-  [ $put = 0 ] && args="$args -t int -s 90"
-  xfconf-query -c xfce4-panel -p /plugins/plugin-90 -n -t string -s genmon
-  xfconf-query -c xfce4-panel -p /plugins/plugin-90/command -n -t string -s "cat /root/.linuxpad/stats.txt"
+  if ! echo "$ids" | grep -qx 90; then
+    args=""; put=0
+    for id in $ids; do
+      t=`xfconf-query -c xfce4-panel -p /plugins/plugin-$id 2>/dev/null`
+      if [ "$t" = "clock" ] && [ $put = 0 ]; then args="$args -t int -s 90"; put=1; fi
+      args="$args -t int -s $id"
+    done
+    [ $put = 0 ] && args="$args -t int -s 90"
+    xfconf-query -c xfce4-panel -p /plugins/plugin-90 -n -t string -s genmon
+    xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids --force-array $args
+  fi
+  xfconf-query -c xfce4-panel -p /plugins/plugin-90/command -n -t string -s "sh -c 'cat /root/.linuxpad/stats.txt 2>/dev/null || echo \"<txt>no data</txt>\"'"
   xfconf-query -c xfce4-panel -p /plugins/plugin-90/update-period -n -t int -s 3000
   xfconf-query -c xfce4-panel -p /plugins/plugin-90/use-label -n -t bool -s false
-  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids --force-array $args
-  (xfce4-panel -r >/dev/null 2>&1 &)
-  touch "$M/genmon-v1"
+  xfconf-query -c xfce4-panel -p /plugins/plugin-90/enable-single-row -n -t bool -s true
+  touch "$M/genmon-v2"
 fi
+sleep 2   # let xfconfd write its files before this session bus ends
