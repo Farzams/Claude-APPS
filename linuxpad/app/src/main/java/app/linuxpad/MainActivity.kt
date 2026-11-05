@@ -46,94 +46,30 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)   // long installs must not be cut by the screen turning off
-        setContent { MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) { Surface { Calibration(Screens.read(this)) } } }
+        setContent { MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) { Surface { MainScreen(Screens.read(this)) } } }
     }
 }
 
 @Composable
-private fun Calibration(d: DisplayInfo) {
+private fun MainScreen(d: DisplayInfo) {
     val ctx = LocalContext.current
-    val density = LocalDensity.current
-    val prefs = remember { ctx.getSharedPreferences("linuxpad", android.content.Context.MODE_PRIVATE) }
-    var comfort by remember { mutableFloatStateOf(prefs.getFloat("comfort", DisplayScale.DEFAULT_COMFORT)) }
-    var diagonal by remember { mutableStateOf("12.1") }
-    var taps by remember { mutableIntStateOf(0) }
-    var misses by remember { mutableIntStateOf(0) }
     var note by remember { mutableStateOf("") }
-    var selfTest by remember { mutableStateOf("") }
-    val scope = rememberCoroutineScope()
-    val plan = DisplayScale.plan(d, comfort, diagonal.toFloatOrNull())
-    fun px(v: Int): androidx.compose.ui.unit.Dp = with(density) { v.toDp() }
-    // A Linux font of N points is N * dpi / 72 pixels tall
-    fun pt(points: Float): TextUnit = with(density) { (points * plan.xftDpi / 72f).toSp() }
-    val ink = MaterialTheme.colorScheme.onSurface
+    val plan = DisplayScale.plan(d)   // the final size: 174 dpi, cursor 40 px on this tablet
     val report = buildString {
-        appendLine("LinuxPad calibration report")
+        appendLine("LinuxPad report")
         appendLine("device: ${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
-        appendLine("screen: ${d.widthPx}x${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz, android dpi ${"%.1f".format(d.xdpi)}x${"%.1f".format(d.ydpi)}, densityDpi ${d.androidDensityDpi}")
-        appendLine("diagonal entered: $diagonal in, measured ${"%.1f".format(plan.physicalPpi)} ppi")
-        appendLine("size slider: ${"%.2f".format(comfort)} -> Xft.dpi ${plan.xftDpi}, factor ${"%.2f".format(plan.factor)}")
-        appendLine("titlebar ${plan.titlebarPx}, row ${plan.rowPx}, cursor ${plan.cursorSize}, panel ${plan.panelSize}, icon ${plan.iconSize}, min touch ${plan.minTouchPx} px")
-        appendLine("touch test: $taps hits, $misses misses")
+        appendLine("screen: ${d.widthPx}x${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz, ${"%.1f".format(plan.physicalPpi)} ppi -> Xft.dpi ${plan.xftDpi}, cursor ${plan.cursorSize}")
+        appendLine("debian installed: ${LinuxSystem.installed}, xfce installed: ${LinuxSystem.hasXfce(ctx)}")
         if (note.isNotBlank()) appendLine("note: $note")
-        if (selfTest.isNotBlank()) appendLine("\n--- PRoot self-test ---\n$selfTest")
         appendLine("x11: ${X11Server.state} ${X11Server.detail}")
-        if (LinuxSystem.output.isNotBlank()) appendLine("\n--- Debian ---\n${LinuxSystem.output.takeLast(3000)}")
-        LinuxSystem.error?.let { appendLine("install error: $it") }
+        if (LinuxSystem.output.isNotBlank()) appendLine("\n--- Linux output ---\n${LinuxSystem.output.takeLast(3000)}")
+        LinuxSystem.error?.let { appendLine("error: $it") }
     }
     Column(Modifier.fillMaxSize().systemBarsPadding().verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
-        Text("LinuxPad: display calibration", style = MaterialTheme.typography.headlineMedium)
-        Text("Screen ${d.widthPx} x ${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz. Android reports ${"%.0f".format(d.xdpi)} x ${"%.0f".format(d.ydpi)} dpi.")
-        OutlinedTextField(diagonal, { diagonal = it }, label = { Text("Screen diagonal in inches (POCO Pad: 12.1)") }, singleLine = true)
-        Text("Size: ${"%.2f".format(comfort)}  =>  Xft.dpi ${plan.xftDpi} (${"%.2f".format(plan.factor)}x)", style = MaterialTheme.typography.titleMedium)
-        Slider(comfort, { comfort = it }, valueRange = 0.4f..1f, onValueChangeFinished = { prefs.edit().putFloat("comfort", comfort).apply() })
+        Text("LinuxPad", style = MaterialTheme.typography.headlineMedium)
+        Text("Linux desktop for this tablet: ${d.widthPx} x ${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz, ${"%.0f".format(plan.physicalPpi)} ppi.")
 
-        Section("1. Desktop icon with its label (what you will see on the Linux desktop)")
-        Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-            for ((name, color) in listOf("Files" to Color(0xFF4F8EF7), "Terminal" to Color(0xFF3A3A3A), "Firefox" to Color(0xFFE8742A), "TeX" to Color(0xFF2E9E6A))) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(px(plan.iconSize * 3))) {
-                    Box(Modifier.size(px(plan.iconSize)).clip(RoundedCornerShape(px(plan.iconSize / 6))).background(color), contentAlignment = Alignment.Center) {
-                        Text(name.take(2), color = Color.White, fontSize = with(density) { (plan.iconSize * 0.45f).toSp() }, fontWeight = FontWeight.Bold)
-                    }
-                    Text(name, fontSize = pt(10f), textAlign = TextAlign.Center, maxLines = 1)
-                }
-            }
-        }
-
-        Section("2. Panel (XFCE bar): ${plan.panelSize} px high, icons ${plan.iconSize} px, clock text 10 pt")
-        Row(Modifier.fillMaxWidth().height(px(plan.panelSize)).background(Color(0xFF2B2B33)).padding(horizontal = px(8)), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(px(10))) {
-            for (c in listOf(Color(0xFF4F8EF7), Color(0xFFE8742A), Color(0xFF2E9E6A))) Box(Modifier.size(px(plan.iconSize)).clip(RoundedCornerShape(px(4))).background(c))
-            Text("Applications", color = Color.White, fontSize = pt(10f))
-            Spacer(Modifier.weight(1f))
-            Text("Thu 5 Nov  14:32", color = Color.White, fontSize = pt(10f))
-        }
-
-        Section("3. Text at the usual sizes (points as Linux would draw them at ${plan.xftDpi} dpi)")
-        for (points in listOf(8f, 9f, 10f, 11f, 12f, 14f)) {
-            Text("${points.toInt()} pt   The quick brown fox 0123456789   سلام، این یک متن آزمایشی است   \u222B f d\u03BC  \u2264  \u2016x\u2016\u03A6", fontSize = pt(points), color = ink)
-        }
-
-        Section("4. Mouse cursor: ${plan.cursorSize} px")
-        Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(20.dp)) {
-            androidx.compose.foundation.Canvas(Modifier.size(px(plan.cursorSize))) {
-                val s = size.minDimension
-                val path = Path().apply { moveTo(0f, 0f); lineTo(0f, s * 0.85f); lineTo(s * 0.25f, s * 0.65f); lineTo(s * 0.45f, s * 0.95f); lineTo(s * 0.57f, s * 0.9f); lineTo(s * 0.37f, s * 0.6f); lineTo(s * 0.65f, s * 0.6f); close() }
-                drawPath(path, Color.White); drawPath(path, Color.Black, style = androidx.compose.ui.graphics.drawscope.Stroke(width = s * 0.06f))
-            }
-            Text("compare with a normal Android pointer", fontSize = pt(10f))
-        }
-
-        Section("5. Touch test: tap the squares (${plan.minTouchPx} px = about 7 mm). Taps beside them count as misses.")
-        Row(Modifier.fillMaxWidth().border(1.dp, ink.copy(alpha = 0.3f)).padding(px(plan.minTouchPx / 3)).clickable(indication = null, interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }) { misses++ }, horizontalArrangement = Arrangement.spacedBy(px(plan.minTouchPx / 3))) {
-            repeat(5) { Box(Modifier.size(px(plan.minTouchPx)).background(MaterialTheme.colorScheme.secondaryContainer).clickable { taps++ }) }
-        }
-        Text("Hits: $taps    Misses: $misses")
-
-        Section("6. PRoot self-test (runs the Linux sandbox engine on this device)")
-        Button({ selfTest = "running..."; scope.launch { selfTest = withContext(Dispatchers.IO) { Proot.selfTest(ctx) } } }) { Text("Run PRoot self-test") }
-        if (selfTest.isNotBlank()) Text(selfTest, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
-
-        Section("7. Debian (installed inside the app)")
+        Section("1. Linux system (Debian)")
         LaunchedEffect(Unit) { LinuxSystem.refresh(ctx) }
         var confirmDeleteAll by remember { mutableStateOf(false) }
         val prog = LinuxSystem.progress
@@ -144,11 +80,11 @@ private fun Calibration(d: DisplayInfo) {
                 else LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
             LinuxSystem.installed -> {
-                var cmd by remember { mutableStateOf("cat /etc/os-release | head -3; uname -m; id") }
-                OutlinedTextField(cmd, { cmd = it }, label = { Text("Command to run inside Debian") }, modifier = Modifier.fillMaxWidth())
+                Text("Debian is installed.")
+                var cmd by remember { mutableStateOf("") }
+                OutlinedTextField(cmd, { cmd = it }, label = { Text("Run a command inside Debian (optional)") }, modifier = Modifier.fillMaxWidth())
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Button({ LinuxSystem.run(ctx, cmd) }, enabled = !LinuxSystem.running) { Text("Run") }
-                    Button({ cmd = "apt-get update && apt-get install -y --no-install-recommends fastfetch" }, enabled = !LinuxSystem.running) { Text("apt test") }
+                    Button({ LinuxSystem.run(ctx, cmd) }, enabled = !LinuxSystem.running && cmd.isNotBlank()) { Text("Run") }
                     OutlinedButton({ confirmDeleteAll = true }, enabled = !LinuxSystem.running) { Text("Delete Debian and everything in it") }
                 }
             }
@@ -166,20 +102,20 @@ private fun Calibration(d: DisplayInfo) {
         LinuxSystem.error?.let { Text("Error: $it", color = MaterialTheme.colorScheme.error) }
         if (LinuxSystem.output.isNotBlank()) Text(LinuxSystem.output, fontSize = 13.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
 
-        Section("8. Graphics test (first picture)")
-        Text("Step 1 once, with the Debian above installed. Step 2 opens a full-screen desktop with xeyes and a terminal; use the system back gesture to leave.")
-        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.GRAPHICS_PACKAGES}") },
-                enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("1. Install graphics packages") }
-            Button({ ctx.startActivity(android.content.Intent(ctx, DesktopActivity::class.java)) },
-                enabled = LinuxSystem.installed) { Text("2. Start desktop test") }
-        }
+        Section("2. Desktop")
+        val hasXfce = LinuxSystem.hasXfce(ctx)
+        Text(if (hasXfce) "XFCE desktop: installed." else "XFCE desktop: not installed yet. Install the graphics packages first, then XFCE (about 150 to 300 MB; keep the app open while it runs).")
+        Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.GRAPHICS_PACKAGES}") },
+            enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("Install graphics packages") }
         Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.XFCE_PACKAGES}") },
-            enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("3. Install XFCE desktop (150 to 300 MB, keep the app open)") }
-        Text(if (LinuxSystem.hasXfce(ctx)) "XFCE is installed: step 2 now starts the full desktop." else "XFCE is not installed: step 2 starts the small test (terminal and editor).")
+            enabled = LinuxSystem.installed && !LinuxSystem.running) { Text(if (hasXfce) "Reinstall XFCE desktop" else "Install XFCE desktop") }
+        Button({ ctx.startActivity(android.content.Intent(ctx, DesktopActivity::class.java)) }, enabled = LinuxSystem.installed) {
+            Text(if (hasXfce) "Start desktop" else "Start small test desktop (no XFCE yet)")
+        }
+        Text("To leave the desktop use the back gesture of Android.")
         if (X11Server.state != "stopped") Text("X server: ${X11Server.state} ${X11Server.detail}")
 
-        Section("9. Packages: tap the ones to remove")
+        Section("3. Packages: tap the ones to remove")
         val pkgReady = LinuxSystem.installed && !LinuxSystem.running
         val selected = remember { mutableStateListOf<String>() }
         var confirm by remember { mutableStateOf(false) }
@@ -215,7 +151,7 @@ private fun Calibration(d: DisplayInfo) {
         OutlinedButton({
             LinuxSystem.run(ctx, "apt-get purge -y ${LinuxSystem.XFCE_PACKAGES} && apt-get autoremove --purge -y && apt-get clean")
             reloadAfter = true
-        }, enabled = pkgReady && LinuxSystem.hasXfce(ctx)) { Text("Remove the whole XFCE desktop (you can install it again)") }
+        }, enabled = pkgReady && hasXfce) { Text("Remove the whole XFCE desktop (you can install it again)") }
         if (confirm) {
             AlertDialog(
                 onDismissRequest = { confirm = false },
@@ -232,8 +168,8 @@ private fun Calibration(d: DisplayInfo) {
             )
         }
 
-        Section("10. Send me the result")
-        OutlinedTextField(note, { note = it }, label = { Text("Your note (too small? too big? blurry?)") }, modifier = Modifier.fillMaxWidth())
+        Section("4. Report for me")
+        OutlinedTextField(note, { note = it }, label = { Text("Your note") }, modifier = Modifier.fillMaxWidth())
         Text(report, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
         Button({
             val cm = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
