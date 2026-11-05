@@ -139,6 +139,11 @@ object LinuxSystem {
 
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
+    /** Desktop themes the user can choose between; the first one that exists is used if the chosen one is missing. */
+    val THEMES = listOf("Yaru", "WhiteSur-Light", "WhiteSur-Dark")
+    fun desktopTheme(ctx: Context): String = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).getString("desktop_theme", "Yaru") ?: "Yaru"
+    fun setDesktopTheme(ctx: Context, name: String) = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).edit().putString("desktop_theme", name).apply()
+
     fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/themes/Yaru").isDirectory || File(rootDir(ctx), "usr/share/fonts/truetype/ubuntu").isDirectory
 
     /** Which parts of XFCE are present, for the report. */
@@ -196,7 +201,7 @@ object LinuxSystem {
                         "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 installAssets(app, root)
-                writeXfceConfig(root, plan)
+                writeXfceConfig(root, plan, desktopTheme(app))
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
                 val script = "export DISPLAY=:0; fc-cache -f /usr/local/share/fonts >/dev/null 2>&1; " +
@@ -307,7 +312,7 @@ object LinuxSystem {
      * XFCE's panel, window title bars and desktop icons are fixed pixel sizes made for 96 dpi screens, so on this screen they
      * would be tiny. Their sizes are written here from the scale plan, before the first start.
      */
-    private fun writeXfceConfig(root: File, plan: ScalePlan) {
+    private fun writeXfceConfig(root: File, plan: ScalePlan, theme: String) {
         val xml = File(root, "root/.config/xfce4/xfconf/xfce-perchannel-xml").apply { mkdirs() }
         // XFCE draws everything at 2x (window scaling factor 2: panel, menus, icons, buttons, spacing, title bars).
         // Text keeps the size chosen on the device: Xft DPI is halved, because the 2x scale doubles it again.
@@ -317,7 +322,12 @@ object LinuxSystem {
         val desktopIcon = logical((48 * plan.factor).roundToInt())
         val dock = logical(((48 * plan.factor) * 1.25f).roundToInt())   // the bottom dock: a quarter larger than the desktop icons
         val panel = logical(plan.panelSize)
-        val themeName = if (File(root, "usr/share/themes/Yaru/gtk-3.0").isDirectory) "Yaru" else "Adwaita"
+        val themeName = when {
+            File(root, "usr/share/themes/$theme/gtk-3.0").isDirectory -> theme
+            File(root, "usr/share/themes/Yaru/gtk-3.0").isDirectory -> "Yaru"
+            else -> "Adwaita"
+        }
+        val windowTheme = if (themeName.startsWith("WhiteSur") && File(root, "usr/share/themes/$themeName/xfwm4").isDirectory) themeName else "Default"
         val iconName = if (File(root, "usr/share/icons/Papirus").isDirectory) "Papirus" else "Adwaita"
         val uiFont = when {
             File(root, "usr/local/share/fonts/selawik").listFiles()?.isNotEmpty() == true -> "Selawik 11"
@@ -349,7 +359,7 @@ object LinuxSystem {
         File(xml, "xfwm4.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xfwm4" version="1.0">
   <property name="general" type="empty">
-    <property name="theme" type="string" value="Default"/>
+    <property name="theme" type="string" value="$windowTheme"/>
     <property name="use_compositing" type="bool" value="false"/>
   </property>
 </channel>
@@ -395,6 +405,17 @@ X-GNOME-Autostart-enabled=true
         val fonts = File(root, "usr/local/share/fonts/selawik").apply { mkdirs() }
         app.assets.list("fonts")?.filter { it.endsWith(".ttf", ignoreCase = true) || it.contains("LICENSE") }?.forEach { name ->
             app.assets.open("fonts/$name").use { input -> File(fonts, name).outputStream().use { input.copyTo(it) } }
+        }
+        // the WhiteSur themes (MIT, https://github.com/vinceliuice/WhiteSur-gtk-theme), prebuilt: Light and Dark with their window frames
+        val themes = File(root, "usr/share/themes").apply { mkdirs() }
+        for (name in THEMES.filter { it.startsWith("WhiteSur") }) {
+            if (File(themes, "$name/index.theme").isFile) continue
+            runCatching {
+                val tmp = File(app.cacheDir, "$name.tar.gz")
+                app.assets.open("themes/$name.tar.gz").use { input -> tmp.outputStream().use { input.copyTo(it) } }
+                TarExtractor.extractTarGz(tmp, themes) { }
+                tmp.delete()
+            }
         }
         val bg = File(root, "usr/share/backgrounds").apply { mkdirs() }
         runCatching { app.assets.open("wallpaper.jpg").use { input -> File(bg, "linuxpad.jpg").outputStream().use { input.copyTo(it) } } }

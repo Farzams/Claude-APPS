@@ -286,6 +286,21 @@ private fun SettingsScreen(d: DisplayInfo) {
             runCatching { ctx.startActivity(Intent(Settings.ACTION_APPLICATION_DEVELOPMENT_SETTINGS)) }.onFailure { ctx.startActivity(Intent(Settings.ACTION_SETTINGS)) }
         })
     }
+    var theme by remember { mutableStateOf(LinuxSystem.desktopTheme(ctx)) }
+    AppCard("Desktop theme") {
+        Muted("Look of the windows, menus and buttons inside Linux. Yaru is the Ubuntu look, WhiteSur is the Mac look. It applies the next time the desktop starts.")
+        for ((id, label, hint) in listOf(
+            Triple("Yaru", "Yaru (Ubuntu)", "Needs the nicer look from Setup"),
+            Triple("WhiteSur-Light", "WhiteSur Light (Mac)", "Bright windows, rounded corners"),
+            Triple("WhiteSur-Dark", "WhiteSur Dark (Mac)", "Dark windows, rounded corners"),
+        )) {
+            Row(Modifier.fillMaxWidth().clickable { theme = id; LinuxSystem.setDesktopTheme(ctx, id) }.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                androidx.compose.material3.RadioButton(theme == id, { theme = id; LinuxSystem.setDesktopTheme(ctx, id) })
+                Column(Modifier.weight(1f)) { Text(label, color = TextMain, fontSize = 17.sp); Text(hint, color = TextMuted, fontSize = 13.sp) }
+            }
+        }
+        if (LinuxSystem.session != "stopped") OutlinedBigButton("Stop desktop to apply", onClick = { LinuxSystem.stopSession(ctx) })
+    }
     val plan = DisplayScale.plan(d)
     AppCard("Screen") {
         Muted("${d.widthPx} x ${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz, ${"%.0f".format(plan.physicalPpi)} ppi.  Text ${plan.xftDpi} dpi, pointer ${plan.cursorSize} px, interface scale 2x. These values were chosen on this tablet.")
