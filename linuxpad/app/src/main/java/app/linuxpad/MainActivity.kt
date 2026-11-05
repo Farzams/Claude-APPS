@@ -68,7 +68,7 @@ private fun Calibration(d: DisplayInfo) {
         appendLine("screen: ${d.widthPx}x${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz, android dpi ${"%.1f".format(d.xdpi)}x${"%.1f".format(d.ydpi)}, densityDpi ${d.androidDensityDpi}")
         appendLine("diagonal entered: $diagonal in, measured ${"%.1f".format(plan.physicalPpi)} ppi")
         appendLine("size slider: ${"%.2f".format(comfort)} -> Xft.dpi ${plan.xftDpi}, factor ${"%.2f".format(plan.factor)}")
-        appendLine("cursor ${plan.cursorSize}, panel ${plan.panelSize}, icon ${plan.iconSize}, min touch ${plan.minTouchPx} px")
+        appendLine("titlebar ${plan.titlebarPx}, row ${plan.rowPx}, cursor ${plan.cursorSize}, panel ${plan.panelSize}, icon ${plan.iconSize}, min touch ${plan.minTouchPx} px")
         appendLine("touch test: $taps hits, $misses misses")
         if (note.isNotBlank()) appendLine("note: $note")
     }

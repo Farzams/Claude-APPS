@@ -28,6 +28,8 @@ data class ScalePlan(
     val panelSize: Int,         // XFCE panel height in px
     val iconSize: Int,          // panel / desktop icon size in px
     val minTouchPx: Int,        // smallest comfortable touch target
+    val titlebarPx: Int,        // window title bar height
+    val rowPx: Int,             // list / menu row height
     val guestWidth: Int,
     val guestHeight: Int,
 )
@@ -35,7 +37,7 @@ data class ScalePlan(
 object DisplayScale {
     const val CLASSIC_DPI = 96f
     /** Fraction of the "same physical size as a 96 dpi desktop monitor" that feels right for a tablet held or on a desk. */
-    const val DEFAULT_COMFORT = 0.66f
+    const val DEFAULT_COMFORT = 0.70f   // chosen on the POCO Pad: about 174 dpi
     const val MIN_DPI = 96
     const val MAX_DPI = 320
     private val cursorSizes = intArrayOf(24, 32, 48, 64, 96, 128)
@@ -53,12 +55,15 @@ object DisplayScale {
     fun plan(d: DisplayInfo, comfort: Float = DEFAULT_COMFORT, diagonalInches: Float? = null, touchFirst: Boolean = true): ScalePlan {
         val ppi = physicalPpi(d, diagonalInches)
         val dpi = (ppi * comfort).coerceIn(MIN_DPI.toFloat(), MAX_DPI.toFloat())
-        val xft = ((dpi / 4f).roundToInt() * 4).coerceIn(MIN_DPI, MAX_DPI)   // steps of 4 keep the slider stable
+        val xft = ((dpi / 2f).roundToInt() * 2).coerceIn(MIN_DPI, MAX_DPI)   // steps of 2 keep the slider stable
         val factor = xft / CLASSIC_DPI
         val minTouch = (ppi / 25.4f * 7f).roundToInt()                      // 7 mm
-        val panel = (28 * factor).roundToInt().let { if (touchFirst) maxOf(it, (ppi / 25.4f * 6f).roundToInt()) else it }
+        val mm = ppi / 25.4f
+        val panel = (28 * factor).roundToInt().let { if (touchFirst) maxOf(it, (mm * 7f).roundToInt()) else it }
+        val titlebar = if (touchFirst) (mm * 6.5f).roundToInt() else (30 * factor).roundToInt()
+        val row = if (touchFirst) (mm * 6.7f).roundToInt() else (19 * factor).roundToInt()
         val icon = (24 * factor).roundToInt()
-        val cursor = cursorSizes.minBy { abs(it - 24 * factor) }
+        val cursor = cursorSizes.minBy { abs(it - 18 * factor) }   // a little smaller than the desktop default: comfortable with touch
         return ScalePlan(
             physicalPpi = ppi,
             factor = factor,
@@ -69,6 +74,8 @@ object DisplayScale {
             panelSize = panel,
             iconSize = icon,
             minTouchPx = minTouch,
+            titlebarPx = titlebar,
+            rowPx = row,
             guestWidth = d.widthPx and 1.inv(),   // X servers prefer even sizes
             guestHeight = d.heightPx and 1.inv(),
         )

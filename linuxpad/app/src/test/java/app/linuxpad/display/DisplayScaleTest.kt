@@ -16,10 +16,13 @@ class DisplayScaleTest {
     @Test fun pocoPadGetsAReadableDesktop() {
         val p = DisplayScale.plan(pocoPad, diagonalInches = 12.1f)
         assertTrue("dpi ${p.xftDpi}", p.xftDpi in 150..180)         // not the 96 that makes everything tiny
-        assertEquals(0, p.xftDpi % 4)
+        assertEquals(0, p.xftDpi % 2)
+        assertEquals(174, p.xftDpi)                                 // the size chosen on the device
         assertEquals(2560, p.guestWidth); assertEquals(1600, p.guestHeight)  // native, sharp
-        assertEquals(48, p.cursorSize)
-        assertTrue(p.panelSize >= 48)
+        assertEquals(32, p.cursorSize)
+        assertTrue(p.panelSize in 66..74)
+        assertTrue(p.titlebarPx in 58..70)
+        assertTrue(p.rowPx in 60..72)
         assertTrue(p.minTouchPx in 60..80)
     }
 
@@ -46,6 +49,6 @@ class DisplayScaleTest {
     @Test fun environmentCarriesTheValues() {
         val env = DisplayScale.environment(DisplayScale.plan(pocoPad, diagonalInches = 12.1f))
         assertEquals("0", env["QT_AUTO_SCREEN_SCALE_FACTOR"])
-        assertEquals("48", env["XCURSOR_SIZE"])
+        assertEquals("32", env["XCURSOR_SIZE"])
     }
 }
