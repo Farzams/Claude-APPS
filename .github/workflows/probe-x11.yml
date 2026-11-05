@@ -1,0 +1,46 @@
+name: Probe Termux:X11 build
+# Builds upstream Termux:X11 (GPL-3.0) at a pinned commit to prove the NDK/CMake/submodule toolchain works on CI
+# before it is embedded into LinuxPad. Manual only (it is slow).
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/probe-x11.yml"]
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      TX11_COMMIT: 0cb0203c283bfafbad380b90444296aa42af058d
+    steps:
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - name: Fetch Termux:X11 at the pinned commit with its submodules
+        run: |
+          mkdir tx11 && cd tx11 && git init -q
+          git remote add origin https://github.com/termux/termux-x11.git
+          git fetch --depth 1 origin "$TX11_COMMIT"
+          git checkout -q FETCH_HEAD
+          time git submodule update --init --recursive --jobs 8 --depth 1
+          git submodule status | head -30
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: probe-x11-${{ env.TX11_COMMIT }}
+      - name: Build
+        working-directory: tx11
+        run: |
+          time ./gradlew --no-daemon assembleDebug 2>&1 | tail -80
+          ls -la lorie-app/build/outputs/apk/debug/ || true
+      - name: What native libraries ended up in the APK
+        working-directory: tx11
+        run: |
+          unzip -l lorie-app/build/outputs/apk/debug/*.apk | grep -E "\.so|classes" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: termux-x11-probe
+          path: tx11/lorie-app/build/outputs/apk/debug/*.apk
