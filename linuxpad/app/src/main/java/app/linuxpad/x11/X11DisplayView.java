@@ -25,8 +25,9 @@ import java.nio.charset.StandardCharsets;
  * The desktop is created at the exact pixel size of this view, so it is sharp; text and icon size come from DPI
  * (see display/DisplayScale), never from scaling pixels.
  *
- * Touch (direct: the pointer is where the finger is):
- *   tap = left click, press and hold = right click, drag = drag with the left button,
+ * Touch (direct: the pointer is where the finger is, like a mouse that moves without a button pressed):
+ *   one finger moving = just moves the pointer (no selection box), tap = left click, press and hold = right click,
+ *   tap and touch again at once = double click, or press-and-move = drag with the left button (windows, selections),
  *   two fingers dragging = scroll, two-finger tap = right click, three-finger tap = show or hide the keyboard.
  */
 @Keep
@@ -48,8 +49,10 @@ public class X11DisplayView extends SurfaceView {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final float slop;
     // one finger
-    private boolean fingerDown, dragging, longFired;
-    private float downX, downY;
+    private boolean fingerDown, dragging, longFired, moved;
+    private float downX, downY, lastTapX, lastTapY;
+    private long lastTapTime;
+    private static final long DOUBLE_TAP_MS = 350;
     // several fingers
     private boolean multi;
     private int maxFingers;
@@ -197,12 +200,20 @@ public class X11DisplayView extends SurfaceView {
         int act = e.getActionMasked();
         int n = e.getPointerCount();
         switch (act) {
-            case MotionEvent.ACTION_DOWN:
-                fingerDown = true; dragging = false; longFired = false; multi = false;
+            case MotionEvent.ACTION_DOWN: {
+                fingerDown = true; dragging = false; longFired = false; multi = false; moved = false;
                 downX = e.getX(); downY = e.getY();
                 movePointer(downX, downY);
-                handler.postDelayed(longPress, LONG_PRESS_MS);
+                boolean again = e.getEventTime() - lastTapTime < DOUBLE_TAP_MS && Math.hypot(downX - lastTapX, downY - lastTapY) < slop * 4;
+                if (again) {                       // a second touch right after a tap: hold the left button (double click or drag)
+                    dragging = true;
+                    press(BTN_LEFT);
+                    lastTapTime = 0;
+                } else {
+                    handler.postDelayed(longPress, LONG_PRESS_MS);
+                }
                 return true;
+            }
             case MotionEvent.ACTION_POINTER_DOWN:
                 handler.removeCallbacks(longPress);
                 if (dragging) { release(BTN_LEFT); dragging = false; }
@@ -225,13 +236,11 @@ public class X11DisplayView extends SurfaceView {
                     lastCx = cx; lastCy = cy;
                     return true;
                 }
-                if (!dragging && !longFired && Math.hypot(e.getX() - downX, e.getY() - downY) > slop) {
-                    handler.removeCallbacks(longPress);
-                    dragging = true;
-                    movePointer(downX, downY);
-                    press(BTN_LEFT);
+                if (!moved && Math.hypot(e.getX() - downX, e.getY() - downY) > slop) {
+                    moved = true;
+                    handler.removeCallbacks(longPress);   // moving is not a press and hold
                 }
-                if (dragging) movePointer(e.getX(), e.getY());
+                if (moved || dragging) movePointer(e.getX(), e.getY());   // the pointer follows the finger; the button is only held when dragging
                 return true;
             case MotionEvent.ACTION_POINTER_UP:
                 return true;   // wait for the last finger
@@ -246,8 +255,9 @@ public class X11DisplayView extends SurfaceView {
                 } else if (dragging) {
                     movePointer(e.getX(), e.getY());
                     release(BTN_LEFT);
-                } else if (!longFired && act == MotionEvent.ACTION_UP) {
+                } else if (!longFired && !moved && act == MotionEvent.ACTION_UP) {
                     click(BTN_LEFT, downX, downY);
+                    lastTapTime = e.getEventTime(); lastTapX = downX; lastTapY = downY;   // a quick second touch makes a double click or a drag
                 }
                 fingerDown = false; dragging = false;
                 return true;

@@ -173,6 +173,7 @@ object LinuxSystem {
                         "mkdir -p /tmp/runtime-root && chmod 700 /tmp/runtime-root; export XDG_RUNTIME_DIR=/tmp/runtime-root; " +
                         "[ -s /etc/machine-id ] || dbus-uuidgen --ensure=/etc/machine-id; " +
                         "export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11 NO_AT_BRIDGE=1 LIBGL_ALWAYS_SOFTWARE=1 XCURSOR_THEME=LinuxPad; " +
+                        "export QT_AUTO_SCREEN_SCALE_FACTOR=0 QT_SCALE_FACTOR=${plan.qtScaleFactor} QT_FONT_DPI=96; " +
                         "exec startxfce4"
                 } else {
                     common +
@@ -203,19 +204,28 @@ object LinuxSystem {
      */
     private fun writeXfceConfig(root: File, plan: ScalePlan) {
         val xml = File(root, "root/.config/xfce4/xfconf/xfce-perchannel-xml").apply { mkdirs() }
-        val desktopIcon = (48 * plan.factor).roundToInt()
-        val dock = (desktopIcon * 1.25f).roundToInt()   // the bottom dock: a quarter larger than the desktop icons, easy to hit with a finger
+        // XFCE draws everything at 2x (window scaling factor 2: panel, menus, icons, buttons, spacing, title bars).
+        // Text keeps the size chosen on the device: Xft DPI is halved, because the 2x scale doubles it again.
+        // Sizes set below are in logical pixels, so they are the real pixel size divided by 2.
+        val scale = 2
+        fun logical(realPx: Int) = (realPx + scale / 2) / scale
+        val desktopIcon = logical((48 * plan.factor).roundToInt())
+        val dock = logical(((48 * plan.factor) * 1.25f).roundToInt())   // the bottom dock: a quarter larger than the desktop icons
+        val panel = logical(plan.panelSize)
         File(xml, "xsettings.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Xft" type="empty">
-    <property name="DPI" type="int" value="${plan.xftDpi}"/>
+    <property name="DPI" type="int" value="${plan.xftDpi / scale}"/>
     <property name="Antialias" type="int" value="1"/>
     <property name="Hinting" type="int" value="1"/>
     <property name="HintStyle" type="string" value="hintslight"/>
   </property>
+  <property name="Gdk" type="empty">
+    <property name="WindowScalingFactor" type="int" value="$scale"/>
+  </property>
   <property name="Gtk" type="empty">
     <property name="CursorThemeName" type="string" value="${CursorTheme.NAME}"/>
-    <property name="CursorThemeSize" type="int" value="${plan.cursorSize}"/>
+    <property name="CursorThemeSize" type="int" value="${plan.cursorSize / scale}"/>
   </property>
   <property name="Net" type="empty">
     <property name="ThemeName" type="string" value="Adwaita"/>
@@ -223,27 +233,21 @@ object LinuxSystem {
   </property>
 </channel>
 """)
-        // Default-xhdpi is the window theme drawn at double size
         File(xml, "xfwm4.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xfwm4" version="1.0">
   <property name="general" type="empty">
-    <property name="theme" type="string" value="Default-xhdpi"/>
+    <property name="theme" type="string" value="Default"/>
     <property name="use_compositing" type="bool" value="false"/>
   </property>
 </channel>
 """)
-        // GTK icons in menus, buttons and toolbars are fixed pixel sizes (16, 24, 32, 48) that Xft.dpi does not scale: set them from the plan
-        fun px(base: Int) = (base * plan.factor).roundToInt()
-        File(root, "root/.config/gtk-3.0").apply { mkdirs() }
-        File(root, "root/.config/gtk-3.0/settings.ini").writeText("""[Settings]
-gtk-icon-sizes=gtk-menu=${px(16)},${px(16)}:gtk-small-toolbar=${px(16)},${px(16)}:gtk-large-toolbar=${px(24)},${px(24)}:gtk-button=${px(16)},${px(16)}:gtk-dnd=${px(32)},${px(32)}:gtk-dialog=${px(48)},${px(48)}
-""")
+        File(root, "root/.config/gtk-3.0/settings.ini").delete()   // the fixed icon sizes of the first try; window scaling replaces them
         // The panel and the desktop icons are set once the session is running (their settings need the session bus)
         File(root, "root/linuxpad-xfce-tune.sh").writeText("""#!/bin/sh
 export DISPLAY=:0
 for i in `seq 1 60`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break; sleep 1; done
 sleep 3
-xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s ${plan.panelSize}
+xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s $panel
 xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -n -t uint -s 0
 xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s $dock
 xfconf-query -c xfce4-panel -p /panels/panel-2/icon-size -n -t uint -s 0
