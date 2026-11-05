@@ -9,6 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -74,10 +75,9 @@ fun AppRoot(d: DisplayInfo) {
     val ctx = LocalContext.current
     var tab by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(Unit) { LinuxSystem.refresh(ctx) }
-    Row(Modifier.fillMaxSize().systemBarsPadding()) {
-        NavigationRail(containerColor = Rail, modifier = Modifier.fillMaxHeight().width(112.dp)) {
-            Spacer(Modifier.height(18.dp))
-            Text("LinuxPad", color = Accent, fontWeight = FontWeight.Bold, fontSize = 15.sp, modifier = Modifier.padding(bottom = 18.dp))
+    Row(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Bg, Color(0xFF101A2E)))).systemBarsPadding()) {
+        NavigationRail(containerColor = Rail, modifier = Modifier.fillMaxHeight().width(132.dp)) {
+            BrandMark()
             val items = listOf("Desktop" to Icons.Filled.PlayArrow, "Setup" to Icons.Filled.Build, "Storage" to Icons.Filled.Menu, "Settings" to Icons.Filled.Settings)
             items.forEachIndexed { i, (label, icon) ->
                 NavigationRailItem(

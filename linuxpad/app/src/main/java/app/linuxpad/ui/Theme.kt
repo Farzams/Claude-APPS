@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +56,9 @@ fun ScreenTitle(text: String) {
 fun AppCard(title: String, modifier: Modifier = Modifier, chip: (@Composable () -> Unit)? = null, content: @Composable ColumnScope.() -> Unit) {
     val shape = RoundedCornerShape(24.dp)
     Column(
-        modifier.fillMaxWidth().clip(shape).background(CardBg).border(BorderStroke(1.dp, Outline), shape).padding(22.dp),
+        modifier.fillMaxWidth().clip(shape)
+            .background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Color(0xFF1B2638), CardBg)))
+            .border(BorderStroke(1.dp, Outline), shape).padding(22.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         androidx.compose.foundation.layout.Row(Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
@@ -77,3 +80,19 @@ fun StatusChip(text: String, color: Color) {
 
 @Composable
 fun Muted(text: String) = Text(text, color = TextMuted, fontSize = 15.sp, lineHeight = 21.sp)
+
+val Violet = Color(0xFF7C5CFF)
+
+/** The app mark: a rounded gradient tile with an L and the name beside it in a large type. */
+@Composable
+fun BrandMark() {
+    androidx.compose.foundation.layout.Column(Modifier.padding(top = 20.dp, bottom = 22.dp), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+        androidx.compose.foundation.layout.Box(
+            Modifier.size(60.dp).clip(RoundedCornerShape(20.dp))
+                .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Accent, Violet))),
+            contentAlignment = androidx.compose.ui.Alignment.Center,
+        ) { Text("L", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold) }
+        Text("LinuxPad", color = TextMain, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
+        Text("Debian desktop", color = TextMuted, fontSize = 12.sp)
+    }
+}

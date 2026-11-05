@@ -282,8 +282,12 @@ object LinuxSystem {
     /** Runs apt in the Linux system; apt's machine-readable status becomes progress (0 to 1) and a short label, other output goes to the log. */
     private fun apt(app: Context, packages: String, update: Boolean = true, onProgress: (Float, String) -> Unit): Int {
         onProgress(0f, if (update) "Updating package lists" else "Preparing")
+        // The progress lines go to file descriptor 3 (the original output pipe) and the programs' own output to stderr. With the
+        // status on descriptor 1, dpkg's maintainer scripts got an I/O error when they printed (fontconfig failed to configure).
+        // If a run still fails, the half-configured packages are finished and the install is tried once more.
+        val install = "apt-get -o APT::Status-Fd=3 -o Dpkg::Use-Pty=0 -y --no-install-recommends"
         val cmd = (if (update) "apt-get update -qq; " else "") +
-            "apt-get -o APT::Status-Fd=1 -o Dpkg::Use-Pty=0 -y --no-install-recommends install $packages"
+            "$install install $packages 3>&1 1>&2 || { dpkg --configure -a 1>&2; $install -f install $packages 3>&1 1>&2; }"
         return Proot.exec(app, root(app), listOf("/bin/bash", "-c", cmd), listOfNotNull(SharedFolder.prepare(root(app)))) { line ->
             when {
                 line.startsWith("dlstatus:") -> {
