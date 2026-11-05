@@ -67,6 +67,7 @@ import app.linuxpad.audio.AudioServer
 import app.linuxpad.display.DisplayInfo
 import app.linuxpad.display.DisplayScale
 import app.linuxpad.runtime.DeviceStats
+import app.linuxpad.runtime.Gpu
 import app.linuxpad.runtime.GpuCheck
 import app.linuxpad.runtime.LinuxSystem
 import app.linuxpad.runtime.SharedFolder
@@ -348,12 +349,45 @@ private fun SettingsScreen(d: DisplayInfo) {
         }
         if (LinuxSystem.session != "stopped") OutlinedBigButton("Stop desktop to apply", onClick = { LinuxSystem.stopSession(ctx) })
     }
-    AppCard("Graphics card (GPU)") {
-        Muted("Everything in the Linux desktop is drawn by the processor today. This check only looks whether this tablet lets Linux use the GPU. It changes nothing.")
+    var gpuMode by remember { mutableStateOf(Gpu.mode(ctx)) }
+    var gpuSafe by remember { mutableStateOf(Gpu.sysmem(ctx)) }
+    val gpuInstalled = remember(Gpu.installing, Gpu.progress, MainActivity.resumes) { Gpu.installed(ctx) }
+    AppCard("Graphics card (GPU)", chip = { if (gpuInstalled) StatusChip(if (gpuMode == "off") "Installed, off" else "On (experimental)", if (gpuMode == "off") TextMuted else Warn) else StatusChip("Not installed", TextMuted) }) {
+        Muted("Linux draws everything with the processor unless the GPU is turned on here. This is experimental on this tablet: if the desktop closes right after starting, the GPU turns itself off. It applies the next time the desktop starts.")
+        if (!gpuInstalled) {
+            if (Gpu.installing) {
+                LinearProgressIndicator(progress = { Gpu.progress }, modifier = Modifier.fillMaxWidth().height(8.dp), color = Accent, trackColor = Color(0x1FFFFFFF), gapSize = 0.dp, drawStopIndicator = {})
+                Muted(Gpu.label)
+            } else if (Gpu.available(ctx)) {
+                BigButton("Install GPU drivers", onClick = { Gpu.install(ctx) }, enabled = LinuxSystem.installed && !LinuxSystem.running && !LinuxSystem.setupState.running)
+                Muted("Downloads about 100 MB of graphics libraries for Linux, and adds a drivers package from this app.")
+            } else Muted("This build does not carry the GPU drivers package.")
+            Gpu.error?.let { Text(it, color = Err, fontSize = 14.sp) }
+        } else {
+            for ((id, label, hint) in listOf(
+                Triple("off", "Off (safe)", "The processor draws everything"),
+                Triple("native", "GPU: OpenGL on Adreno", "Native driver, try this first"),
+                Triple("zink", "GPU: OpenGL through Vulkan (Zink)", "Try this if the first one shows glitches"),
+            )) {
+                Row(Modifier.fillMaxWidth().clickable { gpuMode = id; Gpu.setMode(ctx, id) }.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                    androidx.compose.material3.RadioButton(gpuMode == id, { gpuMode = id; Gpu.setMode(ctx, id) })
+                    Column(Modifier.weight(1f)) { Text(label, color = TextMain, fontSize = 16.sp); Text(hint, color = TextMuted, fontSize = 13.sp) }
+                }
+            }
+            SwitchRow("Safe drawing mode (sysmem)", gpuSafe) { gpuSafe = it; Gpu.setSysmem(ctx, it) }
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedBigButton(if (Gpu.testing) "Testing..." else "Test GPU", onClick = { Gpu.test(ctx) }, enabled = !Gpu.testing)
+                OutlinedBigButton("Remove GPU drivers", onClick = { Gpu.remove(ctx); gpuMode = "off" })
+            }
+            if (Gpu.testResult.isNotBlank()) {
+                Text(Gpu.testResult, color = TextMuted, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+                OutlinedBigButton("Copy result", onClick = { copy(ctx, "LinuxPad GPU test", Gpu.testResult) })
+            }
+        }
         OutlinedBigButton(if (GpuCheck.running) "Checking..." else "Check GPU access", onClick = { GpuCheck.run(ctx) }, enabled = !GpuCheck.running)
         if (GpuCheck.result.isNotBlank()) {
             Text(GpuCheck.result, color = TextMuted, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
-            OutlinedBigButton("Copy result", onClick = { copy(ctx, "LinuxPad GPU check", GpuCheck.result) })
+            OutlinedBigButton("Copy check result", onClick = { copy(ctx, "LinuxPad GPU check", GpuCheck.result) })
         }
     }
     val plan = DisplayScale.plan(d)

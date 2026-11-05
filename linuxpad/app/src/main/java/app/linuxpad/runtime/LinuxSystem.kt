@@ -227,6 +227,8 @@ object LinuxSystem {
                 writeXfceConfig(app, root, plan, desktopTheme(app))
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
+                val gpuOn = Gpu.active(app)
+                val startedAt = System.currentTimeMillis()
                 val script = "export DISPLAY=:0; fc-cache -f /usr/local/share/fonts >/dev/null 2>&1; " +
                     "xrdb -nocpp -merge /root/.Xresources || echo 'xrdb failed'; " +
                     "xsetroot -solid '#17161a' -cursor_name left_ptr || echo 'xsetroot failed'; " +
@@ -235,7 +237,8 @@ object LinuxSystem {
                     // LinuxPad's settings are written before the desktop starts (a private session bus, ended afterwards), so the first
                     // frame already has the final panel, wallpaper and icons
                     "dbus-launch --exit-with-session sh /root/linuxpad-xfce-tune.sh >/dev/null 2>&1; " +
-                    "export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11 NO_AT_BRIDGE=1 LIBGL_ALWAYS_SOFTWARE=1 XCURSOR_THEME=LinuxPad; " +
+                    "export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11 NO_AT_BRIDGE=1 XCURSOR_THEME=LinuxPad; " +
+                    (if (gpuOn) Gpu.exports(app) else "export LIBGL_ALWAYS_SOFTWARE=1; ") +
                     "export QT_AUTO_SCREEN_SCALE_FACTOR=0 QT_SCALE_FACTOR=${plan.qtScaleFactor} QT_FONT_DPI=96; " +
                     "exec startxfce4"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
@@ -245,6 +248,10 @@ object LinuxSystem {
                 session = "running"
                 p.inputStream.bufferedReader().forEachLine { line -> sessionLog = (sessionLog + line + "\n").takeLast(20_000) }
                 sessionLog += "[desktop session ended: exit ${p.waitFor()}]\n"
+                if (gpuOn && System.currentTimeMillis() - startedAt < 25_000) {
+                    Gpu.disable(app)
+                    error = "The desktop closed right after starting with the GPU on. The GPU was turned off; the desktop will start in the safe mode."
+                }
             } catch (e: Throwable) {
                 sessionLog += "${e.javaClass.simpleName}: ${e.message}\n"
             } finally {
@@ -348,7 +355,7 @@ object LinuxSystem {
     }
 
     /** Runs apt in the Linux system; apt's machine-readable status becomes progress (0 to 1) and a short label, other output goes to the log. */
-    private fun apt(app: Context, packages: String, update: Boolean = true, onProgress: (Float, String) -> Unit): Int {
+    internal fun apt(app: Context, packages: String, update: Boolean = true, onProgress: (Float, String) -> Unit): Int {
         onProgress(0f, if (update) "Updating package lists" else "Preparing")
         // The progress lines go to file descriptor 3 (the original output pipe) and the programs' own output to stderr. With the
         // status on descriptor 1, dpkg's maintainer scripts got an I/O error when they printed (fontconfig failed to configure).

@@ -25,3 +25,5 @@ linuxpad/app/src/main/jniLibs/
 linuxpad/third_party/
 linuxpad/app/src/main/assets/fonts/*.ttf
 linuxpad/app/src/main/assets/runtime/
+
+linuxpad/app/src/main/assets/gpu/
