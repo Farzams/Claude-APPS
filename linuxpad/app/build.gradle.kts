@@ -4,9 +4,12 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+kotlin { compilerOptions { jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17) } }
+
 android {
     namespace = "app.linuxpad"
-    compileSdk = 34
+    compileSdk = 36
+    ndkVersion = "28.2.13676358"
 
     defaultConfig {
         applicationId = "app.linuxpad"
@@ -14,6 +17,7 @@ android {
         targetSdk = 34
         versionCode = (System.getenv("APP_VERSION_CODE") ?: "1").toInt()
         versionName = "0.1.${System.getenv("APP_VERSION_CODE") ?: "0"}"
+        ndk { abiFilters += listOf("arm64-v8a") }
     }
     buildTypes {
         release {
@@ -25,12 +29,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true }
     packaging { jniLibs { useLegacyPackaging = true } }   // PRoot must be extracted to disk to be executable
 }
 
 dependencies {
+    implementation(project(":x11-lorie"))
     implementation(platform("androidx.compose:compose-bom:2024.10.01"))
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.activity:activity-compose:1.9.3")

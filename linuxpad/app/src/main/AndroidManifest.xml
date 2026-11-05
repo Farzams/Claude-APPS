@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Termux:X11 brings its own activities and services; LinuxPad is the only app, so drop them -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:node="remove" />
     <application
         android:label="LinuxPad"
         android:supportsRtl="true"
@@ -12,5 +14,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.termux.x11.MainActivity" tools:node="remove" />
+        <activity android:name="com.termux.x11.LoriePreferences" tools:node="remove" />
+        <service android:name="com.termux.x11.utils.KeyInterceptor" tools:node="remove" />
+        <receiver android:name="com.termux.x11.LoriePreferences$Receiver" tools:node="remove" />
     </application>
 </manifest>
