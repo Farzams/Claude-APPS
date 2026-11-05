@@ -75,7 +75,7 @@ fun AppRoot(d: DisplayInfo) {
     val ctx = LocalContext.current
     var tab by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(Unit) { LinuxSystem.refresh(ctx) }
-    Row(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Bg, Color(0xFF101A2E)))).systemBarsPadding()) {
+    Row(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Bg, Color(0xFF2A0F2A)))).systemBarsPadding()) {
         NavigationRail(containerColor = Rail, modifier = Modifier.fillMaxHeight().width(132.dp)) {
             BrandMark()
             val items = listOf("Desktop" to Icons.Filled.PlayArrow, "Setup" to Icons.Filled.Build, "Storage" to Icons.Filled.Menu, "Settings" to Icons.Filled.Settings)
@@ -84,7 +84,7 @@ fun AppRoot(d: DisplayInfo) {
                     selected = tab == i, onClick = { tab = i },
                     icon = { Icon(icon, contentDescription = label) },
                     label = { Text(label, fontSize = 13.sp) },
-                    colors = NavigationRailItemDefaults.colors(selectedIconColor = Accent, selectedTextColor = Accent, indicatorColor = Color(0xFF1B2C4A), unselectedIconColor = TextMuted, unselectedTextColor = TextMuted),
+                    colors = NavigationRailItemDefaults.colors(selectedIconColor = Accent, selectedTextColor = Accent, indicatorColor = Color(0x33E95420), unselectedIconColor = TextMuted, unselectedTextColor = TextMuted),
                     modifier = Modifier.padding(vertical = 6.dp),
                 )
             }
@@ -321,7 +321,7 @@ private fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Un
 
 @Composable
 private fun BigButton(text: String, onClick: () -> Unit, enabled: Boolean = true, danger: Boolean = false) {
-    Button(onClick, enabled = enabled, shape = RoundedCornerShape(16.dp), modifier = Modifier.height(54.dp),
+    Button(onClick, enabled = enabled, shape = RoundedCornerShape(27.dp), modifier = Modifier.height(54.dp),
         colors = if (danger) ButtonDefaults.buttonColors(containerColor = Err, contentColor = Color(0xFF200A0A)) else ButtonDefaults.buttonColors()) {
         Text(text, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
     }
@@ -329,7 +329,7 @@ private fun BigButton(text: String, onClick: () -> Unit, enabled: Boolean = true
 
 @Composable
 private fun OutlinedBigButton(text: String, onClick: () -> Unit, enabled: Boolean = true) {
-    OutlinedButton(onClick, enabled = enabled, shape = RoundedCornerShape(16.dp), modifier = Modifier.height(54.dp)) { Text(text, fontSize = 16.sp) }
+    OutlinedButton(onClick, enabled = enabled, shape = RoundedCornerShape(27.dp), modifier = Modifier.height(54.dp)) { Text(text, fontSize = 16.sp) }
 }
 
 private fun copy(ctx: Context, label: String, text: String) {
