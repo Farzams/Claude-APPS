@@ -13,9 +13,29 @@ TALLOC_VERSION=2.4.3
 TALLOC_SHA256=dc46c40b9f46bb34dd97fe41f548b0e8b247b77a918576733c528e83abd854dd
 WORK="$(mktemp -d)"; trap 'rm -rf "$WORK"' EXIT
 
-fetch() { curl --fail --location --silent --show-error "$1" --output "$2"; echo "$3  $2" | sha256sum -c - ; }
-fetch "https://github.com/termux/proot/archive/v${PROOT_VERSION}.zip" "$WORK/proot.zip" "$PROOT_SHA256"
-fetch "https://www.samba.org/ftp/talloc/talloc-${TALLOC_VERSION}.tar.gz" "$WORK/talloc.tar.gz" "$TALLOC_SHA256"
+# Downloads are cached (CI keeps the cache between builds) and checked against a SHA-256, so a flaky mirror cannot break
+# or poison a build. Several URLs are tried in turn, each with a time limit.
+CACHE="${LINUXPAD_DL_CACHE:-$HOME/.cache/linuxpad-dl}"; mkdir -p "$CACHE"
+fetch() {   # fetch <dest> <sha256> <url>...
+    local dest="$1" sha="$2"; shift 2
+    local cached="$CACHE/$sha"
+    if [[ -f "$cached" ]] && echo "$sha  $cached" | sha256sum -c - >/dev/null 2>&1; then
+        cp "$cached" "$dest"; echo "$dest: from cache"; return 0
+    fi
+    for url in "$@"; do
+        echo "downloading $url"
+        if curl --fail --location --silent --show-error --connect-timeout 20 --max-time 150 --retry 2 --retry-all-errors "$url" --output "$dest" \
+            && echo "$sha  $dest" | sha256sum -c - >/dev/null 2>&1; then
+            cp "$dest" "$cached"; echo "$dest: OK"; return 0
+        fi
+        echo "failed: $url" >&2
+    done
+    echo "could not download $dest from any mirror" >&2; return 1
+}
+fetch "$WORK/proot.zip" "$PROOT_SHA256" "https://github.com/termux/proot/archive/v${PROOT_VERSION}.zip"
+fetch "$WORK/talloc.tar.gz" "$TALLOC_SHA256" \
+    "https://download.samba.org/pub/talloc/talloc-${TALLOC_VERSION}.tar.gz" \
+    "https://www.samba.org/ftp/talloc/talloc-${TALLOC_VERSION}.tar.gz"
 
 triple=aarch64-linux-android
 cc="$TOOLCHAIN/${triple}${API}-clang"; ar="$TOOLCHAIN/llvm-ar"; strip="$TOOLCHAIN/llvm-strip"

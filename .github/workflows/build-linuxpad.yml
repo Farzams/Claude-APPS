@@ -21,6 +21,10 @@ jobs:
         with: { gradle-version: wrapper }
       - name: Fetch Termux:X11 (pinned commit, with submodules)
         run: linuxpad/tools/fetch-termux-x11.sh
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/linuxpad-dl
+          key: linuxpad-dl-${{ hashFiles('linuxpad/tools/build-proot.sh') }}
       - name: Build PRoot for arm64 (NDK)
         run: linuxpad/tools/build-proot.sh
       - name: Unit tests and APK
