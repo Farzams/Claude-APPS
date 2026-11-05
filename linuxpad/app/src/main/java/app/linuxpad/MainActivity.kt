@@ -169,7 +169,28 @@ private fun Calibration(d: DisplayInfo) {
         Text(if (LinuxSystem.hasXfce(ctx)) "XFCE is installed: step 2 now starts the full desktop." else "XFCE is not installed: step 2 starts the small test (terminal and editor).")
         if (X11Server.state != "stopped") Text("X server: ${X11Server.state} ${X11Server.detail}")
 
-        Section("9. Send me the result")
+        Section("9. Packages: see what takes space and remove what you do not need")
+        var toRemove by remember { mutableStateOf("") }
+        OutlinedTextField(toRemove, { toRemove = it }, label = { Text("Package names to remove, separated by spaces") }, modifier = Modifier.fillMaxWidth())
+        val pkgReady = LinuxSystem.installed && !LinuxSystem.running
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button({
+                // only plain package names: letters, digits and . + - :
+                val names = toRemove.trim().split(Regex("\\s+")).filter { it.matches(Regex("[a-z0-9][a-z0-9.+:-]*")) }
+                if (names.isNotEmpty()) LinuxSystem.run(ctx, "apt-get purge -y ${names.joinToString(" ")} && apt-get autoremove --purge -y && apt-get clean")
+            }, enabled = pkgReady && toRemove.isNotBlank()) { Text("Remove these") }
+            OutlinedButton({
+                LinuxSystem.run(ctx, "dpkg-query -W -f='\${Installed-Size} \${Package}\\n' | sort -n -r | head -40 | awk '{printf \"%7.1f MB  %s\\n\", \$1/1024, \$2}'")
+            }, enabled = pkgReady) { Text("Largest packages") }
+            OutlinedButton({
+                LinuxSystem.run(ctx, "apt-get clean; du -shx /usr /var /opt /root 2>/dev/null")
+            }, enabled = pkgReady) { Text("Clean download cache") }
+        }
+        OutlinedButton({
+            LinuxSystem.run(ctx, "apt-get purge -y ${LinuxSystem.XFCE_PACKAGES} && apt-get autoremove --purge -y && apt-get clean")
+        }, enabled = pkgReady && LinuxSystem.hasXfce(ctx)) { Text("Remove the XFCE desktop (you can install it again)") }
+
+        Section("10. Send me the result")
         OutlinedTextField(note, { note = it }, label = { Text("Your note (too small? too big? blurry?)") }, modifier = Modifier.fillMaxWidth())
         Text(report, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
         Button({
