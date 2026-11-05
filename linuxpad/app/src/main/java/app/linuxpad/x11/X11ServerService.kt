@@ -55,8 +55,10 @@ class X11ServerService : Service() {
             Os.setenv("HOME", filesDir.absolutePath, true)
             reply(client, X11Protocol.STATE_STARTING, "starting the X server")
             val t0 = SystemClock.elapsedRealtime()
+            // -noreset: otherwise the server resets when the last client disconnects and forgets what short-lived
+            // clients (xrdb, xsetroot) set: DPI, background, cursor
             // -ac: the socket is private to this app (it lives in app storage and is only mounted into the Linux system)
-            check(X11NativeBridge.start(arrayOf(":0", "-ac", "-nolisten", "tcp"))) { "the X server refused to start" }
+            check(X11NativeBridge.start(arrayOf(":0", "-ac", "-noreset", "-nolisten", "tcp"))) { "the X server refused to start" }
             Thread {
                 val socket = File(socketDir, "X0")
                 while (SystemClock.elapsedRealtime() - t0 < 10_000) {

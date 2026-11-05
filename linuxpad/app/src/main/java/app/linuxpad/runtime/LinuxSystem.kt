@@ -91,7 +91,8 @@ object LinuxSystem {
                     "echo \"Xft.dpi in the server: \$(xrdb -query | grep -i '^Xft.dpi')\"; " +
                     "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
                     "( while true; do echo \"PTR \$(xdotool getmouselocation 2>&1 | head -1)\"; sleep 0.25; done ) & " +
-                    "xeyes -geometry 420x260+60+100 & " +
+                    "xcalc -geometry +60+100 & " +
+                    "xeyes -geometry 300x180+520+100 & " +
                     "exec xterm -geometry 80x22+60+420 -fa 'DejaVu Sans Mono' -fs 11 -bg black -fg white"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
                     binds = listOf("${X11Server.runtimeDir(app).absolutePath}/.X11-unix" to "/tmp/.X11-unix"),
