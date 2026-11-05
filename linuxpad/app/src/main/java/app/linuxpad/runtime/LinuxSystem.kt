@@ -204,6 +204,7 @@ object LinuxSystem {
     private fun writeXfceConfig(root: File, plan: ScalePlan) {
         val xml = File(root, "root/.config/xfce4/xfconf/xfce-perchannel-xml").apply { mkdirs() }
         val desktopIcon = (48 * plan.factor).roundToInt()
+        val dock = (desktopIcon * 1.25f).roundToInt()   // the bottom dock: a quarter larger than the desktop icons, easy to hit with a finger
         File(xml, "xsettings.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Xft" type="empty">
@@ -244,9 +245,11 @@ for i in `seq 1 60`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break;
 sleep 3
 xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s ${plan.panelSize}
 xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -n -t uint -s 0
-xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s $desktopIcon
+xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s $dock
 xfconf-query -c xfce4-panel -p /panels/panel-2/icon-size -n -t uint -s 0
 xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t uint -s $desktopIcon
+xfconf-query -c xfce4-desktop -p /desktop-icons/use-custom-font-size -n -t bool -s true
+xfconf-query -c xfce4-desktop -p /desktop-icons/font-size -n -t double -s 9
 """)
         val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
         File(autostart, "linuxpad-tune.desktop").writeText("""[Desktop Entry]
