@@ -18,7 +18,7 @@
         <activity android:name=".DesktopActivity" android:exported="false"
             android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|density|keyboard|keyboardHidden|navigation|uiMode"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden|adjustNothing" />
         <service android:name=".x11.X11ServerService" android:process=":x11" android:exported="false" />
         <activity android:name="com.termux.x11.MainActivity" tools:node="remove" />
         <activity android:name="com.termux.x11.LoriePreferences" tools:node="remove" />
