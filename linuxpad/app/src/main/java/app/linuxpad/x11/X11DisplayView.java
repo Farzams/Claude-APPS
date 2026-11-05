@@ -1,7 +1,6 @@
 package app.linuxpad.x11;
 
 import android.content.Context;
-import android.graphics.PixelFormat;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -22,6 +21,8 @@ public class X11DisplayView extends SurfaceView {
         System.loadLibrary("Xlorie");
     }
 
+    /** android.graphics.PixelFormat has no public constant for it; this is the HAL value Termux:X11 also uses. */
+    private static final int HAL_PIXEL_FORMAT_BGRA_8888 = 5;
     private static final int BUTTON_LEFT = 1;
     private boolean pressed;
     private int guestWidth, guestHeight;
@@ -41,7 +42,7 @@ public class X11DisplayView extends SurfaceView {
 
     private final SurfaceHolder.Callback callback = new SurfaceHolder.Callback() {
         @Override public void surfaceCreated(SurfaceHolder holder) {
-            holder.setFormat(PixelFormat.BGRA_8888);   // the renderer expects this channel order
+            holder.setFormat(HAL_PIXEL_FORMAT_BGRA_8888);   // the renderer expects this channel order
         }
 
         @Override public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
