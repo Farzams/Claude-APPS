@@ -55,7 +55,8 @@ class DesktopActivity : Activity() {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             hide(WindowInsetsCompat.Type.systemBars())
         }
-        val plan = DisplayScale.plan(Screens.read(this))
+        val comfort = getSharedPreferences("linuxpad", MODE_PRIVATE).getFloat("comfort", DisplayScale.DEFAULT_COMFORT)   // the size chosen on the calibration page
+        val plan = DisplayScale.plan(Screens.read(this), comfort)
         X11Server.start(this, xkb) {
             X11Server.requestRenderer { fd ->
                 view.connectRenderer(fd.detachFd())

@@ -72,7 +72,7 @@ object LinuxSystem {
     var pointerText by mutableStateOf(""); private set
 
     /** Packages the graphics test needs: keyboard data for the X server, a terminal, test clients, fonts and a cursor theme. */
-    const val GRAPHICS_PACKAGES = "xkb-data x11-xserver-utils xterm x11-apps fonts-dejavu-core fonts-vazirmatn adwaita-icon-theme dmz-cursor-theme xdotool mousepad"
+    const val GRAPHICS_PACKAGES = "xkb-data x11-xserver-utils xterm x11-apps fonts-dejavu-core fonts-vazirmatn fonts-liberation librsvg2-common shared-mime-info adwaita-icon-theme dmz-cursor-theme xdotool mousepad"
 
     /** Starts a small test desktop (xeyes and xterm) in the Linux system, sized from [plan]. */
     fun startDesktop(ctx: Context, plan: ScalePlan) {
@@ -88,6 +88,13 @@ object LinuxSystem {
                 File(root, "root/.Xresources").writeText(
                     "Xft.dpi: ${plan.xftDpi}\nXft.antialias: 1\nXft.hinting: 1\nXft.hintstyle: hintslight\n" +
                         "Xcursor.size: ${plan.cursorSize}\n" + (if (cursorTheme != null) "Xcursor.theme: $cursorTheme\n" else "Xcursor.theme: DMZ-White\n"))
+                // Persian: a monospace font with Arabic letters (DejaVu Sans Mono) draws each letter in a fixed cell and breaks the
+                // joining. Put a Latin-only monospace font first so Persian comes from Vazirmatn.
+                File(root, "root/.config/fontconfig").mkdirs()
+                File(root, "root/.config/fontconfig/fonts.conf").writeText(
+                    "<?xml version=\"1.0\"?>\n<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">\n<fontconfig>\n" +
+                        "  <alias><family>monospace</family><prefer><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
+                        "</fontconfig>\n")
                 // a sample document with English, Persian and mathematics, to judge text on this screen
                 File(root, "root/sample.txt").writeText(
                     "LinuxPad test text\n\nThe Orlicz space L^Phi(mu) is a Banach algebra when Phi(st) <= Phi(s)Phi(t).\n" +
@@ -102,7 +109,6 @@ object LinuxSystem {
                     "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
                     "( while true; do echo \"PTR \$(xdotool getmouselocation 2>&1 | head -1)\"; sleep 0.25; done ) & " +
                     "GSETTINGS_BACKEND=memory NO_AT_BRIDGE=1 mousepad /root/sample.txt & " +
-                    "xeyes -geometry 300x180+520+100 & " +
                     "exec xterm -geometry 80x22+60+420 -fa 'DejaVu Sans Mono' -fs 11 -bg black -fg white"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
                     binds = listOf("${X11Server.runtimeDir(app).absolutePath}/.X11-unix" to "/tmp/.X11-unix"),

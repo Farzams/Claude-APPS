@@ -53,7 +53,8 @@ class MainActivity : ComponentActivity() {
 private fun Calibration(d: DisplayInfo) {
     val ctx = LocalContext.current
     val density = LocalDensity.current
-    var comfort by remember { mutableFloatStateOf(DisplayScale.DEFAULT_COMFORT) }
+    val prefs = remember { ctx.getSharedPreferences("linuxpad", android.content.Context.MODE_PRIVATE) }
+    var comfort by remember { mutableFloatStateOf(prefs.getFloat("comfort", DisplayScale.DEFAULT_COMFORT)) }
     var diagonal by remember { mutableStateOf("12.1") }
     var taps by remember { mutableIntStateOf(0) }
     var misses by remember { mutableIntStateOf(0) }
@@ -84,7 +85,7 @@ private fun Calibration(d: DisplayInfo) {
         Text("Screen ${d.widthPx} x ${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz. Android reports ${"%.0f".format(d.xdpi)} x ${"%.0f".format(d.ydpi)} dpi.")
         OutlinedTextField(diagonal, { diagonal = it }, label = { Text("Screen diagonal in inches (POCO Pad: 12.1)") }, singleLine = true)
         Text("Size: ${"%.2f".format(comfort)}  =>  Xft.dpi ${plan.xftDpi} (${"%.2f".format(plan.factor)}x)", style = MaterialTheme.typography.titleMedium)
-        Slider(comfort, { comfort = it }, valueRange = 0.4f..1f)
+        Slider(comfort, { comfort = it }, valueRange = 0.4f..1f, onValueChangeFinished = { prefs.edit().putFloat("comfort", comfort).apply() })
 
         Section("1. Desktop icon with its label (what you will see on the Linux desktop)")
         Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
