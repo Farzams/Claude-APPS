@@ -60,6 +60,7 @@ private fun MainScreen(d: DisplayInfo) {
         appendLine("device: ${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
         appendLine("screen: ${d.widthPx}x${d.heightPx} px, ${"%.0f".format(d.refreshHz)} Hz, ${"%.1f".format(plan.physicalPpi)} ppi -> Xft.dpi ${plan.xftDpi}, cursor ${plan.cursorSize}")
         appendLine("debian installed: ${LinuxSystem.installed}, xfce installed: ${LinuxSystem.hasXfce(ctx)}")
+        appendLine("xfce parts: ${LinuxSystem.xfceStatus(ctx)}")
         if (note.isNotBlank()) appendLine("note: $note")
         appendLine("x11: ${X11Server.state} ${X11Server.detail}")
         if (LinuxSystem.output.isNotBlank()) appendLine("\n--- Linux output ---\n${LinuxSystem.output.takeLast(3000)}")
@@ -104,6 +105,7 @@ private fun MainScreen(d: DisplayInfo) {
 
         Section("2. Desktop")
         val hasXfce = LinuxSystem.hasXfce(ctx)
+        Text("XFCE parts: ${LinuxSystem.xfceStatus(ctx)}", fontSize = 13.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
         Text(if (hasXfce) "XFCE desktop: installed." else "XFCE desktop: not installed yet. Install the graphics packages first, then XFCE (about 150 to 300 MB; keep the app open while it runs).")
         Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.GRAPHICS_PACKAGES}") },
             enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("Install graphics packages") }

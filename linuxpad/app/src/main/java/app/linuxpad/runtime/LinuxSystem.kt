@@ -132,6 +132,13 @@ object LinuxSystem {
     /** Whether XFCE is installed in the Linux system. */
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
 
+    /** Which parts of XFCE are present, for the screen and the report. */
+    fun xfceStatus(ctx: Context): String {
+        val r = rootDir(ctx)
+        return listOf("startxfce4", "xfce4-session", "xfwm4", "xfdesktop", "xfce4-panel", "thunar", "xfce4-terminal")
+            .joinToString("  ") { name -> (if (File(r, "usr/bin/$name").exists()) "ok " else "MISSING ") + name }
+    }
+
     /** Starts a small test desktop (xeyes and xterm) in the Linux system, sized from [plan]. */
     fun startDesktop(ctx: Context, plan: ScalePlan) {
         val app = ctx.applicationContext

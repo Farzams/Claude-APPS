@@ -19,6 +19,16 @@ android {
         versionName = "0.1.${System.getenv("APP_VERSION_CODE") ?: "0"}"
         ndk { abiFilters += listOf("arm64-v8a") }
     }
+    // One fixed signing key for every build, so a new APK installs over the old one and keeps its data (Debian, XFCE, files).
+    // It is the usual public "debug" key of a sideloaded app, not a secret.
+    signingConfigs {
+        getByName("debug") {
+            storeFile = rootProject.file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
