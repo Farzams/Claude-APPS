@@ -22,7 +22,8 @@ object X11Server {
 
     private var service: Messenger? = null
     private var connection: ServiceConnection? = null
-    private var onReady: (() -> Unit)? = null
+    private val readyCallbacks = mutableListOf<() -> Unit>()
+    private val failedCallbacks = mutableListOf<() -> Unit>()
     private var onRenderer: ((ParcelFileDescriptor) -> Unit)? = null
     private var runtimeArg = ""
     private var xkbArg = ""
@@ -32,7 +33,8 @@ object X11Server {
             X11Protocol.MSG_STATUS -> {
                 state = m.data.getString(X11Protocol.KEY_STATE) ?: "?"
                 detail = m.data.getString(X11Protocol.KEY_DETAIL) ?: ""
-                if (state == X11Protocol.STATE_READY) onReady?.invoke()
+                if (state == X11Protocol.STATE_READY) drain(readyCallbacks)
+                if (state == X11Protocol.STATE_FAILED) drain(failedCallbacks)
             }
             X11Protocol.MSG_RENDERER -> {
                 m.data.classLoader = ParcelFileDescriptor::class.java.classLoader
@@ -46,10 +48,17 @@ object X11Server {
 
     fun runtimeDir(ctx: Context) = File(ctx.filesDir, "runtime/x11")
 
-    /** Starts the server process and the X server in it; [ready] is called when the display socket exists. */
-    fun start(ctx: Context, xkbRoot: File, ready: () -> Unit) {
+    private fun drain(list: MutableList<() -> Unit>) { val copy = list.toList(); list.clear(); copy.forEach { it() } }
+
+    /** Calls [cb] when the X server is ready (at once if it already is). */
+    fun whenReady(cb: () -> Unit) { if (state == X11Protocol.STATE_READY) cb() else readyCallbacks.add(cb) }
+
+    /** Calls [cb] if the X server fails to start. */
+    fun whenFailed(cb: () -> Unit) { failedCallbacks.add(cb) }
+
+    /** Starts the server process and the X server in it. Does nothing when it is already running. */
+    fun start(ctx: Context, xkbRoot: File) {
         if (connection != null) return
-        onReady = ready
         runtimeArg = runtimeDir(ctx).absolutePath
         xkbArg = xkbRoot.absolutePath
         state = X11Protocol.STATE_STARTING; detail = "connecting to the X server process"
@@ -71,7 +80,7 @@ object X11Server {
     /** Unbinding makes the server process end itself. */
     fun stop(ctx: Context) {
         connection?.let { runCatching { ctx.applicationContext.unbindService(it) } }
-        connection = null; service = null; onReady = null; onRenderer = null
+        connection = null; service = null; readyCallbacks.clear(); failedCallbacks.clear(); onRenderer = null
         state = "stopped"; detail = ""
     }
 

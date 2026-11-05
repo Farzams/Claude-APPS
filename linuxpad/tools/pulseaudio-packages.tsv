@@ -1,0 +1,14 @@
+# termux_arch|package|version|repository_path|sha256 (official Termux packages, checksum pinned; list taken from the udroid project, MIT)
+aarch64|pulseaudio|17.0-3|pool/main/p/pulseaudio/pulseaudio_17.0-3_aarch64.deb|a5f891d4ce1110ad18e9a7bfccdc8cbd4474e65dea5b6f5ccfb921bd10420162
+aarch64|dbus|1.16.2-3|pool/main/d/dbus/dbus_1.16.2-3_aarch64.deb|1b6d5e349708414acbbb1404210e32d4e3f390890d02e162639dec1016a8657b
+aarch64|libandroid-execinfo|0.1-3|pool/main/liba/libandroid-execinfo/libandroid-execinfo_0.1-3_aarch64.deb|725dd2c6da7fc96e860fcc928e18aa9fb0e85e0bdcaf4f8ce0f0654ca6860fc2
+aarch64|libltdl|2.6.2|pool/main/libl/libltdl/libltdl_2.6.2_aarch64.deb|7b4643fe9d0ab42c0c3c8a1018640816bdb43d422f2268a5e4ea80675624f539
+aarch64|libsndfile|1.2.2-2|pool/main/libs/libsndfile/libsndfile_1.2.2-2_aarch64.deb|f71cca07c3209d6baadd9bd51ab239d66ea89b5dc10bcb86637050b9463ad8da
+aarch64|libsoxr|0.1.3-8|pool/main/libs/libsoxr/libsoxr_0.1.3-8_aarch64.deb|a1c5f66aae3b9900e9a492b43901b2b98586870c7905feb9f3c835cc9af464be
+aarch64|speexdsp|1.2.1-1|pool/main/s/speexdsp/speexdsp_1.2.1-1_aarch64.deb|21cd5d122a8d24dffb9b2926dff7059f8f42cde7c5a91f27ea5c9b4f40356be0
+aarch64|libiconv|1.18-1|pool/main/libi/libiconv/libiconv_1.18-1_aarch64.deb|b19e6f348034bb48d2a5590b5cb242769f682c476717374d134d004cc663dc84
+aarch64|libflac|1.5.0-1|pool/main/libf/libflac/libflac_1.5.0-1_aarch64.deb|d1d6fcac6fd6d15c36f34464cb01d5e2140e321d8448dfc396cd7eb1536b1f6c
+aarch64|libmp3lame|3.100-7|pool/main/libm/libmp3lame/libmp3lame_3.100-7_aarch64.deb|8c28c74209eb5c31675b4e9c1ee5193c1bf22c49ff5965612dcf9aede5d870d9
+aarch64|libogg|1.3.6-1|pool/main/libo/libogg/libogg_1.3.6-1_aarch64.deb|4f1700a532f251ad3600f44f88cd764f1f6b0542d3343391117944b47a92802d
+aarch64|libopus|1.6.1|pool/main/libo/libopus/libopus_1.6.1_aarch64.deb|005a9335ce0ec0f510bbe6e0229c901d6f920cc375fcda56461e96cef70f8ff0
+aarch64|libvorbis|1.3.7-4|pool/main/libv/libvorbis/libvorbis_1.3.7-4_aarch64.deb|6bfd70c4b570b85594bd06116b75a6f8109ec58cbc123e938b630a6eefdedf4e
