@@ -111,6 +111,9 @@ private fun MainScreen(d: DisplayInfo) {
             enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("Install graphics packages") }
         Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.XFCE_PACKAGES}") },
             enabled = LinuxSystem.installed && !LinuxSystem.running) { Text(if (hasXfce) "Reinstall XFCE desktop" else "Install XFCE desktop") }
+        OutlinedButton({
+            LinuxSystem.run(ctx, "apt-get update && for p in ${LinuxSystem.LOOK_PACKAGES}; do apt-get install -y --no-install-recommends \$p || echo \"NOT AVAILABLE: \$p\"; done")
+        }, enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("Install the nicer look (Ubuntu font, Papirus icons, Yaru theme)") }
         Button({ ctx.startActivity(android.content.Intent(ctx, DesktopActivity::class.java)) }, enabled = LinuxSystem.installed) {
             Text(if (hasXfce) "Start desktop" else "Start small test desktop (no XFCE yet)")
         }

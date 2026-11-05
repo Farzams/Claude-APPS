@@ -1,0 +1,46 @@
+diff --git a/lorie/src/main/cpp/lorie/activity.c b/lorie/src/main/cpp/lorie/activity.c
+index 6b21d46..5ddd028 100644
+--- a/lorie/src/main/cpp/lorie/activity.c
++++ b/lorie/src/main/cpp/lorie/activity.c
+@@ -427,6 +427,7 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, __unused void *reserved) {
+             {"sendTouchEvent", "(IIII)V", (void *)&sendTouchEvent},
+             {"sendKeyEvent", "(IIZI)Z", (void *)&sendKeyEvent},
+             {"sendTextEvent", "([B)V", (void *)&sendTextEvent},
++            {"setCursorHidden", "(Z)V", (void *)&rendererSetCursorHidden},
+     };
+     jclass linuxpadClass = (*env)->FindClass(env, "app/linuxpad/x11/X11DisplayView");
+     if (linuxpadClass)
+diff --git a/lorie/src/main/cpp/lorie/lorie.h b/lorie/src/main/cpp/lorie/lorie.h
+index 0d0eabb..2823dbf 100644
+--- a/lorie/src/main/cpp/lorie/lorie.h
++++ b/lorie/src/main/cpp/lorie/lorie.h
+@@ -42,6 +42,7 @@ int rendererGetWakeupCondFd(void);
+ 
+ __unused void rendererInit(JNIEnv* env);
+ __unused void rendererSetFiltering(JNIEnv* env, jobject self, jint filtering);
++__unused void rendererSetCursorHidden(JNIEnv *env, jobject self, jboolean hidden);   // LinuxPad
+ __unused void rendererTestCapabilities(int* legacy_drawing);
+ __unused void rendererSetWindow(JNIEnv *env, jobject thiz, jobject sfc);
+ __unused void rendererSetViewport(JNIEnv *env, jclass clazz, int x, int y, int w, int h, int ew, int eh);
+diff --git a/lorie/src/main/cpp/lorie/renderer.c b/lorie/src/main/cpp/lorie/renderer.c
+index 6e160da..e1a2a0d 100644
+--- a/lorie/src/main/cpp/lorie/renderer.c
++++ b/lorie/src/main/cpp/lorie/renderer.c
+@@ -1114,10 +1114,16 @@ static void drawRegion(GLuint id, float x0, float y0, float x1, float y1, float
+     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4); checkGlError();
+ }
+ 
++// LinuxPad: touch input draws its own pointer (a ring in the Android view), so the X cursor can be hidden while a finger is used.
++static volatile int linuxpadCursorHidden = 0;
++void rendererSetCursorHidden(__unused JNIEnv *env, __unused jobject self, jboolean hidden) {
++    linuxpadCursorHidden = hidden ? 1 : 0;
++}
++
+ __unused static void drawCursor(float displayWidth, float displayHeight, float sourceLeft, float sourceTop) {
+     float x, y, w, h;
+ 
+-    if (!state->cursor.width || !state->cursor.height)
++    if (!state->cursor.width || !state->cursor.height || linuxpadCursorHidden)
+         return;
+ 
+     x = 2.f * ((float) state->cursor.x - sourceLeft - (float) state->cursor.xhot) / displayWidth - 1.f;

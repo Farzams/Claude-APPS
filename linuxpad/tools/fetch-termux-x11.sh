@@ -15,13 +15,17 @@ else
     git -C "$DEST" checkout -q FETCH_HEAD
 fi
 git -C "$DEST" submodule update --init --recursive --jobs 8 --depth 1
-# LinuxPad's patches (see patches/termux-x11); idempotent: skip the ones already applied
-for patch in "$ROOT"/patches/termux-x11/*.patch; do
-    if git -C "$DEST" apply --check -R "$patch" 2>/dev/null; then
-        echo "already applied: $(basename "$patch")"
-    else
+# LinuxPad's patches (see patches/termux-x11), applied in file-name order. A marker holds the hash of the applied set,
+# so running the script again on a patched tree does nothing.
+PATCHSET="$(cat "$ROOT"/patches/termux-x11/*.patch | sha256sum | cut -d' ' -f1)"
+if [[ -f "$DEST/.linuxpad-patched" ]] && [[ "$(cat "$DEST/.linuxpad-patched")" == "$PATCHSET" ]]; then
+    echo "LinuxPad patches already applied"
+else
+    git -C "$DEST" checkout -q -- . 2>/dev/null || true       # start from the pristine sources
+    for patch in "$ROOT"/patches/termux-x11/*.patch; do
         git -C "$DEST" apply "$patch"
         echo "applied: $(basename "$patch")"
-    fi
-done
+    done
+    echo "$PATCHSET" > "$DEST/.linuxpad-patched"
+fi
 echo "Termux:X11 ready at $DEST"

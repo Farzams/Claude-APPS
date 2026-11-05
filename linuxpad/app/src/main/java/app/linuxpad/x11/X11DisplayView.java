@@ -46,6 +46,22 @@ public class X11DisplayView extends SurfaceView {
     public volatile int moves, downs, ups;
     public volatile float lastX, lastY;
 
+    /** Draws the pointer for touch input (a ring around the finger) in the Android view above the desktop. */
+    public interface PointerListener {
+        void onTouchPointer(float x, float y, boolean touching, boolean pressed);
+        void onMouseUsed();
+    }
+    private PointerListener pointerListener;
+    private boolean touchCursor;   // true while the X arrow is hidden because a finger is the pointer
+    public void setPointerListener(PointerListener l) { pointerListener = l; }
+
+    private void useTouchPointer(boolean touch) {
+        if (touch == touchCursor) return;
+        touchCursor = touch;
+        setCursorHidden(touch);                       // fingers get the ring, a real mouse gets the arrow
+        if (!touch && pointerListener != null) pointerListener.onMouseUsed();
+    }
+
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final float slop;
     // one finger
@@ -70,6 +86,7 @@ public class X11DisplayView extends SurfaceView {
     static native void connect(int fd);
     static native boolean connected();
     static native void sendWindowChange(int width, int height, int framerate, String name);
+    static native void setCursorHidden(boolean hidden);
     native void sendMouseEvent(float x, float y, int whichButton, boolean buttonDown, boolean relative);
     native void sendTouchEvent(int action, int id, int x, int y);
     native boolean sendKeyEvent(int scanCode, int keyCode, boolean keyDown, int unused);
@@ -161,6 +178,7 @@ public class X11DisplayView extends SurfaceView {
 
     /** A real mouse: its buttons arrive as touch-style events. */
     private boolean mouse(MotionEvent e) {
+        useTouchPointer(false);
         movePointer(e.getX(), e.getY());
         int bs = e.getButtonState();
         int mask = ((bs & MotionEvent.BUTTON_PRIMARY) != 0 ? 1 : 0) | ((bs & MotionEvent.BUTTON_TERTIARY) != 0 ? 2 : 0) | ((bs & MotionEvent.BUTTON_SECONDARY) != 0 ? 4 : 0);
@@ -180,6 +198,7 @@ public class X11DisplayView extends SurfaceView {
         if (e.getToolType(0) == MotionEvent.TOOL_TYPE_MOUSE) {
             switch (e.getActionMasked()) {
                 case MotionEvent.ACTION_HOVER_MOVE:
+                    useTouchPointer(false);
                     movePointer(e.getX(), e.getY());
                     return true;
                 case MotionEvent.ACTION_SCROLL: {
@@ -197,8 +216,13 @@ public class X11DisplayView extends SurfaceView {
 
     /** Fingers (and a stylus). */
     private boolean finger(MotionEvent e) {
+        useTouchPointer(true);
         int act = e.getActionMasked();
         int n = e.getPointerCount();
+        if (pointerListener != null) {
+            boolean ending = act == MotionEvent.ACTION_UP || act == MotionEvent.ACTION_CANCEL;
+            pointerListener.onTouchPointer(centerX(e), centerY(e), !ending, dragging || longFired);
+        }
         switch (act) {
             case MotionEvent.ACTION_DOWN: {
                 fingerDown = true; dragging = false; longFired = false; multi = false; moved = false;

@@ -129,6 +129,9 @@ object LinuxSystem {
     /** The XFCE desktop (about 150 to 300 MB). dbus-x11 gives the session its message bus. */
     const val XFCE_PACKAGES = "xfce4 xfce4-terminal xfce4-notifyd dbus-x11 xdg-utils"
 
+    /** Nicer fonts and icons: the Ubuntu font, Papirus icons and the Yaru theme (the Ubuntu look, on Debian). Each is tried on its own. */
+    const val LOOK_PACKAGES = "fonts-ubuntu papirus-icon-theme yaru-theme-gtk"
+
     /** Whether XFCE is installed in the Linux system. */
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
 
@@ -158,7 +161,9 @@ object LinuxSystem {
                 File(root, "root/.config/fontconfig").mkdirs()
                 File(root, "root/.config/fontconfig/fonts.conf").writeText(
                     "<?xml version=\"1.0\"?>\n<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">\n<fontconfig>\n" +
-                        "  <alias><family>monospace</family><prefer><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
+                        // nicer Latin text (Ubuntu font when installed) with Vazirmatn for Persian
+                        "  <alias><family>sans-serif</family><prefer><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
+                        "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 // a sample document with English, Persian and mathematics, to judge text on this screen
                 File(root, "root/sample.txt").writeText(
@@ -219,6 +224,9 @@ object LinuxSystem {
         val desktopIcon = logical((48 * plan.factor).roundToInt())
         val dock = logical(((48 * plan.factor) * 1.25f).roundToInt())   // the bottom dock: a quarter larger than the desktop icons
         val panel = logical(plan.panelSize)
+        val themeName = if (File(root, "usr/share/themes/Yaru/gtk-3.0").isDirectory) "Yaru" else "Adwaita"
+        val iconName = if (File(root, "usr/share/icons/Papirus").isDirectory) "Papirus" else "Adwaita"
+        val uiFont = if (File(root, "usr/share/fonts/truetype/ubuntu").isDirectory) "Ubuntu 11" else "Sans 10"
         File(xml, "xsettings.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Xft" type="empty">
@@ -233,10 +241,11 @@ object LinuxSystem {
   <property name="Gtk" type="empty">
     <property name="CursorThemeName" type="string" value="${CursorTheme.NAME}"/>
     <property name="CursorThemeSize" type="int" value="${plan.cursorSize / scale}"/>
+    <property name="FontName" type="string" value="$uiFont"/>
   </property>
   <property name="Net" type="empty">
-    <property name="ThemeName" type="string" value="Adwaita"/>
-    <property name="IconThemeName" type="string" value="Adwaita"/>
+    <property name="ThemeName" type="string" value="$themeName"/>
+    <property name="IconThemeName" type="string" value="$iconName"/>
   </property>
 </channel>
 """)
@@ -247,6 +256,12 @@ object LinuxSystem {
     <property name="use_compositing" type="bool" value="false"/>
   </property>
 </channel>
+""")
+        // Roomier menus for touch (sizes are logical pixels, doubled by the window scale)
+        File(root, "root/.config/gtk-3.0").mkdirs()
+        File(root, "root/.config/gtk-3.0/gtk.css").writeText("""menu menuitem { min-height: 30px; padding: 4px 16px; }
+menu menuitem label { font-size: 112%; }
+menubar > menuitem { min-height: 28px; padding: 2px 14px; }
 """)
         File(root, "root/.config/gtk-3.0/settings.ini").delete()   // the fixed icon sizes of the first try; window scaling replaces them
         // The panel and the desktop icons are set once the session is running (their settings need the session bus)

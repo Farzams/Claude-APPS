@@ -44,8 +44,14 @@ class DesktopActivity : Activity() {
             setBackgroundColor(0x99000000.toInt()); setOnClickListener { view.toggleKeyboard() }
         }
         val buttonPx = (56 * resources.displayMetrics.density).toInt()
+        val ring = TouchRingView(this)
+        view.setPointerListener(object : X11DisplayView.PointerListener {
+            override fun onTouchPointer(x: Float, y: Float, touching: Boolean, pressed: Boolean) = ring.update(x, y, touching, pressed)
+            override fun onMouseUsed() = ring.clear()
+        })
         setContentView(FrameLayout(this).apply {
             addView(view)
+            addView(ring, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
             addView(info, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END))
             addView(keyboard, FrameLayout.LayoutParams(buttonPx, buttonPx, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, 24, 24) })
         })
