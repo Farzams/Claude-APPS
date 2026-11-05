@@ -38,9 +38,16 @@ class DesktopActivity : Activity() {
             setTextColor(Color.WHITE); setBackgroundColor(0xAA000000.toInt()); textSize = 13f
             setPadding(16, 8, 16, 8); typeface = android.graphics.Typeface.MONOSPACE
         }
+        // a keyboard button for touch use (three fingers tapping does the same)
+        val keyboard = TextView(this).apply {
+            text = "\u2328"; textSize = 26f; setTextColor(Color.WHITE); gravity = Gravity.CENTER
+            setBackgroundColor(0x99000000.toInt()); setOnClickListener { view.toggleKeyboard() }
+        }
+        val buttonPx = (56 * resources.displayMetrics.density).toInt()
         setContentView(FrameLayout(this).apply {
             addView(view)
             addView(info, FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.TOP or Gravity.END))
+            addView(keyboard, FrameLayout.LayoutParams(buttonPx, buttonPx, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, 24, 24) })
         })
         val ui = Handler(Looper.getMainLooper())
         ui.post(object : Runnable {
