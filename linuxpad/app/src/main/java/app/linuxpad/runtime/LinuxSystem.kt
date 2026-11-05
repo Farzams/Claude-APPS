@@ -371,9 +371,9 @@ xfconf-query -c xfce4-desktop -p /desktop-icons/use-custom-font-size -n -t bool 
 xfconf-query -c xfce4-desktop -p /desktop-icons/font-size -n -t double -s 9
 # the default wallpaper is set once; after that the wallpaper is the user's choice
 if [ ! -f /root/.config/linuxpad/wallpaper-set ] && [ -f /usr/share/backgrounds/linuxpad.jpg ]; then
-  for i in `seq 1 20`; do imgs=`xfconf-query -c xfce4-desktop -l | grep 'last-image$'`; [ -n "$imgs" ] && break; sleep 1; done
-  for p in $imgs; do xfconf-query -c xfce4-desktop -p $p -s /usr/share/backgrounds/linuxpad.jpg; done
-  for p in `xfconf-query -c xfce4-desktop -l | grep 'image-style$'`; do xfconf-query -c xfce4-desktop -p $p -s 5; done
+  for i in `seq 1 20`; do imgs=`xfconf-query -c xfce4-desktop -l | grep 'last-image$'`; [ -n "${'$'}imgs" ] && break; sleep 1; done
+  for p in ${'$'}imgs; do xfconf-query -c xfce4-desktop -p ${'$'}p -s /usr/share/backgrounds/linuxpad.jpg; done
+  for p in `xfconf-query -c xfce4-desktop -l | grep 'image-style$'`; do xfconf-query -c xfce4-desktop -p ${'$'}p -s 5; done
   mkdir -p /root/.config/linuxpad && touch /root/.config/linuxpad/wallpaper-set
 fi
 """)
