@@ -49,3 +49,23 @@ if [ ! -f "$M/wallpaper-v2" ] && [ -f "$IMG" ]; then
   first=`echo $mons | cut -d' ' -f1`
   [ "`xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor$first/workspace0/last-image 2>/dev/null`" = "$IMG" ] && touch "$M/wallpaper-v2"
 fi
+
+# once: a small indicator in the top panel with memory, heat and battery (the app writes /root/.linuxpad/stats.txt every few seconds)
+if [ ! -f "$M/genmon-v1" ] && dpkg -s xfce4-genmon-plugin >/dev/null 2>&1; then
+  sleep 2
+  ids=`xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids 2>/dev/null | grep -E '^[0-9]+$'`
+  args=""; put=0
+  for id in $ids; do
+    t=`xfconf-query -c xfce4-panel -p /plugins/plugin-$id 2>/dev/null`
+    if [ "$t" = "clock" ] && [ $put = 0 ]; then args="$args -t int -s 90"; put=1; fi
+    args="$args -t int -s $id"
+  done
+  [ $put = 0 ] && args="$args -t int -s 90"
+  xfconf-query -c xfce4-panel -p /plugins/plugin-90 -n -t string -s genmon
+  xfconf-query -c xfce4-panel -p /plugins/plugin-90/command -n -t string -s "cat /root/.linuxpad/stats.txt"
+  xfconf-query -c xfce4-panel -p /plugins/plugin-90/update-period -n -t int -s 3000
+  xfconf-query -c xfce4-panel -p /plugins/plugin-90/use-label -n -t bool -s false
+  xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids --force-array $args
+  (xfce4-panel -r >/dev/null 2>&1 &)
+  touch "$M/genmon-v1"
+fi

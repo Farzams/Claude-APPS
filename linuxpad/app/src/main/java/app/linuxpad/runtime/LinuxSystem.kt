@@ -14,6 +14,7 @@ import app.linuxpad.audio.AudioServer
 import app.linuxpad.x11.X11Server
 import android.system.Os
 import java.io.File
+import kotlin.concurrent.thread
 import java.nio.file.Files
 import kotlin.math.roundToInt
 
@@ -137,7 +138,7 @@ object LinuxSystem {
     const val XFCE_PACKAGES = "xfce4 xfce4-terminal xfce4-notifyd dbus-x11 xdg-utils mousepad"
 
     /** Nicer fonts and icons: the Ubuntu font, Papirus icons and the Yaru theme (the Ubuntu look, on Debian). Each is tried on its own. */
-    const val LOOK_PACKAGES = "fonts-ubuntu papirus-icon-theme yaru-theme-gtk"
+    const val LOOK_PACKAGES = "fonts-ubuntu papirus-icon-theme yaru-theme-gtk xfce4-genmon-plugin"
 
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
@@ -174,6 +175,26 @@ object LinuxSystem {
         X11Server.start(app, File(root(app), "usr/share/X11/xkb"))
         AudioServer.start(app)
         X11Server.whenReady { launchDesktop(app, plan, id) }
+        startStatsWriter(app, id)
+    }
+
+    /** Writes a short line with memory, battery and heat into the Linux system every few seconds; the panel indicator shows it. */
+    private fun startStatsWriter(app: Context, id: Int) {
+        val file = File(root(app), "root/.linuxpad/stats.txt").apply { parentFile?.mkdirs() }
+        thread(name = "linuxpad-stats", isDaemon = true) {
+            while (id == sessionId && session != "stopped") {
+                runCatching {
+                    val s = DeviceStats.read(app)
+                    val parts = mutableListOf("RAM ${s.memUsed * 100 / s.memTotal}%")
+                    (s.cpuTempC ?: s.batteryTempC)?.let { parts += "%.0f\u00B0C".format(it) }
+                    s.batteryPercent?.let { parts += "Bat $it%" }
+                    val tip = "Memory ${s.memUsed / 1048576} of ${s.memTotal / 1048576} MB\nHeat: ${s.thermal}" +
+                        (s.batteryTempC?.let { "\nBattery %.1f \u00B0C".format(it) } ?: "")
+                    file.writeText("<txt>${parts.joinToString("  ")}</txt>\n<tool>$tip</tool>\n")
+                }
+                Thread.sleep(3000)
+            }
+        }
     }
 
     fun stopSession(ctx: Context) {
