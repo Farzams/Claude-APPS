@@ -10,7 +10,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import app.linuxpad.display.ScalePlan
 import app.linuxpad.x11.X11Server
+import android.system.Os
 import java.io.File
+import java.nio.file.Files
 import kotlin.math.roundToInt
 
 /** Install state and command output of the Debian system. Lives with the process, not the screen. */
@@ -46,9 +48,27 @@ object LinuxSystem {
         }
     }
 
+    /** Deletes the whole Linux system: every package and every file in it. A folder without write permission would stop a plain delete, so each one is opened first. */
     fun remove(ctx: Context) {
         val app = ctx.applicationContext
-        scope.launch { root(app).deleteRecursively(); refresh(app) }
+        stopDesktop()
+        scope.launch {
+            wipe(root(app))
+            File(app.filesDir, "runtime").deleteRecursively()
+            File(app.cacheDir, "dl").deleteRecursively()
+            packages = emptyList()
+            output = ""
+            refresh(app)
+        }
+    }
+
+    private fun wipe(f: File) {
+        if (Files.isSymbolicLink(f.toPath())) { f.delete(); return }
+        if (f.isDirectory) {
+            runCatching { Os.chmod(f.path, 0x1C0) }   // rwx for the owner
+            f.listFiles()?.forEach { wipe(it) }
+        }
+        f.delete()
     }
 
     fun run(ctx: Context, command: String) {

@@ -135,6 +135,7 @@ private fun Calibration(d: DisplayInfo) {
 
         Section("7. Debian (installed inside the app)")
         LaunchedEffect(Unit) { LinuxSystem.refresh(ctx) }
+        var confirmDeleteAll by remember { mutableStateOf(false) }
         val prog = LinuxSystem.progress
         when {
             prog != null -> {
@@ -148,10 +149,19 @@ private fun Calibration(d: DisplayInfo) {
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Button({ LinuxSystem.run(ctx, cmd) }, enabled = !LinuxSystem.running) { Text("Run") }
                     Button({ cmd = "apt-get update && apt-get install -y --no-install-recommends fastfetch" }, enabled = !LinuxSystem.running) { Text("apt test") }
-                    OutlinedButton({ LinuxSystem.remove(ctx) }, enabled = !LinuxSystem.running) { Text("Delete Debian") }
+                    OutlinedButton({ confirmDeleteAll = true }, enabled = !LinuxSystem.running) { Text("Delete Debian and everything in it") }
                 }
             }
             else -> Button({ LinuxSystem.install(ctx) }) { Text("Download and install Debian 13 (about 30 MB)") }
+        }
+        if (confirmDeleteAll) {
+            AlertDialog(
+                onDismissRequest = { confirmDeleteAll = false },
+                title = { Text("Delete Debian and everything in it?") },
+                text = { Text("Every installed package and every file you made inside Debian (the folder /root included) will be erased. This cannot be undone. Download and install Debian again afterwards if you want it back.") },
+                confirmButton = { TextButton({ confirmDeleteAll = false; LinuxSystem.remove(ctx) }) { Text("Delete everything", color = MaterialTheme.colorScheme.error) } },
+                dismissButton = { TextButton({ confirmDeleteAll = false }) { Text("Cancel") } },
+            )
         }
         LinuxSystem.error?.let { Text("Error: $it", color = MaterialTheme.colorScheme.error) }
         if (LinuxSystem.output.isNotBlank()) Text(LinuxSystem.output, fontSize = 13.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
@@ -182,6 +192,12 @@ private fun Calibration(d: DisplayInfo) {
                 Text(if (LinuxSystem.packagesLoading) "Reading..." else "Show my packages")
             }
             OutlinedButton({ LinuxSystem.run(ctx, "apt-get clean; du -shx /usr /var /opt /root 2>/dev/null") }, enabled = pkgReady) { Text("Clean download cache") }
+        }
+        if (LinuxSystem.packages.isNotEmpty()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                OutlinedButton({ selected.clear(); selected.addAll(LinuxSystem.packages.map { it.name }) }) { Text("Select all") }
+                OutlinedButton({ selected.clear() }) { Text("Select none") }
+            }
         }
         for (p in LinuxSystem.packages) {
             val on = p.name in selected
