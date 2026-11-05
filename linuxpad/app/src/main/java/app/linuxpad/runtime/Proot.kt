@@ -29,18 +29,32 @@ object Proot {
         }
     }
 
-    /** Runs [cmd] inside the Linux system at [rootfs] as (fake) root and streams its output. Returns the exit code. */
-    fun exec(ctx: Context, rootfs: File, cmd: List<String>, onLine: (String) -> Unit): Int {
-        val args = listOf(
-            "--kill-on-exit", "--link2symlink", "-0", "-r", rootfs.path,
-            "-b", "/dev", "-b", "/proc", "-b", "/sys", "-w", "/root",
-            "/usr/bin/env", "-i", "HOME=/root", "USER=root", "LANG=C.UTF-8", "TERM=xterm-256color",
-            "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
-        ) + cmd
+    /** The proot command line that runs [cmd] inside the Linux system at [rootfs] as (fake) root. */
+    private fun guestCommand(ctx: Context, rootfs: File, cmd: List<String>, binds: List<Pair<String, String>>, env: Map<String, String>): List<String> {
+        val bindArgs = (listOf("/dev" to "/dev", "/proc" to "/proc", "/sys" to "/sys") + binds).flatMap { (from, to) -> listOf("-b", "$from:$to") }
+        val envArgs = mapOf(
+            "HOME" to "/root", "USER" to "root", "LANG" to "C.UTF-8", "TERM" to "xterm-256color",
+            "DEBIAN_FRONTEND" to "noninteractive",
+            "PATH" to "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        ).plus(env).map { (k, v) -> "$k=$v" }
+        return listOf(binary(ctx).path, "--kill-on-exit", "--link2symlink", "-0", "-r", rootfs.path) + bindArgs +
+            listOf("-w", "/root", "/usr/bin/env", "-i") + envArgs + cmd
+    }
+
+    private fun builder(ctx: Context, command: List<String>): ProcessBuilder {
         val tmp = File(ctx.cacheDir, "proot-tmp").apply { mkdirs() }
-        val pb = ProcessBuilder(listOf(binary(ctx).path) + args).redirectErrorStream(true)
+        val pb = ProcessBuilder(command).redirectErrorStream(true)
         pb.environment().apply { put("PROOT_LOADER", loader(ctx).path); put("PROOT_TMP_DIR", tmp.path) }
-        val p = pb.start()
+        return pb
+    }
+
+    /** Starts [cmd] inside the Linux system and returns the running process (output on its inputStream). */
+    fun spawn(ctx: Context, rootfs: File, cmd: List<String>, binds: List<Pair<String, String>> = emptyList(), env: Map<String, String> = emptyMap()): Process =
+        builder(ctx, guestCommand(ctx, rootfs, cmd, binds, env)).start()
+
+    /** Runs [cmd] inside the Linux system and streams its output. Returns the exit code. */
+    fun exec(ctx: Context, rootfs: File, cmd: List<String>, onLine: (String) -> Unit): Int {
+        val p = spawn(ctx, rootfs, cmd)
         p.inputStream.bufferedReader().forEachLine(onLine)
         return p.waitFor()
     }

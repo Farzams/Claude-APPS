@@ -15,4 +15,13 @@ else
     git -C "$DEST" checkout -q FETCH_HEAD
 fi
 git -C "$DEST" submodule update --init --recursive --jobs 8 --depth 1
+# LinuxPad's patches (see patches/termux-x11); idempotent: skip the ones already applied
+for patch in "$ROOT"/patches/termux-x11/*.patch; do
+    if git -C "$DEST" apply --check -R "$patch" 2>/dev/null; then
+        echo "already applied: $(basename "$patch")"
+    else
+        git -C "$DEST" apply "$patch"
+        echo "applied: $(basename "$patch")"
+    fi
+done
 echo "Termux:X11 ready at $DEST"

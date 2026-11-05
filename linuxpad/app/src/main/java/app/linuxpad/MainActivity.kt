@@ -39,18 +39,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import app.linuxpad.display.DisplayInfo
 import app.linuxpad.display.DisplayScale
+import app.linuxpad.display.Screens
+import app.linuxpad.x11.X11Server
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent { MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) { Surface { Calibration(readDisplay(this)) } } }
+        setContent { MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()) { Surface { Calibration(Screens.read(this)) } } }
     }
-}
-
-private fun readDisplay(a: Activity): DisplayInfo {
-    val b = a.getSystemService(WindowManager::class.java).maximumWindowMetrics.bounds
-    val dm = a.resources.displayMetrics
-    return DisplayInfo(b.width(), b.height(), dm.xdpi, dm.ydpi, dm.densityDpi, a.display?.refreshRate ?: 60f)
 }
 
 @Composable
@@ -79,6 +75,7 @@ private fun Calibration(d: DisplayInfo) {
         appendLine("touch test: $taps hits, $misses misses")
         if (note.isNotBlank()) appendLine("note: $note")
         if (selfTest.isNotBlank()) appendLine("\n--- PRoot self-test ---\n$selfTest")
+        appendLine("x11: ${X11Server.state} ${X11Server.detail}")
         if (LinuxSystem.output.isNotBlank()) appendLine("\n--- Debian ---\n${LinuxSystem.output.takeLast(3000)}")
         LinuxSystem.error?.let { appendLine("install error: $it") }
     }
@@ -157,7 +154,17 @@ private fun Calibration(d: DisplayInfo) {
         LinuxSystem.error?.let { Text("Error: $it", color = MaterialTheme.colorScheme.error) }
         if (LinuxSystem.output.isNotBlank()) Text(LinuxSystem.output, fontSize = 13.sp, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace)
 
-        Section("8. Send me the result")
+        Section("8. Graphics test (first picture)")
+        Text("Step 1 once, with the Debian above installed. Step 2 opens a full-screen desktop with xeyes and a terminal; use the system back gesture to leave.")
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Button({ LinuxSystem.run(ctx, "apt-get update && apt-get install -y --no-install-recommends ${LinuxSystem.GRAPHICS_PACKAGES}") },
+                enabled = LinuxSystem.installed && !LinuxSystem.running) { Text("1. Install graphics packages") }
+            Button({ ctx.startActivity(android.content.Intent(ctx, DesktopActivity::class.java)) },
+                enabled = LinuxSystem.installed) { Text("2. Start desktop test") }
+        }
+        if (X11Server.state != "stopped") Text("X server: ${X11Server.state} ${X11Server.detail}")
+
+        Section("9. Send me the result")
         OutlinedTextField(note, { note = it }, label = { Text("Your note (too small? too big? blurry?)") }, modifier = Modifier.fillMaxWidth())
         Text(report, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
         Button({

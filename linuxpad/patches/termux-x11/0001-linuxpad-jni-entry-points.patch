@@ -1,0 +1,20 @@
+diff --git a/lorie/src/main/cpp/lorie/cmdentrypoint.c b/lorie/src/main/cpp/lorie/cmdentrypoint.c
+index 5716127..114b721 100644
+--- a/lorie/src/main/cpp/lorie/cmdentrypoint.c
++++ b/lorie/src/main/cpp/lorie/cmdentrypoint.c
+@@ -596,3 +596,15 @@ void abort(void) {
+ void exit(int code) {
+     _exit(code);
+ }
++
++// LinuxPad: the same native entry points under LinuxPad's own Java class, so the app does not need
++// Termux:X11's CmdEntryPoint (whose static initializer expects to run from a shell via app_process).
++JNIEXPORT jboolean JNICALL
++Java_app_linuxpad_x11_X11NativeBridge_start(JNIEnv *env, jclass cls, jobjectArray args) {
++    return Java_com_termux_x11_CmdEntryPoint_start(env, cls, args);
++}
++
++JNIEXPORT jobject JNICALL
++Java_app_linuxpad_x11_X11NativeBridge_getXConnection(JNIEnv *env, jclass cls) {
++    return Java_com_termux_x11_CmdEntryPoint_getXConnection(env, (jobject) cls);
++}

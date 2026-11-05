@@ -1,0 +1,41 @@
+diff --git a/lorie/src/main/cpp/lorie/activity.c b/lorie/src/main/cpp/lorie/activity.c
+index 982d047..6b21d46 100644
+--- a/lorie/src/main/cpp/lorie/activity.c
++++ b/lorie/src/main/cpp/lorie/activity.c
+@@ -127,6 +127,9 @@ static void nativeInit(JNIEnv *env, jobject thiz) {
+ 
+     (*env)->GetJavaVM(env, &vm);
+     (*vm)->AttachCurrentThread(vm, &guienv, NULL);
++    // LinuxPad: the display view can be created again (rotation, returning to the app); do not leak the old one
++    if (globalThiz)
++        (*guienv)->DeleteGlobalRef(guienv, globalThiz);
+     globalThiz = (*guienv)->NewGlobalRef(env, thiz);
+     connect_(NULL, NULL, -1);
+ }
+@@ -411,6 +414,26 @@ JNIEXPORT jint JNI_OnLoad(JavaVM *vm, __unused void *reserved) {
+     jclass cls = (*env)->FindClass(env, "com/termux/x11/LorieView");
+     (*env)->RegisterNatives(env, cls, methods, sizeof(methods)/sizeof(methods[0]));
+ 
++    // LinuxPad: the same renderer and input functions on LinuxPad's own display view
++    static JNINativeMethod linuxpadMethods[] = {
++            {"nativeInit", "()V", (void *)&nativeInit},
++            {"surfaceChanged", "(Landroid/view/Surface;)V", (void *)&rendererSetWindow},
++            {"setViewport", "(IIIIII)V", (void *)&rendererSetViewport},
++            {"setFiltering", "(I)V", (void *)&rendererSetFiltering},
++            {"connect", "(I)V", (void *)&connect_},
++            {"connected", "()Z", (void *)&connected},
++            {"sendWindowChange", "(IIILjava/lang/String;)V", (void *)&sendWindowChange},
++            {"sendMouseEvent", "(FFIZZ)V", (void *)&sendMouseEvent},
++            {"sendTouchEvent", "(IIII)V", (void *)&sendTouchEvent},
++            {"sendKeyEvent", "(IIZI)Z", (void *)&sendKeyEvent},
++            {"sendTextEvent", "([B)V", (void *)&sendTextEvent},
++    };
++    jclass linuxpadClass = (*env)->FindClass(env, "app/linuxpad/x11/X11DisplayView");
++    if (linuxpadClass)
++        (*env)->RegisterNatives(env, linuxpadClass, linuxpadMethods, sizeof(linuxpadMethods)/sizeof(linuxpadMethods[0]));
++    else
++        (*env)->ExceptionClear(env);   // e.g. the X server process: only the server side is used there
++
+     return JNI_VERSION_1_6;
+ }
+ 
