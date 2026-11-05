@@ -81,7 +81,12 @@ object LinuxSystem {
                 File(root, "root/.Xresources").writeText(
                     "Xft.dpi: ${plan.xftDpi}\nXft.antialias: 1\nXft.hinting: 1\nXft.hintstyle: hintslight\n" +
                         "Xcursor.size: ${plan.cursorSize}\nXcursor.theme: DMZ-White\n")
-                val script = "export DISPLAY=:0; xrdb -merge /root/.Xresources; " +
+                // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
+                // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
+                val script = "export DISPLAY=:0; " +
+                    "xrdb -nocpp -merge /root/.Xresources || echo 'xrdb failed'; " +
+                    "echo \"Xft.dpi in the server: \$(xrdb -query | grep -i '^Xft.dpi')\"; " +
+                    "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
                     "xeyes -geometry 420x260+60+100 & " +
                     "exec xterm -geometry 80x22+60+420 -fa 'DejaVu Sans Mono' -fs 11 -bg black -fg white"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
