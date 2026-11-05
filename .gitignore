@@ -19,3 +19,6 @@ android/app/src/latex/assets/tex/*
 android/djvu/src/main/cpp/djvulibre/
 android/djvu/.cxx/
 android/djvu/build/
+
+# proot is built by CI (tools/build-proot.sh), not stored in git
+linuxpad/app/src/main/jniLibs/

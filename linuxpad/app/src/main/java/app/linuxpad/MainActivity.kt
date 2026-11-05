@@ -19,6 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import app.linuxpad.runtime.Proot
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,6 +61,8 @@ private fun Calibration(d: DisplayInfo) {
     var taps by remember { mutableIntStateOf(0) }
     var misses by remember { mutableIntStateOf(0) }
     var note by remember { mutableStateOf("") }
+    var selfTest by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
     val plan = DisplayScale.plan(d, comfort, diagonal.toFloatOrNull())
     fun px(v: Int): androidx.compose.ui.unit.Dp = with(density) { v.toDp() }
     // A Linux font of N points is N * dpi / 72 pixels tall
@@ -71,6 +77,7 @@ private fun Calibration(d: DisplayInfo) {
         appendLine("titlebar ${plan.titlebarPx}, row ${plan.rowPx}, cursor ${plan.cursorSize}, panel ${plan.panelSize}, icon ${plan.iconSize}, min touch ${plan.minTouchPx} px")
         appendLine("touch test: $taps hits, $misses misses")
         if (note.isNotBlank()) appendLine("note: $note")
+        if (selfTest.isNotBlank()) appendLine("\n--- PRoot self-test ---\n$selfTest")
     }
     Column(Modifier.fillMaxSize().systemBarsPadding().verticalScroll(rememberScrollState()).padding(24.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
         Text("LinuxPad: display calibration", style = MaterialTheme.typography.headlineMedium)
@@ -120,7 +127,11 @@ private fun Calibration(d: DisplayInfo) {
         }
         Text("Hits: $taps    Misses: $misses")
 
-        Section("6. Send me the result")
+        Section("6. PRoot self-test (runs the Linux sandbox engine on this device)")
+        Button({ selfTest = "running..."; scope.launch { selfTest = withContext(Dispatchers.IO) { Proot.selfTest(ctx) } } }) { Text("Run PRoot self-test") }
+        if (selfTest.isNotBlank()) Text(selfTest, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
+
+        Section("7. Send me the result")
         OutlinedTextField(note, { note = it }, label = { Text("Your note (too small? too big? blurry?)") }, modifier = Modifier.fillMaxWidth())
         Text(report, fontSize = 13.sp, style = MaterialTheme.typography.bodySmall)
         Button({
