@@ -72,7 +72,7 @@ object LinuxSystem {
     var pointerText by mutableStateOf(""); private set
 
     /** Packages the graphics test needs: keyboard data for the X server, a terminal, test clients, fonts and a cursor theme. */
-    const val GRAPHICS_PACKAGES = "xkb-data x11-xserver-utils xterm x11-apps fonts-dejavu-core dmz-cursor-theme xdotool"
+    const val GRAPHICS_PACKAGES = "xkb-data x11-xserver-utils xterm x11-apps fonts-dejavu-core fonts-vazirmatn adwaita-icon-theme dmz-cursor-theme xdotool mousepad"
 
     /** Starts a small test desktop (xeyes and xterm) in the Linux system, sized from [plan]. */
     fun startDesktop(ctx: Context, plan: ScalePlan) {
@@ -81,9 +81,19 @@ object LinuxSystem {
         scope.launch {
             try {
                 val root = root(app)
+                // the cursor theme at exactly the size chosen for this screen (installed themes only ship fixed sizes)
+                val cursorResult = runCatching { CursorTheme.ensure(root, plan.cursorSize) }
+                val cursorTheme = cursorResult.getOrNull()
+                val cursorNote = "cursor theme: " + (cursorTheme?.let { "$it at ${plan.cursorSize} px" } ?: "not built (${cursorResult.exceptionOrNull()?.message ?: "no Adwaita/DMZ theme installed"})")
                 File(root, "root/.Xresources").writeText(
                     "Xft.dpi: ${plan.xftDpi}\nXft.antialias: 1\nXft.hinting: 1\nXft.hintstyle: hintslight\n" +
-                        "Xcursor.size: ${plan.cursorSize}\nXcursor.theme: DMZ-White\n")
+                        "Xcursor.size: ${plan.cursorSize}\n" + (if (cursorTheme != null) "Xcursor.theme: $cursorTheme\n" else "Xcursor.theme: DMZ-White\n"))
+                // a sample document with English, Persian and mathematics, to judge text on this screen
+                File(root, "root/sample.txt").writeText(
+                    "LinuxPad test text\n\nThe Orlicz space L^Phi(mu) is a Banach algebra when Phi(st) <= Phi(s)Phi(t).\n" +
+                        "||fg|| <= ||f|| ||g||      \u222B f d\u03BC  \u2264  \u03A6\n\n" +
+                        "\u0641\u0636\u0627\u06CC \u0627\u0648\u0631\u0644\u06CC\u0686 \u06CC\u06A9 \u062C\u0628\u0631 \u0628\u0627\u0646\u0627\u062E \u0627\u0633\u062A.\n" +
+                        "\u0633\u0644\u0627\u0645\u060C \u0627\u06CC\u0646 \u06CC\u06A9 \u0645\u062A\u0646 \u0622\u0632\u0645\u0627\u06CC\u0634\u06CC \u0627\u0633\u062A \u06F1\u06F2\u06F3\n")
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
                 val script = "export DISPLAY=:0; " +
@@ -91,14 +101,14 @@ object LinuxSystem {
                     "echo \"Xft.dpi in the server: \$(xrdb -query | grep -i '^Xft.dpi')\"; " +
                     "xsetroot -solid '#27364d' -cursor_name left_ptr || echo 'xsetroot failed'; " +
                     "( while true; do echo \"PTR \$(xdotool getmouselocation 2>&1 | head -1)\"; sleep 0.25; done ) & " +
-                    "xcalc -geometry +60+100 & " +
+                    "GSETTINGS_BACKEND=memory NO_AT_BRIDGE=1 mousepad /root/sample.txt & " +
                     "xeyes -geometry 300x180+520+100 & " +
                     "exec xterm -geometry 80x22+60+420 -fa 'DejaVu Sans Mono' -fs 11 -bg black -fg white"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
                     binds = listOf("${X11Server.runtimeDir(app).absolutePath}/.X11-unix" to "/tmp/.X11-unix"),
                     env = mapOf("DISPLAY" to ":0", "XCURSOR_SIZE" to plan.cursorSize.toString()))
                 desktop = p
-                output = "desktop session started\n"
+                output = "desktop session started\n$cursorNote\n"
                 p.inputStream.bufferedReader().forEachLine { line ->
                     if (line.startsWith("PTR ")) pointerText = line.removePrefix("PTR ")
                     else output = (output + line + "\n").takeLast(20_000)
