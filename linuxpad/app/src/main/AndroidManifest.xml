@@ -11,8 +11,10 @@
     <!-- Termux:X11 brings its own activities and services; LinuxPad is the only app, so drop them -->
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" tools:node="remove" />
     <application
-        tools:replace="android:label,android:theme"
+        tools:replace="android:label,android:theme,android:icon,android:roundIcon"
         android:label="LinuxPad"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
         <activity android:name=".MainActivity" android:exported="true"

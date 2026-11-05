@@ -27,6 +27,8 @@ object LinuxSystem {
     var error by mutableStateOf<String?>(null); private set
     var installed by mutableStateOf(false); private set
     var output by mutableStateOf(""); private set
+    /** What the desktop session printed. Kept apart from the installation output. */
+    var sessionLog by mutableStateOf(""); private set
     var running by mutableStateOf(false); private set
 
     fun rootDir(ctx: Context) = File(ctx.filesDir, "rootfs/debian")
@@ -141,7 +143,7 @@ object LinuxSystem {
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
     /** Desktop themes the user can choose between; the first one that exists is used if the chosen one is missing. */
     val THEMES = listOf("Yaru", "WhiteSur-Light", "WhiteSur-Dark")
-    fun desktopTheme(ctx: Context): String = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).getString("desktop_theme", "Yaru") ?: "Yaru"
+    fun desktopTheme(ctx: Context): String = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).getString("desktop_theme", "WhiteSur-Dark") ?: "WhiteSur-Dark"
     fun setDesktopTheme(ctx: Context, name: String) = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).edit().putString("desktop_theme", name).apply()
 
     fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/themes/Yaru").isDirectory || File(rootDir(ctx), "usr/share/fonts/truetype/ubuntu").isDirectory
@@ -166,7 +168,7 @@ object LinuxSystem {
         if (!hasXfce(app)) { error = "Set up the desktop first"; return }
         session = "starting"
         val id = ++sessionId
-        output = ""
+        sessionLog = ""
         KeepAlive.acquire(app, "session", "Linux desktop is running")
         X11Server.whenFailed { error = "The X server did not start: ${X11Server.detail}"; stopSession(app) }
         X11Server.start(app, File(root(app), "usr/share/X11/xkb"))
@@ -201,7 +203,7 @@ object LinuxSystem {
                         "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 installAssets(app, root)
-                writeXfceConfig(root, plan, desktopTheme(app))
+                writeXfceConfig(app, root, plan, desktopTheme(app))
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
                 val script = "export DISPLAY=:0; fc-cache -f /usr/local/share/fonts >/dev/null 2>&1; " +
@@ -217,10 +219,10 @@ object LinuxSystem {
                     env = mapOf("DISPLAY" to ":0", "XCURSOR_SIZE" to plan.cursorSize.toString()) + AudioServer.guestEnv())
                 desktop = p
                 session = "running"
-                p.inputStream.bufferedReader().forEachLine { line -> output = (output + line + "\n").takeLast(20_000) }
-                output += "[desktop session ended: exit ${p.waitFor()}]\n"
+                p.inputStream.bufferedReader().forEachLine { line -> sessionLog = (sessionLog + line + "\n").takeLast(20_000) }
+                sessionLog += "[desktop session ended: exit ${p.waitFor()}]\n"
             } catch (e: Throwable) {
-                output += "${e.javaClass.simpleName}: ${e.message}\n"
+                sessionLog += "${e.javaClass.simpleName}: ${e.message}\n"
             } finally {
                 if (id == sessionId) stopSession(app)       // the desktop ended (for example Log Out): shut the rest down too
             }
@@ -266,13 +268,16 @@ object LinuxSystem {
                 }
                 base += 0.55f
                 // 4. the nicer look: each package on its own, a missing one is not an error
-                if (!lookOk(app)) {
-                    val pkgs = LOOK_PACKAGES.split(' ')
-                    pkgs.forEachIndexed { i, pkg ->
-                        val w = 0.20f / pkgs.size
+                val missingLook = LOOK_PACKAGES.split(' ').filter { !pkgInstalled(app, it) }
+                if (missingLook.isNotEmpty()) {
+                    iconCache(app, prepare = true)      // the icon caches of every Papirus variant took tens of minutes under PRoot
+                    missingLook.forEachIndexed { i, pkg ->
+                        val w = 0.17f / missingLook.size
                         val code = apt(app, pkg, update = false) { f, label -> report(base + w * i, w, f, label) }
                         if (code != 0) output += "[look] $pkg could not be installed (exit $code)\n"
                     }
+                    report(base + 0.17f, 0.03f, 0f, "Building the icon cache")
+                    iconCache(app, prepare = false)
                 }
                 setupState = SetupState(false, 1f, "Everything is installed")
             } catch (e: Throwable) {
@@ -282,6 +287,40 @@ object LinuxSystem {
                 KeepAlive.release(app, "setup")
             }
         }
+    }
+
+    /** True when dpkg lists the package as fully installed. */
+    private fun pkgInstalled(app: Context, name: String): Boolean {
+        val status = File(root(app), "var/lib/dpkg/status")
+        if (!status.isFile) return false
+        return status.useLines { lines ->
+            var current = ""
+            for (line in lines) {
+                if (line.startsWith("Package: ")) current = line.removePrefix("Package: ").trim()
+                else if (current == name && line.startsWith("Status: ")) return@useLines line.endsWith("installed") && !line.contains("not-installed") && !line.contains("config-files")
+            }
+            false
+        }
+    }
+
+    /**
+     * Papirus ships five variants, each with tens of thousands of icons, and its installer builds an icon cache for each: far too slow
+     * under PRoot. Before the install: skip the variants LinuxPad does not use and make the cache tool a no-op. After it: put the tool
+     * back and build the cache of the one theme that is used.
+     */
+    private fun iconCache(app: Context, prepare: Boolean) {
+        val bin = "/usr/bin/gtk-update-icon-cache"
+        val cmd = if (prepare) {
+            "mkdir -p /etc/dpkg/dpkg.cfg.d; " +
+            "for v in Papirus-Dark Papirus-Light ePapirus ePapirus-Dark; do echo \"path-exclude=/usr/share/icons/\$v/*\"; done > /etc/dpkg/dpkg.cfg.d/linuxpad-icons; " +
+            "if [ -x $bin ] && [ ! -e $bin.real ]; then mv -f $bin $bin.real; fi; " +
+            "printf '#!/bin/sh\\nexit 0\\n' > $bin; chmod 755 $bin"
+        } else {
+            "rm -f /etc/dpkg/dpkg.cfg.d/linuxpad-icons; " +
+            "if [ -e $bin.real ]; then mv -f $bin.real $bin; fi; " +
+            "[ -d /usr/share/icons/Papirus ] && $bin -q -t -f /usr/share/icons/Papirus"
+        }
+        Proot.exec(app, root(app), listOf("/bin/sh", "-c", cmd), emptyList()) { line -> output = (output + line + "\n").takeLast(20_000) }
     }
 
     /** Runs apt in the Linux system; apt's machine-readable status becomes progress (0 to 1) and a short label, other output goes to the log. */
@@ -312,7 +351,7 @@ object LinuxSystem {
      * XFCE's panel, window title bars and desktop icons are fixed pixel sizes made for 96 dpi screens, so on this screen they
      * would be tiny. Their sizes are written here from the scale plan, before the first start.
      */
-    private fun writeXfceConfig(root: File, plan: ScalePlan, theme: String) {
+    private fun writeXfceConfig(app: Context, root: File, plan: ScalePlan, theme: String) {
         val xml = File(root, "root/.config/xfce4/xfconf/xfce-perchannel-xml").apply { mkdirs() }
         // XFCE draws everything at 2x (window scaling factor 2: panel, menus, icons, buttons, spacing, title bars).
         // Text keeps the size chosen on the device: Xft DPI is halved, because the 2x scale doubles it again.
@@ -334,7 +373,16 @@ object LinuxSystem {
             File(root, "usr/share/fonts/truetype/ubuntu").isDirectory -> "Ubuntu 11"
             else -> "Sans 10"
         }
-        File(xml, "xsettings.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
+        // Only what belongs to this screen is written on every start (scale, pointer size). The look (theme, icons, font) is written
+        // when the files do not exist yet, or when the theme was changed in the app's Settings; whatever the user changes inside
+        // XFCE stays.
+        val prefs = app.getSharedPreferences("linuxpad", Context.MODE_PRIVATE)
+        val themeChanged = prefs.getString("theme_applied", null) != themeName
+        val xs = File(xml, "xsettings.xml")
+        val screenValues = mapOf("DPI" to "${plan.xftDpi / scale}", "WindowScalingFactor" to "$scale",
+            "CursorThemeName" to CursorTheme.NAME, "CursorThemeSize" to "${plan.cursorSize / scale}")
+        val patched = xs.isFile && patchProps(xs, screenValues + (if (themeChanged) mapOf("ThemeName" to themeName) else emptyMap()))
+        if (!patched) xs.writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Xft" type="empty">
     <property name="DPI" type="int" value="${plan.xftDpi / scale}"/>
@@ -356,7 +404,9 @@ object LinuxSystem {
   </property>
 </channel>
 """)
-        File(xml, "xfwm4.xml").writeText("""<?xml version="1.0" encoding="UTF-8"?>
+        val wm = File(xml, "xfwm4.xml")
+        val wmPatched = wm.isFile && (!themeChanged || patchProps(wm, mapOf("theme" to windowTheme)))
+        if (!wmPatched) wm.writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xfwm4" version="1.0">
   <property name="general" type="empty">
     <property name="theme" type="string" value="$windowTheme"/>
@@ -364,6 +414,7 @@ object LinuxSystem {
   </property>
 </channel>
 """)
+        prefs.edit().putString("theme_applied", themeName).apply()
         // Roomier menus for touch (sizes are logical pixels, doubled by the window scale)
         File(root, "root/.config/gtk-3.0").mkdirs()
         File(root, "root/.config/gtk-3.0/gtk.css").writeText("""menu menuitem { min-height: 30px; padding: 4px 16px; }
@@ -371,26 +422,11 @@ menu menuitem label { font-size: 112%; }
 menubar > menuitem { min-height: 28px; padding: 2px 14px; }
 """)
         File(root, "root/.config/gtk-3.0/settings.ini").delete()   // the fixed icon sizes of the first try; window scaling replaces them
-        // The panel and the desktop icons are set once the session is running (their settings need the session bus)
-        File(root, "root/linuxpad-xfce-tune.sh").writeText("""#!/bin/sh
-export DISPLAY=:0
-for i in `seq 1 60`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break; sleep 1; done
-sleep 3
-xfconf-query -c xfce4-panel -p /panels/panel-1/size -n -t uint -s $panel
-xfconf-query -c xfce4-panel -p /panels/panel-1/icon-size -n -t uint -s 0
-xfconf-query -c xfce4-panel -p /panels/panel-2/size -n -t uint -s $dock
-xfconf-query -c xfce4-panel -p /panels/panel-2/icon-size -n -t uint -s 0
-xfconf-query -c xfce4-desktop -p /desktop-icons/icon-size -n -t uint -s $desktopIcon
-xfconf-query -c xfce4-desktop -p /desktop-icons/use-custom-font-size -n -t bool -s true
-xfconf-query -c xfce4-desktop -p /desktop-icons/font-size -n -t double -s 9
-# the default wallpaper is set once; after that the wallpaper is the user's choice
-if [ ! -f /root/.config/linuxpad/wallpaper-set ] && [ -f /usr/share/backgrounds/linuxpad.jpg ]; then
-  for i in `seq 1 20`; do imgs=`xfconf-query -c xfce4-desktop -l | grep 'last-image$'`; [ -n "${'$'}imgs" ] && break; sleep 1; done
-  for p in ${'$'}imgs; do xfconf-query -c xfce4-desktop -p ${'$'}p -s /usr/share/backgrounds/linuxpad.jpg; done
-  for p in `xfconf-query -c xfce4-desktop -l | grep 'image-style$'`; do xfconf-query -c xfce4-desktop -p ${'$'}p -s 5; done
-  mkdir -p /root/.config/linuxpad && touch /root/.config/linuxpad/wallpaper-set
-fi
-""")
+        // Sizes of the panel and the desktop icons, and the once-only layout and wallpaper, are set when the session is running
+        // (their settings need the session bus). The script is a template in the app's assets.
+        val tune = app.assets.open("tune.sh").bufferedReader().use { it.readText() }
+            .replace("@PANEL@", panel.toString()).replace("@DOCK@", dock.toString()).replace("@ICON@", desktopIcon.toString())
+        File(root, "root/linuxpad-xfce-tune.sh").writeText(tune)
         val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
         File(autostart, "linuxpad-tune.desktop").writeText("""[Desktop Entry]
 Type=Application
@@ -398,6 +434,18 @@ Name=LinuxPad tuning
 Exec=sh /root/linuxpad-xfce-tune.sh
 X-GNOME-Autostart-enabled=true
 """)
+    }
+
+    /** Sets the values of existing properties in an xfconf file; false when one is missing (the caller then writes the whole file). */
+    private fun patchProps(file: File, values: Map<String, String>): Boolean {
+        var text = file.readText()
+        for ((name, value) in values) {
+            val re = Regex("""(<property name="${Regex.escape(name)}" type="\w+" value=")[^"]*(")""")
+            if (!re.containsMatchIn(text)) return false
+            text = re.replace(text) { it.groupValues[1] + value + it.groupValues[2] }
+        }
+        file.writeText(text)
+        return true
     }
 
     /** Copies what the app carries into the Linux system: the Selawik fonts and the default wallpaper. */

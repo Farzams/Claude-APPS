@@ -66,6 +66,7 @@ import app.linuxpad.MainActivity
 import app.linuxpad.audio.AudioServer
 import app.linuxpad.display.DisplayInfo
 import app.linuxpad.display.DisplayScale
+import app.linuxpad.runtime.DeviceStats
 import app.linuxpad.runtime.LinuxSystem
 import app.linuxpad.runtime.SharedFolder
 import app.linuxpad.x11.X11Server
@@ -75,7 +76,7 @@ fun AppRoot(d: DisplayInfo) {
     val ctx = LocalContext.current
     var tab by rememberSaveable { mutableIntStateOf(0) }
     LaunchedEffect(Unit) { LinuxSystem.refresh(ctx) }
-    Row(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Bg, Color(0xFF2A0F2A)))).systemBarsPadding()) {
+    Row(Modifier.fillMaxSize().background(androidx.compose.ui.graphics.Brush.verticalGradient(listOf(Bg, Color(0xFF1C1B21)))).systemBarsPadding()) {
         NavigationRail(containerColor = Rail, modifier = Modifier.fillMaxHeight().width(132.dp)) {
             BrandMark()
             val items = listOf("Desktop" to Icons.Filled.PlayArrow, "Setup" to Icons.Filled.Build, "Storage" to Icons.Filled.Menu, "Settings" to Icons.Filled.Settings)
@@ -84,7 +85,7 @@ fun AppRoot(d: DisplayInfo) {
                     selected = tab == i, onClick = { tab = i },
                     icon = { Icon(icon, contentDescription = label) },
                     label = { Text(label, fontSize = 13.sp) },
-                    colors = NavigationRailItemDefaults.colors(selectedIconColor = Accent, selectedTextColor = Accent, indicatorColor = Color(0x33E95420), unselectedIconColor = TextMuted, unselectedTextColor = TextMuted),
+                    colors = NavigationRailItemDefaults.colors(selectedIconColor = Accent, selectedTextColor = Accent, indicatorColor = Color(0x33F07A3C), unselectedIconColor = TextMuted, unselectedTextColor = TextMuted),
                     modifier = Modifier.padding(vertical = 6.dp),
                 )
             }
@@ -136,6 +137,7 @@ private fun DesktopScreen(goSetup: () -> Unit) {
         }
         LinuxSystem.error?.let { Text(it, color = Err, fontSize = 15.sp) }
     }
+    TabletCard()
     AppCard("Sound", chip = {
         when (AudioServer.state) {
             "running" -> StatusChip("On", Ok)
@@ -147,6 +149,50 @@ private fun DesktopScreen(goSetup: () -> Unit) {
         Muted(if (AudioServer.detail.isNotBlank()) AudioServer.detail.replaceFirstChar { it.uppercase() } else "Sound starts together with the desktop. Choose speaker and microphone in Settings.")
     }
     SharedFolderCard()
+}
+
+@Composable
+private fun TabletCard() {
+    val ctx = LocalContext.current
+    var snap by remember { mutableStateOf<DeviceStats.Snapshot?>(null) }
+    LaunchedEffect(Unit) {
+        DeviceStats.measureLinux(ctx)
+        while (true) {
+            snap = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) { runCatching { DeviceStats.read(ctx) }.getOrNull() }
+            kotlinx.coroutines.delay(3000)
+        }
+    }
+    val sn = snap
+    fun gb(b: Long) = "%.1f GB".format(b / 1073741824.0)
+    AppCard("Tablet", chip = {
+        if (sn != null) when {
+            sn.thermalLevel >= 3 -> StatusChip(sn.thermal, Err)
+            sn.thermalLevel >= 1 -> StatusChip(sn.thermal, Warn)
+            else -> StatusChip(sn.thermal, Ok)
+        }
+    }) {
+        if (sn == null) { Muted("Reading..."); return@AppCard }
+        Meter("Memory", "${gb(sn.memUsed)} of ${gb(sn.memTotal)} in use", sn.memUsed.toFloat() / sn.memTotal)
+        val linux = DeviceStats.linuxBytes
+        Meter("Storage", "${gb(sn.storageFree)} free of ${gb(sn.storageTotal)}", 1f - sn.storageFree.toFloat() / sn.storageTotal)
+        Muted("Linux system: " + (linux?.let { gb(it) } ?: "measuring...") + " on disk")
+        Row(Modifier.fillMaxWidth()) {
+            Text("Battery", color = TextMain, fontSize = 15.sp, modifier = Modifier.weight(1f))
+            Text(buildString {
+                sn.batteryTempC?.let { append("%.1f \u00B0C".format(it)) }
+                sn.batteryPercent?.let { append("   $it%"); if (sn.charging) append(" charging") }
+            }, color = TextMuted, fontSize = 15.sp)
+        }
+        sn.cpuTempC?.let { Row(Modifier.fillMaxWidth()) { Text("Processor", color = TextMain, fontSize = 15.sp, modifier = Modifier.weight(1f)); Text("%.0f \u00B0C".format(it), color = TextMuted, fontSize = 15.sp) } }
+    }
+}
+
+@Composable
+private fun Meter(label: String, value: String, fraction: Float) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(Modifier.fillMaxWidth()) { Text(label, color = TextMain, fontSize = 15.sp, modifier = Modifier.weight(1f)); Text(value, color = TextMuted, fontSize = 14.sp) }
+        LinearProgressIndicator(progress = { fraction.coerceIn(0f, 1f) }, modifier = Modifier.fillMaxWidth().height(8.dp), color = if (fraction > 0.85f) Warn else Accent, trackColor = Color(0x1FFFFFFF), gapSize = 0.dp, drawStopIndicator = {})
+    }
 }
 
 @Composable
@@ -179,7 +225,7 @@ private fun SetupScreen() {
         StepRow("Nicer look: fonts, icons, theme", look, optional = true)
         if (st.running) {
             Spacer(Modifier.height(4.dp))
-            LinearProgressIndicator(progress = { st.fraction }, modifier = Modifier.fillMaxWidth().height(8.dp))
+            LinearProgressIndicator(progress = { st.fraction }, modifier = Modifier.fillMaxWidth().height(8.dp), color = Accent, trackColor = Color(0x1FFFFFFF), gapSize = 0.dp, drawStopIndicator = {})
             Row(Modifier.fillMaxWidth()) {
                 Text(st.label, color = TextMain, fontSize = 15.sp, modifier = Modifier.weight(1f), maxLines = 1)
                 Text("${(st.fraction * 100).toInt()}%", color = TextMuted, fontSize = 15.sp)
@@ -319,7 +365,8 @@ private fun SettingsScreen(d: DisplayInfo) {
                 appendLine("shared folder access ${SharedFolder.hasAccess()}")
                 LinuxSystem.error?.let { appendLine("error: $it") }
                 LinuxSystem.setupState.error?.let { appendLine("setup error: $it") }
-                appendLine("\n--- output ---\n${LinuxSystem.output.takeLast(3000)}")
+                appendLine("\n--- setup output ---\n${LinuxSystem.output.takeLast(3000)}")
+                appendLine("\n--- desktop output ---\n${LinuxSystem.sessionLog.takeLast(3000)}")
             }
             copy(ctx, "LinuxPad diagnostics", text)
         })

@@ -23,25 +23,26 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-val Bg = Color(0xFF1C0A19)
-val Rail = Color(0xFF260C22)
-val CardBg = Color(0xFF2B1327)
-val Outline = Color(0x22FFFFFF)
-val Accent = Color(0xFFE95420)
+val Bg = Color(0xFF17161A)
+val Rail = Color(0xFF1D1B20)
+val CardBg = Color(0xFF232127)
+val Outline = Color(0x17FFFFFF)
+val Accent = Color(0xFFF07A3C)
+val Accent2 = Color(0xFFE5484D)
 val Ok = Color(0xFF5BD98C)
 val Warn = Color(0xFFFBBF24)
 val Err = Color(0xFFF87171)
-val TextMain = Color(0xFFF6EEF4)
-val TextMuted = Color(0xFFC4B2C0)
+val TextMain = Color(0xFFF3EFEA)
+val TextMuted = Color(0xFFA9A39C)
 
 /** Near-black with one blue accent, big rounded cards and large touch targets. */
 @Composable
 fun LinuxPadTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = darkColorScheme(
-            primary = Accent, onPrimary = Color.White, background = Bg, surface = Bg, onSurface = TextMain,
+            primary = Accent, onPrimary = Color(0xFF1B0E06), background = Bg, surface = Bg, onSurface = TextMain,
             surfaceVariant = CardBg, onSurfaceVariant = TextMuted, outline = Outline, error = Err,
-            secondaryContainer = Color(0xFF4A2038), onSecondaryContainer = TextMain,
+            secondaryContainer = Color(0xFF3A2418), onSecondaryContainer = TextMain,
         ),
     ) { Surface(color = Bg, content = content) }
 }
@@ -81,17 +82,24 @@ fun StatusChip(text: String, color: Color) {
 @Composable
 fun Muted(text: String) = Text(text, color = TextMuted, fontSize = 15.sp, lineHeight = 21.sp)
 
-val Violet = Color(0xFF77216F)
 
-/** The app mark: a rounded gradient tile with an L and the name beside it in a large type. */
+/** The app mark: the terminal icon (rounded tile, window frame, prompt) drawn at any size. */
 @Composable
 fun BrandMark() {
     androidx.compose.foundation.layout.Column(Modifier.padding(top = 20.dp, bottom = 22.dp), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
-        androidx.compose.foundation.layout.Box(
-            Modifier.size(60.dp).clip(RoundedCornerShape(20.dp))
-                .background(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Accent, Color(0xFFC13C77), Violet))),
-            contentAlignment = androidx.compose.ui.Alignment.Center,
-        ) { Text("L", color = Color.White, fontSize = 32.sp, fontWeight = FontWeight.ExtraBold) }
+        androidx.compose.foundation.Canvas(Modifier.size(64.dp)) {
+            val s = size.minDimension
+            val corner = androidx.compose.ui.geometry.CornerRadius(s * 0.23f)
+            drawRoundRect(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Color(0xFF3B3139), Color(0xFF17151A))), cornerRadius = corner)
+            val tl = androidx.compose.ui.geometry.Offset(s * 0.13f, s * 0.20f)
+            val sz = androidx.compose.ui.geometry.Size(s * 0.74f, s * 0.60f)
+            val wc = androidx.compose.ui.geometry.CornerRadius(s * 0.11f)
+            drawRoundRect(Color(0x59000000), tl, sz, wc)
+            drawRoundRect(androidx.compose.ui.graphics.Brush.linearGradient(listOf(Accent, Accent2)), tl, sz, wc, style = androidx.compose.ui.graphics.drawscope.Stroke(width = s * 0.04f))
+            val chevron = androidx.compose.ui.graphics.Path().apply { moveTo(s * 0.30f, s * 0.40f); lineTo(s * 0.46f, s * 0.51f); lineTo(s * 0.30f, s * 0.62f) }
+            drawPath(chevron, Accent, style = androidx.compose.ui.graphics.drawscope.Stroke(width = s * 0.08f, cap = androidx.compose.ui.graphics.StrokeCap.Round, join = androidx.compose.ui.graphics.StrokeJoin.Round))
+            drawLine(Color(0xFFFBF4EA), androidx.compose.ui.geometry.Offset(s * 0.54f, s * 0.66f), androidx.compose.ui.geometry.Offset(s * 0.74f, s * 0.66f), strokeWidth = s * 0.08f, cap = androidx.compose.ui.graphics.StrokeCap.Round)
+        }
         Text("LinuxPad", color = TextMain, fontSize = 20.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 10.dp))
         Text("Debian desktop", color = TextMuted, fontSize = 12.sp)
     }

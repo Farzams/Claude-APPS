@@ -39,7 +39,7 @@ object AudioServer {
     private fun authDir(ctx: Context) = File(ctx.filesDir, "runtime/audio")
 
     /** The folder with the cookie, shown inside Linux (read by PulseAudio clients). */
-    fun bind(ctx: Context) = authDir(ctx).absolutePath to GUEST_AUTH
+    fun bind(ctx: Context) = authDir(ctx).apply { mkdirs() }.absolutePath to GUEST_AUTH
 
     /** What Linux programs need to find the sound server. */
     fun guestEnv() = mapOf("PULSE_SERVER" to "tcp:127.0.0.1:$PORT", "PULSE_COOKIE" to "$GUEST_AUTH/cookie")
