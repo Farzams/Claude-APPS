@@ -67,6 +67,7 @@ import app.linuxpad.audio.AudioServer
 import app.linuxpad.display.DisplayInfo
 import app.linuxpad.display.DisplayScale
 import app.linuxpad.runtime.DeviceStats
+import app.linuxpad.runtime.GpuCheck
 import app.linuxpad.runtime.LinuxSystem
 import app.linuxpad.runtime.SharedFolder
 import app.linuxpad.x11.X11Server
@@ -346,6 +347,14 @@ private fun SettingsScreen(d: DisplayInfo) {
             }
         }
         if (LinuxSystem.session != "stopped") OutlinedBigButton("Stop desktop to apply", onClick = { LinuxSystem.stopSession(ctx) })
+    }
+    AppCard("Graphics card (GPU)") {
+        Muted("Everything in the Linux desktop is drawn by the processor today. This check only looks whether this tablet lets Linux use the GPU. It changes nothing.")
+        OutlinedBigButton(if (GpuCheck.running) "Checking..." else "Check GPU access", onClick = { GpuCheck.run(ctx) }, enabled = !GpuCheck.running)
+        if (GpuCheck.result.isNotBlank()) {
+            Text(GpuCheck.result, color = TextMuted, fontSize = 12.sp, fontFamily = FontFamily.Monospace)
+            OutlinedBigButton("Copy result", onClick = { copy(ctx, "LinuxPad GPU check", GpuCheck.result) })
+        }
     }
     val plan = DisplayScale.plan(d)
     AppCard("Screen") {
