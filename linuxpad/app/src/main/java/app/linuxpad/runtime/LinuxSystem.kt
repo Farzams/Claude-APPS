@@ -229,7 +229,7 @@ object LinuxSystem {
                 writeXfceConfig(app, root, plan, DEFAULT_THEME)
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
-                val gpuOn = Gpu.active(app)
+                val gpuOn = Gpu.useForThisStart(app)
                 val startedAt = System.currentTimeMillis()
                 val script = "export DISPLAY=:0; fc-cache -f /usr/local/share/fonts >/dev/null 2>&1; " +
                     "xrdb -nocpp -merge /root/.Xresources || echo 'xrdb failed'; " +
@@ -240,7 +240,7 @@ object LinuxSystem {
                     // frame already has the final panel, wallpaper and icons
                     "dbus-launch --exit-with-session sh -x /root/linuxpad-xfce-tune.sh pre >/root/linuxpad-tune.log 2>&1; echo '[tune pre]'; tail -n 40 /root/linuxpad-tune.log; " +
                     "export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11 NO_AT_BRIDGE=1 XCURSOR_THEME=LinuxPad; " +
-                    (if (gpuOn) Gpu.exports(app) else "export LIBGL_ALWAYS_SOFTWARE=1; ") +
+                    (if (gpuOn) Gpu.exports() else "export LIBGL_ALWAYS_SOFTWARE=1; ") +
                     "export QT_AUTO_SCREEN_SCALE_FACTOR=0 QT_SCALE_FACTOR=${plan.qtScaleFactor} QT_FONT_DPI=96; " +
                     "exec startxfce4"
                 val p = Proot.spawn(app, root, listOf("/bin/bash", "-lc", script),
@@ -251,8 +251,8 @@ object LinuxSystem {
                 p.inputStream.bufferedReader().forEachLine { line -> sessionLog = (sessionLog + line + "\n").takeLast(20_000) }
                 sessionLog += "[desktop session ended: exit ${p.waitFor()}]\n"
                 if (gpuOn && System.currentTimeMillis() - startedAt < 25_000) {
-                    Gpu.disable(app)
-                    error = "The desktop closed right after starting with the GPU on. The GPU was turned off; the desktop will start in the safe mode."
+                    Gpu.skipNextStart(app)
+                    error = "The desktop closed right after starting with the GPU. The next start draws with the processor once; after that the GPU is used again."
                 }
             } catch (e: Throwable) {
                 sessionLog += "${e.javaClass.simpleName}: ${e.message}\n"
