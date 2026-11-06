@@ -115,7 +115,7 @@ object AudioServer {
         if ("pulseaudio-runtime.zip" !in names) return null
         val dir = File(app.filesDir, "audio-runtime")
         val marker = File(dir, "VERSION")
-        val zipSize = app.assets.openFd("runtime/pulseaudio-runtime.zip").use { it.length }.toString()
+        val zipSize = app.packageManager.getPackageInfo(app.packageName, 0).lastUpdateTime.toString()   // changes with every app update
         if (marker.exists() && File(dir, "ZIPSIZE").takeIf { it.exists() }?.readText() == zipSize && File(dir, "bin/pulseaudio").exists()) return dir
         dir.deleteRecursively(); dir.mkdirs()
         ZipInputStream(app.assets.open("runtime/pulseaudio-runtime.zip")).use { zip ->

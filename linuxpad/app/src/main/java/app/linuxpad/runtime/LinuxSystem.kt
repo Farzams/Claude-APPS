@@ -139,14 +139,14 @@ object LinuxSystem {
     /** The XFCE desktop (about 150 to 300 MB). dbus-x11 gives the session its message bus. */
     const val XFCE_PACKAGES = "xfce4 xfce4-terminal xfce4-notifyd dbus-x11 xdg-utils mousepad"
 
-    /** Papirus icons, the panel indicator plugin and the Ubuntu fonts (Ubuntu Mono in the terminal). Each is tried on its own. */
-    const val LOOK_PACKAGES = "papirus-icon-theme xfce4-genmon-plugin fonts-ubuntu"
+    /** Papirus icons and the panel indicator plugin. Each is tried on its own. (Debian 13 has no fonts-ubuntu package.) */
+    const val LOOK_PACKAGES = "papirus-icon-theme xfce4-genmon-plugin"
 
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
     /** The look Linux starts with the first time. Afterwards the theme is chosen inside Linux and the app leaves it alone. */
-    private const val DEFAULT_THEME = "WhiteSur-Dark"
-    private const val DEFAULT_THEME_STAMP = "default-theme-v2"   // v2: double-size window buttons and the Inter font
+    private const val DEFAULT_THEME = "WhiteSur-Light"
+    private const val DEFAULT_THEME_STAMP = "default-theme-v3"   // v3: the light WhiteSur theme, double-size window buttons, Inter
 
     fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/icons/Papirus/index.theme").isFile
 
@@ -222,7 +222,7 @@ object LinuxSystem {
                 File(root, "root/.config/fontconfig/fonts.conf").writeText(
                     "<?xml version=\"1.0\"?>\n<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">\n<fontconfig>\n" +
                         "  <alias><family>sans-serif</family><prefer><family>Inter Variable</family><family>Inter</family><family>Selawik</family><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
-                        "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
+                        "  <alias><family>monospace</family><prefer><family>Liberation Mono</family><family>DejaVu Sans Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 File(root, "tmp/linuxpad-ready").delete()        // the start screen waits for this file
                 installAssets(app, root)
@@ -345,7 +345,7 @@ object LinuxSystem {
                     timed("Look") {
                         iconCache(app, prepare = true)      // the icon caches of every Papirus variant took tens of minutes under PRoot
                         // Papirus (tens of thousands of icons) takes most of this step
-                        val share = mapOf("papirus-icon-theme" to 0.86f, "fonts-ubuntu" to 0.09f, "xfce4-genmon-plugin" to 0.05f)
+                        val share = mapOf("papirus-icon-theme" to 0.95f, "xfce4-genmon-plugin" to 0.05f)
                         val total = missingLook.sumOf { (share[it] ?: 0.05f).toDouble() }.toFloat()
                         var at = base
                         for (pkg in missingLook) {
@@ -515,6 +515,11 @@ menubar > menuitem { min-height: 28px; padding: 2px 14px; }
         val tune = app.assets.open("tune.sh").bufferedReader().use { it.readText() }
             .replace("@PANEL@", panel.toString()).replace("@DOCK@", dock.toString()).replace("@ICON@", desktopIcon.toString())
         File(root, "root/linuxpad-xfce-tune.sh").writeText(tune)
+        // the panel indicator: Debian 13 has genmon 4.1.1, which reads its settings from this file (newer versions use xfconf)
+        File(root, "root/.config/xfce4/panel").mkdirs()
+        File(root, "root/.config/xfce4/panel/genmon-90.rc").writeText(
+            "Command=sh -c 'cat /root/.linuxpad/stats.txt 2>/dev/null || echo \"<txt>no data</txt>\"'\n" +
+            "UseLabel=0\nText=\nUpdatePeriod=3000\nFont=(default)\n")
         // the same script once more inside the running desktop: it only finishes what the first run could not verify
         val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
         File(autostart, "linuxpad-tune.desktop").writeText("""[Desktop Entry]

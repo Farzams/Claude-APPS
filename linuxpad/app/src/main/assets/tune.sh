@@ -12,7 +12,7 @@ genmon_ok=1; dpkg -s xfce4-genmon-plugin >/dev/null 2>&1 || genmon_ok=0
 need=0
 [ -f "$M/layout-v2" ] || need=1
 [ -f "$M/wallpaper-v3" ] || [ ! -f "$IMG" ] || need=1
-[ -f "$M/genmon-v4" ] || [ $genmon_ok = 0 ] || need=1
+[ -f "$M/genmon-v5" ] || [ $genmon_ok = 0 ] || need=1
 [ "$MODE" = live ] && [ $need = 0 ] && exit 0
 
 for i in `seq 1 30`; do xfconf-query -c xfce4-panel -l >/dev/null 2>&1 && break; sleep 1; done
@@ -68,7 +68,7 @@ if [ ! -f "$M/wallpaper-v3" ] && [ -f "$IMG" ]; then
 fi
 
 # once: a small indicator in the top panel with memory, heat and battery (the app writes /root/.linuxpad/stats.txt every few seconds)
-if [ ! -f "$M/genmon-v4" ] && [ $genmon_ok = 1 ]; then
+if [ ! -f "$M/genmon-v5" ] && [ $genmon_ok = 1 ]; then
   # the plugin reads its settings only when it starts, so they are written before it is put on the panel
   xfconf-query -c xfce4-panel -p /plugins/plugin-90/command -n -t string -s "sh -c 'cat /root/.linuxpad/stats.txt 2>/dev/null || echo \"<txt>no data</txt>\"'"
   xfconf-query -c xfce4-panel -p /plugins/plugin-90/update-period -n -t int -s 3000
@@ -88,7 +88,7 @@ if [ ! -f "$M/genmon-v4" ] && [ $genmon_ok = 1 ]; then
   fi
   changed=1          # the panel is started again so that the plugin reads its settings
   now=`xfconf-query -c xfce4-panel -p /panels/panel-1/plugin-ids 2>/dev/null | grep -E '^[0-9]+$'`
-  echo "$now" | grep -qx 90 && touch "$M/genmon-v4"
+  echo "$now" | grep -qx 90 && touch "$M/genmon-v5"
 fi
 
 # in the running desktop, a changed panel has to be started again to show it
