@@ -294,7 +294,7 @@ object LinuxSystem {
                     output += "[time] $name: ${sec / 60} min ${sec % 60} s\n"
                 }
                 fun stepDone() { refresh(app); tick++ }      // the screen marks the step as installed right away
-                // shares of the bar, from measured times on the tablet: Debian 8, graphics 12, XFCE 18, look 62
+                // shares of the bar, from measured times on the tablet: Debian 7, graphics 11, XFCE 16, look 54, GPU drivers 12
                 var base = 0f
                 // 1. the Linux system: finding (0-5 %), downloading (5-75 %), unpacking (75-95 %), configuring (95-100 %)
                 if (!File(root(app), "etc/os-release").exists() && !File(root(app), "usr/lib/os-release").exists()) {
@@ -306,30 +306,30 @@ object LinuxSystem {
                                 p.phase.startsWith("Configuring") || p.phase == "Done" -> 0.97f
                                 else -> 0.02f
                             }
-                            report(base, 0.08f, f, "Debian: ${p.phase.lowercase()}")
+                            report(base, 0.07f, f, "Debian: ${p.phase.lowercase()}")
                         }
                     }
                     stepDone()
                 }
-                base = 0.08f
+                base = 0.07f
                 // 2. graphics and sound libraries
                 if (!graphicsOk(app)) {
                     timed("Graphics") {
-                        val code = apt(app, GRAPHICS_PACKAGES) { f, label -> report(base, 0.12f, f, label) }
+                        val code = apt(app, GRAPHICS_PACKAGES) { f, label -> report(base, 0.11f, f, label) }
                         if (code != 0) throw IllegalStateException("Installing the graphics libraries failed (exit $code). See Details.")
                     }
                     stepDone()
                 }
-                base += 0.12f
+                base += 0.11f
                 // 3. XFCE
                 if (!hasXfce(app)) {
                     timed("XFCE") {
-                        val code = apt(app, XFCE_PACKAGES) { f, label -> report(base, 0.18f, f, label) }
+                        val code = apt(app, XFCE_PACKAGES) { f, label -> report(base, 0.16f, f, label) }
                         if (code != 0) throw IllegalStateException("Installing XFCE failed (exit $code). See Details.")
                     }
                     stepDone()
                 }
-                base += 0.18f
+                base += 0.16f
                 // 4. the nicer look: each package on its own, a missing one is not an error
                 val missingLook = LOOK_PACKAGES.split(' ').filter { !pkgInstalled(app, it) }
                 if (missingLook.isNotEmpty()) {
@@ -340,15 +340,24 @@ object LinuxSystem {
                         val total = missingLook.sumOf { (share[it] ?: 0.05f).toDouble() }.toFloat()
                         var at = base
                         for (pkg in missingLook) {
-                            val w = 0.58f * (share[pkg] ?: 0.05f) / total
+                            val w = 0.51f * (share[pkg] ?: 0.05f) / total
                             val from = at
                             val code = apt(app, pkg, update = false) { f, label -> report(from, w, f, label) }
                             if (code != 0) output += "[look] $pkg could not be installed (exit $code)\n"
                             at += w
                             stepDone()
                         }
-                        report(base + 0.58f, 0.04f, 0f, "Building the icon cache")
+                        report(base + 0.51f, 0.03f, 0f, "Building the icon cache")
                         iconCache(app, prepare = false)
+                    }
+                    stepDone()
+                }
+                base = 0.88f
+                // 5. the GPU drivers (Adreno), when this build carries them; a failure here leaves the safe software drawing
+                if (Gpu.available(app) && !Gpu.installed(app)) {
+                    timed("GPU") {
+                        try { Gpu.installNow(app) { f, l -> report(base, 0.12f, f, "GPU: $l") } }
+                        catch (e: Throwable) { output += "[gpu] ${e.message}\n" }
                     }
                     stepDone()
                 }

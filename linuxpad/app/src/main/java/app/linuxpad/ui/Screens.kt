@@ -225,6 +225,7 @@ private fun SetupScreen() {
         StepRow("Graphics and sound libraries", graphics)
         StepRow("XFCE desktop", xfce)
         StepRow("Nicer look: fonts, icons, theme", look, optional = true)
+        if (Gpu.available(ctx)) StepRow("Graphics card drivers (GPU)", remember(tick, debian) { Gpu.installed(ctx) }, optional = true)
         if (st.running) {
             Spacer(Modifier.height(4.dp))
             LinearProgressIndicator(progress = { st.fraction }, modifier = Modifier.fillMaxWidth().height(8.dp), color = Accent, trackColor = Color(0x1FFFFFFF), gapSize = 0.dp, drawStopIndicator = {})
@@ -355,8 +356,8 @@ private fun SettingsScreen(d: DisplayInfo) {
                 Triple("native", "GPU: OpenGL on Adreno", "Native driver, try this first"),
                 Triple("zink", "GPU: OpenGL through Vulkan (Zink)", "Try this if the first one shows glitches"),
             )) {
-                Row(Modifier.fillMaxWidth().clickable { gpuMode = id; Gpu.setMode(ctx, id) }.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                    androidx.compose.material3.RadioButton(gpuMode == id, { gpuMode = id; Gpu.setMode(ctx, id) })
+                Row(Modifier.fillMaxWidth().clickable { gpuMode = id; Gpu.chooseMode(ctx, id) }.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+                    androidx.compose.material3.RadioButton(gpuMode == id, { gpuMode = id; Gpu.chooseMode(ctx, id) })
                     Column(Modifier.weight(1f)) { Text(label, color = TextMain, fontSize = 16.sp); Text(hint, color = TextMuted, fontSize = 13.sp) }
                 }
             }

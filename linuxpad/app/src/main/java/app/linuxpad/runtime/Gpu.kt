@@ -30,6 +30,8 @@ object Gpu {
     private fun prefs(ctx: Context) = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE)
     fun mode(ctx: Context): String = prefs(ctx).getString("gpu_mode", "off") ?: "off"
     fun setMode(ctx: Context, m: String) = prefs(ctx).edit().putString("gpu_mode", m).apply()
+    /** The user chose a mode in Settings: remembered so that a later install does not switch the GPU back on. */
+    fun chooseMode(ctx: Context, m: String) = prefs(ctx).edit().putString("gpu_mode", m).putBoolean("gpu_user_off", m == "off").apply()
     fun sysmem(ctx: Context) = prefs(ctx).getBoolean("gpu_sysmem", false)
     fun setSysmem(ctx: Context, on: Boolean) = prefs(ctx).edit().putBoolean("gpu_sysmem", on).apply()
 
@@ -55,7 +57,26 @@ object Gpu {
         }
     }
 
-    /** Installs Mesa's helper libraries from Debian, then unpacks the package from the app into /opt/mesa-gpu. */
+    /** Installs Mesa's helper libraries from Debian, then unpacks the package from the app into /opt/mesa-gpu. Throws on failure. */
+    fun installNow(app: Context, onProgress: (Float, String) -> Unit) {
+        val code = LinuxSystem.apt(app, LIBS) { f, l -> onProgress(f * 0.85f, l) }
+        if (code != 0) throw IllegalStateException("Installing the graphics libraries for the GPU failed (exit $code). See Details in Setup.")
+        onProgress(0.88f, "Unpacking the GPU drivers")
+        val root = LinuxSystem.rootDir(app)
+        val dest = File(root, "opt/mesa-gpu").apply { deleteRecursively(); mkdirs() }
+        val tmp = TarExtractor.assetToFile(app, ASSET) ?: throw IllegalStateException("This build does not carry the GPU drivers package")
+        TarExtractor.extractTarGz(tmp, dest) { }
+        tmp.delete()
+        // the Vulkan driver is looked up by the path written in its description file: point it into the new folder
+        val icd = File(dest, "usr/share/vulkan/icd.d/freedreno_icd.aarch64.json")
+        icd.writeText(icd.readText().replace(Regex("\"library_path\"\\s*:\\s*\"[^\"]*\""), "\"library_path\": \"$DIR/usr/lib/aarch64-linux-gnu/libvulkan_freedreno.so\""))
+        File(dest, "INSTALLED").writeText("mesa-26.2.0-devel-20260709\n")
+        // the GPU is on after a first install; a user who turned it off keeps it off (a repair does not install again)
+        if (!prefs(app).contains("gpu_mode") || mode(app) == "off" && !prefs(app).getBoolean("gpu_user_off", false)) setMode(app, "native")
+        onProgress(1f, "Done")
+    }
+
+    /** The same from the Settings button, in the background with its own progress. */
     fun install(ctx: Context) {
         if (installing) return
         val app = ctx.applicationContext
@@ -64,20 +85,7 @@ object Gpu {
         KeepAlive.acquire(app, "gpu", "Installing the GPU drivers")
         thread(name = "linuxpad-gpu-install") {
             try {
-                val code = LinuxSystem.apt(app, LIBS) { f, l -> progress = f * 0.85f; label = l }
-                if (code != 0) throw IllegalStateException("Installing the graphics libraries failed (exit $code). See Details in Setup.")
-                label = "Unpacking the GPU drivers"; progress = 0.88f
-                val root = LinuxSystem.rootDir(app)
-                val dest = File(root, "opt/mesa-gpu").apply { deleteRecursively(); mkdirs() }
-                val tmp = TarExtractor.assetToFile(app, ASSET) ?: throw IllegalStateException("This build does not carry the GPU drivers package")
-                TarExtractor.extractTarGz(tmp, dest) { }
-                tmp.delete()
-                // the Vulkan driver is looked up by the path written in its description file: point it into the new folder
-                val icd = File(dest, "usr/share/vulkan/icd.d/freedreno_icd.aarch64.json")
-                icd.writeText(icd.readText().replace(Regex("\"library_path\"\\s*:\\s*\"[^\"]*\""), "\"library_path\": \"$DIR/usr/lib/aarch64-linux-gnu/libvulkan_freedreno.so\""))
-                File(dest, "INSTALLED").writeText("mesa-26.2.0-devel-20260709\n")
-                progress = 1f; label = "Done"
-                if (mode(app) == "off") setMode(app, "native")
+                installNow(app) { f, l -> progress = f; label = l }
             } catch (e: Throwable) {
                 error = e.message ?: e.javaClass.simpleName
             } finally {
