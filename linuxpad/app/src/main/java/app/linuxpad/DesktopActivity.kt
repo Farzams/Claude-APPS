@@ -49,10 +49,13 @@ class DesktopActivity : Activity() {
             setBackgroundColor(0x99000000.toInt()); setOnClickListener { view.toggleKeyboard() }
         }
         val buttonPx = (56 * resources.displayMetrics.density).toInt()
+        val start = StartScreenView(this)
+        val openedAt = System.currentTimeMillis()
         setContentView(FrameLayout(this).apply {
             addView(view)
             addView(ring, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
             addView(keyboard, FrameLayout.LayoutParams(buttonPx, buttonPx, Gravity.BOTTOM or Gravity.END).apply { setMargins(0, 0, 24, 24) })
+            addView(start, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT))
         })
         WindowInsetsControllerCompat(window, view).apply {
             systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -65,7 +68,15 @@ class DesktopActivity : Activity() {
             override fun run() {
                 if (LinuxSystem.session != "stopped") sawSession = true
                 else if (sawSession) { finish(); return }
-                ui.postDelayed(this, 500)
+                // the start screen: what is happening now, gone once the desktop has drawn itself (or after 45 s at most)
+                val ready = LinuxSystem.session == "running" && LinuxSystem.desktopReady(this@DesktopActivity)
+                if (ready || System.currentTimeMillis() - openedAt > 45_000) start.dismiss()
+                else start.setStatus(when {
+                    X11Server.state != app.linuxpad.x11.X11Protocol.STATE_READY -> "Starting the display"
+                    LinuxSystem.session == "starting" -> "Preparing the desktop"
+                    else -> "Starting the desktop"
+                })
+                ui.postDelayed(this, 300)
             }
         })
     }

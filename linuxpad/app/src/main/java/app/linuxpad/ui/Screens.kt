@@ -241,6 +241,7 @@ private fun SetupScreen() {
     }
     AppCard("Details") {
         Muted("The technical output of the installation, for troubleshooting.")
+        if (LinuxSystem.stepTimes.isNotBlank()) Muted("Last set-up: ${LinuxSystem.stepTimes}")
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedBigButton(if (details) "Hide details" else "Show details", onClick = { details = !details })
             OutlinedBigButton("Copy", onClick = { copy(ctx, "LinuxPad details", LinuxSystem.output.takeLast(8000)) })
@@ -386,6 +387,7 @@ private fun SettingsScreen(d: DisplayInfo) {
             val text = buildString {
                 appendLine("LinuxPad $version  ${Build.MANUFACTURER} ${Build.MODEL}, Android ${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})")
                 appendLine("screen ${d.widthPx}x${d.heightPx} ${"%.0f".format(d.refreshHz)} Hz ${"%.1f".format(plan.physicalPpi)} ppi -> Xft.dpi ${plan.xftDpi}, cursor ${plan.cursorSize}")
+                if (LinuxSystem.stepTimes.isNotBlank()) appendLine("set-up times: ${LinuxSystem.stepTimes}")
                 appendLine("debian ${LinuxSystem.installed}, graphics ${LinuxSystem.graphicsOk(ctx)}, xfce ${LinuxSystem.hasXfce(ctx)}, look ${LinuxSystem.lookOk(ctx)}")
                 appendLine("xfce parts: ${LinuxSystem.xfceStatus(ctx)}")
                 appendLine("session ${LinuxSystem.session}, x11 ${X11Server.state} ${X11Server.detail}")

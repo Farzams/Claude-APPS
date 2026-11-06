@@ -33,6 +33,8 @@ object LinuxSystem {
     var running by mutableStateOf(false); private set
 
     fun rootDir(ctx: Context) = File(ctx.filesDir, "rootfs/debian")
+    /** True once the desktop has drawn its panel and icons (written by an autostart entry inside Linux). */
+    fun desktopReady(ctx: Context) = File(rootDir(ctx), "tmp/linuxpad-ready").exists()
     private fun root(ctx: Context) = rootDir(ctx)
 
     fun refresh(ctx: Context) { installed = File(root(ctx), "etc/os-release").exists() || File(root(ctx), "usr/lib/os-release").exists() }
@@ -222,6 +224,7 @@ object LinuxSystem {
                         "  <alias><family>sans-serif</family><prefer><family>Selawik</family><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
+                File(root, "tmp/linuxpad-ready").delete()        // the start screen waits for this file
                 installAssets(app, root)
                 writeXfceConfig(app, root, plan, DEFAULT_THEME)
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
@@ -264,6 +267,8 @@ object LinuxSystem {
     data class SetupState(val running: Boolean = false, val fraction: Float = 0f, val label: String = "", val error: String? = null)
 
     var setupState by mutableStateOf(SetupState()); private set
+    /** How long each step of the last set-up took, for tuning the progress bar. */
+    var stepTimes by mutableStateOf(""); private set
 
     /** Installs what is missing: Debian, graphics libraries, XFCE, then the nicer look. Parts already present are skipped. */
     fun setup(ctx: Context) {
@@ -274,40 +279,72 @@ object LinuxSystem {
         KeepAlive.acquire(app, "setup", "Setting up the Linux desktop")
         scope.launch {
             try {
-                fun report(base: Float, weight: Float, f: Float, label: String) { setupState = SetupState(true, base + weight * f.coerceIn(0f, 1f), label) }
-                var base = 0f
-                // 1. the Linux system
-                if (!File(root(app), "etc/os-release").exists() && !File(root(app), "usr/lib/os-release").exists()) {
-                    Registry.install(IMAGE, TAG, root(app), File(app.cacheDir, "dl")) { p ->
-                        val f = if (p.total > 0) p.done.toFloat() / p.total else 0f
-                        report(base, 0.08f, if (p.phase.startsWith("Downloading")) f * 0.8f else 0.8f, "Debian: ${p.phase.lowercase()}")
-                    }
-                    refresh(app)
+                // one bar for everything; it only moves forward, whatever a single step reports
+                fun report(base: Float, weight: Float, f: Float, label: String) {
+                    val v = (base + weight * f.coerceIn(0f, 1f)).coerceAtLeast(setupState.fraction)
+                    setupState = SetupState(true, v, label)
                 }
-                base = 0.08f
+                val times = mutableListOf<String>()
+                fun timed(name: String, block: () -> Unit) {
+                    val t0 = System.currentTimeMillis()
+                    block()
+                    val sec = (System.currentTimeMillis() - t0) / 1000
+                    times += "$name ${sec / 60}m ${sec % 60}s"
+                    stepTimes = times.joinToString(", ")
+                    output += "[time] $name: ${sec / 60} min ${sec % 60} s\n"
+                }
+                fun stepDone() { refresh(app); tick++ }      // the screen marks the step as installed right away
+                // shares of the bar: Debian 10, graphics 17, XFCE 53, look 20
+                var base = 0f
+                // 1. the Linux system: finding (0-5 %), downloading (5-75 %), unpacking (75-95 %), configuring (95-100 %)
+                if (!File(root(app), "etc/os-release").exists() && !File(root(app), "usr/lib/os-release").exists()) {
+                    timed("Debian") {
+                        Registry.install(IMAGE, TAG, root(app), File(app.cacheDir, "dl")) { p ->
+                            val f = when {
+                                p.phase.startsWith("Downloading") -> 0.05f + 0.70f * (if (p.total > 0) p.done.toFloat() / p.total else 0f)
+                                p.phase.startsWith("Unpacking") -> 0.75f + 0.20f * (1f - kotlin.math.exp(-(Regex("(\\d+) files").find(p.phase)?.groupValues?.get(1)?.toFloatOrNull() ?: 0f) / 6000f))
+                                p.phase.startsWith("Configuring") || p.phase == "Done" -> 0.97f
+                                else -> 0.02f
+                            }
+                            report(base, 0.10f, f, "Debian: ${p.phase.lowercase()}")
+                        }
+                    }
+                    stepDone()
+                }
+                base = 0.10f
                 // 2. graphics and sound libraries
                 if (!graphicsOk(app)) {
-                    val code = apt(app, GRAPHICS_PACKAGES) { f, label -> report(base, 0.17f, f, label) }
-                    if (code != 0) throw IllegalStateException("Installing the graphics libraries failed (exit $code). See Details.")
+                    timed("Graphics") {
+                        val code = apt(app, GRAPHICS_PACKAGES) { f, label -> report(base, 0.17f, f, label) }
+                        if (code != 0) throw IllegalStateException("Installing the graphics libraries failed (exit $code). See Details.")
+                    }
+                    stepDone()
                 }
                 base += 0.17f
                 // 3. XFCE
                 if (!hasXfce(app)) {
-                    val code = apt(app, XFCE_PACKAGES) { f, label -> report(base, 0.55f, f, label) }
-                    if (code != 0) throw IllegalStateException("Installing XFCE failed (exit $code). See Details.")
+                    timed("XFCE") {
+                        val code = apt(app, XFCE_PACKAGES) { f, label -> report(base, 0.53f, f, label) }
+                        if (code != 0) throw IllegalStateException("Installing XFCE failed (exit $code). See Details.")
+                    }
+                    stepDone()
                 }
-                base += 0.55f
+                base += 0.53f
                 // 4. the nicer look: each package on its own, a missing one is not an error
                 val missingLook = LOOK_PACKAGES.split(' ').filter { !pkgInstalled(app, it) }
                 if (missingLook.isNotEmpty()) {
-                    iconCache(app, prepare = true)      // the icon caches of every Papirus variant took tens of minutes under PRoot
-                    missingLook.forEachIndexed { i, pkg ->
-                        val w = 0.17f / missingLook.size
-                        val code = apt(app, pkg, update = false) { f, label -> report(base + w * i, w, f, label) }
-                        if (code != 0) output += "[look] $pkg could not be installed (exit $code)\n"
+                    timed("Look") {
+                        iconCache(app, prepare = true)      // the icon caches of every Papirus variant took tens of minutes under PRoot
+                        missingLook.forEachIndexed { i, pkg ->
+                            val w = 0.17f / missingLook.size
+                            val code = apt(app, pkg, update = false) { f, label -> report(base + w * i, w, f, label) }
+                            if (code != 0) output += "[look] $pkg could not be installed (exit $code)\n"
+                            stepDone()
+                        }
+                        report(base + 0.17f, 0.03f, 0f, "Building the icon cache")
+                        iconCache(app, prepare = false)
                     }
-                    report(base + 0.17f, 0.03f, 0f, "Building the icon cache")
-                    iconCache(app, prepare = false)
+                    stepDone()
                 }
                 setupState = SetupState(false, 1f, "Everything is installed")
             } catch (e: Throwable) {
@@ -463,6 +500,13 @@ menubar > menuitem { min-height: 28px; padding: 2px 14px; }
 Type=Application
 Name=LinuxPad tuning
 Exec=sh -c "sh /root/linuxpad-xfce-tune.sh live > /root/linuxpad-tune-live.log 2>&1"
+X-GNOME-Autostart-enabled=true
+""")
+        // autostart programs run after the panel and the desktop: then the start screen can go
+        File(autostart, "linuxpad-ready.desktop").writeText("""[Desktop Entry]
+Type=Application
+Name=LinuxPad ready
+Exec=sh -c "sleep 2; mkdir -p /tmp; touch /tmp/linuxpad-ready"
 X-GNOME-Autostart-enabled=true
 """)
     }
