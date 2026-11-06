@@ -15,7 +15,7 @@ import kotlin.concurrent.thread
  */
 object Gpu {
     const val DIR = "/opt/mesa-gpu"
-    private const val ASSET = "gpu/mesa-android.tar.gz"
+    private const val ASSET = "gpu/mesa-android"
     private const val LIBS = "libgl1-mesa-dri libglx-mesa0 libegl-mesa0 mesa-vulkan-drivers mesa-utils vulkan-tools"
 
     val MODES = listOf("off", "native", "zink")
@@ -34,7 +34,7 @@ object Gpu {
     fun setSysmem(ctx: Context, on: Boolean) = prefs(ctx).edit().putBoolean("gpu_sysmem", on).apply()
 
     /** True when this build carries the Mesa package. */
-    fun available(ctx: Context): Boolean = runCatching { ctx.assets.open(ASSET).close(); true }.getOrDefault(false)
+    fun available(ctx: Context): Boolean = TarExtractor.assetExists(ctx, ASSET)
     fun installed(ctx: Context) = File(LinuxSystem.rootDir(ctx), "opt/mesa-gpu/INSTALLED").isFile
     fun active(ctx: Context) = installed(ctx) && mode(ctx) != "off"
 
@@ -69,8 +69,7 @@ object Gpu {
                 label = "Unpacking the GPU drivers"; progress = 0.88f
                 val root = LinuxSystem.rootDir(app)
                 val dest = File(root, "opt/mesa-gpu").apply { deleteRecursively(); mkdirs() }
-                val tmp = File(app.cacheDir, "mesa-android.tar.gz")
-                app.assets.open(ASSET).use { input -> tmp.outputStream().use { input.copyTo(it) } }
+                val tmp = TarExtractor.assetToFile(app, ASSET) ?: throw IllegalStateException("This build does not carry the GPU drivers package")
                 TarExtractor.extractTarGz(tmp, dest) { }
                 tmp.delete()
                 // the Vulkan driver is looked up by the path written in its description file: point it into the new folder

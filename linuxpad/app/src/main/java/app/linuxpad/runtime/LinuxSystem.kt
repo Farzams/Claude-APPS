@@ -142,10 +142,9 @@ object LinuxSystem {
 
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
-    /** Desktop themes the user can choose between; the first one that exists is used if the chosen one is missing. */
-    val THEMES = listOf("Yaru", "WhiteSur-Light", "WhiteSur-Dark")
-    fun desktopTheme(ctx: Context): String = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).getString("desktop_theme", "WhiteSur-Dark") ?: "WhiteSur-Dark"
-    fun setDesktopTheme(ctx: Context, name: String) = ctx.getSharedPreferences("linuxpad", Context.MODE_PRIVATE).edit().putString("desktop_theme", name).apply()
+    /** The look Linux starts with the first time. Afterwards the theme is chosen inside Linux and the app leaves it alone. */
+    private const val DEFAULT_THEME = "WhiteSur-Dark"
+    private const val DEFAULT_THEME_STAMP = "default-theme-v1"
 
     fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/themes/Yaru").isDirectory || File(rootDir(ctx), "usr/share/fonts/truetype/ubuntu").isDirectory
 
@@ -224,7 +223,7 @@ object LinuxSystem {
                         "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 installAssets(app, root)
-                writeXfceConfig(app, root, plan, desktopTheme(app))
+                writeXfceConfig(app, root, plan, DEFAULT_THEME)
                 // xrdb normally runs the C preprocessor, which a minimal Debian does not have: -nocpp avoids it.
                 // The root window gets a cursor of its own (otherwise it keeps the tiny default X cursor).
                 val gpuOn = Gpu.active(app)
@@ -236,7 +235,7 @@ object LinuxSystem {
                     "[ -s /etc/machine-id ] || dbus-uuidgen --ensure=/etc/machine-id; " +
                     // LinuxPad's settings are written before the desktop starts (a private session bus, ended afterwards), so the first
                     // frame already has the final panel, wallpaper and icons
-                    "dbus-launch --exit-with-session sh /root/linuxpad-xfce-tune.sh >/dev/null 2>&1; " +
+                    "dbus-launch --exit-with-session sh -x /root/linuxpad-xfce-tune.sh pre >/root/linuxpad-tune.log 2>&1; echo '[tune pre]'; tail -n 40 /root/linuxpad-tune.log; " +
                     "export XDG_SESSION_TYPE=x11 GDK_BACKEND=x11 NO_AT_BRIDGE=1 XCURSOR_THEME=LinuxPad; " +
                     (if (gpuOn) Gpu.exports(app) else "export LIBGL_ALWAYS_SOFTWARE=1; ") +
                     "export QT_AUTO_SCREEN_SCALE_FACTOR=0 QT_SCALE_FACTOR=${plan.qtScaleFactor} QT_FONT_DPI=96; " +
@@ -408,7 +407,7 @@ object LinuxSystem {
         // when the files do not exist yet, or when the theme was changed in the app's Settings; whatever the user changes inside
         // XFCE stays.
         val prefs = app.getSharedPreferences("linuxpad", Context.MODE_PRIVATE)
-        val themeChanged = prefs.getString("theme_applied", null) != themeName
+        val themeChanged = prefs.getString("theme_applied", null) != DEFAULT_THEME_STAMP   // the default look is put in once
         val xs = File(xml, "xsettings.xml")
         val screenValues = mapOf("DPI" to "${plan.xftDpi / scale}", "WindowScalingFactor" to "$scale",
             "CursorThemeName" to CursorTheme.NAME, "CursorThemeSize" to "${plan.cursorSize / scale}")
@@ -445,7 +444,7 @@ object LinuxSystem {
   </property>
 </channel>
 """)
-        prefs.edit().putString("theme_applied", themeName).apply()
+        prefs.edit().putString("theme_applied", DEFAULT_THEME_STAMP).apply()
         // Roomier menus for touch (sizes are logical pixels, doubled by the window scale)
         File(root, "root/.config/gtk-3.0").mkdirs()
         File(root, "root/.config/gtk-3.0/gtk.css").writeText("""menu menuitem { min-height: 30px; padding: 4px 16px; }
@@ -458,7 +457,14 @@ menubar > menuitem { min-height: 28px; padding: 2px 14px; }
         val tune = app.assets.open("tune.sh").bufferedReader().use { it.readText() }
             .replace("@PANEL@", panel.toString()).replace("@DOCK@", dock.toString()).replace("@ICON@", desktopIcon.toString())
         File(root, "root/linuxpad-xfce-tune.sh").writeText(tune)
-        File(root, "root/.config/autostart/linuxpad-tune.desktop").delete()   // an earlier build ran the script after the desktop started
+        // the same script once more inside the running desktop: it only finishes what the first run could not verify
+        val autostart = File(root, "root/.config/autostart").apply { mkdirs() }
+        File(autostart, "linuxpad-tune.desktop").writeText("""[Desktop Entry]
+Type=Application
+Name=LinuxPad tuning
+Exec=sh -c "sh /root/linuxpad-xfce-tune.sh live > /root/linuxpad-tune-live.log 2>&1"
+X-GNOME-Autostart-enabled=true
+""")
     }
 
     /** Sets the values of existing properties in an xfconf file; false when one is missing (the caller then writes the whole file). */
@@ -481,11 +487,10 @@ menubar > menuitem { min-height: 28px; padding: 2px 14px; }
         }
         // the WhiteSur themes (MIT, https://github.com/vinceliuice/WhiteSur-gtk-theme), prebuilt: Light and Dark with their window frames
         val themes = File(root, "usr/share/themes").apply { mkdirs() }
-        for (name in THEMES.filter { it.startsWith("WhiteSur") }) {
+        for (name in listOf("WhiteSur-Light", "WhiteSur-Dark")) {
             if (File(themes, "$name/index.theme").isFile) continue
             runCatching {
-                val tmp = File(app.cacheDir, "$name.tar.gz")
-                app.assets.open("themes/$name.tar.gz").use { input -> tmp.outputStream().use { input.copyTo(it) } }
+                val tmp = TarExtractor.assetToFile(app, "themes/$name") ?: return@runCatching
                 TarExtractor.extractTarGz(tmp, themes) { }
                 tmp.delete()
             }

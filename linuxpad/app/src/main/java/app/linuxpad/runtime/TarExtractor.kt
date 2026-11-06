@@ -12,7 +12,12 @@ object TarExtractor {
     fun extractTarGz(archive: File, dest: File, onFiles: (Int) -> Unit) {
         val root = dest.canonicalPath
         var count = 0
-        TarArchiveInputStream(GZIPInputStream(FileInputStream(archive).buffered(1 shl 16))).use { tar ->
+        // the Android build tools unpack ".tar.gz" files inside assets and keep them as ".tar", so both forms are read
+        val raw = FileInputStream(archive).buffered(1 shl 16)
+        raw.mark(2)
+        val gzip = raw.read() == 0x1f && raw.read() == 0x8b
+        raw.reset()
+        TarArchiveInputStream(if (gzip) GZIPInputStream(raw) else raw).use { tar ->
             while (true) {
                 val e: TarArchiveEntry = tar.nextTarEntry ?: break
                 val rel = e.name.removePrefix("./").trimEnd('/')
@@ -45,4 +50,19 @@ object TarExtractor {
         }
         onFiles(count)
     }
+
+    /** Copies the tarball asset "name.tar.gz" (or "name.tar", which is what the build tools leave of it) to the cache; null if absent. */
+    fun assetToFile(ctx: android.content.Context, name: String): File? {
+        for (suffix in listOf(".tar.gz", ".tar")) {
+            val out = File(ctx.cacheDir, "asset-" + name.replace('/', '_') + suffix)
+            try {
+                ctx.assets.open(name + suffix).use { input -> out.outputStream().use { input.copyTo(it) } }
+                return out
+            } catch (_: Exception) { }
+        }
+        return null
+    }
+
+    fun assetExists(ctx: android.content.Context, name: String): Boolean =
+        listOf(".tar.gz", ".tar").any { runCatching { ctx.assets.open(name + it).close(); true }.getOrDefault(false) }
 }
