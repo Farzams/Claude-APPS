@@ -146,7 +146,7 @@ object LinuxSystem {
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
     /** The look Linux starts with the first time. Afterwards the theme is chosen inside Linux and the app leaves it alone. */
     private const val DEFAULT_THEME = "WhiteSur-Dark"
-    private const val DEFAULT_THEME_STAMP = "default-theme-v1"
+    private const val DEFAULT_THEME_STAMP = "default-theme-v2"   // v2: double-size window buttons and the Inter font
 
     fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/themes/Yaru").isDirectory || File(rootDir(ctx), "usr/share/fonts/truetype/ubuntu").isDirectory
 
@@ -221,7 +221,7 @@ object LinuxSystem {
                 File(root, "root/.config/fontconfig").mkdirs()
                 File(root, "root/.config/fontconfig/fonts.conf").writeText(
                     "<?xml version=\"1.0\"?>\n<!DOCTYPE fontconfig SYSTEM \"fonts.dtd\">\n<fontconfig>\n" +
-                        "  <alias><family>sans-serif</family><prefer><family>Selawik</family><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
+                        "  <alias><family>sans-serif</family><prefer><family>Inter Variable</family><family>Inter</family><family>Selawik</family><family>Ubuntu</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "  <alias><family>monospace</family><prefer><family>Ubuntu Mono</family><family>Liberation Mono</family><family>Vazirmatn</family></prefer></alias>\n" +
                         "</fontconfig>\n")
                 File(root, "tmp/linuxpad-ready").delete()        // the start screen waits for this file
@@ -294,7 +294,7 @@ object LinuxSystem {
                     output += "[time] $name: ${sec / 60} min ${sec % 60} s\n"
                 }
                 fun stepDone() { refresh(app); tick++ }      // the screen marks the step as installed right away
-                // shares of the bar: Debian 10, graphics 17, XFCE 53, look 20
+                // shares of the bar, from measured times on the tablet: Debian 8, graphics 12, XFCE 18, look 62
                 var base = 0f
                 // 1. the Linux system: finding (0-5 %), downloading (5-75 %), unpacking (75-95 %), configuring (95-100 %)
                 if (!File(root(app), "etc/os-release").exists() && !File(root(app), "usr/lib/os-release").exists()) {
@@ -306,42 +306,48 @@ object LinuxSystem {
                                 p.phase.startsWith("Configuring") || p.phase == "Done" -> 0.97f
                                 else -> 0.02f
                             }
-                            report(base, 0.10f, f, "Debian: ${p.phase.lowercase()}")
+                            report(base, 0.08f, f, "Debian: ${p.phase.lowercase()}")
                         }
                     }
                     stepDone()
                 }
-                base = 0.10f
+                base = 0.08f
                 // 2. graphics and sound libraries
                 if (!graphicsOk(app)) {
                     timed("Graphics") {
-                        val code = apt(app, GRAPHICS_PACKAGES) { f, label -> report(base, 0.17f, f, label) }
+                        val code = apt(app, GRAPHICS_PACKAGES) { f, label -> report(base, 0.12f, f, label) }
                         if (code != 0) throw IllegalStateException("Installing the graphics libraries failed (exit $code). See Details.")
                     }
                     stepDone()
                 }
-                base += 0.17f
+                base += 0.12f
                 // 3. XFCE
                 if (!hasXfce(app)) {
                     timed("XFCE") {
-                        val code = apt(app, XFCE_PACKAGES) { f, label -> report(base, 0.53f, f, label) }
+                        val code = apt(app, XFCE_PACKAGES) { f, label -> report(base, 0.18f, f, label) }
                         if (code != 0) throw IllegalStateException("Installing XFCE failed (exit $code). See Details.")
                     }
                     stepDone()
                 }
-                base += 0.53f
+                base += 0.18f
                 // 4. the nicer look: each package on its own, a missing one is not an error
                 val missingLook = LOOK_PACKAGES.split(' ').filter { !pkgInstalled(app, it) }
                 if (missingLook.isNotEmpty()) {
                     timed("Look") {
                         iconCache(app, prepare = true)      // the icon caches of every Papirus variant took tens of minutes under PRoot
-                        missingLook.forEachIndexed { i, pkg ->
-                            val w = 0.17f / missingLook.size
-                            val code = apt(app, pkg, update = false) { f, label -> report(base + w * i, w, f, label) }
+                        // Papirus (tens of thousands of icons) takes most of this step
+                        val share = mapOf("papirus-icon-theme" to 0.75f, "yaru-theme-gtk" to 0.14f, "fonts-ubuntu" to 0.07f, "xfce4-genmon-plugin" to 0.04f)
+                        val total = missingLook.sumOf { (share[it] ?: 0.05f).toDouble() }.toFloat()
+                        var at = base
+                        for (pkg in missingLook) {
+                            val w = 0.58f * (share[pkg] ?: 0.05f) / total
+                            val from = at
+                            val code = apt(app, pkg, update = false) { f, label -> report(from, w, f, label) }
                             if (code != 0) output += "[look] $pkg could not be installed (exit $code)\n"
+                            at += w
                             stepDone()
                         }
-                        report(base + 0.17f, 0.03f, 0f, "Building the icon cache")
+                        report(base + 0.58f, 0.04f, 0f, "Building the icon cache")
                         iconCache(app, prepare = false)
                     }
                     stepDone()
@@ -433,10 +439,16 @@ object LinuxSystem {
             File(root, "usr/share/themes/Yaru/gtk-3.0").isDirectory -> "Yaru"
             else -> "Adwaita"
         }
-        val windowTheme = if (themeName.startsWith("WhiteSur") && File(root, "usr/share/themes/$themeName/xfwm4").isDirectory) themeName else "Default"
+        val windowTheme = when {
+            themeName.startsWith("WhiteSur") && File(root, "usr/share/themes/$themeName-xhdpi/xfwm4").isDirectory -> "$themeName-xhdpi"
+            themeName.startsWith("WhiteSur") && File(root, "usr/share/themes/$themeName/xfwm4").isDirectory -> themeName
+            else -> "Default-xhdpi"
+        }
         val iconName = if (File(root, "usr/share/icons/Papirus").isDirectory) "Papirus" else "Adwaita"
+        val fontFiles = File(root, "usr/local/share/fonts/selawik").listFiles()?.map { it.name }.orEmpty()
         val uiFont = when {
-            File(root, "usr/local/share/fonts/selawik").listFiles()?.isNotEmpty() == true -> "Selawik 11"
+            fontFiles.any { it.startsWith("InterVariable") } -> "Inter Variable 11"
+            fontFiles.any { it.endsWith(".ttf") } -> "Selawik 11"
             File(root, "usr/share/fonts/truetype/ubuntu").isDirectory -> "Ubuntu 11"
             else -> "Sans 10"
         }
@@ -448,7 +460,7 @@ object LinuxSystem {
         val xs = File(xml, "xsettings.xml")
         val screenValues = mapOf("DPI" to "${plan.xftDpi / scale}", "WindowScalingFactor" to "$scale",
             "CursorThemeName" to CursorTheme.NAME, "CursorThemeSize" to "${plan.cursorSize / scale}")
-        val patched = xs.isFile && patchProps(xs, screenValues + (if (themeChanged) mapOf("ThemeName" to themeName) else emptyMap()))
+        val patched = xs.isFile && patchProps(xs, screenValues + (if (themeChanged) mapOf("ThemeName" to themeName, "FontName" to uiFont) else emptyMap()))
         if (!patched) xs.writeText("""<?xml version="1.0" encoding="UTF-8"?>
 <channel name="xsettings" version="1.0">
   <property name="Xft" type="empty">
@@ -532,7 +544,7 @@ X-GNOME-Autostart-enabled=true
         // the WhiteSur themes (MIT, https://github.com/vinceliuice/WhiteSur-gtk-theme), prebuilt: Light and Dark with their window frames
         val themes = File(root, "usr/share/themes").apply { mkdirs() }
         for (name in listOf("WhiteSur-Light", "WhiteSur-Dark")) {
-            if (File(themes, "$name/index.theme").isFile) continue
+            if (File(themes, "$name/index.theme").isFile && File(themes, "$name-xhdpi/xfwm4/themerc").isFile) continue
             runCatching {
                 val tmp = TarExtractor.assetToFile(app, "themes/$name") ?: return@runCatching
                 TarExtractor.extractTarGz(tmp, themes) { }

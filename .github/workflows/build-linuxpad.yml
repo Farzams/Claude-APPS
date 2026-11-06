@@ -27,9 +27,11 @@ jobs:
       - uses: actions/cache@v4
         with:
           path: ~/.cache/linuxpad-dl
-          key: linuxpad-dl-${{ hashFiles('linuxpad/tools/build-proot.sh', 'linuxpad/tools/build-pulseaudio.sh', 'linuxpad/tools/fetch-mesa.sh') }}
+          key: linuxpad-dl-${{ hashFiles('linuxpad/tools/build-proot.sh', 'linuxpad/tools/build-pulseaudio.sh', 'linuxpad/tools/fetch-mesa.sh', 'linuxpad/tools/fetch-inter.sh') }}
       - name: Fetch the Mesa package for the GPU option (checksum-pinned release)
         run: linuxpad/tools/fetch-mesa.sh
+      - name: Fetch the Inter font (official release, SIL OFL, checksum-pinned)
+        run: linuxpad/tools/fetch-inter.sh
       - name: Build the audio runtime (checksum-pinned Termux packages)
         run: linuxpad/tools/build-pulseaudio.sh
       - name: Build PRoot for arm64 (NDK)
