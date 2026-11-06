@@ -139,8 +139,8 @@ object LinuxSystem {
     /** The XFCE desktop (about 150 to 300 MB). dbus-x11 gives the session its message bus. */
     const val XFCE_PACKAGES = "xfce4 xfce4-terminal xfce4-notifyd dbus-x11 xdg-utils mousepad"
 
-    /** Nicer fonts and icons: the Ubuntu font, Papirus icons and the Yaru theme (the Ubuntu look, on Debian). Each is tried on its own. */
-    const val LOOK_PACKAGES = "fonts-ubuntu papirus-icon-theme yaru-theme-gtk xfce4-genmon-plugin"
+    /** Papirus icons, the panel indicator plugin and the Ubuntu fonts (Ubuntu Mono in the terminal). Each is tried on its own. */
+    const val LOOK_PACKAGES = "papirus-icon-theme xfce4-genmon-plugin fonts-ubuntu"
 
     fun hasXfce(ctx: Context) = File(rootDir(ctx), "usr/bin/startxfce4").exists()
     fun graphicsOk(ctx: Context) = File(rootDir(ctx), "usr/share/X11/xkb").isDirectory && File(rootDir(ctx), "usr/lib/aarch64-linux-gnu/libpulse.so.0").exists()
@@ -148,7 +148,7 @@ object LinuxSystem {
     private const val DEFAULT_THEME = "WhiteSur-Dark"
     private const val DEFAULT_THEME_STAMP = "default-theme-v2"   // v2: double-size window buttons and the Inter font
 
-    fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/themes/Yaru").isDirectory || File(rootDir(ctx), "usr/share/fonts/truetype/ubuntu").isDirectory
+    fun lookOk(ctx: Context) = File(rootDir(ctx), "usr/share/icons/Papirus/index.theme").isFile
 
     /** Which parts of XFCE are present, for the report. */
     fun xfceStatus(ctx: Context): String {
@@ -294,7 +294,7 @@ object LinuxSystem {
                     output += "[time] $name: ${sec / 60} min ${sec % 60} s\n"
                 }
                 fun stepDone() { refresh(app); tick++ }      // the screen marks the step as installed right away
-                // shares of the bar, from measured times on the tablet: Debian 7, graphics 11, XFCE 16, look 54, GPU drivers 12
+                // shares of the bar, from measured times on the tablet: Debian 7, graphics 11, XFCE 16, GPU drivers 12, look 54
                 var base = 0f
                 // 1. the Linux system: finding (0-5 %), downloading (5-75 %), unpacking (75-95 %), configuring (95-100 %)
                 if (!File(root(app), "etc/os-release").exists() && !File(root(app), "usr/lib/os-release").exists()) {
@@ -330,13 +330,22 @@ object LinuxSystem {
                     stepDone()
                 }
                 base += 0.16f
-                // 4. the nicer look: each package on its own, a missing one is not an error
+                // 4. the GPU drivers (Adreno), when this build carries them; a failure here leaves the safe software drawing
+                if (Gpu.available(app) && !Gpu.installed(app)) {
+                    timed("GPU") {
+                        try { Gpu.installNow(app) { f, l -> report(base, 0.12f, f, "GPU: $l") } }
+                        catch (e: Throwable) { output += "[gpu] ${e.message}\n" }
+                    }
+                    stepDone()
+                }
+                base += 0.12f
+                // 5. the nicer look (last: it is the slowest and only changes how things look): each package on its own, a missing one is not an error
                 val missingLook = LOOK_PACKAGES.split(' ').filter { !pkgInstalled(app, it) }
                 if (missingLook.isNotEmpty()) {
                     timed("Look") {
                         iconCache(app, prepare = true)      // the icon caches of every Papirus variant took tens of minutes under PRoot
                         // Papirus (tens of thousands of icons) takes most of this step
-                        val share = mapOf("papirus-icon-theme" to 0.75f, "yaru-theme-gtk" to 0.14f, "fonts-ubuntu" to 0.07f, "xfce4-genmon-plugin" to 0.04f)
+                        val share = mapOf("papirus-icon-theme" to 0.86f, "fonts-ubuntu" to 0.09f, "xfce4-genmon-plugin" to 0.05f)
                         val total = missingLook.sumOf { (share[it] ?: 0.05f).toDouble() }.toFloat()
                         var at = base
                         for (pkg in missingLook) {
@@ -349,15 +358,6 @@ object LinuxSystem {
                         }
                         report(base + 0.51f, 0.03f, 0f, "Building the icon cache")
                         iconCache(app, prepare = false)
-                    }
-                    stepDone()
-                }
-                base = 0.88f
-                // 5. the GPU drivers (Adreno), when this build carries them; a failure here leaves the safe software drawing
-                if (Gpu.available(app) && !Gpu.installed(app)) {
-                    timed("GPU") {
-                        try { Gpu.installNow(app) { f, l -> report(base, 0.12f, f, "GPU: $l") } }
-                        catch (e: Throwable) { output += "[gpu] ${e.message}\n" }
                     }
                     stepDone()
                 }

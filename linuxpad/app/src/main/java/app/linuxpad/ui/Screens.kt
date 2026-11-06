@@ -223,8 +223,8 @@ private fun SetupScreen() {
         StepRow("Linux system (Debian 13)", debian)
         StepRow("Graphics and sound libraries", graphics)
         StepRow("XFCE desktop", xfce)
-        StepRow("Nicer look: fonts, icons, theme", look, optional = true)
         if (Gpu.available(ctx)) StepRow("Graphics card drivers (GPU)", remember(tick, debian) { Gpu.installed(ctx) })
+        StepRow("Nicer look: icons, panel indicator, fonts", look, optional = true)
         if (st.running) {
             Spacer(Modifier.height(4.dp))
             LinearProgressIndicator(progress = { st.fraction }, modifier = Modifier.fillMaxWidth().height(8.dp), color = Accent, trackColor = Color(0x1FFFFFFF), gapSize = 0.dp, drawStopIndicator = {})
