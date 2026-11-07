@@ -1,0 +1,22 @@
+11-07 03:26:05.226  2520  2539 I TestRunner: started: pdfOperations(app.pdftoolkit.mobile.PdfToolsTest)
+11-07 03:26:05.277   801   859 D EGL_emulation: app_time_stats: avg=10334.46ms min=10334.46ms max=10334.46ms count=1
+11-07 03:26:05.348  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.app.Activity$$ExternalSyntheticLambda0@d517b70
+11-07 03:26:05.349  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@5b882be in: DESTROYED
+11-07 03:26:05.353   506   790 W InputManager-JNI: Input channel object '4e36dbc app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:26:05.390  2520  2539 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+11-07 03:26:05.394  2520  2539 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+11-07 03:26:05.447  2520  2539 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+11-07 03:26:05.449  2520  2539 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+11-07 03:26:05.449  2520  2539 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+11-07 03:26:05.449  2520  2539 D PdfBox-Android: AcroForm content has already been retrieved with fixes applied - original content changed because of that
+11-07 03:26:05.595  2520  2527 I .pdftoolkit.pdf: Background young concurrent copying GC freed 145499(6791KB) AllocSpace objects, 6(1684KB) LOS objects, 28% free, 17MB/24MB, paused 51us,69us total 161.807ms
+11-07 03:26:05.601  2520  2539 I PDFTK   : merge ok
+11-07 03:26:05.738  2520  2539 I PDFTK   : extract ok
+11-07 03:26:05.819  2520  2539 I PDFTK   : organize ok
+11-07 03:26:05.891  2520  2539 I PDFTK   : locked file refused: InvalidPasswordException
+11-07 03:26:05.986  2520  2539 I PDFTK   : protect ok
+11-07 03:26:06.198  2520  2539 I PDFTK   : compress ok: 19818 -> 37592
+11-07 03:26:06.240  2520  2539 I PDFTK   : pictures ok
+11-07 03:26:06.456  2520  2539 I PDFTK   : watermark ok
+11-07 03:26:06.559  2520  2539 I PDFTK   : numbers ok
+11-07 03:26:06.559  2520  2539 I TestRunner: finished: pdfOperations(app.pdftoolkit.mobile.PdfToolsTest)

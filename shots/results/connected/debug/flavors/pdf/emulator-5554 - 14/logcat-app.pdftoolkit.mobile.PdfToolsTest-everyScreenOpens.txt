@@ -1,0 +1,275 @@
+11-07 03:23:51.231  2520  2539 I TestRunner: started: everyScreenOpens(app.pdftoolkit.mobile.PdfToolsTest)
+11-07 03:23:51.236  2520  2539 I UiDevice: Creating a new instance, old instance exists: false
+11-07 03:23:51.237  2520  2539 I UiAutomation: Initialized for user 0 on display 0
+11-07 03:23:51.251  2520  2541 V UiAutomation: Init UiAutomation@3d1a9c1[id=1, displayId=0, flags=0]
+11-07 03:23:51.254  2520  2539 D UiDevice: Setting accessibility service flags: 65618
+11-07 03:23:51.270   506  2263 D SafetySourceDataValidator: No cert check requested for package com.android.permissioncontroller
+11-07 03:23:51.293  2520  2539 D UiDevice: Waiting 30000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:23:51.293  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:51.320   388   388 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+11-07 03:23:51.342   801   851 D SplashScreenView: Build android.window.SplashScreenView{d0ad107 V.E...... ......ID 0,0-0,0}
+11-07 03:23:51.342   801   851 D SplashScreenView: Icon: view: null drawable: null size: 0
+11-07 03:23:51.342   801   851 D SplashScreenView: Branding: view: android.view.View{bb55234 G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+11-07 03:23:51.359  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@ecc2dd8 in: PRE_ON_CREATE
+11-07 03:23:51.460  1046  1631 D EGL_emulation: app_time_stats: avg=23470.50ms min=102.54ms max=46838.46ms count=2
+11-07 03:23:51.484  2520  2545 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-07 03:23:51.547  2520  2545 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-07 03:23:51.593  2520  2545 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-07 03:23:51.642  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@ecc2dd8 in: CREATED
+11-07 03:23:51.644  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@ecc2dd8 in: STARTED
+11-07 03:23:51.646  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@ecc2dd8 in: RESUMED
+11-07 03:23:51.651  2520  2520 D CompatibilityChangeReporter: Compat change id reported: 237531167; UID 10141; state: DISABLED
+11-07 03:23:51.652  2520  2520 W OpenGLRenderer: Unknown dataspace 0
+11-07 03:23:51.835  2520  2539 W UiDevice: Active window root not found.
+11-07 03:23:51.965  2520  2520 W .pdftoolkit.pdf: Method boolean androidx.compose.runtime.snapshots.SnapshotStateList.conditionalUpdate(boolean, kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+11-07 03:23:51.965  2520  2520 W .pdftoolkit.pdf: Common causes for lock verification issues are non-optimized dex code
+11-07 03:23:51.965  2520  2520 W .pdftoolkit.pdf: and incorrect proguard optimizations.
+11-07 03:23:51.967  2520  2520 W .pdftoolkit.pdf: Method boolean androidx.compose.runtime.snapshots.SnapshotStateList.conditionalUpdate$default(androidx.compose.runtime.snapshots.SnapshotStateList, boolean, kotlin.jvm.functions.Function1, int, java.lang.Object) failed lock verification and will run slower.
+11-07 03:23:51.967  2520  2520 W .pdftoolkit.pdf: Method java.lang.Object androidx.compose.runtime.snapshots.SnapshotStateList.mutate(kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+11-07 03:23:51.968  2520  2520 W .pdftoolkit.pdf: Method void androidx.compose.runtime.snapshots.SnapshotStateList.update(boolean, kotlin.jvm.functions.Function1) failed lock verification and will run slower.
+11-07 03:23:51.968  2520  2520 W .pdftoolkit.pdf: Method void androidx.compose.runtime.snapshots.SnapshotStateList.update$default(androidx.compose.runtime.snapshots.SnapshotStateList, boolean, kotlin.jvm.functions.Function1, int, java.lang.Object) failed lock verification and will run slower.
+11-07 03:23:52.075   801   859 D EGL_emulation: app_time_stats: avg=11696.72ms min=11696.72ms max=11696.72ms count=1
+11-07 03:23:52.078   801   859 D EGL_emulation: app_time_stats: avg=28923.06ms min=607.42ms max=57238.70ms count=2
+11-07 03:23:52.102  2520  2539 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=Home, displayId=0, id=4, taskId=7, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=true, active=true, pictureInPicture=false, transitionTime=88513, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:23:52.226  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:52.227  2520  2539 W UiDevice: Active window root not found.
+11-07 03:23:52.229  2520  2520 D CompatibilityChangeReporter: Compat change id reported: 289878283; UID 10141; state: ENABLED
+11-07 03:23:52.231  2520  2539 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=Home, displayId=0, id=4, taskId=7, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=true, active=true, pictureInPicture=false, transitionTime=88513, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:23:52.335  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:52.336  2520  2539 W UiDevice: Active window root not found.
+11-07 03:23:52.338  2520  2539 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=Home, displayId=0, id=4, taskId=7, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=true, active=true, pictureInPicture=false, transitionTime=88513, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:23:52.381   388  1055 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10141 pid=0
+11-07 03:23:52.381   388  1055 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10141 => denied (186 us)
+11-07 03:23:52.382   388  1055 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10141 pid=0
+11-07 03:23:52.382   388  1055 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10141 => denied (84 us)
+11-07 03:23:52.382   388  1055 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10141 pid=0
+11-07 03:23:52.382   388  1055 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10141 => denied (71 us)
+11-07 03:23:52.399  2520  2543 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-07 03:23:52.418   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:23:52.419  2520  2543 I Gralloc4: mapper 4.x is not supported
+11-07 03:23:52.444  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:52.838   506  2405 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10141 pid=0
+11-07 03:23:52.838   506  2405 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10141 => denied (206 us)
+11-07 03:23:52.839   506  2405 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10141 pid=0
+11-07 03:23:52.839   506  2405 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10141 => denied (26 us)
+11-07 03:23:52.839   506  2405 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10141 pid=0
+11-07 03:23:52.839   506  2405 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10141 => denied (45 us)
+11-07 03:23:52.852   506   523 W ziparchive: Unable to open '/data/app/~~cuu6qGOQa0n-ekjn9JSqAQ==/app.pdftoolkit.pdf-FCnSVq4pwBSyRlP7jUOYAw==/base.dm': No such file or directory
+11-07 03:23:52.853   506   523 I ActivityTaskManager: Displayed app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity for user 0: +1s571ms
+11-07 03:23:52.856  2520  2520 I Choreographer: Skipped 67 frames!  The application may be doing too much work on its main thread.
+11-07 03:23:52.868   506   880 W InputManager-JNI: Input channel object '7daad97 Splash Screen app.pdftoolkit.pdf (client)' was disposed without first being removed with the input manager!
+11-07 03:23:52.870  2520  2531 I OpenGLRenderer: Davey! duration=1200ms; Flags=1, FrameTimelineVsyncId=3471, IntendedVsync=88909839036, Vsync=88909839036, InputEventId=0, HandleInputStart=88913670320, AnimationStart=88913673956, PerformTraversalsStart=88913676488, DrawStart=89733564854, FrameDeadline=88926505702, FrameInterval=88913651312, FrameStartTime=16666666, SyncQueued=89760574718, SyncStart=89760780990, IssueDrawCommandsStart=89761093386, SwapBuffers=89985906055, FrameCompleted=90110096522, DequeueBufferDuration=3197, QueueBufferDuration=273292, GpuCompleted=90110096522, SwapBuffersCompleted=90090979621, DisplayPresentTime=0, CommandSubmissionCompleted=89985906055,
+11-07 03:23:52.899  1046  1084 I ImeTracker: com.android.launcher3:1ddb9f2a: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+11-07 03:23:52.899   506  1617 I ImeTracker: com.android.launcher3:1ddb9f2a: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:23:53.006   506  2405 I ImeTracker: app.pdftoolkit.pdf:64f0559a: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:23:53.006   506  2405 I ImeTracker: app.pdftoolkit.pdf:64f0559a: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:23:53.118  2520  2542 I OpenGLRenderer: Davey! duration=1336ms; Flags=0, FrameTimelineVsyncId=3501, IntendedVsync=88976505700, Vsync=90093172322, InputEventId=0, HandleInputStart=90109643009, AnimationStart=90109645908, PerformTraversalsStart=90228645549, DrawStart=90229019504, FrameDeadline=90143172320, FrameInterval=90109332888, FrameStartTime=16666666, SyncQueued=90239905205, SyncStart=90239965432, IssueDrawCommandsStart=90240053883, SwapBuffers=90253212323, FrameCompleted=90313421063, DequeueBufferDuration=4033, QueueBufferDuration=567905, GpuCompleted=90313421063, SwapBuffersCompleted=90297699573, DisplayPresentTime=0, CommandSubmissionCompleted=90253212323,
+11-07 03:23:54.213  2520  2539 I PDFTK   : screenshot p01_home
+11-07 03:23:54.214  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:54.254  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:23:54.254  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:54.261  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:54.269  2520  2539 W .pdftoolkit.pdf: Accessing hidden method Landroid/view/MotionEvent;->setDisplayId(I)V (blocked,test-api, reflection, allowed)
+11-07 03:23:54.275  2520  2539 D UiObject2: Clicking on (797, 852).
+11-07 03:23:54.336  2520  2539 W GestureController: Gestures took longer than expected (60ms >> 16ms), device might be in a busy state.
+11-07 03:23:54.337  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:23:54.337  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:23:54.553  2520  2543 D EGL_emulation: app_time_stats: avg=428.59ms min=73.13ms max=995.73ms count=4
+11-07 03:23:55.307   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:23:55.316  2520  2539 I PDFTK   : screenshot p02_merge
+11-07 03:23:55.317  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:23:55.339  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:23:55.385  2520  2539 W GestureController: Gestures took longer than expected (45ms >> 16ms), device might be in a busy state.
+11-07 03:23:55.385  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:23:55.385  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:55.405  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:23:55.614  2520  2543 D EGL_emulation: app_time_stats: avg=353.66ms min=109.22ms max=822.23ms count=3
+11-07 03:23:55.915  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_split\E'].
+11-07 03:23:55.924  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_split\E']].
+11-07 03:23:55.924  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_split\E'].
+11-07 03:23:55.930  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_split\E'].
+11-07 03:23:55.938  2520  2539 D UiObject2: Clicking on (283, 1252).
+11-07 03:23:55.987  2520  2539 W GestureController: Gestures took longer than expected (49ms >> 16ms), device might be in a busy state.
+11-07 03:23:55.988  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:23:55.988  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:23:56.489  2520  2568 D ProfileInstaller: Installing profile for app.pdftoolkit.pdf
+11-07 03:23:57.112  2520  2539 I PDFTK   : screenshot p02_split
+11-07 03:23:57.112  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:23:57.121  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:23:57.168  2520  2539 W GestureController: Gestures took longer than expected (45ms >> 16ms), device might be in a busy state.
+11-07 03:23:57.169  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:23:57.169  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:57.180  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:23:57.223  2574  2574 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:23:57.224  2574  2574 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:23:57.235   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:23:57.235  2574  2575 I Gralloc4: mapper 4.x is not supported
+11-07 03:23:57.411  2520  2543 D EGL_emulation: app_time_stats: avg=449.13ms min=54.09ms max=1243.12ms count=4
+11-07 03:23:57.695  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_organize\E'].
+11-07 03:23:57.709  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_organize\E']].
+11-07 03:23:57.709  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_organize\E'].
+11-07 03:23:57.716  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_organize\E'].
+11-07 03:23:57.725  2520  2539 D UiObject2: Clicking on (797, 1252).
+11-07 03:23:57.793  2520  2539 W GestureController: Gestures took longer than expected (68ms >> 16ms), device might be in a busy state.
+11-07 03:23:57.794  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:23:57.795  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:23:58.311   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:23:58.904  2520  2539 I PDFTK   : screenshot p02_organize
+11-07 03:23:58.904  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:23:58.912  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:23:58.949  2520  2539 W GestureController: Gestures took longer than expected (36ms >> 16ms), device might be in a busy state.
+11-07 03:23:58.950  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:23:58.950  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:23:58.975  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:23:59.143  2520  2543 D EGL_emulation: app_time_stats: avg=433.03ms min=47.04ms max=1248.24ms count=4
+11-07 03:23:59.501  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_compress\E'].
+11-07 03:23:59.515  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_compress\E']].
+11-07 03:23:59.515  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_compress\E'].
+11-07 03:23:59.526  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_compress\E'].
+11-07 03:23:59.534  2520  2539 D UiObject2: Clicking on (283, 1652).
+11-07 03:23:59.587  2520  2539 W GestureController: Gestures took longer than expected (52ms >> 16ms), device might be in a busy state.
+11-07 03:23:59.588  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:23:59.588  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:00.017   801   859 D EGL_emulation: app_time_stats: avg=1318.62ms min=2.25ms max=7023.12ms count=6
+11-07 03:24:00.364   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:24:01.238  2520  2539 I PDFTK   : screenshot p02_compress
+11-07 03:24:01.238  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:01.248  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:01.305  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:01.317  2520  2539 W GestureController: Gestures took longer than expected (68ms >> 16ms), device might be in a busy state.
+11-07 03:24:01.317   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:24:01.318  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:01.318  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:01.485  2520  2543 D EGL_emulation: app_time_stats: avg=585.30ms min=53.93ms max=1759.48ms count=4
+11-07 03:24:01.828  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_img2pdf\E'].
+11-07 03:24:01.844  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_img2pdf\E']].
+11-07 03:24:01.844  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_img2pdf\E'].
+11-07 03:24:01.851  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_img2pdf\E'].
+11-07 03:24:01.858  2520  2539 D UiObject2: Clicking on (797, 1652).
+11-07 03:24:01.931  2520  2539 W GestureController: Gestures took longer than expected (73ms >> 16ms), device might be in a busy state.
+11-07 03:24:01.934  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:24:01.934  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:03.028  2520  2539 I PDFTK   : screenshot p02_img2pdf
+11-07 03:24:03.029  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:03.038  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:03.065  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:03.066  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:03.074  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:03.232  2520  2543 D EGL_emulation: app_time_stats: avg=349.15ms min=46.67ms max=1169.96ms count=5
+11-07 03:24:03.606  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_pdf2img\E'].
+11-07 03:24:03.627  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_pdf2img\E']].
+11-07 03:24:03.628  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_pdf2img\E'].
+11-07 03:24:03.635  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_pdf2img\E'].
+11-07 03:24:03.642  2520  2539 D UiObject2: Clicking on (283, 1966).
+11-07 03:24:03.717  2520  2539 W GestureController: Gestures took longer than expected (75ms >> 16ms), device might be in a busy state.
+11-07 03:24:03.717  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:24:03.718  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:04.318   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:24:04.770   325  1758 W resolv  : SSL_connect ssl error =5, mark 0xf0064: Connection refused
+11-07 03:24:04.770   325  1758 W resolv  : TLS Handshake failed
+11-07 03:24:04.770   325  1758 W resolv  : query failed
+11-07 03:24:04.770   325  1758 W resolv  : validateDnsTlsServer returned 0 for 10.0.2.3
+11-07 03:24:04.770   325  1758 W resolv  : Validation failed
+11-07 03:24:04.821  2520  2539 I PDFTK   : screenshot p02_pdf2img
+11-07 03:24:04.822  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:04.836  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:04.875  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:04.887  2520  2539 W GestureController: Gestures took longer than expected (51ms >> 16ms), device might be in a busy state.
+11-07 03:24:04.888  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:04.888  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:05.025  2520  2543 D EGL_emulation: app_time_stats: avg=358.58ms min=45.14ms max=1182.57ms count=5
+11-07 03:24:05.403  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_protect\E'].
+11-07 03:24:05.421  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_protect\E']].
+11-07 03:24:05.422  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_protect\E'].
+11-07 03:24:05.428  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_protect\E'].
+11-07 03:24:05.435  2520  2539 D UiObject2: Clicking on (797, 1966).
+11-07 03:24:05.493  2520  2539 W GestureController: Gestures took longer than expected (56ms >> 16ms), device might be in a busy state.
+11-07 03:24:05.494  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:24:05.494  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:06.607  2520  2539 I PDFTK   : screenshot p02_protect
+11-07 03:24:06.607  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:06.616  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:06.668  2520  2539 W GestureController: Gestures took longer than expected (51ms >> 16ms), device might be in a busy state.
+11-07 03:24:06.668  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:06.669  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:06.677  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:06.805  2520  2543 D EGL_emulation: app_time_stats: avg=443.03ms min=43.75ms max=1195.13ms count=4
+11-07 03:24:07.188  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_watermark\E'].
+11-07 03:24:07.219  2520  2539 D UiDevice: Swiping from (540, 1800) to (540, 600) in 25 steps.
+11-07 03:24:07.338   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:24:07.656   506   880 D WifiNl80211Manager: Scan result ready event
+11-07 03:24:07.656   506   880 D WifiNative: Scan result ready event
+11-07 03:24:07.753  2598  2598 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:24:07.754  2598  2598 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:24:07.815  2520  2543 D EGL_emulation: app_time_stats: avg=81.88ms min=28.57ms max=414.22ms count=12
+11-07 03:24:07.820   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:24:07.820  2598  2599 I Gralloc4: mapper 4.x is not supported
+11-07 03:24:07.922  2520  2520 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10141; state: ENABLED
+11-07 03:24:08.949  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_watermark\E'].
+11-07 03:24:08.967  2520  2539 D UiDevice: Swiping from (540, 1800) to (540, 600) in 25 steps.
+11-07 03:24:09.026  2520  2543 D EGL_emulation: app_time_stats: avg=78.65ms min=32.41ms max=391.85ms count=15
+11-07 03:24:10.035  2520  2543 D EGL_emulation: app_time_stats: avg=45.43ms min=27.61ms max=64.99ms count=20
+11-07 03:24:10.342   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:24:10.364   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:24:10.375   801   859 D EGL_emulation: app_time_stats: avg=10357.50ms min=10357.50ms max=10357.50ms count=1
+11-07 03:24:10.548  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_watermark\E'].
+11-07 03:24:10.874  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_watermark\E']].
+11-07 03:24:10.874  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_watermark\E'].
+11-07 03:24:10.881  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_watermark\E'].
+11-07 03:24:10.888  2520  2539 D UiObject2: Clicking on (283, 1817).
+11-07 03:24:10.955  2520  2539 W GestureController: Gestures took longer than expected (67ms >> 16ms), device might be in a busy state.
+11-07 03:24:10.956  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:24:10.956  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:11.058  2520  2543 D EGL_emulation: app_time_stats: avg=203.07ms min=33.36ms max=820.20ms count=5
+11-07 03:24:12.074  2520  2539 I PDFTK   : screenshot p02_watermark
+11-07 03:24:12.075  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:12.086  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:12.134  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:12.148  2520  2539 W GestureController: Gestures took longer than expected (61ms >> 16ms), device might be in a busy state.
+11-07 03:24:12.149  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:12.149  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:12.266  2520  2543 D EGL_emulation: app_time_stats: avg=603.71ms min=210.22ms max=997.19ms count=2
+11-07 03:24:12.650  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_numbers\E'].
+11-07 03:24:12.683  2520  2539 D UiDevice: Swiping from (540, 1800) to (540, 600) in 25 steps.
+11-07 03:24:13.314  2520  2543 D EGL_emulation: app_time_stats: avg=75.83ms min=23.92ms max=419.26ms count=13
+11-07 03:24:14.345  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_numbers\E'].
+11-07 03:24:14.361  2520  2539 D UiDevice: Swiping from (540, 1800) to (540, 600) in 25 steps.
+11-07 03:24:14.429  2520  2543 D EGL_emulation: app_time_stats: avg=75.89ms min=29.70ms max=449.45ms count=14
+11-07 03:24:15.471  2520  2543 D EGL_emulation: app_time_stats: avg=43.01ms min=28.51ms max=62.44ms count=21
+11-07 03:24:15.924  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_numbers\E'].
+11-07 03:24:15.937  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_numbers\E']].
+11-07 03:24:15.938  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_numbers\E'].
+11-07 03:24:15.945  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_numbers\E'].
+11-07 03:24:15.954  2520  2539 D UiObject2: Clicking on (797, 1817).
+11-07 03:24:15.999  2520  2539 W GestureController: Gestures took longer than expected (44ms >> 16ms), device might be in a busy state.
+11-07 03:24:16.000  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:24:16.000  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:17.113  2520  2539 I PDFTK   : screenshot p02_numbers
+11-07 03:24:17.113  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:17.122  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:17.193  2520  2539 W GestureController: Gestures took longer than expected (70ms >> 16ms), device might be in a busy state.
+11-07 03:24:17.194  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:17.194  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:17.196  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:17.318  2520  2543 D EGL_emulation: app_time_stats: avg=304.74ms min=30.94ms max=1163.85ms count=6
+11-07 03:24:17.711  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_docs2pdf\E'].
+11-07 03:24:17.717  2520  2539 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_docs2pdf\E']].
+11-07 03:24:17.717  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_docs2pdf\E'].
+11-07 03:24:17.723  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcard_docs2pdf\E'].
+11-07 03:24:17.731  2520  2539 D UiObject2: Clicking on (283, 852).
+11-07 03:24:17.815  2520  2539 W GestureController: Gestures took longer than expected (84ms >> 16ms), device might be in a busy state.
+11-07 03:24:17.816  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qback\E']].
+11-07 03:24:17.816  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:18.732  2611  2611 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:24:18.732  2611  2611 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:24:18.752   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:24:18.753  2611  2612 I Gralloc4: mapper 4.x is not supported
+11-07 03:24:18.922  2520  2539 I PDFTK   : screenshot p02_docs2pdf
+11-07 03:24:18.922  2520  2539 D UiDevice: Retrieving node with selector: BySelector [RES='\Qback\E'].
+11-07 03:24:18.940  2520  2539 D UiObject2: Clicking on (75, 213).
+11-07 03:24:19.010  2520  2539 W GestureController: Gestures took longer than expected (70ms >> 16ms), device might be in a busy state.
+11-07 03:24:19.011  2520  2539 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qcard_merge\E']].
+11-07 03:24:19.011  2520  2539 D UiDevice: Searching for node with selector: BySelector [RES='\Qcard_merge\E'].
+11-07 03:24:19.014  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@761e7c9
+11-07 03:24:19.151  2520  2543 D EGL_emulation: app_time_stats: avg=366.42ms min=46.39ms max=1231.74ms count=5
+11-07 03:24:19.527  2520  2539 I TestRunner: finished: everyScreenOpens(app.pdftoolkit.mobile.PdfToolsTest)

@@ -1,0 +1,1137 @@
+11-07 03:29:38.540  2930  2951 I TestRunner: started: insertToolsMakeCompilableLatex(app.pdftoolkit.mobile.TemplatesTest)
+11-07 03:29:38.596   506  1726 W InputManager-JNI: Input channel object 'e64893e app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:29:38.653  1536  2245 W MediaProvider: isAppCloneUserPair for user 0: false
+11-07 03:29:38.745  1536  2245 W MediaProvider: isAppCloneUserPair for user 0: false
+11-07 03:29:39.582   801   851 D SplashScreenView: Build android.window.SplashScreenView{72c9e78 V.E...... ......ID 0,0-0,0}
+11-07 03:29:39.582   801   851 D SplashScreenView: Icon: view: null drawable: null size: 0
+11-07 03:29:39.582   801   851 D SplashScreenView: Branding: view: android.view.View{f183951 G.ED..... ......I. 0,0-0,0 #10204ef android:id/splashscreen_branding_view} drawable: null size w: 0 h: 0
+11-07 03:29:39.584  2930  2951 D UiDevice: Waiting 30000ms for SearchCondition[hasObject=BySelector [RES='\Qnew_project\E']].
+11-07 03:29:39.584  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qnew_project\E'].
+11-07 03:29:39.590   388   388 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+11-07 03:29:39.617  2930  2930 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@7139684 in: PRE_ON_CREATE
+11-07 03:29:39.678  1046  1631 D EGL_emulation: app_time_stats: avg=489.61ms min=78.74ms max=1217.06ms count=3
+11-07 03:29:39.768  2930  2930 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@7139684 in: CREATED
+11-07 03:29:39.789  2930  2930 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@7139684 in: STARTED
+11-07 03:29:39.790  2930  2930 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@7139684 in: RESUMED
+11-07 03:29:39.802  2930  2930 D AutofillManager: Fill dialog is enabled:false, hints=[]
+11-07 03:29:39.837  1046  1046 W FrameTracker: Missed App frame:UNKNOWN: 10, 19872, 54491842, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME>
+11-07 03:29:39.837  1046  1046 W FrameTracker: Missed SF frame:UNKNOWN: 10, 19872, 54491842, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME>
+11-07 03:29:39.837  1046  1046 W FrameTracker: Missed App frame:UNKNOWN: 10, 20000, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME>
+11-07 03:29:39.837  1046  1046 W FrameTracker: Missed SF frame:UNKNOWN: 10, 20000, 0, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME>
+11-07 03:29:39.838  1046  1046 W FrameTracker: Missing HWUI jank callback for vsyncId: 20000, CUJ=J<LAUNCHER_APP_CLOSE_TO_HOME>
+11-07 03:29:39.856   801   859 D EGL_emulation: app_time_stats: avg=8955.29ms min=33.75ms max=17876.83ms count=2
+11-07 03:29:39.906  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qnew_project\E'].
+11-07 03:29:39.937  2930  2951 W UiDevice: Active window root not found.
+11-07 03:29:39.943   801   859 D EGL_emulation: app_time_stats: avg=17994.27ms min=17994.27ms max=17994.27ms count=1
+11-07 03:29:39.951  2930  2951 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=Home, displayId=0, id=19, taskId=7, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=true, active=true, pictureInPicture=false, transitionTime=435635, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:29:40.067  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qnew_project\E'].
+11-07 03:29:40.144  2930  3015 W chromium: [WARNING:display_webview.cc(32)] WebView overlays are enabled!
+11-07 03:29:40.182   506   523 W ziparchive: Unable to open '/data/app/~~xkWbeu-Ea3tRYMdeYixRAw==/app.pdftoolkit.latex-c2iVLSt1pKZGUKtzjNGfqw==/base.dm': No such file or directory
+11-07 03:29:40.183   506   523 I ActivityTaskManager: Displayed app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity for user 0: +592ms
+11-07 03:29:40.199   506  2405 W InputManager-JNI: Input channel object 'b28cb07 Splash Screen app.pdftoolkit.latex (client)' was disposed without first being removed with the input manager!
+11-07 03:29:40.204  1046  1084 I ImeTracker: com.android.launcher3:1adeb56b: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+11-07 03:29:40.218   506  1726 I ImeTracker: app.pdftoolkit.latex:1d4c306c: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:29:40.218   506  1726 I ImeTracker: app.pdftoolkit.latex:1d4c306c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:29:40.219   506   957 I ImeTracker: com.android.launcher3:1adeb56b: onCancelled at PHASE_SERVER_CLIENT_FOCUSED
+11-07 03:29:40.405   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:29:40.760  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qnew_project\E']].
+11-07 03:29:40.760  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qnew_project\E'].
+11-07 03:29:41.371  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qnew_project\E'].
+11-07 03:29:41.378  2930  2951 D UiObject2: Clicking on (823, 2147).
+11-07 03:29:41.442  2930  2951 W GestureController: Gestures took longer than expected (64ms >> 16ms), device might be in a busy state.
+11-07 03:29:41.443  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QTemplates\E']].
+11-07 03:29:41.443  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QTemplates\E'].
+11-07 03:29:41.512  2930  2963 D EGL_emulation: app_time_stats: avg=272.08ms min=57.05ms max=676.00ms count=5
+11-07 03:29:41.727   801   859 D EGL_emulation: app_time_stats: avg=359.35ms min=17.98ms max=1320.07ms count=5
+11-07 03:29:41.768   801   859 D EGL_emulation: app_time_stats: avg=1823.85ms min=1823.85ms max=1823.85ms count=1
+11-07 03:29:42.051   506  1726 I ImeTracker: app.pdftoolkit.latex:594fa477: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:29:42.052   506  1726 I ImeTracker: app.pdftoolkit.latex:594fa477: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:29:42.585  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QSearch templates\E']].
+11-07 03:29:42.586  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QSearch templates\E'].
+11-07 03:29:43.168  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QSearch templates\E'].
+11-07 03:29:43.173  2930  2951 D UiObject2: Clicking on (411, 904).
+11-07 03:29:43.174  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@24b16; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(225, 873 - 597, 936); boundsInWindow: Rect(225, 873 - 597, 936); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Search templates; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:43.238  2930  2951 W GestureController: Gestures took longer than expected (64ms >> 16ms), device might be in a busy state.
+11-07 03:29:43.266  2930  2930 I ImeTracker: app.pdftoolkit.latex:ee4f2922: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:43.266  2930  2930 D InsetsController: show(ime(), fromIme=false)
+11-07 03:29:43.266  2930  2930 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{2ed30b3 VFED..... .F....ID 0,0-840,1657 aid=1073741825} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:43.281  1441  1441 D CompatibilityChangeReporter: Compat change id reported: 210923482; UID 10109; state: DISABLED
+11-07 03:29:43.284  1441  1441 D CompatibilityChangeReporter: Compat change id reported: 37756858; UID 10109; state: ENABLED
+11-07 03:29:43.292  2930  2963 D EGL_emulation: app_time_stats: avg=402.30ms min=182.22ms max=707.42ms count=4
+11-07 03:29:43.299  1441  1441 D CompatibilityChangeReporter: Compat change id reported: 183155436; UID 10109; state: DISABLED
+11-07 03:29:43.301  1441  1441 W RichInputMethodSubtype: Can't find emoji subtype
+11-07 03:29:43.301  1441  1441 W RichInputMethodSubtype: No input method subtype found; returning placeholder subtype: Multi-lingual subtype: android.view.inputmethod.InputMethodSubtype@d78b2ed0, zz
+11-07 03:29:43.375  1441  1441 I EmojiCategory: Last Emoji category id is 8
+11-07 03:29:43.376  2930  2930 I ImeTracker: app.pdftoolkit.latex:99286360: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+11-07 03:29:43.376  2930  2930 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{2ed30b3 VFED..... .F...... 0,0-840,1657 aid=1073741825} flags=0 reason=SHOW_SOFT_INPUT
+11-07 03:29:43.379  1441  1441 D CompatibilityChangeReporter: Compat change id reported: 171228096; UID 10109; state: ENABLED
+11-07 03:29:43.384  1441  1441 W ViewPager: Requested offscreen page limit 0 too small; defaulting to 1
+11-07 03:29:43.392  1441  1441 I LatinIME: Starting input. Cursor position = 0,0
+11-07 03:29:43.499   388   599 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10109 pid=0
+11-07 03:29:43.499   388   599 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10109 => denied (370 us)
+11-07 03:29:43.500   388   599 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10109 pid=0
+11-07 03:29:43.500   388   599 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10109 => denied (1027 us)
+11-07 03:29:43.501   388   599 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10109 pid=0
+11-07 03:29:43.501   388   599 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10109 => denied (174 us)
+11-07 03:29:43.505   388  1055 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10109 pid=1441
+11-07 03:29:43.505   388  1055 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10109 => denied (5426 us)
+11-07 03:29:43.529  1441  1486 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-07 03:29:43.533  1441  1486 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-07 03:29:43.543  1441  1486 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-07 03:29:43.592  1441  1486 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-07 03:29:43.617   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:29:43.617  1441  1486 I Gralloc4: mapper 4.x is not supported
+11-07 03:29:44.086   506   519 W ServiceManagerCppClient: Permission failure: android.permission.ROTATE_SURFACE_FLINGER from uid=10109 pid=0
+11-07 03:29:44.086   506   519 D PermissionCache: checking android.permission.ROTATE_SURFACE_FLINGER for uid=10109 => denied (233 us)
+11-07 03:29:44.086   506   519 W ServiceManagerCppClient: Permission failure: android.permission.INTERNAL_SYSTEM_WINDOW from uid=10109 pid=0
+11-07 03:29:44.086   506   519 D PermissionCache: checking android.permission.INTERNAL_SYSTEM_WINDOW for uid=10109 => denied (27 us)
+11-07 03:29:44.086   506   519 W ServiceManagerCppClient: Permission failure: android.permission.ACCESS_SURFACE_FLINGER from uid=10109 pid=0
+11-07 03:29:44.086   506   519 D PermissionCache: checking android.permission.ACCESS_SURFACE_FLINGER for uid=10109 => denied (19 us)
+11-07 03:29:44.089  1441  1441 I Choreographer: Skipped 35 frames!  The application may be doing too much work on its main thread.
+11-07 03:29:44.098  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:29:44.101  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:29:44.102  2930  2930 I ImeTracker: app.pdftoolkit.latex:99286360: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+11-07 03:29:44.125  1441  2623 I OpenGLRenderer: Davey! duration=817ms; Flags=1, FrameTimelineVsyncId=20514, IntendedVsync=440526491638, Vsync=440709824964, InputEventId=0, HandleInputStart=440719807236, AnimationStart=440719808447, PerformTraversalsStart=440719808772, DrawStart=440886195055, FrameDeadline=440543158304, FrameInterval=440719680964, FrameStartTime=16666666, SyncQueued=440895898682, SyncStart=440899408821, IssueDrawCommandsStart=440911070536, SwapBuffers=441218563577, FrameCompleted=441347154175, DequeueBufferDuration=3788, QueueBufferDuration=300566, GpuCompleted=441347154175, SwapBuffersCompleted=441338836052, DisplayPresentTime=0, CommandSubmissionCompleted=441218563577,
+11-07 03:29:44.181   801   859 D EGL_emulation: app_time_stats: avg=2413.41ms min=2413.41ms max=2413.41ms count=1
+11-07 03:29:44.320  2930  2963 D EGL_emulation: app_time_stats: avg=205.49ms min=35.51ms max=429.20ms count=5
+11-07 03:29:44.465  2930  2963 D EGL_emulation: app_time_stats: avg=984.08ms min=230.48ms max=2362.73ms count=3
+11-07 03:29:44.472  2930  2930 I ImeTracker: app.pdftoolkit.latex:ee4f2922: onShown
+11-07 03:29:44.535   801  1367 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-07 03:29:45.232   801   859 D EGL_emulation: app_time_stats: avg=1050.90ms min=1050.90ms max=1050.90ms count=1
+11-07 03:29:45.259   801   825 I OpenGLRenderer: Davey! duration=758ms; Flags=0, FrameTimelineVsyncId=20744, IntendedVsync=441726491590, Vsync=441726491590, InputEventId=0, HandleInputStart=441726664717, AnimationStart=441726665655, PerformTraversalsStart=441726693326, DrawStart=441726740613, FrameDeadline=441743158256, FrameInterval=441726653446, FrameStartTime=16666666, SyncQueued=441876433332, SyncStart=441877140287, IssueDrawCommandsStart=441877181761, SwapBuffers=442373158383, FrameCompleted=442485842274, DequeueBufferDuration=4254, QueueBufferDuration=630763, GpuCompleted=442485698546, SwapBuffersCompleted=442485842274, DisplayPresentTime=0, CommandSubmissionCompleted=442373158383,
+11-07 03:29:45.322  2930  2963 D EGL_emulation: app_time_stats: avg=158.22ms min=42.29ms max=348.91ms count=6
+11-07 03:29:45.547  1441  1486 D EGL_emulation: app_time_stats: avg=365.41ms min=35.65ms max=574.16ms count=4
+11-07 03:29:46.391  2930  2951 D UiDevice: Waiting 8000ms for SearchCondition[hasObject=BySelector [TEXT='\QBiology lab report\E']].
+11-07 03:29:46.391  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QBiology lab report\E'].
+11-07 03:29:46.405  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QBiology lab report\E']].
+11-07 03:29:46.405  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QBiology lab report\E'].
+11-07 03:29:46.412  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QBiology lab report\E'].
+11-07 03:29:46.420  2930  2951 D UiObject2: Clicking on (467, 892).
+11-07 03:29:46.420  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@24c0e; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(309, 866 - 625, 919); boundsInWindow: Rect(309, 866 - 625, 919); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Biology lab report; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:46.450   801   859 D EGL_emulation: app_time_stats: avg=1217.62ms min=1217.62ms max=1217.62ms count=1
+11-07 03:29:46.487  2930  2951 W GestureController: Gestures took longer than expected (66ms >> 16ms), device might be in a busy state.
+11-07 03:29:46.504  2930  2963 D EGL_emulation: app_time_stats: avg=142.96ms min=34.58ms max=386.53ms count=8
+11-07 03:29:46.558  2930  2963 D EGL_emulation: app_time_stats: avg=1045.98ms min=149.37ms max=1942.59ms count=2
+11-07 03:29:46.813  3258  3258 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:29:46.813  3258  3258 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:29:46.895   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:29:46.896  3258  3260 I Gralloc4: mapper 4.x is not supported
+11-07 03:29:46.991  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCreate\E'].
+11-07 03:29:47.259  2930  2951 D UiDevice: Pressing back button.
+11-07 03:29:47.295   506  1726 I ImeTracker: app.pdftoolkit.latex:5f5dd2ba: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_SOFT_INPUT_BY_BACK_KEY
+11-07 03:29:47.337  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@413d256
+11-07 03:29:47.608  2930  2963 D EGL_emulation: app_time_stats: avg=203.20ms min=41.46ms max=449.18ms count=5
+11-07 03:29:47.678  1441  1486 D EGL_emulation: app_time_stats: avg=532.42ms min=51.04ms max=1226.34ms count=4
+11-07 03:29:47.867  2930  2963 D EGL_emulation: app_time_stats: avg=1309.27ms min=1309.27ms max=1309.27ms count=1
+11-07 03:29:47.901  2930  2930 I ImeTracker: app.pdftoolkit.latex:142d9c83: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:47.902   506  1154 I ImeTracker: app.pdftoolkit.latex:142d9c83: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:29:47.902  2930  2930 I ImeTracker: app.pdftoolkit.latex:5f5dd2ba: onHidden
+11-07 03:29:47.958  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QCreate\E']].
+11-07 03:29:47.958  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCreate\E'].
+11-07 03:29:48.111  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QCreate\E'].
+11-07 03:29:48.119  2930  2951 D UiObject2: Clicking on (804, 1903).
+11-07 03:29:48.119  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@25314; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(743, 1877 - 865, 1930); boundsInWindow: Rect(743, 1877 - 865, 1930); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Create; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:48.172  2930  2951 W GestureController: Gestures took longer than expected (52ms >> 16ms), device might be in a busy state.
+11-07 03:29:48.172  2930  2951 D UiDevice: Waiting 15000ms for SearchCondition[hasObject=BySelector [RES='\Qcompile\E']].
+11-07 03:29:48.173  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile\E'].
+11-07 03:29:48.175  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@b1b2e22
+11-07 03:29:48.213   506  1154 W InputManager-JNI: Input channel object '8ded65 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:29:48.231   801   859 D EGL_emulation: app_time_stats: avg=890.49ms min=881.54ms max=899.43ms count=2
+11-07 03:29:48.310   801   859 D EGL_emulation: app_time_stats: avg=3289.97ms min=93.86ms max=6486.08ms count=2
+11-07 03:29:48.443  2930  2941 W System  : A resource failed to call release.
+11-07 03:29:48.549  2930  2930 I ImeTracker: app.pdftoolkit.latex:425656bb: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT
+11-07 03:29:48.550  2930  2930 I ImeTracker: app.pdftoolkit.latex:425656bb: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:29:48.576   506   957 I ImeTracker: app.pdftoolkit.latex:66e262c4: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:29:48.576   506   957 I ImeTracker: app.pdftoolkit.latex:66e262c4: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:29:49.147  2930  2951 D UiDevice: Clicking on (540, 1680).
+11-07 03:29:49.322  2930  2930 I ImeTracker: app.pdftoolkit.latex:9350e83d: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:49.322  2930  2930 D InsetsController: show(ime(), fromIme=false)
+11-07 03:29:49.323  2930  2930 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{bf9d7aa VFED..... .F....ID 0,0-1080,2400 aid=1073741826} flags=0 reason=SHOW_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:49.326  1441  1441 I LatinIME: Starting input. Cursor position = 352,352
+11-07 03:29:49.355  2930  2963 D EGL_emulation: app_time_stats: avg=297.31ms min=29.32ms max=705.68ms count=5
+11-07 03:29:49.455  2930  2930 I ImeTracker: app.pdftoolkit.latex:1b0b4684: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+11-07 03:29:49.466  2930  2930 D InputMethodManager: showSoftInput() view=androidx.compose.ui.platform.AndroidComposeView{bf9d7aa VFED..... .F...... 0,0-1080,2400 aid=1073741826} flags=0 reason=SHOW_SOFT_INPUT
+11-07 03:29:49.703  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qmore\E']].
+11-07 03:29:49.706  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:29:49.747   506  1154 I ImeTracker: app.pdftoolkit.latex:9350e83d: onFailed at PHASE_WM_SHOW_IME_RUNNER
+11-07 03:29:49.755  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:29:49.789   801   859 D EGL_emulation: app_time_stats: avg=1557.41ms min=1557.41ms max=1557.41ms count=1
+11-07 03:29:49.807  2930  2930 I ImeTracker: app.pdftoolkit.latex:1b0b4684: onShown
+11-07 03:29:49.925  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@9ce53ec
+11-07 03:29:49.948   506   957 W InputManager-JNI: Input channel object '4351c38 Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:29:50.374   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:29:50.443  2930  2963 D EGL_emulation: app_time_stats: avg=217.69ms min=66.19ms max=428.92ms count=5
+11-07 03:29:50.479  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:29:50.499  2930  2951 D UiObject2: Clicking on (1007, 203).
+11-07 03:29:50.555  2930  2951 W GestureController: Gestures took longer than expected (56ms >> 16ms), device might be in a busy state.
+11-07 03:29:50.557  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QInsert and check…\E']].
+11-07 03:29:50.558  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:29:51.047  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@16d3a4b
+11-07 03:29:51.050   506   957 I ImeTracker: app.pdftoolkit.latex:d2ee78b2: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:29:51.137   801   859 D EGL_emulation: app_time_stats: avg=673.66ms min=38.52ms max=1308.79ms count=2
+11-07 03:29:51.173  1441  1486 D EGL_emulation: app_time_stats: avg=713.27ms min=142.99ms max=1283.55ms count=2
+11-07 03:29:51.290  2930  2930 I ImeTracker: app.pdftoolkit.latex:d2ee78b2: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-07 03:29:51.293  2930  2930 I ImeTracker: app.pdftoolkit.latex:4e1b9831: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:51.294  2930  2930 I ImeTracker: app.pdftoolkit.latex:4e1b9831: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:29:51.450  2930  2963 D EGL_emulation: app_time_stats: avg=143.74ms min=39.53ms max=370.30ms count=7
+11-07 03:29:51.715  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:29:51.795  2930  2941 W System  : A resource failed to call release.
+11-07 03:29:52.313  2930  2951 D UiObject2: Clicking on (591, 338).
+11-07 03:29:52.314  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@28b27; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(434, 312 - 749, 365); boundsInWindow: Rect(434, 312 - 749, 365); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Insert and check…; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:52.370  2930  2951 W GestureController: Gestures took longer than expected (55ms >> 16ms), device might be in a busy state.
+11-07 03:29:52.371  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QTable or plot from CSV\E']].
+11-07 03:29:52.371  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QTable or plot from CSV\E'].
+11-07 03:29:52.397  2930  2963 D EGL_emulation: app_time_stats: avg=318.64ms min=100.33ms max=677.18ms count=5
+11-07 03:29:52.652  2930  2951 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=Pop-Up Window, displayId=0, id=39, taskId=13, type=TYPE_APPLICATION, layer=0, region=SkRegion((402,128,1069,1940)), bounds=Rect(402, 128 - 1069, 1940), focused=false, active=false, pictureInPicture=false, transitionTime=448086, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:29:52.669  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@191b3; boundsInParent: Rect(0, 0 - 667, 1812); boundsInScreen: Rect(402, 128 - 1069, 1940); boundsInWindow: Rect(402, 128 - 1069, 1940); packageName: app.pdftoolkit.latex; className: android.view.ViewGroup; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/content; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:29:52.670  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:29:52.713  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@191b3; boundsInParent: Rect(0, 0 - 667, 1812); boundsInScreen: Rect(402, 128 - 1069, 1940); boundsInWindow: Rect(402, 128 - 1069, 1940); packageName: app.pdftoolkit.latex; className: android.view.ViewGroup; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: android:id/content; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:29:52.717  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:29:52.722   801   859 D EGL_emulation: app_time_stats: avg=2206.01ms min=50.95ms max=4361.06ms count=2
+11-07 03:29:52.763  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@b6fccac
+11-07 03:29:52.812   506   957 W InputManager-JNI: Input channel object 'a8f226f Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:29:52.840   801   859 D EGL_emulation: app_time_stats: avg=1703.18ms min=1703.18ms max=1703.18ms count=1
+11-07 03:29:52.974  2930  2963 D EGL_emulation: app_time_stats: avg=1523.47ms min=1523.47ms max=1523.47ms count=1
+11-07 03:29:52.981   506   957 I ImeTracker: app.pdftoolkit.latex:d42e61c1: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:29:52.987   506   957 I ImeTracker: app.pdftoolkit.latex:d42e61c1: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:29:53.088  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QTable or plot from CSV\E'].
+11-07 03:29:53.516  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QTable or plot from CSV\E'].
+11-07 03:29:54.108  2930  2951 D UiObject2: Clicking on (378, 783).
+11-07 03:29:54.108  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@2ab5e; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(183, 757 - 573, 810); boundsInWindow: Rect(183, 757 - 573, 810); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Table or plot from CSV; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:54.167  2930  2951 W GestureController: Gestures took longer than expected (58ms >> 16ms), device might be in a busy state.
+11-07 03:29:54.169  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qfile_browser\E']].
+11-07 03:29:54.169  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qfile_browser\E'].
+11-07 03:29:54.170  2930  2963 D EGL_emulation: app_time_stats: avg=519.46ms min=447.40ms max=652.33ms count=3
+11-07 03:29:54.211  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@1c70b34
+11-07 03:29:54.220   506  1823 W InputManager-JNI: Input channel object 'a91f1b9 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:29:54.322   801   859 D EGL_emulation: app_time_stats: avg=1481.82ms min=1481.82ms max=1481.82ms count=1
+11-07 03:29:54.328   801   859 D EGL_emulation: app_time_stats: avg=802.82ms min=260.02ms max=1345.62ms count=2
+11-07 03:29:54.431  2930  2963 D EGL_emulation: app_time_stats: avg=1456.98ms min=1456.98ms max=1456.98ms count=1
+11-07 03:29:54.479   506  1823 I ImeTracker: app.pdftoolkit.latex:3294f073: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:29:54.482  1441  1441 I LatinIME: Starting input. Cursor position = 352,352
+11-07 03:29:54.861  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:29:54.949  2930  2930 I ImeTracker: app.pdftoolkit.latex:3294f073: onShown
+11-07 03:29:55.071  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@50ecebe
+11-07 03:29:55.105   506  1823 W InputManager-JNI: Input channel object 'c03b710 Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:29:55.153  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@0@app.pdftoolkit.latex>
+11-07 03:29:55.666  2930  2951 D UiDevice: Waiting 2500ms for SearchCondition[hasObject=BySelector [RES='\Qplace_downloads\E']].
+11-07 03:29:55.666  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:29:55.673  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:29:55.684  2930  2951 D UiObject2: Clicking on (540, 750).
+11-07 03:29:55.687  2930  2963 D EGL_emulation: app_time_stats: avg=154.29ms min=36.22ms max=450.17ms count=8
+11-07 03:29:55.742  2930  2951 W GestureController: Gestures took longer than expected (57ms >> 16ms), device might be in a busy state.
+11-07 03:29:55.742  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\Qtools_data.csv\E']].
+11-07 03:29:55.742  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\Qtools_data.csv\E'].
+11-07 03:29:56.201  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\Qtools_data.csv\E'].
+11-07 03:29:56.432  2930  2951 D UiObject2: Clicking on (185, 1115).
+11-07 03:29:56.432  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@2615d; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(53, 1089 - 318, 1142); boundsInWindow: Rect(53, 1089 - 318, 1142); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: tools_data.csv; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:56.489  2930  2951 W GestureController: Gestures took longer than expected (56ms >> 16ms), device might be in a busy state.
+11-07 03:29:56.837   801   859 D EGL_emulation: app_time_stats: avg=1254.46ms min=78.71ms max=2430.21ms count=2
+11-07 03:29:56.990  2930  2963 D EGL_emulation: app_time_stats: avg=144.78ms min=29.49ms max=429.82ms count=9
+11-07 03:29:57.101  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qfm_add\E'].
+11-07 03:29:57.129  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@2fe0af3
+11-07 03:29:57.141   506  1154 I ImeTracker: app.pdftoolkit.latex:4612f1a7: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:29:57.253   801   859 D EGL_emulation: app_time_stats: avg=976.99ms min=91.42ms max=2264.82ms count=3
+11-07 03:29:57.337  1441  1486 D EGL_emulation: app_time_stats: avg=1239.62ms min=203.56ms max=2275.67ms count=2
+11-07 03:29:57.489  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@2fe0af3
+11-07 03:29:57.493  2930  2930 I ImeTracker: app.pdftoolkit.latex:4612f1a7: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-07 03:29:57.494  2930  2930 I ImeTracker: app.pdftoolkit.latex:33e677e8: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:29:57.495  2930  2930 I ImeTracker: app.pdftoolkit.latex:33e677e8: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:29:57.753  3272  3272 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:29:57.753  3272  3272 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:29:57.798   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:29:57.799  3272  3273 I Gralloc4: mapper 4.x is not supported
+11-07 03:29:57.953  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QLine graph\E']].
+11-07 03:29:57.953  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QLine graph\E'].
+11-07 03:29:58.160  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::1@0@app.pdftoolkit.latex>
+11-07 03:29:58.974  2930  2951 I PDFTK   : screenshot tool1_csv_dialog
+11-07 03:29:58.974  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QLine graph\E']].
+11-07 03:29:58.975  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QLine graph\E'].
+11-07 03:29:58.981  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QLine graph\E'].
+11-07 03:29:59.001  2930  2951 D UiObject2: Clicking on (518, 1033).
+11-07 03:29:59.002  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@2e7ec; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(426, 1007 - 610, 1060); boundsInWindow: Rect(426, 1007 - 610, 1060); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Line graph; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:59.081  2930  2951 W GestureController: Gestures took longer than expected (79ms >> 16ms), device might be in a busy state.
+11-07 03:29:59.082  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QInsert\E']].
+11-07 03:29:59.082  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert\E'].
+11-07 03:29:59.831  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QInsert\E'].
+11-07 03:29:59.838  2930  2951 D UiObject2: Clicking on (814, 1794).
+11-07 03:29:59.839  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@2ea58; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(764, 1768 - 865, 1821); boundsInWindow: Rect(764, 1768 - 865, 1821); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Insert; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:29:59.934  2930  2951 W GestureController: Gestures took longer than expected (94ms >> 16ms), device might be in a busy state.
+11-07 03:29:59.957  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@341c9fe
+11-07 03:29:59.990   506  1823 W InputManager-JNI: Input channel object 'b32dc27 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:00.067   801   859 D EGL_emulation: app_time_stats: avg=2814.08ms min=2814.08ms max=2814.08ms count=1
+11-07 03:30:00.134   801   859 D EGL_emulation: app_time_stats: avg=1612.93ms min=4.14ms max=3221.72ms count=2
+11-07 03:30:00.257  2930  2963 D EGL_emulation: app_time_stats: avg=653.29ms min=57.03ms max=2555.84ms count=5
+11-07 03:30:00.290  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:00.299   506  1726 I ImeTracker: app.pdftoolkit.latex:8ebbbf10: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:30:00.360  1441  1441 I LatinIME: Starting input. Cursor position = 700,700
+11-07 03:30:00.385   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:30:00.541  2930  2951 I PDFTK   : csv plot inserted
+11-07 03:30:00.542  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qmore\E']].
+11-07 03:30:00.542  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:00.579  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:30:00.633  2930  2930 I ImeTracker: app.pdftoolkit.latex:8ebbbf10: onShown
+11-07 03:30:01.291  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:01.298  2930  2951 D UiObject2: Clicking on (1007, 203).
+11-07 03:30:01.358  2930  2951 W GestureController: Gestures took longer than expected (59ms >> 16ms), device might be in a busy state.
+11-07 03:30:01.361  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QInsert and check…\E']].
+11-07 03:30:01.361  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:01.424  2930  2963 D EGL_emulation: app_time_stats: avg=145.27ms min=39.44ms max=521.07ms count=8
+11-07 03:30:01.613  2930  2951 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=TeXora, displayId=0, id=36, taskId=13, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=false, active=false, pictureInPicture=false, transitionTime=457324, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:30:01.621  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23da4; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(344, 559 - 491, 685); boundsInWindow: Rect(344, 559 - 491, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.624  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.627  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23de2; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(508, 559 - 634, 685); boundsInWindow: Rect(508, 559 - 634, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.627  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.634  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23e20; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(649, 559 - 775, 685); boundsInWindow: Rect(649, 559 - 775, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.634  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.637  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23e5e; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(791, 559 - 917, 685); boundsInWindow: Rect(791, 559 - 917, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.638  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.641  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23e9c; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(934, 559 - 1060, 685); boundsInWindow: Rect(934, 559 - 1060, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.642  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.647  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@248c8; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(0, 698 - 1080, 1218); boundsInWindow: Rect(0, 698 - 1080, 1218); packageName: app.pdftoolkit.latex; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: true; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_DOWN - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null, AccessibilityAction: ACTION_SCROLL_UP - null]; isTextSelectable: false
+11-07 03:30:01.647  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.651  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@2465c; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(0, 1218 - 1080, 1331); boundsInWindow: Rect(0, 1218 - 1080, 1331); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.652  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.653  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@246b9; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(0, 1331 - 1080, 1499); boundsInWindow: Rect(0, 1331 - 1080, 1499); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+11-07 03:30:01.653  2930  2951 W ByMatcher: Skipping null child (0 of 5)
+11-07 03:30:01.654  2930  2951 W ByMatcher: Skipping null child (1 of 5)
+11-07 03:30:01.654  2930  2951 W ByMatcher: Skipping null child (2 of 5)
+11-07 03:30:01.654  2930  2951 W ByMatcher: Skipping null child (3 of 5)
+11-07 03:30:01.654  2930  2951 W ByMatcher: Skipping null child (4 of 5)
+11-07 03:30:01.659  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23da4; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(344, 559 - 491, 685); boundsInWindow: Rect(344, 559 - 491, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.659  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.660  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23de2; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(508, 559 - 634, 685); boundsInWindow: Rect(508, 559 - 634, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.660  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.664  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23e20; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(649, 559 - 775, 685); boundsInWindow: Rect(649, 559 - 775, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.664  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.665  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23e5e; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(791, 559 - 917, 685); boundsInWindow: Rect(791, 559 - 917, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.665  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.666  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@23e9c; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(934, 559 - 1060, 685); boundsInWindow: Rect(934, 559 - 1060, 685); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.666  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.667  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@248c8; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(0, 698 - 1080, 1218); boundsInWindow: Rect(0, 698 - 1080, 1218); packageName: app.pdftoolkit.latex; className: android.widget.ScrollView; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: true; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SCROLL_FORWARD - null, AccessibilityAction: ACTION_SCROLL_DOWN - null, AccessibilityAction: ACTION_SCROLL_BACKWARD - null, AccessibilityAction: ACTION_SCROLL_UP - null]; isTextSelectable: false
+11-07 03:30:01.670  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.671  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@2465c; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(0, 1218 - 1080, 1331); boundsInWindow: Rect(0, 1218 - 1080, 1331); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: true; focused: false; selected: false; clickable: true; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_FOCUS - null, AccessibilityAction: ACTION_CLICK - null]; isTextSelectable: false
+11-07 03:30:01.671  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:01.671  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@246b9; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(0, 1331 - 1080, 1499); boundsInWindow: Rect(0, 1331 - 1080, 1499); packageName: app.pdftoolkit.latex; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null]; isTextSelectable: false
+11-07 03:30:01.672  2930  2951 W ByMatcher: Skipping null child (0 of 5)
+11-07 03:30:01.672  2930  2951 W ByMatcher: Skipping null child (1 of 5)
+11-07 03:30:01.672  2930  2951 W ByMatcher: Skipping null child (2 of 5)
+11-07 03:30:01.675  2930  2951 W ByMatcher: Skipping null child (3 of 5)
+11-07 03:30:01.676  2930  2951 W ByMatcher: Skipping null child (4 of 5)
+11-07 03:30:01.722  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@568d8f9
+11-07 03:30:01.727   506   957 I ImeTracker: app.pdftoolkit.latex:b62b452b: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:01.814  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@d9b2; boundsInParent: Rect(0, 0 - 1080, 670); boundsInScreen: Rect(0, 1604 - 1080, 2274); boundsInWindow: Rect(0, 1604 - 1080, 2274); packageName: com.android.inputmethod.latin; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: com.android.inputmethod.latin:id/keyboard_view; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:01.815  2930  2951 W ByMatcher: Skipping null child (16 of 33)
+11-07 03:30:01.821  2930  2951 W ByMatcher: Skipping null child (17 of 33)
+11-07 03:30:01.821  2930  2951 W ByMatcher: Skipping null child (18 of 33)
+11-07 03:30:01.822  2930  2951 W ByMatcher: Skipping null child (19 of 33)
+11-07 03:30:01.822  2930  2951 W ByMatcher: Skipping null child (20 of 33)
+11-07 03:30:01.823  2930  2951 W ByMatcher: Skipping null child (21 of 33)
+11-07 03:30:01.823  2930  2951 W ByMatcher: Skipping null child (22 of 33)
+11-07 03:30:01.823  2930  2951 W ByMatcher: Skipping null child (23 of 33)
+11-07 03:30:01.824  2930  2951 W ByMatcher: Skipping null child (24 of 33)
+11-07 03:30:01.824  2930  2951 W ByMatcher: Skipping null child (25 of 33)
+11-07 03:30:01.824  2930  2951 W ByMatcher: Skipping null child (26 of 33)
+11-07 03:30:01.825  2930  2951 W ByMatcher: Skipping null child (27 of 33)
+11-07 03:30:01.825  2930  2951 W ByMatcher: Skipping null child (28 of 33)
+11-07 03:30:01.825  2930  2951 W ByMatcher: Skipping null child (29 of 33)
+11-07 03:30:01.826  2930  2951 W ByMatcher: Skipping null child (30 of 33)
+11-07 03:30:01.827  2930  2951 W ByMatcher: Skipping null child (31 of 33)
+11-07 03:30:01.827  2930  2951 W ByMatcher: Skipping null child (32 of 33)
+11-07 03:30:01.833  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006cd5; boundsInParent: Rect(0, 0 - 1080, 2272); boundsInScreen: Rect(0, 128 - 1080, 2400); boundsInWindow: Rect(0, 128 - 1080, 2400); packageName: com.android.inputmethod.latin; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:01.833  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:01.836  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@d9b2; boundsInParent: Rect(0, 0 - 1080, 670); boundsInScreen: Rect(0, 1604 - 1080, 2274); boundsInWindow: Rect(0, 1604 - 1080, 2274); packageName: com.android.inputmethod.latin; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: com.android.inputmethod.latin:id/keyboard_view; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:01.836  2930  2951 W ByMatcher: Skipping null child (16 of 33)
+11-07 03:30:01.836  2930  2951 W ByMatcher: Skipping null child (17 of 33)
+11-07 03:30:01.837  2930  2951 W ByMatcher: Skipping null child (18 of 33)
+11-07 03:30:01.837  2930  2951 W ByMatcher: Skipping null child (19 of 33)
+11-07 03:30:01.839  2930  2951 W ByMatcher: Skipping null child (20 of 33)
+11-07 03:30:01.840  2930  2951 W ByMatcher: Skipping null child (21 of 33)
+11-07 03:30:01.840  2930  2951 W ByMatcher: Skipping null child (22 of 33)
+11-07 03:30:01.841  2930  2951 W ByMatcher: Skipping null child (23 of 33)
+11-07 03:30:01.844  2930  2951 W ByMatcher: Skipping null child (24 of 33)
+11-07 03:30:01.848  2930  2951 W ByMatcher: Skipping null child (25 of 33)
+11-07 03:30:01.848  2930  2951 W ByMatcher: Skipping null child (26 of 33)
+11-07 03:30:01.849  2930  2951 W ByMatcher: Skipping null child (27 of 33)
+11-07 03:30:01.849  2930  2951 W ByMatcher: Skipping null child (28 of 33)
+11-07 03:30:01.849  2930  2951 W ByMatcher: Skipping null child (29 of 33)
+11-07 03:30:01.849  2930  2951 W ByMatcher: Skipping null child (30 of 33)
+11-07 03:30:01.850  2930  2951 W ByMatcher: Skipping null child (31 of 33)
+11-07 03:30:01.850  2930  2951 W ByMatcher: Skipping null child (32 of 33)
+11-07 03:30:01.866   801   859 D EGL_emulation: app_time_stats: avg=598.76ms min=59.30ms max=1199.47ms count=3
+11-07 03:30:01.872  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006cd5; boundsInParent: Rect(0, 0 - 1080, 2272); boundsInScreen: Rect(0, 128 - 1080, 2400); boundsInWindow: Rect(0, 128 - 1080, 2400); packageName: com.android.inputmethod.latin; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:01.882  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:01.901  1441  1486 D EGL_emulation: app_time_stats: avg=666.56ms min=144.32ms max=1188.79ms count=2
+11-07 03:30:02.030  2930  2939 I dftoolkit.latex: Background young concurrent copying GC freed 152298(6503KB) AllocSpace objects, 6(248KB) LOS objects, 37% free, 10MB/16MB, paused 159us,78us total 203.943ms
+11-07 03:30:02.035  2930  2930 I ImeTracker: app.pdftoolkit.latex:b62b452b: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-07 03:30:02.039  2930  2930 I ImeTracker: app.pdftoolkit.latex:499ed032: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:30:02.039  2930  2930 I ImeTracker: app.pdftoolkit.latex:499ed032: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:30:02.095  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:02.400  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:02.982  2930  2951 D UiObject2: Clicking on (591, 338).
+11-07 03:30:02.983  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@307e5; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(434, 312 - 749, 365); boundsInWindow: Rect(434, 312 - 749, 365); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Insert and check…; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:03.049  2930  2963 D EGL_emulation: app_time_stats: avg=372.59ms min=154.72ms max=658.76ms count=4
+11-07 03:30:03.065  2930  2951 W GestureController: Gestures took longer than expected (81ms >> 16ms), device might be in a busy state.
+11-07 03:30:03.066  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QPicture\E']].
+11-07 03:30:03.069  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QPicture\E'].
+11-07 03:30:03.338  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@1c0c4eb
+11-07 03:30:03.342   801   859 D EGL_emulation: app_time_stats: avg=1050.48ms min=15.95ms max=3107.79ms count=3
+11-07 03:30:03.376   801   859 D EGL_emulation: app_time_stats: avg=1509.66ms min=1509.66ms max=1509.66ms count=1
+11-07 03:30:03.380   506  1154 W InputManager-JNI: Input channel object '9dd2f85 Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:30:03.517  2930  2963 D EGL_emulation: app_time_stats: avg=418.49ms min=34.56ms max=1366.38ms count=5
+11-07 03:30:03.575   506  1823 I ImeTracker: app.pdftoolkit.latex:d2e52e5: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:03.575   506  1823 I ImeTracker: app.pdftoolkit.latex:d2e52e5: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:04.092  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QPicture\E'].
+11-07 03:30:04.696  2930  2951 D UiObject2: Clicking on (246, 933).
+11-07 03:30:04.696  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@32898; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(183, 907 - 310, 960); boundsInWindow: Rect(183, 907 - 310, 960); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Picture; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:04.756  2930  2963 D EGL_emulation: app_time_stats: avg=482.50ms min=260.32ms max=654.18ms count=3
+11-07 03:30:04.771  2930  2951 W GestureController: Gestures took longer than expected (69ms >> 16ms), device might be in a busy state.
+11-07 03:30:04.771  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [RES='\Qfile_browser\E']].
+11-07 03:30:04.772  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qfile_browser\E'].
+11-07 03:30:04.808  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@c041911
+11-07 03:30:04.828   506  1823 W InputManager-JNI: Input channel object 'c308cdf app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:04.861   801   859 D EGL_emulation: app_time_stats: avg=1485.08ms min=1485.08ms max=1485.08ms count=1
+11-07 03:30:04.889   801   859 D EGL_emulation: app_time_stats: avg=739.42ms min=42.74ms max=1436.11ms count=2
+11-07 03:30:04.957  2930  2963 D EGL_emulation: app_time_stats: avg=1439.51ms min=1439.51ms max=1439.51ms count=1
+11-07 03:30:04.973   506  1154 I ImeTracker: app.pdftoolkit.latex:3fa8a4d7: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:30:04.994  1441  1441 I LatinIME: Starting input. Cursor position = 700,700
+11-07 03:30:05.273  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:30:05.338  2930  2930 I ImeTracker: app.pdftoolkit.latex:3fa8a4d7: onShown
+11-07 03:30:05.481  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:06.027  2930  2951 D UiDevice: Waiting 2500ms for SearchCondition[hasObject=BySelector [RES='\Qplace_downloads\E']].
+11-07 03:30:06.027  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.116  2930  2963 D EGL_emulation: app_time_stats: avg=128.69ms min=28.44ms max=497.10ms count=9
+11-07 03:30:06.182  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.294  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.404  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.514  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.625  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.757  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.870  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:06.983  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.095  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.119  2930  2963 D EGL_emulation: app_time_stats: avg=501.28ms min=497.98ms max=504.59ms count=2
+11-07 03:30:07.230  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.342  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.455  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.567  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.679  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.791  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:07.902  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:08.014  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:08.129  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:08.133  2930  2963 D EGL_emulation: app_time_stats: avg=505.15ms min=496.45ms max=513.85ms count=2
+11-07 03:30:08.248  3289  3289 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:30:08.249  3289  3289 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:30:08.264   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:30:08.265  3289  3290 I Gralloc4: mapper 4.x is not supported
+11-07 03:30:08.275  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:08.411  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:08.533  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qplace_downloads\E'].
+11-07 03:30:08.546  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\Qtools_pic.png\E']].
+11-07 03:30:08.546  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\Qtools_pic.png\E'].
+11-07 03:30:08.551  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\Qtools_pic.png\E'].
+11-07 03:30:08.558  2930  2951 D UiObject2: Clicking on (178, 989).
+11-07 03:30:08.559  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@276eb; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(53, 963 - 303, 1016); boundsInWindow: Rect(53, 963 - 303, 1016); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: tools_pic.png; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:08.622  2930  2951 W GestureController: Gestures took longer than expected (63ms >> 16ms), device might be in a busy state.
+11-07 03:30:08.675   506  1154 I ImeTracker: app.pdftoolkit.latex:f09a1054: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:30:08.676  1441  1441 I LatinIME: Starting input. Cursor position = 806,806
+11-07 03:30:08.812  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:30:08.813  2930  2930 I ImeTracker: app.pdftoolkit.latex:f09a1054: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+11-07 03:30:08.848  1441  1486 D EGL_emulation: app_time_stats: avg=1796.13ms min=140.34ms max=3451.93ms count=2
+11-07 03:30:09.223  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qfm_add\E'].
+11-07 03:30:09.279  2930  2963 D EGL_emulation: app_time_stats: avg=286.41ms min=58.58ms max=534.23ms count=4
+11-07 03:30:10.374   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:30:10.393   801   859 D EGL_emulation: app_time_stats: avg=2750.20ms min=17.86ms max=5482.54ms count=2
+11-07 03:30:10.797  2930  2963 D EGL_emulation: app_time_stats: avg=505.94ms min=498.50ms max=518.54ms count=3
+11-07 03:30:10.945  2930  2951 I PDFTK   : screenshot tool2_after_picture
+11-07 03:30:10.945  2930  2951 I PDFTK   : picture inserted
+11-07 03:30:10.946  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qmore\E']].
+11-07 03:30:10.946  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:10.953  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:10.958  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:10.964  2930  2951 D UiObject2: Clicking on (1007, 203).
+11-07 03:30:11.019  2930  2951 W GestureController: Gestures took longer than expected (54ms >> 16ms), device might be in a busy state.
+11-07 03:30:11.020  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QInsert and check…\E']].
+11-07 03:30:11.021  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:11.505  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@c0325e4
+11-07 03:30:11.510   506  2751 I ImeTracker: app.pdftoolkit.latex:1a5c0939: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:11.536   801   859 D EGL_emulation: app_time_stats: avg=2224.95ms min=43.72ms max=6173.61ms count=3
+11-07 03:30:11.634  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@d9b2; boundsInParent: Rect(0, 0 - 1080, 670); boundsInScreen: Rect(0, 1604 - 1080, 2274); boundsInWindow: Rect(0, 1604 - 1080, 2274); packageName: com.android.inputmethod.latin; className: android.view.View; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: com.android.inputmethod.latin:id/keyboard_view; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:11.634  2930  2951 W ByMatcher: Skipping null child (27 of 33)
+11-07 03:30:11.635  2930  2951 W ByMatcher: Skipping null child (28 of 33)
+11-07 03:30:11.636  2930  2951 W ByMatcher: Skipping null child (29 of 33)
+11-07 03:30:11.636  2930  2951 W ByMatcher: Skipping null child (30 of 33)
+11-07 03:30:11.636  2930  2951 W ByMatcher: Skipping null child (31 of 33)
+11-07 03:30:11.637  2930  2951 W ByMatcher: Skipping null child (32 of 33)
+11-07 03:30:11.637  1441  1486 D EGL_emulation: app_time_stats: avg=1394.55ms min=179.85ms max=2609.25ms count=2
+11-07 03:30:11.649  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006cd5; boundsInParent: Rect(0, 0 - 1080, 2272); boundsInScreen: Rect(0, 128 - 1080, 2400); boundsInWindow: Rect(0, 128 - 1080, 2400); packageName: com.android.inputmethod.latin; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:11.650  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:11.651  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006cd5; boundsInParent: Rect(0, 0 - 1080, 2272); boundsInScreen: Rect(0, 128 - 1080, 2400); boundsInWindow: Rect(0, 128 - 1080, 2400); packageName: com.android.inputmethod.latin; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:11.651  2930  2951 W ByMatcher: Skipping null child (0 of 2)
+11-07 03:30:11.651  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:11.842  2930  2963 D EGL_emulation: app_time_stats: avg=261.05ms min=142.66ms max=399.74ms count=4
+11-07 03:30:11.845  2930  2930 I ImeTracker: app.pdftoolkit.latex:1a5c0939: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-07 03:30:11.847  2930  2930 I ImeTracker: app.pdftoolkit.latex:ea2b6604: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:30:11.851  2930  2930 I ImeTracker: app.pdftoolkit.latex:ea2b6604: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:30:12.019  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:12.157  2930  2951 D UiObject2: Clicking on (591, 338).
+11-07 03:30:12.158  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@3475b; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(434, 312 - 749, 365); boundsInWindow: Rect(434, 312 - 749, 365); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Insert and check…; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:12.234  2930  2951 W GestureController: Gestures took longer than expected (75ms >> 16ms), device might be in a busy state.
+11-07 03:30:12.235  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QCitation from a DOI\E']].
+11-07 03:30:12.237  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCitation from a DOI\E'].
+11-07 03:30:12.512  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@c25ac54
+11-07 03:30:12.534   801   859 D EGL_emulation: app_time_stats: avg=2141.18ms min=2141.18ms max=2141.18ms count=1
+11-07 03:30:12.594   801   859 D EGL_emulation: app_time_stats: avg=529.02ms min=46.57ms max=1011.47ms count=2
+11-07 03:30:12.626   506  1823 W InputManager-JNI: Input channel object 'e1e41a8 Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:30:12.905   506  1823 I ImeTracker: app.pdftoolkit.latex:8eab333c: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:12.905   506  1823 I ImeTracker: app.pdftoolkit.latex:8eab333c: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:13.450  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QCitation from a DOI\E'].
+11-07 03:30:14.044  2930  2951 D UiObject2: Clicking on (351, 1083).
+11-07 03:30:14.045  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@3688a; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(183, 1057 - 520, 1110); boundsInWindow: Rect(183, 1057 - 520, 1110); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Citation from a DOI; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:14.104  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@9eab0ae
+11-07 03:30:14.105  2930  2951 W GestureController: Gestures took longer than expected (60ms >> 16ms), device might be in a busy state.
+11-07 03:30:14.105  2930  2951 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [CLASS='\Qandroid.widget.EditText\E']].
+11-07 03:30:14.105  2930  2951 D UiDevice: Searching for node with selector: BySelector [CLASS='\Qandroid.widget.EditText\E'].
+11-07 03:30:14.114   506  1154 W InputManager-JNI: Input channel object '6772db5 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:14.134   801   859 D EGL_emulation: app_time_stats: avg=1539.07ms min=1539.07ms max=1539.07ms count=1
+11-07 03:30:14.147   801   859 D EGL_emulation: app_time_stats: avg=806.10ms min=231.17ms max=1381.02ms count=2
+11-07 03:30:14.428   506  2751 I ImeTracker: app.pdftoolkit.latex:723213f2: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:14.429   506  2751 I ImeTracker: app.pdftoolkit.latex:723213f2: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:14.970  2930  2951 D UiDevice: Retrieving node with selector: BySelector [CLASS='\Qandroid.widget.EditText\E'].
+11-07 03:30:15.564  2930  2951 D UiObject2: Setting text to 'not a doi'.
+11-07 03:30:15.566  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QAdd\E']].
+11-07 03:30:15.566  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QAdd\E'].
+11-07 03:30:15.591  2930  2963 D EGL_emulation: app_time_stats: avg=332.74ms min=57.91ms max=641.56ms count=4
+11-07 03:30:15.625  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QAdd\E'].
+11-07 03:30:15.653  2930  2951 D UiObject2: Clicking on (821, 1432).
+11-07 03:30:15.654  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@38bc8; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(784, 1406 - 858, 1459); boundsInWindow: Rect(784, 1406 - 858, 1459); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Add; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:15.664  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:15.727  2930  2951 W GestureController: Gestures took longer than expected (70ms >> 16ms), device might be in a busy state.
+11-07 03:30:15.727  2930  2951 D UiDevice: Waiting 5000ms for SearchCondition[hasObject=BySelector [TEXT='^.*\Qdoes not look like a DOI\E.*$']].
+11-07 03:30:15.728  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='^.*\Qdoes not look like a DOI\E.*$'].
+11-07 03:30:16.459  2930  2951 D UiDevice: Pressing back button.
+11-07 03:30:16.512  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@cc0b5fd
+11-07 03:30:16.539   506  2751 W InputManager-JNI: Input channel object 'bdd974d app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:16.568   801   859 D EGL_emulation: app_time_stats: avg=1217.17ms min=166.91ms max=2267.43ms count=2
+11-07 03:30:16.593   801   859 D EGL_emulation: app_time_stats: avg=610.66ms min=33.88ms max=2227.77ms count=4
+11-07 03:30:16.604   506  1154 I ImeTracker: app.pdftoolkit.latex:307352ed: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:30:16.663  1441  1441 I LatinIME: Starting input. Cursor position = 806,806
+11-07 03:30:16.733  2930  2963 D EGL_emulation: app_time_stats: avg=978.12ms min=26.44ms max=3918.77ms count=5
+11-07 03:30:16.901  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:30:16.973  2930  2930 I ImeTracker: app.pdftoolkit.latex:307352ed: onShown
+11-07 03:30:17.453  2930  2951 I PDFTK   : doi check ok
+11-07 03:30:17.453  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qmore\E']].
+11-07 03:30:17.454  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:17.599  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:17.605  2930  2951 D UiObject2: Clicking on (1007, 203).
+11-07 03:30:17.667  2930  2951 W GestureController: Gestures took longer than expected (62ms >> 16ms), device might be in a busy state.
+11-07 03:30:17.668  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QInsert and check…\E']].
+11-07 03:30:17.668  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:17.793  2930  2963 D EGL_emulation: app_time_stats: avg=151.32ms min=38.28ms max=426.99ms count=7
+11-07 03:30:17.922  2930  2951 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=TeXora, displayId=0, id=36, taskId=13, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=false, active=false, pictureInPicture=false, transitionTime=473803, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:30:17.923  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006ce2; boundsInParent: Rect(0, 0 - 1080, 2400); boundsInScreen: Rect(0, 0 - 1080, 2400); boundsInWindow: Rect(0, 0 - 1080, 2400); packageName: app.pdftoolkit.latex; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:17.923  2930  2951 W ByMatcher: Skipping null child (0 of 2)
+11-07 03:30:17.923  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:17.925  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006ce2; boundsInParent: Rect(0, 0 - 1080, 2400); boundsInScreen: Rect(0, 0 - 1080, 2400); boundsInWindow: Rect(0, 0 - 1080, 2400); packageName: app.pdftoolkit.latex; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:17.928  2930  2951 W ByMatcher: Skipping null child (0 of 2)
+11-07 03:30:17.929  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:18.067  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@8501f7b
+11-07 03:30:18.069   506  1726 I ImeTracker: app.pdftoolkit.latex:83bc3d25: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:18.114   801   859 D EGL_emulation: app_time_stats: avg=515.26ms min=65.81ms max=1119.59ms count=3
+11-07 03:30:18.161  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:18.317  1441  1486 D EGL_emulation: app_time_stats: avg=711.31ms min=155.22ms max=1267.40ms count=2
+11-07 03:30:18.444  2930  2939 I dftoolkit.latex: Background young concurrent copying GC freed 152035(6564KB) AllocSpace objects, 2(104KB) LOS objects, 39% free, 9912KB/16MB, paused 20us,20us total 418.748ms
+11-07 03:30:18.468  2930  2930 I ImeTracker: app.pdftoolkit.latex:83bc3d25: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-07 03:30:18.469  2930  2930 I ImeTracker: app.pdftoolkit.latex:9897b996: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:30:18.472  2930  2930 I ImeTracker: app.pdftoolkit.latex:9897b996: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:30:18.720  3303  3303 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:30:18.721  3303  3303 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:30:18.739  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:18.759   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:30:18.761  3303  3304 I Gralloc4: mapper 4.x is not supported
+11-07 03:30:19.304  2930  2951 D UiObject2: Clicking on (591, 338).
+11-07 03:30:19.305  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@3a3c3; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(434, 312 - 749, 365); boundsInWindow: Rect(434, 312 - 749, 365); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Insert and check…; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:19.369  2930  2951 W GestureController: Gestures took longer than expected (64ms >> 16ms), device might be in a busy state.
+11-07 03:30:19.370  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QCitation style\E']].
+11-07 03:30:19.371  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCitation style\E'].
+11-07 03:30:19.427  2930  2963 D EGL_emulation: app_time_stats: avg=383.61ms min=158.41ms max=707.40ms count=4
+11-07 03:30:19.599  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@7fcbddd
+11-07 03:30:19.600   801   859 D EGL_emulation: app_time_stats: avg=1488.94ms min=20.35ms max=2957.54ms count=2
+11-07 03:30:19.604   801   859 D EGL_emulation: app_time_stats: avg=703.60ms min=102.47ms max=1304.74ms count=2
+11-07 03:30:19.607   506  2751 W InputManager-JNI: Input channel object '6a9c8e0 Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:30:19.782  2930  2963 D EGL_emulation: app_time_stats: avg=397.56ms min=42.97ms max=1160.89ms count=5
+11-07 03:30:19.799   506   519 I ImeTracker: app.pdftoolkit.latex:3559db1f: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:19.799   506   519 I ImeTracker: app.pdftoolkit.latex:3559db1f: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:20.356  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QCitation style\E'].
+11-07 03:30:20.386   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:30:20.952  2930  2951 D UiObject2: Clicking on (299, 1275).
+11-07 03:30:20.953  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@3c56e; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(183, 1249 - 416, 1302); boundsInWindow: Rect(183, 1249 - 416, 1302); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Citation style; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:21.007  2930  2951 W GestureController: Gestures took longer than expected (53ms >> 16ms), device might be in a busy state.
+11-07 03:30:21.007  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QNumbered, in order of citation\E']].
+11-07 03:30:21.007  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QNumbered, in order of citation\E'].
+11-07 03:30:21.011  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@49ef6d3
+11-07 03:30:21.033   506  2751 W InputManager-JNI: Input channel object '99990c2 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:21.061   801   859 D EGL_emulation: app_time_stats: avg=1457.28ms min=1457.28ms max=1457.28ms count=1
+11-07 03:30:21.134   801   859 D EGL_emulation: app_time_stats: avg=766.85ms min=45.86ms max=1487.85ms count=2
+11-07 03:30:21.285  2930  2951 W UiDevice: Active window root not found.
+11-07 03:30:21.348   506   519 I ImeTracker: app.pdftoolkit.latex:19b6cacf: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:21.349   506   519 I ImeTracker: app.pdftoolkit.latex:19b6cacf: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:21.513  2930  2951 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=TeXora, displayId=0, id=36, taskId=13, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=false, active=false, pictureInPicture=false, transitionTime=478290, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:30:21.655  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QNumbered, in order of citation\E'].
+11-07 03:30:21.865  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QNumbered, in order of citation\E'].
+11-07 03:30:22.466  2930  2951 D UiObject2: Clicking on (540, 1090).
+11-07 03:30:22.519  2930  2951 W GestureController: Gestures took longer than expected (53ms >> 16ms), device might be in a busy state.
+11-07 03:30:22.532  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@bd8ccab
+11-07 03:30:22.550   506   519 W InputManager-JNI: Input channel object '2d8652b app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:22.662   801   859 D EGL_emulation: app_time_stats: avg=800.33ms min=333.88ms max=1266.78ms count=2
+11-07 03:30:22.701   801   859 D EGL_emulation: app_time_stats: avg=384.66ms min=3.82ms max=1142.70ms count=4
+11-07 03:30:22.754  2930  2963 D EGL_emulation: app_time_stats: avg=2971.74ms min=2971.74ms max=2971.74ms count=1
+11-07 03:30:22.781   506  2751 I ImeTracker: app.pdftoolkit.latex:60cbcfbc: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:30:22.786  1441  1441 I LatinIME: Starting input. Cursor position = 806,806
+11-07 03:30:23.020  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qmore\E']].
+11-07 03:30:23.021  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:23.096  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:30:23.130  2930  2930 I ImeTracker: app.pdftoolkit.latex:60cbcfbc: onShown
+11-07 03:30:23.770  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qmore\E'].
+11-07 03:30:23.776  2930  2951 D UiObject2: Clicking on (1007, 203).
+11-07 03:30:23.848  2930  2963 D EGL_emulation: app_time_stats: avg=136.71ms min=41.34ms max=451.25ms count=8
+11-07 03:30:23.849  2930  2951 W GestureController: Gestures took longer than expected (73ms >> 16ms), device might be in a busy state.
+11-07 03:30:23.850  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QInsert and check…\E']].
+11-07 03:30:23.850  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:24.203  2930  2951 W UiDevice: Skipping null root node for window: AccessibilityWindowInfo[title=TeXora, displayId=0, id=36, taskId=13, type=TYPE_APPLICATION, layer=0, region=SkRegion((0,0,1080,2400)), bounds=Rect(0, 0 - 1080, 2400), focused=false, active=false, pictureInPicture=false, transitionTime=479824, hasParent=false, isAnchored=false, hasChildren=false]
+11-07 03:30:24.205  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006ce2; boundsInParent: Rect(0, 0 - 1080, 2400); boundsInScreen: Rect(0, 0 - 1080, 2400); boundsInWindow: Rect(0, 0 - 1080, 2400); packageName: app.pdftoolkit.latex; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:24.205  2930  2951 W ByMatcher: Skipping null child (0 of 2)
+11-07 03:30:24.208  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:24.208  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@80006ce2; boundsInParent: Rect(0, 0 - 1080, 2400); boundsInScreen: Rect(0, 0 - 1080, 2400); boundsInWindow: Rect(0, 0 - 1080, 2400); packageName: app.pdftoolkit.latex; className: android.widget.FrameLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:24.209  2930  2951 W ByMatcher: Skipping null child (0 of 2)
+11-07 03:30:24.210  2930  2951 W ByMatcher: Skipping null child (1 of 2)
+11-07 03:30:24.359  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@d67ba92
+11-07 03:30:24.361   506  1154 I ImeTracker: app.pdftoolkit.latex:cd6088cb: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:24.425   801   859 D EGL_emulation: app_time_stats: avg=587.14ms min=49.63ms max=1259.50ms count=3
+11-07 03:30:24.553  2930  2951 W ByMatcher: Node returned null child: android.view.accessibility.AccessibilityNodeInfo@7457; boundsInParent: Rect(0, 0 - 1080, 2146); boundsInScreen: Rect(0, 128 - 1080, 2274); boundsInWindow: Rect(0, 128 - 1080, 2274); packageName: com.android.inputmethod.latin; className: android.widget.LinearLayout; text: null; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: false; visible: true; actions: [AccessibilityAction: ACTION_SELECT - null, AccessibilityAction: ACTION_CLEAR_SELECTION - null, AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SHOW_ON_SCREEN - null]; isTextSelectable: false
+11-07 03:30:24.553  2930  2951 W ByMatcher: Skipping null child (0 of 1)
+11-07 03:30:24.647  1441  1486 D EGL_emulation: app_time_stats: avg=781.26ms min=138.42ms max=1424.11ms count=2
+11-07 03:30:24.715  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:24.778  2930  2930 I ImeTracker: app.pdftoolkit.latex:cd6088cb: onCancelled at PHASE_CLIENT_ANIMATION_CANCEL
+11-07 03:30:24.781  2930  2930 I ImeTracker: app.pdftoolkit.latex:2ed5cc30: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:30:24.782  2930  2930 I ImeTracker: app.pdftoolkit.latex:2ed5cc30: onFailed at PHASE_CLIENT_VIEW_SERVED
+11-07 03:30:24.892  2930  2963 D EGL_emulation: app_time_stats: avg=174.08ms min=34.09ms max=435.16ms count=6
+11-07 03:30:25.134  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QInsert and check…\E'].
+11-07 03:30:25.682  2930  2951 D UiObject2: Clicking on (591, 338).
+11-07 03:30:25.683  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@3ff14; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(434, 312 - 749, 365); boundsInWindow: Rect(434, 312 - 749, 365); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Insert and check…; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:25.736  2930  2963 D EGL_emulation: app_time_stats: avg=406.50ms min=173.44ms max=649.52ms count=4
+11-07 03:30:25.758  2930  2951 W GestureController: Gestures took longer than expected (74ms >> 16ms), device might be in a busy state.
+11-07 03:30:25.761  2930  2951 D UiDevice: Waiting 10000ms for SearchCondition[hasObject=BySelector [TEXT='\QCheck the project\E']].
+11-07 03:30:25.761  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCheck the project\E'].
+11-07 03:30:25.884  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.compose.ui.window.Api33Impl$$ExternalSyntheticLambda0@10f7282
+11-07 03:30:25.913   801   859 D EGL_emulation: app_time_stats: avg=1593.21ms min=17.04ms max=3169.38ms count=2
+11-07 03:30:25.935   506  1154 W InputManager-JNI: Input channel object '51f9bdf Pop-Up Window (client)' was disposed without first being removed with the input manager!
+11-07 03:30:25.990   801   859 D EGL_emulation: app_time_stats: avg=753.30ms min=55.59ms max=1451.01ms count=2
+11-07 03:30:26.156  2930  2963 D EGL_emulation: app_time_stats: avg=629.00ms min=29.26ms max=1228.73ms count=2
+11-07 03:30:26.236   506   519 I ImeTracker: app.pdftoolkit.latex:1e92006b: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:26.236   506   519 I ImeTracker: app.pdftoolkit.latex:1e92006b: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:26.784  2930  2951 D UiDevice: Retrieving node with selector: BySelector [TEXT='\QCheck the project\E'].
+11-07 03:30:27.273  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:27.358  2930  2951 D UiObject2: Clicking on (341, 1467).
+11-07 03:30:27.358  2930  2951 W UiObject2: Clicking on non-clickable object: android.view.accessibility.AccessibilityNodeInfo@4213b; boundsInParent: Rect(0, 0 - 0, 0); boundsInScreen: Rect(183, 1441 - 499, 1494); boundsInWindow: Rect(183, 1441 - 499, 1494); packageName: app.pdftoolkit.latex; className: android.widget.TextView; text: Check the project; error: null; maxTextLength: -1; stateDescription: null; contentDescription: null; tooltipText: null; containerTitle: null; viewIdResName: null; uniqueId: null; checkable: false; checked: false; focusable: false; focused: false; selected: false; clickable: false; longClickable: false; contextClickable: false; enabled: true; password: false; scrollable: false; importantForAccessibility: true; visible: true; actions: [AccessibilityAction: ACTION_ACCESSIBILITY_FOCUS - null, AccessibilityAction: ACTION_SET_SELECTION - null, AccessibilityAction: ACTION_NEXT_AT_MOVEMENT_GRANULARITY - null, AccessibilityAction: ACTION_PREVIOUS_AT_MOVEMENT_GRANULARITY - null]; isTextSelectable: false
+11-07 03:30:27.422  2930  2951 W GestureController: Gestures took longer than expected (64ms >> 16ms), device might be in a busy state.
+11-07 03:30:27.422  2930  2951 D UiDevice: Waiting 8000ms for SearchCondition[hasObject=BySelector [TEXT='^.*\Qto look at\E.*$']].
+11-07 03:30:27.423  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='^.*\Qto look at\E.*$'].
+11-07 03:30:27.452  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@9e3659f
+11-07 03:30:27.462   506  2751 W InputManager-JNI: Input channel object 'd36eda9 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:27.498   801   859 D EGL_emulation: app_time_stats: avg=1451.34ms min=1451.34ms max=1451.34ms count=1
+11-07 03:30:27.512   801   859 D EGL_emulation: app_time_stats: avg=799.21ms min=186.64ms max=1411.78ms count=2
+11-07 03:30:27.583  2930  2939 I dftoolkit.latex: Background concurrent copying GC freed 195468(7868KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 8625KB/16MB, paused 20us,17us total 132.681ms
+11-07 03:30:27.762   506   957 I ImeTracker: app.pdftoolkit.latex:ce5e7026: onRequestHide at ORIGIN_SERVER_HIDE_INPUT reason HIDE_UNSPECIFIED_WINDOW
+11-07 03:30:27.762   506   957 I ImeTracker: app.pdftoolkit.latex:ce5e7026: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:30:28.810  2930  2951 I PDFTK   : screenshot tool3_check
+11-07 03:30:28.810  2930  2951 I PDFTK   : check dialog ok
+11-07 03:30:28.877  2930  2951 D UiDevice: Pressing back button.
+11-07 03:30:28.930  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=androidx.activity.OnBackPressedDispatcher$Api34Impl$createOnBackAnimationCallback$1@ea527d0
+11-07 03:30:28.946   506   957 W InputManager-JNI: Input channel object 'ec87489 app.pdftoolkit.latex/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:30:29.019   801   859 D EGL_emulation: app_time_stats: avg=760.25ms min=179.01ms max=1341.48ms count=2
+11-07 03:30:29.023   506  1154 I ImeTracker: app.pdftoolkit.latex:83c4f3ef: onRequestShow at ORIGIN_SERVER_START_INPUT reason ATTACH_NEW_INPUT
+11-07 03:30:29.044   801   859 D EGL_emulation: app_time_stats: avg=382.70ms min=18.22ms max=1273.23ms count=4
+11-07 03:30:29.058  1441  1441 I LatinIME: Starting input. Cursor position = 806,806
+11-07 03:30:29.138  2930  2963 D EGL_emulation: app_time_stats: avg=2981.40ms min=2981.40ms max=2981.40ms count=1
+11-07 03:30:29.294  2930  2930 D InsetsController: show(ime(), fromIme=true)
+11-07 03:30:29.364  2930  2930 I ImeTracker: app.pdftoolkit.latex:83c4f3ef: onShown
+11-07 03:30:29.423  3321  3321 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:30:29.424  3321  3321 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:30:29.461   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:30:29.466  3321  3324 I Gralloc4: mapper 4.x is not supported
+11-07 03:30:29.982  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qcompile\E']].
+11-07 03:30:29.982  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile\E'].
+11-07 03:30:30.047  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qcompile\E'].
+11-07 03:30:30.061  2930  2951 D UiObject2: Clicking on (974, 1415).
+11-07 03:30:30.104  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:30:30.123  2930  2951 W GestureController: Gestures took longer than expected (62ms >> 16ms), device might be in a busy state.
+11-07 03:30:30.127  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:30.178  2930  2963 D EGL_emulation: app_time_stats: avg=172.40ms min=56.40ms max=481.20ms count=6
+11-07 03:30:30.254  2930  2930 I PDFTK   : calling the engine with 3 files, engine pdftex
+11-07 03:30:30.254  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:30:30.254  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:30:30.273  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:30:30.276  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:30.302  2930  3084 I PDFTK   : tex: compileProject: 3 files
+11-07 03:30:30.332  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:30.341  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:30:30.378   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:30:31.193  2930  2963 D EGL_emulation: app_time_stats: avg=169.17ms min=39.07ms max=426.89ms count=6
+11-07 03:30:31.366  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:31.381  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:31.394  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:32.409  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:32.432  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:32.445  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:32.636  2930  2963 D EGL_emulation: app_time_stats: avg=288.40ms min=72.32ms max=444.56ms count=5
+11-07 03:30:32.804  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:30:32.858  2930  2930 I chromium: [INFO:CONSOLE(219)] "New compilation started: [main.tex]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.859  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:30:32.861  2930  2930 I chromium: [INFO:CONSOLE(459)] "resolved [object Object]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (459)
+11-07 03:30:32.861  2930  2930 I chromium: [INFO:CONSOLE(460)] "tex_packages_not_resolved fontspec,article", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (460)
+11-07 03:30:32.861  2930  2930 I chromium: [INFO:CONSOLE(461)] "data_packages_js /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-recommended.js", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (461)
+11-07 03:30:32.861  2930  2930 I chromium: [INFO:CONSOLE(219)] "TeX packages: [fontspec, article, pgfplots, geometry, graphicx, booktabs, natbib, hyperref]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.862  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, pgfplots, geometry, graphicx, booktabs, natbib, hyperref]
+11-07 03:30:32.862  2930  2930 I chromium: [INFO:CONSOLE(219)] "TeX packages local: [pgfplots, pgfplotsoldpgfsupp_tikzexternal, pgfplots.assert, circuitikz-0.4, circuitikz-0.6, circuitikz-0.7, circuitikz-0.8.3, circuitikz-0.9.3, circuitikz-0.9.6, circuitikz-1.0, circuitikz-1.1.2, circuitikz-1.2.7, circuitikz-1.4.6, circuitikz, pgf, pgfbaseimage, pgfbaselayers, pgfbasematrix, pgfbasepatterns, pgfbaseplot, pgfbaseshapes, pgfbasesnakes, pgfcore, pgfarrows, pgfautomata, pgfcomp-version-0-65, pgfcomp-version-1-18, pgfheaps, pgflibraryarrows, pgflibraryautomata, pgflibraryplothandlers, pgflibraryplotmarks, pgflibraryshapes, pgflibrarysnakes, pgflibrarytikzbackgrounds, pgflibrarytikztrees, pgfnodes, pgfshade, pgfmanual, pgfpict2e, tikz, pgfmath, pgfsys, pgfcalendar, pgffor, pgfkeys, pgfpages, pgfparser, pgfrcs, tikzexternal, xxcolor, bugtracker, pgfplotstable, pgfregressiontest]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.863  2930  3084 I PDFTK   : tex: TeX packages local: [pgfplots, pgfplotsoldpgfsupp_tikzexternal, pgfplots.assert, circuitikz-0.4, circuitikz-0.6, circuitikz-0.7, circuitikz-0.8.3, circuitikz-0.9.3, circuitikz-0.9.6, circuitikz-1.0, circuitikz-1.1.2, circuitikz-1.2.7, circuitikz-1.4.6, circuitikz, pgf, pgfbaseimage, pgfbaselayers, p
+11-07 03:30:32.863  2930  2930 I chromium: [INFO:CONSOLE(219)] "TeX packages unresolved: [fontspec, article]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.864  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:30:32.864  2930  2930 I chromium: [INFO:CONSOLE(219)] "TeX packages unresolved (in local or preloaded): [fontspec, article, booktabs]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.865  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, booktabs]
+11-07 03:30:32.866  2930  2930 I chromium: [INFO:CONSOLE(219)] "Data packages used (preloaded): [/assets/tex/texlive-basic.js]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.866  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:30:32.867  2930  2930 I chromium: [INFO:CONSOLE(219)] "Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.867  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:30:32.868  2930  2930 I chromium: [INFO:CONSOLE(219)] "Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.869  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:30:32.869  2930  2930 I chromium: [INFO:CONSOLE(219)] "Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:32.870  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:30:33.069  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:30:33.070  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:30:33.449  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:33.461  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:33.485  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:33.504  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:33.637  2930  2963 D EGL_emulation: app_time_stats: avg=250.11ms min=70.54ms max=428.85ms count=4
+11-07 03:30:34.524  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:34.546  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:34.558  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:34.638  2930  2963 D EGL_emulation: app_time_stats: avg=250.29ms min=63.70ms max=438.53ms count=4
+11-07 03:30:35.571  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:35.584  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:35.606  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:35.710  2930  2963 D EGL_emulation: app_time_stats: avg=214.18ms min=73.32ms max=424.13ms count=5
+11-07 03:30:36.619  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:36.709  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:36.726  2930  2963 D EGL_emulation: app_time_stats: avg=254.00ms min=70.43ms max=442.20ms count=4
+11-07 03:30:36.738  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:37.759  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:37.784  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:37.796  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:38.140  2930  2963 D EGL_emulation: app_time_stats: avg=282.71ms min=75.54ms max=425.85ms count=5
+11-07 03:30:38.809  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:38.840  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:38.859  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:39.231  2930  2963 D EGL_emulation: app_time_stats: avg=218.22ms min=73.92ms max=424.17ms count=5
+11-07 03:30:39.641  2930  2930 E FrameTracker: force finish cuj, time out: J<IME_INSETS_ANIMATION::0@1@app.pdftoolkit.latex>
+11-07 03:30:39.879  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:39.900  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:39.924  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:40.003  3327  3327 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:30:40.004  3327  3327 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:30:40.017   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:30:40.017  3327  3328 I Gralloc4: mapper 4.x is not supported
+11-07 03:30:40.233  2930  2963 D EGL_emulation: app_time_stats: avg=250.52ms min=78.00ms max=437.34ms count=4
+11-07 03:30:40.390   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:30:40.393   801   859 D EGL_emulation: app_time_stats: avg=5665.32ms min=5.65ms max=11324.98ms count=2
+11-07 03:30:40.943  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:40.965  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:40.984  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:41.654  2930  2963 D EGL_emulation: app_time_stats: avg=284.09ms min=73.49ms max=426.43ms count=5
+11-07 03:30:42.003  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:42.026  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:42.046  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:42.656  2930  2963 D EGL_emulation: app_time_stats: avg=250.41ms min=80.33ms max=421.53ms count=4
+11-07 03:30:43.065  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:43.084  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:43.102  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:43.730  2930  2963 D EGL_emulation: app_time_stats: avg=211.13ms min=59.12ms max=428.05ms count=5
+11-07 03:30:44.121  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:44.154  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:44.196  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:44.748  2930  2963 D EGL_emulation: app_time_stats: avg=254.46ms min=91.24ms max=421.89ms count=4
+11-07 03:30:45.219  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:45.283  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:45.304  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:46.170  2930  2963 D EGL_emulation: app_time_stats: avg=284.28ms min=72.39ms max=426.57ms count=5
+11-07 03:30:46.319  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:46.339  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:46.360  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:47.170  2930  2963 D EGL_emulation: app_time_stats: avg=250.05ms min=78.09ms max=421.95ms count=4
+11-07 03:30:47.373  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:47.385  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:47.397  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:47.641   506  1154 D WifiNl80211Manager: Scan result ready event
+11-07 03:30:47.641   506  1154 D WifiNative: Scan result ready event
+11-07 03:30:48.171  2930  2963 D EGL_emulation: app_time_stats: avg=250.23ms min=77.33ms max=422.06ms count=4
+11-07 03:30:48.412  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:48.425  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:48.441  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:49.242  2930  2963 D EGL_emulation: app_time_stats: avg=213.95ms min=71.64ms max=426.47ms count=5
+11-07 03:30:49.458  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:49.480  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:49.498  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:50.252  2930  2963 D EGL_emulation: app_time_stats: avg=252.54ms min=80.84ms max=428.56ms count=4
+11-07 03:30:50.380   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:30:50.444  3331  3331 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:30:50.444  3331  3331 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:30:50.461   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:30:50.461  3331  3332 I Gralloc4: mapper 4.x is not supported
+11-07 03:30:50.515  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:50.542  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:50.560  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:51.579  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:51.593  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:51.612  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:51.669  2930  2963 D EGL_emulation: app_time_stats: avg=283.29ms min=70.46ms max=428.74ms count=5
+11-07 03:30:52.630  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:52.652  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:52.686  2930  2963 D EGL_emulation: app_time_stats: avg=254.08ms min=81.63ms max=422.41ms count=4
+11-07 03:30:52.689  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:53.774  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:53.776  2930  2963 D EGL_emulation: app_time_stats: avg=218.02ms min=82.64ms max=418.75ms count=5
+11-07 03:30:53.804  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:53.827  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:54.780  2930  2963 D EGL_emulation: app_time_stats: avg=250.81ms min=86.39ms max=414.47ms count=4
+11-07 03:30:54.851  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:54.864  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:54.881  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:55.900  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:55.914  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:55.933  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:56.187  2930  2963 D EGL_emulation: app_time_stats: avg=281.26ms min=87.32ms max=412.62ms count=5
+11-07 03:30:56.951  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:56.968  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:56.985  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:57.187  2930  2963 D EGL_emulation: app_time_stats: avg=249.90ms min=93.54ms max=405.88ms count=4
+11-07 03:30:58.003  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:58.023  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:58.040  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:58.273  2930  2963 D EGL_emulation: app_time_stats: avg=217.16ms min=86.91ms max=411.94ms count=5
+11-07 03:30:59.058  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:30:59.081  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:30:59.099  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:30:59.290  2930  2963 D EGL_emulation: app_time_stats: avg=254.04ms min=102.68ms max=415.30ms count=4
+11-07 03:31:00.016   801   859 D EGL_emulation: app_time_stats: avg=19622.74ms min=19622.74ms max=19622.74ms count=1
+11-07 03:31:00.116  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:00.291  2930  2963 D EGL_emulation: app_time_stats: avg=250.17ms min=104.23ms max=395.93ms count=4
+11-07 03:31:00.379   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:31:00.616  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:00.628  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:00.915  3335  3335 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:31:00.915  3335  3335 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:31:00.932   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:31:00.932  3335  3336 I Gralloc4: mapper 4.x is not supported
+11-07 03:31:01.293  2930  2963 D EGL_emulation: app_time_stats: avg=250.37ms min=79.40ms max=416.18ms count=4
+11-07 03:31:01.641  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:01.662  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:01.684  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:02.705  2930  2963 D EGL_emulation: app_time_stats: avg=282.29ms min=85.85ms max=414.09ms count=5
+11-07 03:31:02.717  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:02.765  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:02.806  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:03.815  2930  2963 D EGL_emulation: app_time_stats: avg=221.82ms min=84.62ms max=411.07ms count=5
+11-07 03:31:03.856  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:03.878  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:03.900  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:04.920  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:04.938  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:04.958  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:05.138   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:31:05.205  2930  2963 D EGL_emulation: app_time_stats: avg=277.82ms min=105.04ms max=395.95ms count=5
+11-07 03:31:05.976  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:05.999  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:06.016  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:06.167  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ echo $?", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:06.168  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:31:06.170  2930  2930 I chromium: [INFO:CONSOLE(219)] "0
+11-07 03:31:06.170  2930  2930 I chromium: ", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:06.170  2930  3084 I PDFTK   : tex: 0
+11-07 03:31:06.172  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ busytex bibtex8 --8bit main.aux", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:06.172  2930  3084 I PDFTK   : tex: $ busytex bibtex8 --8bit main.aux
+11-07 03:31:06.205  2930  2963 D EGL_emulation: app_time_stats: avg=249.86ms min=103.94ms max=397.50ms count=4
+11-07 03:31:06.222  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ echo $?", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:06.224  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:31:06.226  2930  2930 I chromium: [INFO:CONSOLE(219)] "0
+11-07 03:31:06.226  2930  2930 I chromium: ", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:06.226  2930  3084 I PDFTK   : tex: 0
+11-07 03:31:06.228  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:06.228  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:31:07.033  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:07.046  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:07.066  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:07.308  2930  2963 D EGL_emulation: app_time_stats: avg=220.41ms min=103.85ms max=393.00ms count=5
+11-07 03:31:08.085  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:08.100  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:08.117  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:08.142   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:31:08.308  2930  2963 D EGL_emulation: app_time_stats: avg=250.12ms min=105.47ms max=395.39ms count=4
+11-07 03:31:09.134  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:09.146  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:09.157  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:09.309  2930  2963 D EGL_emulation: app_time_stats: avg=250.08ms min=105.07ms max=395.40ms count=4
+11-07 03:31:10.178  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:10.198  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:10.218  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:10.317  2930  2963 D EGL_emulation: app_time_stats: avg=251.91ms min=70.15ms max=433.26ms count=4
+11-07 03:31:10.379   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:31:11.146   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:31:11.236  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:11.269  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:11.320  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:11.403  3339  3339 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:31:11.404  3339  3339 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:31:11.423   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:31:11.423  3339  3340 I Gralloc4: mapper 4.x is not supported
+11-07 03:31:11.726  2930  2963 D EGL_emulation: app_time_stats: avg=281.62ms min=88.05ms max=412.02ms count=5
+11-07 03:31:12.383  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:12.397  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:12.418  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:12.807  2930  2963 D EGL_emulation: app_time_stats: avg=216.24ms min=85.13ms max=411.34ms count=5
+11-07 03:31:13.439  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:13.461  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:13.478  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:13.830  2930  2963 D EGL_emulation: app_time_stats: avg=255.63ms min=94.60ms max=411.80ms count=4
+11-07 03:31:14.150   801   801 D StatusBarIconController: ignoring old pipeline callback because the new wifi icon is enabled
+11-07 03:31:14.496  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:14.508  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:14.519  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:15.220  2930  2963 D EGL_emulation: app_time_stats: avg=277.80ms min=105.83ms max=396.12ms count=5
+11-07 03:31:15.539  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:15.552  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:15.564  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:16.221  2930  2963 D EGL_emulation: app_time_stats: avg=250.10ms min=106.04ms max=394.85ms count=4
+11-07 03:31:16.585  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:16.603  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:16.620  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:17.324  2930  2963 D EGL_emulation: app_time_stats: avg=220.57ms min=104.88ms max=393.66ms count=5
+11-07 03:31:17.637  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:17.650  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:17.669  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:18.325  2930  2963 D EGL_emulation: app_time_stats: avg=250.23ms min=104.57ms max=395.68ms count=4
+11-07 03:31:18.686  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:18.701  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:18.715  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:19.325  2930  2963 D EGL_emulation: app_time_stats: avg=250.01ms min=88.37ms max=412.43ms count=4
+11-07 03:31:19.732  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:19.753  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:19.794  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:20.342  2930  2963 D EGL_emulation: app_time_stats: avg=253.93ms min=73.85ms max=443.33ms count=4
+11-07 03:31:20.386   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:31:20.855  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:20.899  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:20.920  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:21.737  2930  2963 D EGL_emulation: app_time_stats: avg=278.95ms min=103.90ms max=395.76ms count=5
+11-07 03:31:21.901  3343  3343 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:31:21.902  3343  3343 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:31:21.921   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:31:21.922  3343  3344 I Gralloc4: mapper 4.x is not supported
+11-07 03:31:21.941  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:21.982  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:21.998  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:22.847  2930  2963 D EGL_emulation: app_time_stats: avg=221.89ms min=101.95ms max=389.11ms count=5
+11-07 03:31:23.018  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:23.036  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:23.049  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:24.074  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:24.096  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:24.112  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:24.238  2930  2963 D EGL_emulation: app_time_stats: avg=278.08ms min=103.73ms max=396.85ms count=5
+11-07 03:31:25.130  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:25.143  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:25.162  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:25.348  2930  2963 D EGL_emulation: app_time_stats: avg=221.94ms min=107.54ms max=392.55ms count=5
+11-07 03:31:26.180  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:26.198  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:26.215  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:26.739  2930  2963 D EGL_emulation: app_time_stats: avg=278.10ms min=103.92ms max=397.97ms count=5
+11-07 03:31:27.274  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:27.311  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:27.350  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:27.754  2930  2963 D EGL_emulation: app_time_stats: avg=253.64ms min=106.93ms max=398.95ms count=4
+11-07 03:31:28.381  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:28.405  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:28.426  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:28.758  2930  2963 D EGL_emulation: app_time_stats: avg=251.03ms min=87.97ms max=416.98ms count=4
+11-07 03:31:29.443  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:29.466  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:29.484  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:29.858  2930  2963 D EGL_emulation: app_time_stats: avg=219.78ms min=99.75ms max=393.82ms count=5
+11-07 03:31:30.385   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:31:30.502  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:30.524  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:30.540  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:31.254  2930  2963 D EGL_emulation: app_time_stats: avg=279.05ms min=105.24ms max=395.65ms count=5
+11-07 03:31:31.558  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:31.581  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:31.599  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:32.254  2930  2963 D EGL_emulation: app_time_stats: avg=249.88ms min=106.02ms max=394.97ms count=4
+11-07 03:31:32.423  3347  3347 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:31:32.424  3347  3347 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:31:32.441   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:31:32.441  3347  3348 I Gralloc4: mapper 4.x is not supported
+11-07 03:31:32.616  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:32.645  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:32.662  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:33.255  2930  2963 D EGL_emulation: app_time_stats: avg=249.96ms min=97.46ms max=395.33ms count=4
+11-07 03:31:33.679  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:33.701  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:33.721  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:34.358  2930  2963 D EGL_emulation: app_time_stats: avg=220.48ms min=104.90ms max=394.15ms count=5
+11-07 03:31:34.506  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ echo $?", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:34.508  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:31:34.509  2930  3084 I PDFTK   : tex: 0
+11-07 03:31:34.509  2930  2930 I chromium: [INFO:CONSOLE(219)] "0
+11-07 03:31:34.509  2930  2930 I chromium: ", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:34.510  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:31:34.511  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:31:34.736  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:34.771  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:34.825  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:35.360  2930  2963 D EGL_emulation: app_time_stats: avg=250.46ms min=106.13ms max=400.98ms count=4
+11-07 03:31:35.868  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:35.907  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:35.922  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:36.770  2930  2963 D EGL_emulation: app_time_stats: avg=281.91ms min=86.88ms max=413.16ms count=5
+11-07 03:31:36.935  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:36.948  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:36.959  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:37.771  2930  2963 D EGL_emulation: app_time_stats: avg=250.01ms min=86.77ms max=413.49ms count=4
+11-07 03:31:37.978  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:37.996  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:38.017  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:38.874  2930  2963 D EGL_emulation: app_time_stats: avg=220.48ms min=86.30ms max=411.33ms count=5
+11-07 03:31:39.034  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:39.054  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:39.071  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:40.087  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:40.103  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:40.120  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:40.271  2930  2963 D EGL_emulation: app_time_stats: avg=279.19ms min=104.15ms max=396.34ms count=5
+11-07 03:31:40.381   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:31:41.136  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:41.163  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:41.181  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:41.375  2930  2963 D EGL_emulation: app_time_stats: avg=220.71ms min=104.78ms max=394.82ms count=5
+11-07 03:31:42.199  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:42.219  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:42.235  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:42.770  2930  2963 D EGL_emulation: app_time_stats: avg=278.91ms min=105.46ms max=395.28ms count=5
+11-07 03:31:42.868  3351  3351 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:31:42.869  3351  3351 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:31:42.912   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:31:42.913  3351  3352 I Gralloc4: mapper 4.x is not supported
+11-07 03:31:43.251  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:43.289  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:43.318  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:43.771  2930  2963 D EGL_emulation: app_time_stats: avg=250.06ms min=89.77ms max=400.47ms count=4
+11-07 03:31:44.342  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:44.356  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:44.387  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:44.786  2930  2963 D EGL_emulation: app_time_stats: avg=253.73ms min=103.14ms max=409.48ms count=4
+11-07 03:31:45.414  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:45.450  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:45.470  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:45.874  2930  2963 D EGL_emulation: app_time_stats: avg=271.96ms min=87.71ms max=494.04ms count=4
+11-07 03:31:46.483  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:46.503  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:46.521  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:46.879  2930  2963 D EGL_emulation: app_time_stats: avg=501.84ms min=499.77ms max=503.91ms count=2
+11-07 03:31:47.537  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:47.555  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:47.571  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:48.376  2930  2963 D EGL_emulation: app_time_stats: avg=499.05ms min=494.37ms max=501.44ms count=3
+11-07 03:31:48.588  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:48.603  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:48.620  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:49.392  2930  2963 D EGL_emulation: app_time_stats: avg=507.43ms min=499.96ms max=514.90ms count=2
+11-07 03:31:49.637  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:49.657  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:49.684  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:50.382   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:31:50.401  2930  2963 D EGL_emulation: app_time_stats: avg=504.16ms min=499.66ms max=508.67ms count=2
+11-07 03:31:50.706  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:50.718  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:50.731  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:51.748  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:51.774  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:51.790  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:51.891  2930  2963 D EGL_emulation: app_time_stats: avg=496.91ms min=491.45ms max=505.09ms count=3
+11-07 03:31:52.806  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:52.824  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:52.840  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:53.299  3355  3355 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:31:53.300  3355  3355 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:31:53.312   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:31:53.312  3355  3356 I Gralloc4: mapper 4.x is not supported
+11-07 03:31:53.394  2930  2963 D EGL_emulation: app_time_stats: avg=500.79ms min=499.44ms max=503.07ms count=3
+11-07 03:31:53.856  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:53.880  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:53.900  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:54.891  2930  2963 D EGL_emulation: app_time_stats: avg=498.76ms min=498.16ms max=499.10ms count=3
+11-07 03:31:54.928  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:54.965  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:54.982  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:55.997  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:56.010  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:56.025  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:56.392  2930  2963 D EGL_emulation: app_time_stats: avg=500.19ms min=499.75ms max=500.98ms count=3
+11-07 03:31:57.042  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:57.054  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:57.070  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:57.909  2930  2963 D EGL_emulation: app_time_stats: avg=505.71ms min=496.21ms max=517.75ms count=3
+11-07 03:31:58.086  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:58.103  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:58.118  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:59.134  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:31:59.151  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:31:59.166  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:31:59.414  2930  2963 D EGL_emulation: app_time_stats: avg=501.33ms min=498.33ms max=505.83ms count=3
+11-07 03:32:00.014   801   859 D EGL_emulation: app_time_stats: avg=59996.37ms min=59996.37ms max=59996.37ms count=1
+11-07 03:32:00.181  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:32:00.382   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:32:00.615  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:32:00.632  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:32:00.908  2930  2963 D EGL_emulation: app_time_stats: avg=497.86ms min=493.34ms max=500.18ms count=3
+11-07 03:32:01.649  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:32:01.667  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qcompile_failed\E'].
+11-07 03:32:01.683  2930  2951 D UiDevice: Searching for node with selector: BySelector [TEXT='\QCompile failed\E'].
+11-07 03:32:01.908  2930  2963 D EGL_emulation: app_time_stats: avg=499.82ms min=499.01ms max=500.62ms count=2
+11-07 03:32:02.107  2930  2930 I chromium: [INFO:CONSOLE(219)] "$ echo $?", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:32:02.108  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:32:02.109  2930  3084 I PDFTK   : tex: 0
+11-07 03:32:02.110  2930  2930 I chromium: [INFO:CONSOLE(219)] "0
+11-07 03:32:02.110  2930  2930 I chromium: ", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (219)
+11-07 03:32:02.117  2930  2930 I chromium: [INFO:CONSOLE(631)] "LOGS [object Object],[object Object],[object Object],[object Object]", source: https://appassets.androidplatform.net/assets/tex/busytex_pipeline.js (631)
+11-07 03:32:02.128  2930  3084 I PDFTK   : engine status: ready
+11-07 03:32:02.277  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=85283
+11-07 03:32:02.392  2930  2930 I ImeTracker: app.pdftoolkit.latex:6409d6c1: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:32:02.393  2930  2930 I ImeTracker: app.pdftoolkit.latex:65befab0: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:32:02.429   801   859 D EGL_emulation: app_time_stats: avg=31136.73ms min=79.79ms max=93036.20ms count=3
+11-07 03:32:02.468  2930  2930 I ImeTracker: app.pdftoolkit.latex:65befab0: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+11-07 03:32:02.468  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=ImeCallback=ImeOnBackInvokedCallback@215190762 Callback=android.window.IOnBackInvokedCallback$Stub$Proxy@473eeb7
+11-07 03:32:02.471  2930  2930 I ImeTracker: app.pdftoolkit.latex:a53b84b4: onRequestHide at ORIGIN_CLIENT_HIDE_SOFT_INPUT reason HIDE_SOFT_INPUT_BY_INSETS_API
+11-07 03:32:02.471   506  1154 I ImeTracker: app.pdftoolkit.latex:a53b84b4: onCancelled at PHASE_SERVER_SHOULD_HIDE
+11-07 03:32:02.472  2930  2930 I ImeTracker: app.pdftoolkit.latex:6409d6c1: onHidden
+11-07 03:32:02.493  1441  1486 D EGL_emulation: app_time_stats: avg=46603.80ms min=231.08ms max=92976.53ms count=2
+11-07 03:32:02.698  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qpdf_page_0\E'].
+11-07 03:32:03.721  3359  3359 W BpBinder: Linking to death on android.gui.ISurfaceComposer but there are no threads (yet?) listening to incoming transactions. See ProcessState::startThreadPool and ProcessState::setThreadPoolMaxThreadCount. Generally you should setup the binder threadpool before other initialization steps.
+11-07 03:32:03.721  3359  3359 W ProcessState: Extra binder thread started, but 0 threads requested. Do not use *startThreadPool when zero threads are requested.
+11-07 03:32:03.736   133   133 I hwservicemanager: getTransport: Cannot find entry android.hardware.graphics.mapper@4.0::IMapper/default in either framework or device VINTF manifest.
+11-07 03:32:03.736  3359  3360 I Gralloc4: mapper 4.x is not supported
+11-07 03:32:04.849  2930  2951 I PDFTK   : screenshot tool4_compiled
+11-07 03:32:04.849  2930  2951 I PDFTK   : insert tools compile ok=true
+11-07 03:32:04.849  2930  2951 I PDFTK   : insert tools ok
+11-07 03:32:04.849  2930  2951 I TestRunner: finished: insertToolsMakeCompilableLatex(app.pdftoolkit.mobile.TemplatesTest)

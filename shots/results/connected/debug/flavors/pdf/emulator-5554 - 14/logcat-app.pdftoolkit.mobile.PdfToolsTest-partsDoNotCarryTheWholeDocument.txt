@@ -1,0 +1,25 @@
+11-07 03:24:20.036  2520  2539 I TestRunner: started: partsDoNotCarryTheWholeDocument(app.pdftoolkit.mobile.PdfToolsTest)
+11-07 03:24:20.081   506  2617 W OpenGLRenderer: Failed to initialize 101010-2 format, error = EGL_SUCCESS
+11-07 03:24:20.160  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.app.Activity$$ExternalSyntheticLambda0@1a77f81
+11-07 03:24:20.201  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@ecc2dd8 in: DESTROYED
+11-07 03:24:20.239   506   575 W InputManager-JNI: Input channel object '2d6db4 app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:24:20.363   801   801 D StatusBarIconController: ignoring old pipeline callbacks, because the new mobile icons are enabled
+11-07 03:24:20.722  2520  2527 W .pdftoolkit.pdf: Cleared Reference was only reachable from finalizer (only reported once)
+11-07 03:24:20.911  2520  2539 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+11-07 03:24:20.911  2520  2539 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+11-07 03:24:20.911  2520  2539 D PdfBox-Android: Type 6 GSUB lookup table is not supported and will be ignored
+11-07 03:24:20.911  2520  2539 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+11-07 03:24:20.911  2520  2539 D PdfBox-Android: Type 4 GSUB lookup table is not supported and will be ignored
+11-07 03:24:20.965  2520  2539 W PdfBox-Android: Using fallback font LiberationSans for base font Times-Bold
+11-07 03:24:21.005  2520  2539 W PdfBox-Android: Using fallback font Roboto-Regular for base font Times-Italic
+11-07 03:24:21.038  2520  2539 W PdfBox-Android: Using fallback font LiberationSans for base font Times-BoldItalic
+11-07 03:24:21.104  2520  2539 W PdfBox-Android: Using fallback font LiberationSans for base font Helvetica-Bold
+11-07 03:24:21.138  2520  2539 W PdfBox-Android: Using fallback font Roboto-Regular for base font Helvetica-Oblique
+11-07 03:24:21.172  2520  2539 W PdfBox-Android: Using fallback font LiberationSans for base font Helvetica-BoldOblique
+11-07 03:24:21.323  2520  2539 W PdfBox-Android: Using fallback font Roboto-Regular for base font Symbol
+11-07 03:24:21.344  2520  2539 W PdfBox-Android: Using fallback font Roboto-Regular for base font ZapfDingbats
+11-07 03:24:21.405  2520  2539 W PdfBox-Android: inherited resources of source document are not imported to destination page
+11-07 03:24:21.405  2520  2539 W PdfBox-Android: call importedPage.setResources(page.getResources()) to do this
+11-07 03:24:21.406  2520  2539 W PdfBox-Android: inherited resources of source document are not imported to destination page
+11-07 03:24:21.406  2520  2539 W PdfBox-Android: call importedPage.setResources(page.getResources()) to do this
+11-07 03:24:21.412  2520  2539 I TestRunner: finished: partsDoNotCarryTheWholeDocument(app.pdftoolkit.mobile.PdfToolsTest)

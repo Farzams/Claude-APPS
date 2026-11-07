@@ -1,0 +1,665 @@
+--------- beginning of main
+11-07 03:23:54.213  2520  2539 I PDFTK   : screenshot p01_home
+11-07 03:23:55.316  2520  2539 I PDFTK   : screenshot p02_merge
+11-07 03:23:57.112  2520  2539 I PDFTK   : screenshot p02_split
+11-07 03:23:58.904  2520  2539 I PDFTK   : screenshot p02_organize
+11-07 03:24:01.238  2520  2539 I PDFTK   : screenshot p02_compress
+11-07 03:24:03.028  2520  2539 I PDFTK   : screenshot p02_img2pdf
+11-07 03:24:04.821  2520  2539 I PDFTK   : screenshot p02_pdf2img
+11-07 03:24:06.607  2520  2539 I PDFTK   : screenshot p02_protect
+11-07 03:24:12.074  2520  2539 I PDFTK   : screenshot p02_watermark
+11-07 03:24:17.113  2520  2539 I PDFTK   : screenshot p02_numbers
+11-07 03:24:18.922  2520  2539 I PDFTK   : screenshot p02_docs2pdf
+11-07 03:24:24.898  2520  2539 I PDFTK   : screenshot p04_settings
+11-07 03:24:38.299  2520  2539 I PDFTK   : screenshot p05_about
+11-07 03:24:38.299  2520  2539 I PDFTK   : about ok
+11-07 03:24:51.492  2520  2539 I PDFTK   : theme paper shown
+11-07 03:25:03.844  2520  2539 I PDFTK   : theme ocean shown
+11-07 03:25:16.261  2520  2539 I PDFTK   : theme forest shown
+11-07 03:25:28.603  2520  2539 I PDFTK   : theme sunset shown
+11-07 03:25:40.945  2520  2539 I PDFTK   : theme graphite shown
+11-07 03:25:53.297  2520  2539 I PDFTK   : theme quiet shown
+11-07 03:25:53.297  2520  2539 I PDFTK   : themes ok
+11-07 03:25:54.031  2520  2539 I PDFTK   : txt and html ok
+11-07 03:25:54.097  2520  2539 I PDFTK   : epub ok
+11-07 03:25:54.175  2520  2539 I PDFTK   : fb2 ok
+11-07 03:25:54.290  2520  2539 I PDFTK   : cbz ok
+11-07 03:25:54.541  2520  2539 I PDFTK   : djvu ok: 114602 bytes
+11-07 03:25:58.600  2520  2539 I PDFTK   : organize order before: [page 1, page 2, page 3, page 4]
+11-07 03:25:59.207  2520  2539 I PDFTK   : screenshot p03_organize_before
+11-07 03:26:04.923  2520  2539 I PDFTK   : screenshot p03_organize_after
+11-07 03:26:04.963  2520  2539 I PDFTK   : organize order after: [page 2, page 3, page 1, page 4]
+11-07 03:26:04.963  2520  2539 I PDFTK   : drag ok
+11-07 03:26:05.601  2520  2539 I PDFTK   : merge ok
+11-07 03:26:05.738  2520  2539 I PDFTK   : extract ok
+11-07 03:26:05.819  2520  2539 I PDFTK   : organize ok
+11-07 03:26:05.891  2520  2539 I PDFTK   : locked file refused: InvalidPasswordException
+11-07 03:26:05.986  2520  2539 I PDFTK   : protect ok
+11-07 03:26:06.198  2520  2539 I PDFTK   : compress ok: 19818 -> 37592
+11-07 03:26:06.240  2520  2539 I PDFTK   : pictures ok
+11-07 03:26:06.456  2520  2539 I PDFTK   : watermark ok
+11-07 03:26:06.559  2520  2539 I PDFTK   : numbers ok
+11-07 03:26:11.033  2520  2539 I PDFTK   : screenshot p06_files_start
+11-07 03:26:12.356  2520  2539 I PDFTK   : screenshot p07_files_downloads
+11-07 03:26:14.161  2520  2539 I PDFTK   : screenshot p08_files_search
+11-07 03:26:14.161  2520  2539 I PDFTK   : filemanager browse ok
+11-07 03:26:18.581  2520  2539 I PDFTK   : screenshot p09_pick_two
+11-07 03:26:20.891  2520  2539 I PDFTK   : screenshot p10_save_here
+11-07 03:26:21.888  2520  2539 I PDFTK   : filemanager merge ok
+11-07 03:26:23.711  2520  2539 I PDFTK   : screenshot p11_reader
+11-07 03:26:23.711  2520  2539 I PDFTK   : reader ok
+11-07 03:27:05.079  2930  3084 I PDFTK   : engine status: starting
+11-07 03:27:05.799  2930  3084 I PDFTK   : tex: Preparing... (0/1)
+11-07 03:27:05.876  2930  3084 I PDFTK   : tex: All downloads complete.
+11-07 03:27:05.899  2930  3084 I PDFTK   : tex: Preparing... (0/1)
+11-07 03:27:05.904  2930  3084 I PDFTK   : tex: Downloading...
+11-07 03:27:05.919  2930  3084 I PDFTK   : tex: Downloading data... (1024/104576512)
+11-07 03:27:05.939  2930  2951 I PDFTK   : screenshot 01_projects
+11-07 03:27:05.973  2930  3084 I PDFTK   : tex: Downloading data... (9961472/104576512)
+11-07 03:27:06.029  2930  3084 I PDFTK   : tex: Downloading data... (19070976/104576512)
+11-07 03:27:06.075  2930  3084 I PDFTK   : tex: Downloading data... (28246016/104576512)
+11-07 03:27:06.126  2930  3084 I PDFTK   : tex: Downloading data... (39845888/104576512)
+11-07 03:27:06.177  2930  3084 I PDFTK   : tex: Downloading data... (51642368/104576512)
+11-07 03:27:06.248  2930  3084 I PDFTK   : tex: Downloading data... (57933824/104576512)
+11-07 03:27:06.296  2930  3084 I PDFTK   : tex: Downloading data... (60096512/104576512)
+11-07 03:27:06.350  2930  3084 I PDFTK   : tex: Downloading data... (62455808/104576512)
+11-07 03:27:06.400  2930  3084 I PDFTK   : tex: Downloading data... (75300864/104576512)
+11-07 03:27:06.450  2930  3084 I PDFTK   : tex: Downloading data... (90505216/104576512)
+11-07 03:27:06.483  2930  3084 I PDFTK   : tex: Downloading data... (104576512/104576512)
+11-07 03:27:07.072  2930  2951 I PDFTK   : screenshot 01b_import_picker
+11-07 03:27:07.072  2930  2951 I PDFTK   : import picker ok
+11-07 03:27:09.072  2930  3084 I PDFTK   : tex: All downloads complete.
+11-07 03:27:09.075  2930  3084 I PDFTK   : tex: Running...
+11-07 03:27:09.252  2930  2951 I PDFTK   : screenshot 02_editor
+11-07 03:27:09.352  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:27:09.517  2930  2930 I PDFTK   : calling the engine with 1 files, engine xetex
+11-07 03:27:09.518  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:27:09.518  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:27:09.695  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:27:09.697  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:27:09.701  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:27:09.714  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:27:11.045  2930  3084 I PDFTK   : engine status: ready
+11-07 03:27:11.047  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:27:11.051  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:27:11.051  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:27:11.052  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:27:11.053  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:27:11.054  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:27:11.055  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:27:11.056  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:27:11.062  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:27:11.135  2930  3084 I PDFTK   : tex: Preparing... (0/1)
+11-07 03:27:11.164  2930  3084 I PDFTK   : tex: All downloads complete.
+11-07 03:27:11.197  2930  3084 I PDFTK   : tex: Preparing... (0/1)
+11-07 03:27:11.198  2930  3084 I PDFTK   : tex: Downloading...
+11-07 03:27:11.210  2930  3084 I PDFTK   : tex: Preparing... (0/2)
+11-07 03:27:11.211  2930  3084 I PDFTK   : tex: Downloading...
+11-07 03:27:11.250  2930  3084 I PDFTK   : tex: Preparing... (0/3)
+11-07 03:27:11.251  2930  3084 I PDFTK   : tex: Downloading...
+11-07 03:27:11.255  2930  3084 I PDFTK   : tex: Preparing... (0/4)
+11-07 03:27:11.259  2930  3084 I PDFTK   : tex: Downloading...
+11-07 03:27:11.263  2930  3084 I PDFTK   : tex: Preparing... (0/5)
+11-07 03:27:11.264  2930  3084 I PDFTK   : tex: Downloading...
+11-07 03:27:11.309  2930  3084 I PDFTK   : tex: Downloading data... (104577536/275795795)
+11-07 03:27:11.333  2930  3084 I PDFTK   : tex: Downloading data... (104578560/266386492)
+11-07 03:27:11.335  2930  3084 I PDFTK   : tex: Downloading data... (104579584/211113028)
+11-07 03:27:11.338  2930  3084 I PDFTK   : tex: Downloading data... (104580608/178210601)
+11-07 03:27:11.385  2930  3084 I PDFTK   : tex: Downloading data... (104842752/178210601)
+11-07 03:27:11.413  2930  3084 I PDFTK   : tex: Downloading data... (105039360/178210601)
+11-07 03:27:11.415  2930  3084 I PDFTK   : tex: Downloading data... (105235968/178210601)
+11-07 03:27:11.417  2930  3084 I PDFTK   : tex: Downloading data... (105432576/178210601)
+11-07 03:27:11.433  2930  3084 I PDFTK   : tex: Downloading data... (106743296/178210601)
+11-07 03:27:11.460  2930  3084 I PDFTK   : tex: Downloading data... (108512768/178210601)
+11-07 03:27:11.466  2930  3084 I PDFTK   : tex: Downloading data... (110282240/178210601)
+11-07 03:27:11.468  2930  3084 I PDFTK   : tex: Downloading data... (111986176/178210601)
+11-07 03:27:11.488  2930  3084 I PDFTK   : tex: Downloading data... (112902656/178210601)
+11-07 03:27:11.511  2930  3084 I PDFTK   : tex: Downloading data... (113753600/178210601)
+11-07 03:27:11.516  2930  3084 I PDFTK   : tex: Downloading data... (114866688/178210601)
+11-07 03:27:11.518  2930  3084 I PDFTK   : tex: Downloading data... (116045312/178210601)
+11-07 03:27:11.540  2930  3084 I PDFTK   : tex: Downloading data... (117814784/178210601)
+11-07 03:27:13.215  2930  3084 I PDFTK   : tex: Preparing... (1/5)
+11-07 03:27:13.216  2930  3084 I PDFTK   : tex: Downloading data... (119715328/178210601)
+11-07 03:27:13.218  2930  3084 I PDFTK   : tex: Downloading data... (121419264/178210601)
+11-07 03:27:13.219  2930  3084 I PDFTK   : tex: Downloading data... (123057664/178210601)
+11-07 03:27:13.221  2930  3084 I PDFTK   : tex: Downloading data... (123647488/178210601)
+11-07 03:27:13.226  2930  3084 I PDFTK   : tex: Downloading data... (124539630/178210601)
+11-07 03:27:13.593  2930  3084 I PDFTK   : tex: Preparing... (2/5)
+11-07 03:27:13.595  2930  3084 I PDFTK   : tex: Downloading data... (127423214/178210601)
+11-07 03:27:13.596  2930  3084 I PDFTK   : tex: Downloading data... (130175726/178210601)
+11-07 03:27:13.599  2930  3084 I PDFTK   : tex: Downloading data... (132993774/178210601)
+11-07 03:27:13.606  2930  3084 I PDFTK   : tex: Downloading data... (134515661/178210601)
+11-07 03:27:13.636  2930  3084 I PDFTK   : tex: Downloading data... (136299200/178210601)
+11-07 03:27:13.705  2930  3084 I PDFTK   : tex: Downloading data... (138199744/178210601)
+11-07 03:27:13.986  2930  3084 I PDFTK   : tex: Preparing... (3/5)
+11-07 03:27:13.989  2930  3084 I PDFTK   : tex: Downloading data... (138330816/178210601)
+11-07 03:27:14.153  2930  3084 I PDFTK   : tex: Preparing... (4/5)
+11-07 03:27:14.156  2930  3084 I PDFTK   : tex: Downloading data... (140624576/178210601)
+11-07 03:27:14.204  2930  3084 I PDFTK   : tex: Downloading data... (169460416/178210601)
+11-07 03:27:14.222  2930  3084 I PDFTK   : tex: Downloading data... (178210601/178210601)
+11-07 03:27:15.255  2930  3084 I PDFTK   : tex: All downloads complete.
+11-07 03:27:15.257  2930  3084 I PDFTK   : tex: Running...
+11-07 03:27:16.763  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:27:29.863  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:27:29.864  2930  3084 I PDFTK   : tex: 0
+11-07 03:27:29.865  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:27:31.578  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:27:31.580  2930  3084 I PDFTK   : tex: 0
+11-07 03:27:31.581  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:27:31.583  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:27:31.585  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:27:31.586  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:27:31.587  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:27:31.588  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:27:31.589  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:27:31.590  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:27:31.591  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:27:31.592  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:27:31.725  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:27:40.883  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:27:40.884  2930  3084 I PDFTK   : tex: 0
+11-07 03:27:40.886  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:27:42.620  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:27:42.622  2930  3084 I PDFTK   : tex: 0
+11-07 03:27:42.630  2930  3084 I PDFTK   : engine status: ready
+11-07 03:27:42.735  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=28269
+11-07 03:27:46.453  2930  2951 I PDFTK   : screenshot 03_preview_english
+11-07 03:27:46.453  2930  2951 I PDFTK   : English compile ok=true in 37s
+11-07 03:27:47.361  2930  2951 I PDFTK   : zoom percent after zoom in: 135%
+11-07 03:27:47.361  2930  2951 I PDFTK   : zoom ok
+11-07 03:27:49.360  2930  2951 I PDFTK   : screenshot 03b_preview_zoomed_night
+11-07 03:27:53.974  2930  2951 I PDFTK   : screenshot 03d_outline
+11-07 03:27:53.974  2930  2951 I PDFTK   : outline ok
+11-07 03:27:58.795  2930  2951 I PDFTK   : screenshot 03e_history
+11-07 03:27:58.796  2930  2951 I PDFTK   : history ok
+11-07 03:28:02.593  2930  2951 I PDFTK   : screenshot 03c_find
+11-07 03:28:07.826  2930  2951 I PDFTK   : screenshot 04_persian_source
+11-07 03:28:07.884  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:28:07.942  2930  2930 I PDFTK   : calling the engine with 1 files, engine xetex
+11-07 03:28:07.942  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:28:07.942  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:28:07.964  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:28:07.965  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:28:08.019  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:28:08.707  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:28:08.718  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:28:08.719  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, xepersian]
+11-07 03:28:08.720  2930  3084 I PDFTK   : tex: TeX packages local: [xepersian, bidi-media9, bidi-perpage, bidi, bidi2in1, bidicode, bidiftnxtra, bidipoem, biditools, bidituftefloat, bidituftegeneralstructure, bidituftehyperref, bidituftesidenote, bidituftetitle, bidituftetoc, cvthemebidicasual, cvthemebidiclassic, xepersian-hm, xepersian-mathdig
+11-07 03:28:08.721  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:28:08.722  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article]
+11-07 03:28:08.722  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:28:08.723  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): []
+11-07 03:28:08.724  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js]
+11-07 03:28:08.725  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:28:08.865  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:28:40.040  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:28:40.043  2930  3084 I PDFTK   : tex: 0
+11-07 03:28:40.045  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:28:41.334  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:28:41.336  2930  3084 I PDFTK   : tex: 0
+11-07 03:28:41.354  2930  3084 I PDFTK   : engine status: ready
+11-07 03:28:41.469  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=18205
+11-07 03:28:45.055  2930  2951 I PDFTK   : screenshot 05_preview_persian
+11-07 03:28:45.055  2930  2951 I PDFTK   : Persian compile ok=true in 37s
+11-07 03:28:49.509  2930  2951 I PDFTK   : screenshot 05b_bib_source
+11-07 03:28:49.563  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:28:49.752  2930  2930 I PDFTK   : calling the engine with 2 files, engine xetex
+11-07 03:28:49.756  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:28:49.756  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:28:49.794  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:28:49.795  2930  3084 I PDFTK   : tex: compileProject: 2 files
+11-07 03:28:49.797  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:28:49.810  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:28:49.812  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:28:49.814  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, hyperref]
+11-07 03:28:49.815  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:28:49.816  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:28:49.817  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article]
+11-07 03:28:49.820  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:28:49.821  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): []
+11-07 03:28:49.822  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js]
+11-07 03:28:49.823  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:28:49.959  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:29:01.533  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:29:01.535  2930  3084 I PDFTK   : tex: 0
+11-07 03:29:01.536  2930  3084 I PDFTK   : tex: $ busytex bibtex8 --8bit main.aux
+11-07 03:29:01.582  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:29:01.584  2930  3084 I PDFTK   : tex: 0
+11-07 03:29:01.585  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:29:09.764  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:29:09.766  2930  3084 I PDFTK   : tex: 0
+11-07 03:29:09.767  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:29:17.777  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:29:17.779  2930  3084 I PDFTK   : tex: 0
+11-07 03:29:17.780  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:29:17.859  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:29:17.860  2930  3084 I PDFTK   : tex: 0
+11-07 03:29:17.864  2930  3084 I PDFTK   : engine status: ready
+11-07 03:29:17.975  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=20099
+11-07 03:29:20.494  2930  2951 I PDFTK   : screenshot 05c_preview_bib
+11-07 03:29:20.494  2930  2951 I PDFTK   : Bibliography compile ok=true in 30s
+11-07 03:29:22.574  2930  2951 I PDFTK   : screenshot 06_settings_dark
+11-07 03:29:23.904  2930  2951 I PDFTK   : screenshot 07_settings_paper_dark_teal
+11-07 03:29:35.966  2930  2951 I PDFTK   : screenshot 07b_about
+11-07 03:29:35.966  2930  2951 I PDFTK   : about ok
+11-07 03:29:36.757  2930  2951 I PDFTK   : screenshot 08_settings_persian
+11-07 03:29:38.119  2930  2951 I PDFTK   : screenshot 09_projects_persian_dark
+11-07 03:29:58.974  2930  2951 I PDFTK   : screenshot tool1_csv_dialog
+11-07 03:30:00.541  2930  2951 I PDFTK   : csv plot inserted
+11-07 03:30:10.945  2930  2951 I PDFTK   : screenshot tool2_after_picture
+11-07 03:30:10.945  2930  2951 I PDFTK   : picture inserted
+11-07 03:30:17.453  2930  2951 I PDFTK   : doi check ok
+11-07 03:30:28.810  2930  2951 I PDFTK   : screenshot tool3_check
+11-07 03:30:28.810  2930  2951 I PDFTK   : check dialog ok
+11-07 03:30:30.104  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:30:30.254  2930  2930 I PDFTK   : calling the engine with 3 files, engine pdftex
+11-07 03:30:30.254  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:30:30.254  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:30:30.273  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:30:30.302  2930  3084 I PDFTK   : tex: compileProject: 3 files
+11-07 03:30:30.341  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:30:32.804  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:30:32.859  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:30:32.862  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, pgfplots, geometry, graphicx, booktabs, natbib, hyperref]
+11-07 03:30:32.863  2930  3084 I PDFTK   : tex: TeX packages local: [pgfplots, pgfplotsoldpgfsupp_tikzexternal, pgfplots.assert, circuitikz-0.4, circuitikz-0.6, circuitikz-0.7, circuitikz-0.8.3, circuitikz-0.9.3, circuitikz-0.9.6, circuitikz-1.0, circuitikz-1.1.2, circuitikz-1.2.7, circuitikz-1.4.6, circuitikz, pgf, pgfbaseimage, pgfbaselayers, p
+11-07 03:30:32.864  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:30:32.865  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, booktabs]
+11-07 03:30:32.866  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:30:32.867  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:30:32.869  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:30:32.870  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:30:33.070  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:31:06.168  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:31:06.170  2930  3084 I PDFTK   : tex: 0
+11-07 03:31:06.172  2930  3084 I PDFTK   : tex: $ busytex bibtex8 --8bit main.aux
+11-07 03:31:06.224  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:31:06.226  2930  3084 I PDFTK   : tex: 0
+11-07 03:31:06.228  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:31:34.508  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:31:34.509  2930  3084 I PDFTK   : tex: 0
+11-07 03:31:34.511  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:32:02.108  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:32:02.109  2930  3084 I PDFTK   : tex: 0
+11-07 03:32:02.128  2930  3084 I PDFTK   : engine status: ready
+11-07 03:32:02.277  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=85283
+11-07 03:32:04.849  2930  2951 I PDFTK   : screenshot tool4_compiled
+11-07 03:32:04.849  2930  2951 I PDFTK   : insert tools compile ok=true
+11-07 03:32:04.849  2930  2951 I PDFTK   : insert tools ok
+11-07 03:32:14.650  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:32:14.656  2930  2930 I PDFTK   : calling the engine with 1 files, engine xetex
+11-07 03:32:14.656  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:32:14.656  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:32:14.702  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:32:14.703  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:32:14.703  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:32:14.707  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:32:14.714  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:32:14.714  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:32:14.715  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:32:14.715  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:32:14.716  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:32:14.716  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:32:14.717  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:32:14.718  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:32:14.762  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:32:14.942  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:32:27.037  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:32:27.039  2930  3084 I PDFTK   : tex: 0
+11-07 03:32:27.040  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:32:28.490  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:32:28.491  2930  3084 I PDFTK   : tex: 0
+11-07 03:32:28.491  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:32:28.492  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:32:28.492  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:32:28.501  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:32:28.503  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:32:28.504  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:32:28.505  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:32:28.505  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:32:28.505  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:32:28.506  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:32:28.608  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:32:37.859  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:32:37.860  2930  3084 I PDFTK   : tex: 0
+11-07 03:32:37.861  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:32:39.365  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:32:39.366  2930  3084 I PDFTK   : tex: 0
+11-07 03:32:39.370  2930  3084 I PDFTK   : engine status: ready
+11-07 03:32:39.411  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=28280
+11-07 03:32:42.680  2930  2951 I PDFTK   : screenshot t00_Physics
+11-07 03:32:42.680  2930  2951 I PDFTK   : template Physics ok=true in 28s
+11-07 03:32:50.997  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:32:51.003  2930  2930 I PDFTK   : calling the engine with 1 files, engine xetex
+11-07 03:32:51.003  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:32:51.003  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:32:51.018  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:32:51.018  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:32:51.020  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:32:51.024  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:32:51.025  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:32:51.026  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:32:51.027  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:32:51.027  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:32:51.028  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:32:51.029  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:32:51.029  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:32:51.029  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:32:51.105  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:32:51.277  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:33:03.490  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:33:03.492  2930  3084 I PDFTK   : tex: 0
+11-07 03:33:03.493  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:33:04.964  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:33:04.966  2930  3084 I PDFTK   : tex: 0
+11-07 03:33:04.967  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:33:04.968  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:33:04.971  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:33:04.973  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:33:04.974  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:33:04.981  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:33:04.982  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:33:04.983  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:33:04.984  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:33:04.985  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:33:05.109  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:33:14.230  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:33:14.232  2930  3084 I PDFTK   : tex: 0
+11-07 03:33:14.232  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:33:15.795  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:33:15.796  2930  3084 I PDFTK   : tex: 0
+11-07 03:33:15.800  2930  3084 I PDFTK   : engine status: ready
+11-07 03:33:15.842  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=28276
+11-07 03:33:20.097  2930  2951 I PDFTK   : screenshot t01_Chemistry
+11-07 03:33:20.097  2930  2951 I PDFTK   : template Chemistry ok=true in 29s
+11-07 03:33:27.762  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:33:27.769  2930  2930 I PDFTK   : calling the engine with 1 files, engine pdftex
+11-07 03:33:27.769  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:33:27.769  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:33:27.778  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:33:27.779  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:33:27.787  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:33:27.791  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:33:27.796  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, algorithm, algpseudocode, listings, hyperref]
+11-07 03:33:27.797  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:33:27.798  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:33:27.798  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, algorithm, algpseudocode, listings]
+11-07 03:33:27.798  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:33:27.799  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js, /assets/tex/ubuntu-texlive-science.js]
+11-07 03:33:27.803  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js, /assets/tex/ubuntu-texlive-science.js]
+11-07 03:33:27.804  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:33:27.851  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:33:28.074  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:33:42.966  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:33:42.968  2930  3084 I PDFTK   : tex: 0
+11-07 03:33:42.969  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:33:42.970  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:33:42.978  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, algorithm, algpseudocode, listings, hyperref]
+11-07 03:33:42.978  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:33:42.979  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:33:42.980  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, algorithm, algpseudocode, listings]
+11-07 03:33:42.981  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:33:42.985  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js, /assets/tex/ubuntu-texlive-science.js]
+11-07 03:33:42.986  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js, /assets/tex/ubuntu-texlive-science.js]
+11-07 03:33:42.987  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:33:43.081  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:33:55.225  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:33:55.227  2930  3084 I PDFTK   : tex: 0
+11-07 03:33:55.250  2930  3084 I PDFTK   : engine status: ready
+11-07 03:33:55.314  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=116935
+11-07 03:33:58.916  2930  2951 I PDFTK   : screenshot t02_Computerscience
+11-07 03:33:58.916  2930  2951 I PDFTK   : template Computer science ok=true in 31s
+11-07 03:34:06.804  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:34:06.887  2930  2930 I PDFTK   : calling the engine with 1 files, engine xetex
+11-07 03:34:06.887  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:34:06.887  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:34:06.900  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:34:06.901  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:34:06.903  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:34:06.927  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:34:06.929  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:34:06.930  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:34:06.931  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:34:06.932  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:34:06.933  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:34:06.934  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:34:06.943  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:34:06.944  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:34:06.986  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:34:07.190  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:34:19.283  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:34:19.285  2930  3084 I PDFTK   : tex: 0
+11-07 03:34:19.286  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:34:20.901  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:34:20.906  2930  3084 I PDFTK   : tex: 0
+11-07 03:34:20.908  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:34:20.909  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:34:20.911  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:34:20.913  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:34:20.914  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:34:20.915  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:34:20.916  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:34:20.917  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:34:20.933  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:34:20.934  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:34:21.063  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:34:30.305  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:34:30.307  2930  3084 I PDFTK   : tex: 0
+11-07 03:34:30.308  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:34:32.034  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:34:32.035  2930  3084 I PDFTK   : tex: 0
+11-07 03:34:32.039  2930  3084 I PDFTK   : engine status: ready
+11-07 03:34:32.077  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=28271
+11-07 03:34:34.020  2930  2951 I PDFTK   : screenshot t03_Engineering
+11-07 03:34:34.021  2930  2951 I PDFTK   : template Engineering ok=true in 27s
+11-07 03:34:40.928  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:34:40.934  2930  2930 I PDFTK   : calling the engine with 2 files, engine pdftex
+11-07 03:34:40.934  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:34:40.934  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:34:40.942  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:34:40.942  2930  3084 I PDFTK   : tex: compileProject: 2 files
+11-07 03:34:40.943  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:34:40.945  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:34:40.945  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, graphicx, booktabs, natbib, hyperref]
+11-07 03:34:40.946  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:34:40.946  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:34:40.946  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, booktabs]
+11-07 03:34:40.946  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:34:40.947  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:34:40.947  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:34:40.947  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:34:41.031  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:34:41.199  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:34:54.632  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:34:54.633  2930  3084 I PDFTK   : tex: 0
+11-07 03:34:54.634  2930  3084 I PDFTK   : tex: $ busytex bibtex8 --8bit main.aux
+11-07 03:34:54.680  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:34:54.682  2930  3084 I PDFTK   : tex: 0
+11-07 03:34:54.683  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:35:04.846  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:35:04.848  2930  3084 I PDFTK   : tex: 0
+11-07 03:35:04.849  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:35:14.842  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:35:14.844  2930  3084 I PDFTK   : tex: 0
+11-07 03:35:14.854  2930  3084 I PDFTK   : engine status: ready
+11-07 03:35:14.912  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=74722
+11-07 03:35:18.316  2930  2951 I PDFTK   : screenshot t04_Biologylabreport
+11-07 03:35:18.316  2930  2951 I PDFTK   : template Biology lab report ok=true in 37s
+11-07 03:35:25.296  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:35:25.300  2930  2930 I PDFTK   : calling the engine with 1 files, engine pdftex
+11-07 03:35:25.300  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:35:25.301  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:35:25.315  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:35:25.316  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:35:25.317  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:35:25.446  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:35:25.490  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:35:25.497  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, booktabs, pgfplots, hyperref]
+11-07 03:35:25.498  2930  3084 I PDFTK   : tex: TeX packages local: [pgfplots, pgfplotsoldpgfsupp_tikzexternal, pgfplots.assert, circuitikz-0.4, circuitikz-0.6, circuitikz-0.7, circuitikz-0.8.3, circuitikz-0.9.3, circuitikz-0.9.6, circuitikz-1.0, circuitikz-1.1.2, circuitikz-1.2.7, circuitikz-1.4.6, circuitikz, pgf, pgfbaseimage, pgfbaselayers, p
+11-07 03:35:25.499  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:35:25.499  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, booktabs]
+11-07 03:35:25.500  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:35:25.501  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:35:25.502  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:35:25.502  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:35:25.700  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:35:54.478  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:35:54.485  2930  3084 I PDFTK   : tex: 0
+11-07 03:35:54.486  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:35:54.487  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:35:54.491  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, booktabs, pgfplots, hyperref]
+11-07 03:35:54.492  2930  3084 I PDFTK   : tex: TeX packages local: [pgfplots, pgfplotsoldpgfsupp_tikzexternal, pgfplots.assert, circuitikz-0.4, circuitikz-0.6, circuitikz-0.7, circuitikz-0.8.3, circuitikz-0.9.3, circuitikz-0.9.6, circuitikz-1.0, circuitikz-1.1.2, circuitikz-1.2.7, circuitikz-1.4.6, circuitikz, pgf, pgfbaseimage, pgfbaselayers, p
+11-07 03:35:54.493  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:35:54.494  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, booktabs]
+11-07 03:35:54.494  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:35:54.495  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:35:54.496  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:35:54.497  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:35:54.641  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:36:20.452  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:36:20.453  2930  3084 I PDFTK   : tex: 0
+11-07 03:36:20.467  2930  3084 I PDFTK   : engine status: ready
+11-07 03:36:20.539  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=85432
+11-07 03:36:22.425  2930  2951 I PDFTK   : screenshot t05_Dataandplots
+11-07 03:36:22.425  2930  2951 I PDFTK   : template Data and plots ok=true in 57s
+11-07 03:36:29.445  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:36:29.452  2930  2930 I PDFTK   : calling the engine with 2 files, engine pdftex
+11-07 03:36:29.453  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:36:29.454  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:36:29.461  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:36:29.462  2930  3084 I PDFTK   : tex: compileProject: 2 files
+11-07 03:36:29.516  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:36:29.610  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:36:29.627  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:36:29.633  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, elsarticle, amsmath, amssymb]
+11-07 03:36:29.634  2930  3084 I PDFTK   : tex: TeX packages local: [IEEEtrantools]
+11-07 03:36:29.635  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, elsarticle]
+11-07 03:36:29.638  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, elsarticle]
+11-07 03:36:29.639  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:36:29.640  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): []
+11-07 03:36:29.645  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js]
+11-07 03:36:29.649  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:36:29.792  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:36:37.517  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:36:37.518  2930  3084 I PDFTK   : tex: 0
+11-07 03:36:37.519  2930  3084 I PDFTK   : tex: $ busytex bibtex8 --8bit main.aux
+11-07 03:36:37.547  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:36:37.548  2930  3084 I PDFTK   : tex: 0
+11-07 03:36:37.550  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=batchmode --halt-on-error --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:36:43.164  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:36:43.165  2930  3084 I PDFTK   : tex: 0
+11-07 03:36:43.166  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:36:48.915  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:36:48.916  2930  3084 I PDFTK   : tex: 0
+11-07 03:36:48.942  2930  3084 I PDFTK   : engine status: ready
+11-07 03:36:48.991  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=71399
+11-07 03:36:52.199  2930  2951 I PDFTK   : screenshot t06_Elsevierarticle
+11-07 03:36:52.199  2930  2951 I PDFTK   : template Elsevier article ok=true in 22s
+11-07 03:36:59.831  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:36:59.922  2930  2930 I PDFTK   : calling the engine with 1 files, engine pdftex
+11-07 03:36:59.922  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:36:59.922  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:36:59.981  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:36:59.985  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:36:59.986  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:37:00.016  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:37:00.033  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:37:00.045  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, setspace, hyperref]
+11-07 03:37:00.047  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:37:00.049  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article, setspace]
+11-07 03:37:00.050  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, setspace]
+11-07 03:37:00.052  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:37:00.053  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): []
+11-07 03:37:00.055  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js]
+11-07 03:37:00.056  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:37:00.189  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:37:11.919  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:37:11.924  2930  3084 I PDFTK   : tex: 0
+11-07 03:37:11.925  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:37:11.926  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:37:11.927  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, setspace, hyperref]
+11-07 03:37:11.927  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:37:11.928  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article, setspace]
+11-07 03:37:11.929  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, setspace]
+11-07 03:37:11.929  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:37:11.929  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): []
+11-07 03:37:11.930  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js]
+11-07 03:37:11.930  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:37:12.064  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:37:20.725  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:37:20.726  2930  3084 I PDFTK   : tex: 0
+11-07 03:37:20.744  2930  3084 I PDFTK   : engine status: ready
+11-07 03:37:20.791  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=63038
+11-07 03:37:24.035  2930  2951 I PDFTK   : screenshot t07_APAstylepaper
+11-07 03:37:24.035  2930  2951 I PDFTK   : template APA-style paper ok=true in 24s
+11-07 03:37:31.114  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:37:31.119  2930  2930 I PDFTK   : calling the engine with 1 files, engine xetex
+11-07 03:37:31.119  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:37:31.119  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:37:31.124  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:37:31.126  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:37:31.127  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:37:31.131  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:37:31.137  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:37:31.138  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:37:31.139  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:37:31.142  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:37:31.143  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:37:31.146  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:37:31.147  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:37:31.149  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:37:31.168  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:37:31.445  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:37:43.676  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:37:43.679  2930  3084 I PDFTK   : tex: 0
+11-07 03:37:43.680  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:37:45.103  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:37:45.104  2930  3084 I PDFTK   : tex: 0
+11-07 03:37:45.105  2930  3084 I PDFTK   : tex: Cross-references changed: running pass 2
+11-07 03:37:45.106  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:37:45.107  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, article, geometry, amsmath, amssymb, amsthm, mathtools, bm, hyperref]
+11-07 03:37:45.108  2930  3084 I PDFTK   : tex: TeX packages local: []
+11-07 03:37:45.112  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, article]
+11-07 03:37:45.121  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, article, mathtools]
+11-07 03:37:45.122  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:37:45.123  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:37:45.124  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-recommended.js]
+11-07 03:37:45.124  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:37:45.233  2930  3084 I PDFTK   : tex: $ busytex xelatex --no-shell-escape --interaction=batchmode --halt-on-error --no-pdf --fmt /texlive/texmf-dist/texmf-var/web2c/xetex/xelatex.fmt main.tex
+11-07 03:37:54.463  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:37:54.466  2930  3084 I PDFTK   : tex: 0
+11-07 03:37:54.468  2930  3084 I PDFTK   : tex: $ busytex xdvipdfmx -o main.pdf main.xdv
+11-07 03:37:55.945  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:37:55.947  2930  3084 I PDFTK   : tex: 0
+11-07 03:37:55.951  2930  3084 I PDFTK   : engine status: ready
+11-07 03:37:55.977  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=28276
+11-07 03:37:57.998  2930  2951 I PDFTK   : screenshot t08_Thesis
+11-07 03:37:57.998  2930  2951 I PDFTK   : template Thesis ok=true in 26s
+11-07 03:38:05.295  2930  2930 I PDFTK   : compile() called, compiling=false
+11-07 03:38:05.300  2930  2930 I PDFTK   : calling the engine with 1 files, engine pdftex
+11-07 03:38:05.300  2930  2930 I PDFTK   : TexEngine.compile: waiting for the engine page
+11-07 03:38:05.301  2930  2930 I PDFTK   : TexEngine.compile: page ready, sending the project
+11-07 03:38:05.310  2930  3084 I PDFTK   : engine status: compiling
+11-07 03:38:05.311  2930  3084 I PDFTK   : tex: compileProject: 1 files
+11-07 03:38:05.312  2930  3084 I PDFTK   : tex: posting to the worker
+11-07 03:38:05.387  2930  3084 I PDFTK   : tex: New compilation started: [main.tex]
+11-07 03:38:05.429  2930  3084 I PDFTK   : tex: TeX packages: [fontspec, a0poster, geometry, multicol, graphicx, amsmath, amssymb, tcolorbox]
+11-07 03:38:05.433  2930  3084 I PDFTK   : tex: TeX packages local: [pgfplotsoldpgfsupp_tikzexternal, pgfplots.assert, circuitikz-0.4, circuitikz-0.6, circuitikz-0.7, circuitikz-0.8.3, circuitikz-0.9.3, circuitikz-0.9.6, circuitikz-1.0, circuitikz-1.1.2, circuitikz-1.2.7, circuitikz-1.4.6, circuitikz, pgf, pgfbaseimage, pgfbaselayers, pgfbasematr
+11-07 03:38:05.433  2930  3084 I PDFTK   : tex: TeX packages unresolved: [fontspec, a0poster]
+11-07 03:38:05.434  2930  3084 I PDFTK   : tex: TeX packages unresolved (in local or preloaded): [fontspec, a0poster, tcolorbox]
+11-07 03:38:05.434  2930  3084 I PDFTK   : tex: Data packages used (preloaded): [/assets/tex/texlive-basic.js]
+11-07 03:38:05.445  2930  3084 I PDFTK   : tex: Data packages used (not preloaded): [/assets/tex/ubuntu-texlive-latex-extra.js]
+11-07 03:38:05.446  2930  3084 I PDFTK   : tex: Data packages used: [/assets/tex/texlive-basic.js, /assets/tex/ubuntu-texlive-latex-extra.js]
+11-07 03:38:05.448  2930  3084 I PDFTK   : tex: Because of unresolved TeX packages, enabling all available data packages: /assets/tex/texlive-basic.js,/assets/tex/ubuntu-texlive-latex-base.js,/assets/tex/ubuntu-texlive-latex-extra.js,/assets/tex/ubuntu-texlive-latex-recommended.js,/assets/tex/ubuntu-texlive-science.js
+11-07 03:38:05.455  2930  2930 I PDFTK   : evaluateJavascript returned: {}
+11-07 03:38:05.731  2930  3084 I PDFTK   : tex: $ busytex pdflatex --no-shell-escape --interaction=nonstopmode --halt-on-error --output-format=pdf --fmt /texlive/texmf-dist/texmf-var/web2c/pdftex/pdflatex.fmt main.tex
+11-07 03:38:21.616  2930  3084 I PDFTK   : tex: $ echo $?
+11-07 03:38:21.617  2930  3084 I PDFTK   : tex: 0
+11-07 03:38:21.624  2930  3084 I PDFTK   : engine status: ready
+11-07 03:38:21.666  2930  2930 I PDFTK   : compile ok=true exit=0 errors=0 pdfBytes=52157
+11-07 03:38:24.864  2930  2951 I PDFTK   : screenshot t09_A0poster
+11-07 03:38:24.864  2930  2951 I PDFTK   : template A0 poster ok=true in 19s
+11-07 03:38:25.446  2930  2951 I PDFTK   : templates ok
+11-07 03:38:25.837  2930  2951 I PDFTK   : csv logic ok
+11-07 03:38:25.851  2930  2951 I PDFTK   : check found: [(check.nofile, chapter), (check.begin, \begin{itemize}), (check.undef.ref, fig:missing), (check.unused.label, fig:unused), (check.undef.cite, unknown), (check.unused.entry, lonely)]
+11-07 03:38:25.854  2930  2951 I PDFTK   : check logic ok
+11-07 03:38:25.860  2930  2951 I PDFTK   : doi logic ok

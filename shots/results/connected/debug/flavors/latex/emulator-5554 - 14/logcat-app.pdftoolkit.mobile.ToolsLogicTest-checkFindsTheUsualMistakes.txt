@@ -1,0 +1,4 @@
+11-07 03:38:25.838  2930  2951 I TestRunner: started: checkFindsTheUsualMistakes(app.pdftoolkit.mobile.ToolsLogicTest)
+11-07 03:38:25.851  2930  2951 I PDFTK   : check found: [(check.nofile, chapter), (check.begin, \begin{itemize}), (check.undef.ref, fig:missing), (check.unused.label, fig:unused), (check.undef.cite, unknown), (check.unused.entry, lonely)]
+11-07 03:38:25.854  2930  2951 I PDFTK   : check logic ok
+11-07 03:38:25.854  2930  2951 I TestRunner: finished: checkFindsTheUsualMistakes(app.pdftoolkit.mobile.ToolsLogicTest)

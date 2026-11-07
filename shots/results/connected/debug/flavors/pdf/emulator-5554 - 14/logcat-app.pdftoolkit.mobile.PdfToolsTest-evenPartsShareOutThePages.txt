@@ -1,0 +1,4 @@
+11-07 03:26:25.724  2520  2539 I TestRunner: started: evenPartsShareOutThePages(app.pdftoolkit.mobile.PdfToolsTest)
+11-07 03:26:25.750  2520  2520 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.app.Activity$$ExternalSyntheticLambda0@7954005
+11-07 03:26:25.751  2520  2520 D LifecycleMonitor: Lifecycle status change: app.pdftoolkit.mobile.MainActivity@b433038 in: DESTROYED
+11-07 03:26:25.769  2520  2539 I TestRunner: finished: evenPartsShareOutThePages(app.pdftoolkit.mobile.PdfToolsTest)

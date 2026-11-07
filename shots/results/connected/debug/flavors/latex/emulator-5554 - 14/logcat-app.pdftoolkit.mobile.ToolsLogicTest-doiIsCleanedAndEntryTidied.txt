@@ -1,0 +1,4 @@
+11-07 03:38:25.856  2930  2951 I TestRunner: started: doiIsCleanedAndEntryTidied(app.pdftoolkit.mobile.ToolsLogicTest)
+11-07 03:38:25.857  2930  2930 W WindowOnBackDispatcher: sendCancelIfRunning: isInProgress=falsecallback=android.app.Activity$$ExternalSyntheticLambda0@76ab58b
+11-07 03:38:25.860  2930  2951 I PDFTK   : doi logic ok
+11-07 03:38:25.860  2930  2951 I TestRunner: finished: doiIsCleanedAndEntryTidied(app.pdftoolkit.mobile.ToolsLogicTest)

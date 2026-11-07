@@ -1,0 +1,12 @@
+11-07 03:25:53.863  2520  2539 I TestRunner: started: bookFormats(app.pdftoolkit.mobile.PdfToolsTest)
+11-07 03:25:53.914   506  1617 W InputManager-JNI: Input channel object 'bc380e9 app.pdftoolkit.pdf/app.pdftoolkit.mobile.MainActivity (client)' was disposed without first being removed with the input manager!
+11-07 03:25:53.967   506   515 I system_server: NativeAlloc concurrent copying GC freed 190293(8055KB) AllocSpace objects, 21(420KB) LOS objects, 49% free, 17MB/34MB, paused 43us,58us total 125.135ms
+11-07 03:25:53.968   506   516 W JavaBinder: BinderProxy is being destroyed but the application did not call unlinkToDeath to unlink all of its death recipients beforehand.  Releasing leaked death recipient: com.android.server.am.ActivityManagerService$14
+11-07 03:25:53.968   506   516 I BpBinder: onLastStrongRef automatically unlinking death recipients:
+11-07 03:25:54.028  2520  2527 I .pdftoolkit.pdf: Background young concurrent copying GC freed 163971(6990KB) AllocSpace objects, 12(980KB) LOS objects, 22% free, 14MB/18MB, paused 82us,15us total 140.962ms
+11-07 03:25:54.031  2520  2539 I PDFTK   : txt and html ok
+11-07 03:25:54.097  2520  2539 I PDFTK   : epub ok
+11-07 03:25:54.175  2520  2539 I PDFTK   : fb2 ok
+11-07 03:25:54.290  2520  2539 I PDFTK   : cbz ok
+11-07 03:25:54.541  2520  2539 I PDFTK   : djvu ok: 114602 bytes
+11-07 03:25:54.541  2520  2539 I TestRunner: finished: bookFormats(app.pdftoolkit.mobile.PdfToolsTest)

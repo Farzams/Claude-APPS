@@ -1,0 +1,2 @@
+11-07 03:26:06.561  2520  2539 I TestRunner: started: linksToOtherPagesDoNotDragThemIn(app.pdftoolkit.mobile.PdfToolsTest)
+11-07 03:26:06.942  2520  2539 I TestRunner: finished: linksToOtherPagesDoNotDragThemIn(app.pdftoolkit.mobile.PdfToolsTest)

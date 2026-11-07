@@ -1,0 +1,80 @@
+11-07 03:22:58.544     0     0 I libprocessgroup: Successfully killed process cgroup uid 1013 pid 2325 in 0ms
+11-07 03:23:04.330     0     0 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 445 in 5ms
+11-07 03:23:07.479   506   581 D OomAdjuster: Not killing cached processes
+11-07 03:23:12.514   506   581 D OomAdjuster: Not killing cached processes
+11-07 03:23:22.749   506   533 D OomAdjuster: Not killing cached processes
+11-07 03:23:43.056   506   785 D OomAdjuster: Not killing cached processes
+11-07 03:23:49.572   506   533 D OomAdjuster: Not killing cached processes
+11-07 03:23:59.787   506   785 D OomAdjuster: Not killing cached processes
+11-07 03:24:05.655   506   589 D OomAdjuster: Not killing cached processes
+11-07 03:24:19.548   506   526 D OomAdjuster: Not killing cached processes
+11-07 03:25:53.318   506   526 D OomAdjuster: Not killing cached processes
+11-07 03:26:04.981   506   526 D OomAdjuster: Not killing cached processes
+11-07 03:26:15.073   506   526 D OomAdjuster: Not killing cached processes
+11-07 03:26:25.324   506   526 D OomAdjuster: Not killing cached processes
+11-07 03:26:25.970   326   326 I Zygote  : Process 2520 exited due to signal 9 (Killed)
+11-07 03:26:28.545     0     0 I libprocessgroup: Successfully killed process cgroup uid 1082 pid 2777 in 0ms
+11-07 03:26:44.137   506   589 D OomAdjuster: Not killing cached processes
+11-07 03:26:58.251   506   581 D OomAdjuster: Not killing cached processes
+11-07 03:27:03.736   506  2263 D OomAdjuster: Not killing cached processes
+11-07 03:27:10.753   506   785 D OomAdjuster: Not killing cached processes
+11-07 03:27:16.588   506   589 D OomAdjuster: Not killing cached processes
+11-07 03:27:46.467  2930  2951 D UiDevice: Waiting 20000ms for SearchCondition[hasObject=BySelector [RES='\Qzoom_in\E']].
+11-07 03:27:46.468  2930  2951 D UiDevice: Searching for node with selector: BySelector [RES='\Qzoom_in\E'].
+11-07 03:27:46.473  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qzoom_in\E'].
+11-07 03:27:46.478  2930  2951 D UiDevice: Retrieving node with selector: BySelector [RES='\Qzoom_in\E'].
+11-07 03:27:47.361  2930  2951 I PDFTK   : zoom percent after zoom in: 135%
+11-07 03:27:47.361  2930  2951 I PDFTK   : zoom ok
+11-07 03:27:49.360  2930  2951 I PDFTK   : screenshot 03b_preview_zoomed_night
+11-07 03:29:38.131   506   526 D OomAdjuster: Not killing cached processes
+11-07 03:29:43.267   506  1726 D OomAdjuster: Not killing cached processes
+11-07 03:29:49.324   506  1154 D OomAdjuster: Not killing cached processes
+11-07 03:29:54.479   506  1823 D OomAdjuster: Not killing cached processes
+11-07 03:30:00.300   506  1726 D OomAdjuster: Not killing cached processes
+11-07 03:30:11.511   506  2751 D OomAdjuster: Not killing cached processes
+11-07 03:30:16.605   506  1154 D OomAdjuster: Not killing cached processes
+11-07 03:30:22.782   506  2751 D OomAdjuster: Not killing cached processes
+11-07 03:30:29.024   506  1154 D OomAdjuster: Not killing cached processes
+11-07 03:32:02.395   506  1154 D OomAdjuster: Not killing cached processes
+11-07 03:32:09.770   506   519 D OomAdjuster: Not killing cached processes
+11-07 03:32:45.145   506   519 D OomAdjuster: Not killing cached processes
+11-07 03:32:49.250   506   535 I libprocessgroup: Successfully killed process cgroup uid 2000 pid 2282 in 11ms
+11-07 03:32:49.369   326   326 I Zygote  : Process 2282 exited due to signal 9 (Killed)
+11-07 03:32:49.374   326   326 I Zygote  : Process 1624 exited due to signal 9 (Killed)
+11-07 03:32:49.385   506   535 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 2173 in 0ms
+11-07 03:32:49.401   326   326 I Zygote  : Process 1897 exited due to signal 9 (Killed)
+11-07 03:32:49.401   326   326 I Zygote  : Process 1518 exited due to signal 9 (Killed)
+11-07 03:32:49.474   326   326 I Zygote  : Process 1278 exited due to signal 9 (Killed)
+11-07 03:32:49.474   326   326 I Zygote  : Process 1374 exited due to signal 9 (Killed)
+11-07 03:32:49.474   326   326 I Zygote  : Process 1508 exited due to signal 9 (Killed)
+11-07 03:32:49.474   326   326 I Zygote  : Process 1665 exited due to signal 9 (Killed)
+11-07 03:32:49.474   326   326 I Zygote  : Process 1785 exited due to signal 9 (Killed)
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 10107 pid 1785 in 2ms
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 2113 in 0ms
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 10078 pid 1665 in 0ms
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 10095 pid 2028 in 0ms
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 1919 in 0ms
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 10104 pid 1981 in 0ms
+11-07 03:32:49.475   506   535 I libprocessgroup: Successfully killed process cgroup uid 10135 pid 1495 in 0ms
+11-07 03:32:49.477   326   326 I Zygote  : Process 1919 exited due to signal 9 (Killed)
+11-07 03:32:49.477   326   326 I Zygote  : Process 1981 exited due to signal 9 (Killed)
+11-07 03:32:49.477   326   326 I Zygote  : Process 2028 exited due to signal 9 (Killed)
+11-07 03:32:49.477   326   326 I Zygote  : Process 2113 exited due to signal 9 (Killed)
+11-07 03:32:49.477   326   326 I Zygote  : Process 2173 exited due to signal 9 (Killed)
+11-07 03:32:49.507   326   326 I Zygote  : Process 1863 exited due to signal 9 (Killed)
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10064 pid 1278 in 0ms
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10099 pid 1897 in 0ms
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10069 pid 1624 in 0ms
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10110 pid 1518 in 0ms
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10111 pid 1374 in 0ms
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10092 pid 1863 in 0ms
+11-07 03:32:49.585   506   535 I libprocessgroup: Successfully killed process cgroup uid 10102 pid 1508 in 0ms
+11-07 03:32:49.588   326   326 I Zygote  : Process 1495 exited due to signal 9 (Killed)
+11-07 03:38:26.079   506   535 I libprocessgroup: Successfully killed process cgroup uid 99000 pid 2988 in 22ms
+11-07 03:38:26.143   326   326 I Zygote  : Process 2930 exited due to signal 9 (Killed)
+11-07 03:38:26.238   940   940 I Zygote  : Process 2988 exited due to signal 9 (Killed)
+11-07 03:38:26.246   506   535 I libprocessgroup: Successfully killed process cgroup uid 10057 pid 2298 in 0ms
+11-07 03:38:26.249   326   326 I Zygote  : Process 2298 exited due to signal 9 (Killed)
+11-07 03:38:26.653   326   326 I Zygote  : Process 1619 exited due to signal 9 (Killed)
+11-07 03:38:26.665   506   535 I libprocessgroup: Successfully killed process cgroup uid 10070 pid 1619 in 0ms
+11-07 03:38:28.545     0     0 I libprocessgroup: Successfully killed process cgroup uid 1082 pid 3691 in 0ms
