@@ -114,6 +114,21 @@ object PdfOps {
     fun extract(ctx: Context, uri: Uri, pages: List<Int>, out: OutputStream) =
         build(ctx, uri, pages.map { PageItem(it) }, out)
 
+    /**
+     * Cuts [pages] pages into [n] runs of neighbouring pages whose sizes differ by at most one.
+     * 100 pages in 6 files: 2 files of 16 pages, then 4 files of 17 (the smaller runs come first).
+     */
+    fun evenParts(pages: Int, n: Int): List<List<Int>> {
+        require(n in 1..pages) { "n must be between 1 and the number of pages" }
+        val base = pages / n
+        val bigger = pages % n
+        var next = 0
+        return (0 until n).map { i ->
+            val size = if (i < n - bigger) base else base + 1
+            (next until next + size).toList().also { next += size }
+        }
+    }
+
     /** Writes each range as its own file into [folder]. Returns the number of files. */
     fun splitToFolder(ctx: Context, uri: Uri, ranges: List<List<Int>>, folder: Uri): Int {
         val dir = folderOf(ctx, folder) ?: error("Cannot open that folder")

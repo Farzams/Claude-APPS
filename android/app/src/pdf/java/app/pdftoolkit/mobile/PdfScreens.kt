@@ -446,6 +446,9 @@ fun SplitScreen(onBack: () -> Unit) {
     var pages by remember { mutableStateOf(0) }
     var spec by remember { mutableStateOf("") }
     var mode by remember { mutableStateOf("one") }
+    var countText by remember { mutableStateOf("") }
+    val count = countText.trim().toIntOrNull()
+    val countOk = count != null && pages >= 2 && count in 2..pages
     fun load(u: Uri) {
         uri = u; pages = 0; job.message = ""
         scope.launch { pages = withContext(Dispatchers.IO) { runCatching { PdfOps.pageCount(ctx, u) }.getOrDefault(0) } }
@@ -463,12 +466,20 @@ fun SplitScreen(onBack: () -> Unit) {
     val saveFolder = rememberFolderPicker(near = { uri }) { dir ->
         val src = uri
         if (dir != null && src != null) job.run(scope) {
-            val parts = if (mode == "all") (0 until pages).map { listOf(it) } else PdfOps.parseRanges(spec, pages)
+            val parts = when (mode) {
+                "all" -> (0 until pages).map { listOf(it) }
+                "count" -> PdfOps.evenParts(pages, count ?: error("Enter the number of files"))
+                else -> PdfOps.parseRanges(spec, pages)
+            }
             val n = PdfOps.splitToFolder(ctx, src, parts, dir)
             "$n ${t("files.saved")}"
         }
     }
-    val ready = uri != null && pages > 0 && !job.busy && (mode == "all" || spec.isNotBlank())
+    val ready = uri != null && pages > 0 && !job.busy && when (mode) {
+        "all" -> true
+        "count" -> countOk
+        else -> spec.isNotBlank()
+    }
     ToolPage(t("split"), onBack, bottom = {
         JobStatus(job)
         PrimaryButton(t(if (mode == "one") "run.save" else "run.folder"), "run", ready) {
@@ -477,16 +488,43 @@ fun SplitScreen(onBack: () -> Unit) {
     }) {
         PdfPick(uri, if (pages > 0) "$pages ${t("pages")}" else "") { pick.launch(arrayOf(PDF)) }
         Options(
-            listOf(Opt("one", t("split.one"), t("split.one.d")), Opt("each", t("split.each"), t("split.each.d")), Opt("all", t("split.all"), t("split.all.d"))),
+            listOf(
+                Opt("one", t("split.one"), t("split.one.d")), Opt("each", t("split.each"), t("split.each.d")),
+                Opt("count", t("split.count"), t("split.count.d")), Opt("all", t("split.all"), t("split.all.d")),
+            ),
             mode,
         ) { mode = it }
-        if (mode != "all") {
+        if (mode == "count") {
+            OutlinedTextField(
+                value = countText, onValueChange = { v -> countText = v.filter { it.isDigit() }.take(4) }, label = { Text(t("split.count.label")) },
+                supportingText = {
+                    Text(
+                        when {
+                            pages < 2 -> ""
+                            count == null -> t("split.count.err").replace("%d", pages.toString())
+                            !countOk -> t("split.count.err").replace("%d", pages.toString())
+                            else -> splitSummary(pages, count)
+                        },
+                    )
+                },
+                isError = countText.isNotEmpty() && !countOk && pages >= 2, singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), modifier = Modifier.fillMaxWidth().testTag("count_field"),
+            )
+        }
+        if (mode == "one" || mode == "each") {
             OutlinedTextField(
                 value = spec, onValueChange = { spec = it }, label = { Text(t("split.label")) }, supportingText = { Text(t("split.pages")) }, singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), modifier = Modifier.fillMaxWidth().testTag("pages_field"),
             )
         }
     }
+}
+
+/** "100 pages → 2 × 16 + 4 × 17", the sizes of the files that Split into N files will make. */
+private fun splitSummary(pages: Int, n: Int): String {
+    val sizes = PdfOps.evenParts(pages, n).map { it.size }
+    val groups = sizes.groupBy { it }.toSortedMap()
+    return "$pages ${t("pages")} → " + groups.entries.joinToString(" + ") { (size, list) -> if (list.size == 1) "$size" else "${list.size} × $size" }
 }
 
 // ---------------------------------------------------------------- organize

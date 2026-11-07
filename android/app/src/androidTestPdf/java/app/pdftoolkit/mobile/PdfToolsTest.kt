@@ -187,6 +187,15 @@ class PdfToolsTest {
     }
 
     @Test
+    fun evenPartsShareOutThePages() {
+        val parts = PdfOps.evenParts(100, 6)
+        assertEquals(listOf(16, 16, 17, 17, 17, 17), parts.map { it.size })
+        assertEquals((0 until 100).toList(), parts.flatten())          // in order, nothing lost or repeated
+        assertEquals(listOf(3, 3, 4), PdfOps.evenParts(10, 3).map { it.size })
+        assertEquals(listOf(1, 1, 1), PdfOps.evenParts(3, 3).map { it.size })
+    }
+
+    @Test
     fun everyScreenOpens() {
         launchApp()
         shot("p01_home")
