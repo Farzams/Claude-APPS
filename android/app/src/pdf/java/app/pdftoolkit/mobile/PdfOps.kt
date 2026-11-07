@@ -12,6 +12,7 @@ import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import com.tom_roush.pdfbox.contentstream.operator.Operator
+import com.tom_roush.pdfbox.cos.COSArray
 import com.tom_roush.pdfbox.cos.COSDictionary
 import com.tom_roush.pdfbox.cos.COSName
 import com.tom_roush.pdfbox.io.MemoryUsageSetting
@@ -110,7 +111,30 @@ object PdfOps {
     private fun importTrimmed(dst: PDDocument, page: PDPage): PDPage {
         val imported = dst.importPage(page)
         runCatching { trimResources(imported) }          // on any surprise the page simply keeps all its resources
+        runCatching { dropPageReferences(imported) }
         return imported
+    }
+
+    /**
+     * Links that jump to another page (contents, index, "see page ...") point at the other page's object, so saving this
+     * page would pull those pages, and through their own links the whole book, into the part. The jump could not work in a
+     * part anyway; links to web addresses and other kinds of notes stay.
+     */
+    private fun dropPageReferences(page: PDPage) {
+        val dict = page.cosObject
+        dict.removeItem(COSName.getPDFName("B"))            // article threads: beads that point at pages
+        val annots = dict.getDictionaryObject(COSName.ANNOTS) as? COSArray ?: return
+        val keep = COSArray()
+        for (i in 0 until annots.size()) {
+            val a = annots.getObject(i) as? COSDictionary ?: continue
+            val action = a.getDictionaryObject(COSName.A) as? COSDictionary
+            val kind = action?.getNameAsString(COSName.S)
+            val jumps = a.containsKey(COSName.DEST) || kind == "GoTo" || kind == "GoToR" || kind == "GoToE" || kind == "Thread"
+            if (jumps) continue
+            a.removeItem(COSName.P)                         // the note's back-reference to its page
+            keep.add(annots.get(i))
+        }
+        dict.setItem(COSName.ANNOTS, keep)
     }
 
     private val usedKinds = mapOf(

@@ -20,6 +20,9 @@ import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
 import com.tom_roush.pdfbox.pdmodel.PDResources
 import com.tom_roush.pdfbox.pdmodel.font.PDType1Font
 import com.tom_roush.pdfbox.pdmodel.graphics.image.LosslessFactory
+import com.tom_roush.pdfbox.pdmodel.interactive.action.PDActionGoTo
+import com.tom_roush.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink
+import com.tom_roush.pdfbox.pdmodel.interactive.documentnavigation.destination.PDPageFitDestination
 import java.io.ByteArrayOutputStream
 import java.io.File
 import org.junit.Assert.assertEquals
@@ -227,6 +230,34 @@ class PdfToolsTest {
         assertTrue("test file should be big, is $whole", whole > 500_000)
         val out = ByteArrayOutputStream()
         PdfOps.extract(ctx, Uri.fromFile(file), listOf(0, 1), out)
+        assertTrue("part is ${out.size()} bytes, the whole is $whole", out.size() < whole / 4)
+    }
+
+    @Test
+    fun linksToOtherPagesDoNotDragThemIn() {
+        // page 0 links to the last page, which holds a big picture: cutting out page 0 must not take that page along
+        PDFBoxResourceLoader.init(ctx)
+        val bmp = Bitmap.createBitmap(700, 700, Bitmap.Config.ARGB_8888)
+        val rnd = java.util.Random(11)
+        bmp.setPixels(IntArray(700 * 700) { rnd.nextInt() or (0xFF shl 24) }, 0, 700, 0, 0, 700, 700)
+        val file = File(ctx.cacheDir, "linked_pages.pdf")
+        PDDocument().use { doc ->
+            val pages = (0 until 4).map { PDPage().also { p -> doc.addPage(p) } }
+            PDPageContentStream(doc, pages.last()).use { cs -> cs.drawImage(LosslessFactory.createFromImage(doc, bmp), 0f, 0f, 200f, 200f) }
+            for (p in pages.dropLast(1)) PDPageContentStream(doc, p).use { cs ->
+                cs.beginText(); cs.setFont(PDType1Font.HELVETICA, 12f); cs.newLineAtOffset(72f, 700f); cs.showText("text"); cs.endText()
+            }
+            val link = PDAnnotationLink()
+            link.rectangle = com.tom_roush.pdfbox.pdmodel.common.PDRectangle(72f, 690f, 100f, 20f)
+            val dest = PDPageFitDestination().also { it.page = pages.last() }
+            link.action = PDActionGoTo().also { it.destination = dest }
+            pages[0].annotations.add(link)
+            file.outputStream().use { doc.save(it) }
+        }
+        val whole = file.length()
+        assertTrue("test file should be big, is $whole", whole > 500_000)
+        val out = ByteArrayOutputStream()
+        PdfOps.extract(ctx, Uri.fromFile(file), listOf(0), out)
         assertTrue("part is ${out.size()} bytes, the whole is $whole", out.size() < whole / 4)
     }
 
