@@ -11,11 +11,16 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.documentfile.provider.DocumentFile
 import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import com.tom_roush.pdfbox.contentstream.operator.Operator
+import com.tom_roush.pdfbox.cos.COSDictionary
+import com.tom_roush.pdfbox.cos.COSName
 import com.tom_roush.pdfbox.io.MemoryUsageSetting
+import com.tom_roush.pdfbox.pdfparser.PDFStreamParser
 import com.tom_roush.pdfbox.multipdf.PDFMergerUtility
 import com.tom_roush.pdfbox.pdmodel.PDDocument
 import com.tom_roush.pdfbox.pdmodel.PDPage
 import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
+import com.tom_roush.pdfbox.pdmodel.PDResources
 import com.tom_roush.pdfbox.pdmodel.common.PDRectangle
 import com.tom_roush.pdfbox.pdmodel.encryption.AccessPermission
 import com.tom_roush.pdfbox.pdmodel.encryption.StandardProtectionPolicy
@@ -97,12 +102,65 @@ object PdfOps {
         }
     }
 
+    /**
+     * Copies a page into [dst] without the fonts, pictures and other resources the page never draws.
+     * Many PDFs keep one resource list for the whole document (or every picture of a chapter); copying a page with that
+     * list would drag the entire document into every part: a 30 MB book cut into 5 gave five files of about 30 MB.
+     */
+    private fun importTrimmed(dst: PDDocument, page: PDPage): PDPage {
+        val imported = dst.importPage(page)
+        runCatching { trimResources(imported) }          // on any surprise the page simply keeps all its resources
+        return imported
+    }
+
+    private val usedKinds = mapOf(
+        "Font" to "Tf", "XObject" to "Do", "ExtGState" to "gs", "Shading" to "sh", "Pattern" to "scn", "ColorSpace" to "cs", "Properties" to "BDC",
+    )
+
+    private fun trimResources(page: PDPage) {
+        val res = page.resources ?: return
+        val parser = PDFStreamParser(page)
+        parser.parse()
+        val used = HashMap<String, HashSet<String>>()
+        var inlineImages = false
+        val operands = ArrayList<Any?>()
+        for (tok in parser.tokens) {
+            if (tok !is Operator) { operands.add(tok); continue }
+            val names = operands.filterIsInstance<COSName>()
+            when (tok.name) {
+                "Tf" -> names.firstOrNull()?.let { used.getOrPut("Tf") { HashSet() }.add(it.name) }
+                "Do" -> names.lastOrNull()?.let { used.getOrPut("Do") { HashSet() }.add(it.name) }
+                "gs" -> names.lastOrNull()?.let { used.getOrPut("gs") { HashSet() }.add(it.name) }
+                "sh" -> names.lastOrNull()?.let { used.getOrPut("sh") { HashSet() }.add(it.name) }
+                "cs", "CS" -> names.lastOrNull()?.let { used.getOrPut("cs") { HashSet() }.add(it.name) }
+                "scn", "SCN" -> names.lastOrNull()?.let { used.getOrPut("scn") { HashSet() }.add(it.name) }
+                "BDC", "DP" -> operands.getOrNull(1)?.let { if (it is COSName) used.getOrPut("BDC") { HashSet() }.add(it.name) }
+                "BI" -> inlineImages = true
+            }
+            operands.clear()
+        }
+        val old = res.cosObject
+        val copy = COSDictionary()
+        for (key in old.keySet()) {
+            val kind = usedKinds[key.name]
+            val value = old.getDictionaryObject(key)
+            // a "scn" colour may name a colour space too, and an inline picture may name one: keep those lists whole
+            val keepAll = kind == null || value !is COSDictionary || (key.name == "ColorSpace" && (inlineImages || used.containsKey("scn")))
+            if (keepAll) { copy.setItem(key, old.getItem(key)); continue }
+            val keep = used[kind ?: ""] ?: emptySet<String>()
+            val sub = COSDictionary()
+            for (n in (value as COSDictionary).keySet()) if (n.name in keep) sub.setItem(n, value.getItem(n))
+            copy.setItem(key, sub)
+        }
+        page.resources = PDResources(copy)
+    }
+
     /** New document made of the given source pages (zero-based), each optionally turned. */
     fun build(ctx: Context, uri: Uri, items: List<PageItem>, out: OutputStream, password: String = "") {
         load(ctx, uri, password).use { src ->
             PDDocument().use { dst ->
                 for ((n, it) in items.withIndex()) {
-                    val page = dst.importPage(src.getPage(it.index))
+                    val page = importTrimmed(dst, src.getPage(it.index))
                     if (it.turn != 0) page.rotation = ((page.rotation + it.turn) % 360 + 360) % 360
                     report(n + 1, items.size)
                 }
@@ -138,7 +196,7 @@ object PdfOps {
                 val label = if (r.size == 1) "p${r[0] + 1}" else "p${r.first() + 1}-${r.last() + 1}"
                 val file = dir.createFile("application/pdf", "${base}_$label.pdf") ?: error("Cannot create a file in that folder")
                 PDDocument().use { dst ->
-                    for (idx in r) dst.importPage(src.getPage(idx))
+                    for (idx in r) importTrimmed(dst, src.getPage(idx))
                     (ctx.contentResolver.openOutputStream(file.uri) ?: error("Cannot write")).use { dst.save(it) }
                 }
                 report(i + 1, ranges.size)

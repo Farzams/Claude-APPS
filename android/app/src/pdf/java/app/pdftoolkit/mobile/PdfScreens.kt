@@ -182,7 +182,7 @@ private fun JobStatus(job: ToolJob) {
     if (job.busy) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             val pr = job.progress
-            if (pr >= 0f) LinearProgressIndicator(progress = { pr }, modifier = Modifier.fillMaxWidth().testTag("progress_bar"))
+            if (pr >= 0f) LinearProgressIndicator(progress = { pr }, modifier = Modifier.fillMaxWidth().testTag("progress_bar"), gapSize = 0.dp, drawStopIndicator = {})
             else LinearProgressIndicator(Modifier.fillMaxWidth())
             Text(if (pr >= 0f) "${t("working")} ${(pr * 100).toInt()}%" else t("working"), Modifier.testTag("progress_text"), color = cs.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
         }

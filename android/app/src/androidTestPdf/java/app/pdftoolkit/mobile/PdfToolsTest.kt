@@ -13,6 +13,13 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.Until
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
+import com.tom_roush.pdfbox.pdmodel.PDDocument
+import com.tom_roush.pdfbox.pdmodel.PDPage
+import com.tom_roush.pdfbox.pdmodel.PDPageContentStream
+import com.tom_roush.pdfbox.pdmodel.PDResources
+import com.tom_roush.pdfbox.pdmodel.font.PDType1Font
+import com.tom_roush.pdfbox.pdmodel.graphics.image.LosslessFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
 import org.junit.Assert.assertEquals
@@ -193,6 +200,34 @@ class PdfToolsTest {
         assertEquals((0 until 100).toList(), parts.flatten())          // in order, nothing lost or repeated
         assertEquals(listOf(3, 3, 4), PdfOps.evenParts(10, 3).map { it.size })
         assertEquals(listOf(1, 1, 1), PdfOps.evenParts(3, 3).map { it.size })
+    }
+
+    @Test
+    fun partsDoNotCarryTheWholeDocument() {
+        // one resource list shared by every page, holding a big picture that no page draws: a part must not take it along
+        PDFBoxResourceLoader.init(ctx)
+        val bmp = Bitmap.createBitmap(700, 700, Bitmap.Config.ARGB_8888)
+        val rnd = java.util.Random(7)
+        bmp.setPixels(IntArray(700 * 700) { rnd.nextInt() or (0xFF shl 24) }, 0, 700, 0, 0, 700, 700)
+        val file = File(ctx.cacheDir, "shared_resources.pdf")
+        PDDocument().use { doc ->
+            val shared = PDResources()
+            shared.add(LosslessFactory.createFromImage(doc, bmp))
+            doc.documentCatalog.pages.cosObject.setItem(com.tom_roush.pdfbox.cos.COSName.RESOURCES, shared.cosObject)
+            for (i in 0 until 6) {
+                val page = PDPage()
+                doc.addPage(page)
+                PDPageContentStream(doc, page).use { cs ->
+                    cs.beginText(); cs.setFont(PDType1Font.HELVETICA, 12f); cs.newLineAtOffset(72f, 700f); cs.showText("page $i"); cs.endText()
+                }
+            }
+            file.outputStream().use { doc.save(it) }
+        }
+        val whole = file.length()
+        assertTrue("test file should be big, is $whole", whole > 500_000)
+        val out = ByteArrayOutputStream()
+        PdfOps.extract(ctx, Uri.fromFile(file), listOf(0, 1), out)
+        assertTrue("part is ${out.size()} bytes, the whole is $whole", out.size() < whole / 4)
     }
 
     @Test

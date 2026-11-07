@@ -116,7 +116,7 @@ fun EditorScreen(vm: EditorViewModel, prefs: Prefs, onBack: () -> Unit) {
         val wide = maxWidth >= 840.dp
         Column(Modifier.fillMaxSize()) {
             TopBar(vm, onBack, engine, view, ::update)
-            if (vm.compiling) LinearProgressIndicator(progress = { vm.progress }, modifier = Modifier.fillMaxWidth().height(3.dp).testTag("compile_progress"))
+            if (vm.compiling) LinearProgressIndicator(progress = { vm.progress }, modifier = Modifier.fillMaxWidth().height(3.dp).testTag("compile_progress"), gapSize = 0.dp, drawStopIndicator = {})
             else HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             FileTabs(vm)
             if (vm.findOpen) FindBar(vm)

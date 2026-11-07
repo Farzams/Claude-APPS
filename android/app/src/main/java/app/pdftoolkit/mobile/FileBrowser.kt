@@ -378,6 +378,11 @@ private fun FileBrowserBody(
                             }
                         }
                     }
+                    if (mode != BrowserMode.OPEN && !searching) {
+                        IconButton(onClick = { nameText = ""; dialog = "newfolder" }, modifier = Modifier.testTag("fm_new_folder_button")) {
+                            Icon(Icons.Filled.CreateNewFolder, t("fm.new.folder"), tint = cs.onBackground)
+                        }
+                    }
                     IconButton(onClick = { grid = !grid; memory.grid = grid }, modifier = Modifier.testTag("fm_view")) {
                         Icon(if (grid) Icons.AutoMirrored.Filled.ViewList else Icons.Filled.GridView, t(if (grid) "fm.view.list" else "fm.view.grid"), tint = cs.onBackground)
                     }
@@ -385,7 +390,7 @@ private fun FileBrowserBody(
                         IconButton(onClick = { menu = "more" }, modifier = Modifier.testTag("fm_more")) { Icon(Icons.Filled.MoreVert, null, tint = cs.onBackground) }
                         DropdownMenu(expanded = menu == "more", onDismissRequest = { menu = "" }) {
                             val d = dir
-                            if (d != null && mode == BrowserMode.SAVE) {
+                            if (d != null && mode != BrowserMode.OPEN) {
                                 DropdownMenuItem(text = { Text(t("fm.new.folder")) }, onClick = { menu = ""; nameText = ""; dialog = "newfolder" }, modifier = Modifier.testTag("fm_new_folder"))
                             }
                             if (d != null) {
