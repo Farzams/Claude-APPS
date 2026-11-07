@@ -215,15 +215,23 @@ object PdfOps {
     fun splitToFolder(ctx: Context, uri: Uri, ranges: List<List<Int>>, folder: Uri): Int {
         val dir = folderOf(ctx, folder) ?: error("Cannot open that folder")
         val base = nameOf(ctx, uri).removeSuffix(".pdf").removeSuffix(".PDF")
+        // one bar for the whole job: every page counts once when it is copied and once when its part is written
+        val total = ranges.sumOf { it.size } * 2
+        var done = 0
+        report(0, total)
         load(ctx, uri).use { src ->
-            for ((i, r) in ranges.withIndex()) {
+            for (r in ranges) {
                 val label = if (r.size == 1) "p${r[0] + 1}" else "p${r.first() + 1}-${r.last() + 1}"
                 val file = dir.createFile("application/pdf", "${base}_$label.pdf") ?: error("Cannot create a file in that folder")
                 PDDocument().use { dst ->
-                    for (idx in r) importTrimmed(dst, src.getPage(idx))
+                    for (idx in r) {
+                        importTrimmed(dst, src.getPage(idx))
+                        report(++done, total)
+                    }
                     (ctx.contentResolver.openOutputStream(file.uri) ?: error("Cannot write")).use { dst.save(it) }
                 }
-                report(i + 1, ranges.size)
+                done += r.size
+                report(done, total)
             }
         }
         return ranges.size
