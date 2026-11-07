@@ -1,6 +1,0 @@
-assets/
-dist/
-build/
-tests/out/
-__pycache__/
-*.spec
