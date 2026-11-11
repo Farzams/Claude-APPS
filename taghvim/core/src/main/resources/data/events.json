@@ -1,0 +1,799 @@
+{
+ "_doc": "cat: off = official holiday, nat = national day, rel = religious (not a holiday). Lunar entries use Hijri month/day; greg entries use Gregorian month/day.",
+ "solar": [
+  {
+   "m": 1,
+   "d": 1,
+   "title": "نوروز",
+   "cat": "off",
+   "icon": "nowruz",
+   "theme": "nowruz"
+  },
+  {
+   "m": 1,
+   "d": 2,
+   "title": "نوروز",
+   "cat": "off",
+   "icon": "nowruz",
+   "theme": "nowruz"
+  },
+  {
+   "m": 1,
+   "d": 3,
+   "title": "نوروز",
+   "cat": "off",
+   "icon": "nowruz",
+   "theme": "nowruz"
+  },
+  {
+   "m": 1,
+   "d": 4,
+   "title": "نوروز",
+   "cat": "off",
+   "icon": "nowruz",
+   "theme": "nowruz"
+  },
+  {
+   "m": 1,
+   "d": 6,
+   "title": "روز امید",
+   "cat": "nat",
+   "icon": "sunrise"
+  },
+  {
+   "m": 1,
+   "d": 12,
+   "title": "روز جمهوری اسلامی",
+   "cat": "off",
+   "icon": "flag",
+   "theme": "nat"
+  },
+  {
+   "m": 1,
+   "d": 13,
+   "title": "سیزده‌به‌در",
+   "cat": "off",
+   "icon": "knot",
+   "theme": "nowruz"
+  },
+  {
+   "m": 1,
+   "d": 20,
+   "title": "فناوری هسته‌ای",
+   "cat": "nat",
+   "icon": "atom"
+  },
+  {
+   "m": 1,
+   "d": 25,
+   "title": "بزرگداشت عطار",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 1,
+   "d": 29,
+   "title": "روز ارتش",
+   "cat": "nat",
+   "icon": "star"
+  },
+  {
+   "m": 2,
+   "d": 1,
+   "title": "بزرگداشت سعدی",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 2,
+   "d": 10,
+   "title": "روز ملی خلیج فارس",
+   "cat": "nat",
+   "icon": "gulf"
+  },
+  {
+   "m": 2,
+   "d": 12,
+   "title": "روز معلم",
+   "cat": "nat",
+   "icon": "school"
+  },
+  {
+   "m": 2,
+   "d": 15,
+   "title": "روز شیراز",
+   "cat": "nat",
+   "icon": "map"
+  },
+  {
+   "m": 2,
+   "d": 25,
+   "title": "بزرگداشت فردوسی",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 2,
+   "d": 28,
+   "title": "بزرگداشت خیام",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 3,
+   "d": 1,
+   "title": "بزرگداشت ملاصدرا",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 3,
+   "d": 3,
+   "title": "آزادسازی خرمشهر",
+   "cat": "nat",
+   "icon": "tulip"
+  },
+  {
+   "m": 3,
+   "d": 4,
+   "title": "روز دزفول",
+   "cat": "nat",
+   "icon": "map"
+  },
+  {
+   "m": 3,
+   "d": 14,
+   "title": "رحلت امام خمینی",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 3,
+   "d": 15,
+   "title": "قیام ۱۵ خرداد",
+   "cat": "off",
+   "icon": "tulip",
+   "theme": "nat"
+  },
+  {
+   "m": 3,
+   "d": 25,
+   "title": "روز ملی گل و گیاه",
+   "cat": "nat",
+   "icon": "flower"
+  },
+  {
+   "m": 4,
+   "d": 7,
+   "title": "شهادت بهشتی",
+   "cat": "nat",
+   "icon": "tulip"
+  },
+  {
+   "m": 4,
+   "d": 10,
+   "title": "صنعت و معدن",
+   "cat": "nat",
+   "icon": "gear"
+  },
+  {
+   "m": 4,
+   "d": 14,
+   "title": "روز قلم",
+   "cat": "nat",
+   "icon": "pen"
+  },
+  {
+   "m": 4,
+   "d": 25,
+   "title": "روز بهزیستی",
+   "cat": "nat",
+   "icon": "heart"
+  },
+  {
+   "m": 5,
+   "d": 5,
+   "title": "سالروز مشروطیت",
+   "cat": "nat",
+   "icon": "scroll"
+  },
+  {
+   "m": 5,
+   "d": 9,
+   "title": "اهدای خون",
+   "cat": "nat",
+   "icon": "drop"
+  },
+  {
+   "m": 5,
+   "d": 17,
+   "title": "روز خبرنگار",
+   "cat": "nat",
+   "icon": "pen"
+  },
+  {
+   "m": 5,
+   "d": 21,
+   "title": "روز دریای خزر (۱۲ اوت)",
+   "cat": "nat",
+   "icon": "caspian"
+  },
+  {
+   "m": 5,
+   "d": 26,
+   "title": "ورود آزادگان",
+   "cat": "nat",
+   "icon": "tulip"
+  },
+  {
+   "m": 6,
+   "d": 1,
+   "title": "ابوعلی سینا و روز پزشک",
+   "cat": "nat",
+   "icon": "med"
+  },
+  {
+   "m": 6,
+   "d": 5,
+   "title": "رازی و روز داروساز",
+   "cat": "nat",
+   "icon": "med"
+  },
+  {
+   "m": 6,
+   "d": 13,
+   "title": "بزرگداشت ابوریحان",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 6,
+   "d": 21,
+   "title": "روز سینما",
+   "cat": "nat",
+   "icon": "film"
+  },
+  {
+   "m": 6,
+   "d": 27,
+   "title": "روز شعر و ادب پارسی",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 6,
+   "d": 31,
+   "title": "آغاز هفته دفاع مقدس",
+   "cat": "nat",
+   "icon": "tulip"
+  },
+  {
+   "m": 7,
+   "d": 7,
+   "title": "روز آتش‌نشانی",
+   "cat": "nat",
+   "icon": "flame"
+  },
+  {
+   "m": 7,
+   "d": 8,
+   "title": "بزرگداشت مولوی",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 7,
+   "d": 16,
+   "title": "روز ملی کودک",
+   "cat": "nat",
+   "icon": "balloon"
+  },
+  {
+   "m": 7,
+   "d": 20,
+   "title": "بزرگداشت حافظ",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 7,
+   "d": 26,
+   "title": "روز تربیت بدنی",
+   "cat": "nat",
+   "icon": "trophy"
+  },
+  {
+   "m": 7,
+   "d": 29,
+   "title": "روز کوهنورد",
+   "cat": "nat",
+   "icon": "mountain"
+  },
+  {
+   "m": 8,
+   "d": 13,
+   "title": "روز دانش‌آموز",
+   "cat": "nat",
+   "icon": "school"
+  },
+  {
+   "m": 8,
+   "d": 14,
+   "title": "روز ملی مازندران",
+   "cat": "nat",
+   "icon": "map"
+  },
+  {
+   "m": 8,
+   "d": 24,
+   "title": "روز کتاب و کتابخوانی",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 9,
+   "d": 7,
+   "title": "روز نیروی دریایی",
+   "cat": "nat",
+   "icon": "wave"
+  },
+  {
+   "m": 9,
+   "d": 16,
+   "title": "روز دانشجو",
+   "cat": "nat",
+   "icon": "school"
+  },
+  {
+   "m": 9,
+   "d": 30,
+   "title": "شب یلدا",
+   "cat": "nat",
+   "icon": "melon",
+   "theme": "yalda"
+  },
+  {
+   "m": 10,
+   "d": 9,
+   "title": "حماسه ۹ دی",
+   "cat": "nat"
+  },
+  {
+   "m": 11,
+   "d": 12,
+   "title": "بازگشت امام و آغاز دهه فجر",
+   "cat": "nat",
+   "icon": "flag"
+  },
+  {
+   "m": 11,
+   "d": 22,
+   "title": "پیروزی انقلاب اسلامی",
+   "cat": "off",
+   "icon": "tulip",
+   "theme": "nat"
+  },
+  {
+   "m": 12,
+   "d": 5,
+   "title": "روز مهندس",
+   "cat": "nat",
+   "icon": "gear"
+  },
+  {
+   "m": 12,
+   "d": 15,
+   "title": "روز درختکاری",
+   "cat": "nat",
+   "icon": "tree"
+  },
+  {
+   "m": 12,
+   "d": 25,
+   "title": "بزرگداشت پروین اعتصامی",
+   "cat": "nat",
+   "icon": "book"
+  },
+  {
+   "m": 12,
+   "d": 29,
+   "title": "ملی شدن صنعت نفت",
+   "cat": "off",
+   "icon": "oil",
+   "theme": "nat"
+  }
+ ],
+ "lunar": [
+  {
+   "m": 1,
+   "d": 1,
+   "title": "آغاز سال هجری",
+   "cat": "rel",
+   "icon": "crescent"
+  },
+  {
+   "m": 1,
+   "d": 9,
+   "title": "تاسوعا",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 1,
+   "d": 10,
+   "title": "عاشورا",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 2,
+   "d": 20,
+   "title": "اربعین",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 2,
+   "d": 28,
+   "title": "رحلت پیامبر و شهادت امام حسن",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 2,
+   "d": 30,
+   "title": "شهادت امام رضا",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 3,
+   "d": 9,
+   "title": "آغاز امامت امام زمان",
+   "cat": "rel",
+   "icon": "rose"
+  },
+  {
+   "m": 3,
+   "d": 17,
+   "title": "میلاد پیامبر و امام صادق",
+   "cat": "off",
+   "icon": "rose",
+   "theme": "joy"
+  },
+  {
+   "m": 4,
+   "d": 8,
+   "title": "ولادت امام حسن عسکری",
+   "cat": "rel",
+   "icon": "rose"
+  },
+  {
+   "m": 5,
+   "d": 5,
+   "title": "ولادت حضرت زینب",
+   "cat": "rel",
+   "icon": "rose"
+  },
+  {
+   "m": 6,
+   "d": 3,
+   "title": "شهادت حضرت فاطمه",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 6,
+   "d": 20,
+   "title": "ولادت حضرت فاطمه",
+   "cat": "rel",
+   "icon": "rose"
+  },
+  {
+   "m": 7,
+   "d": 13,
+   "title": "ولادت امام علی",
+   "cat": "off",
+   "icon": "rose",
+   "theme": "joy"
+  },
+  {
+   "m": 7,
+   "d": 27,
+   "title": "مبعث پیامبر",
+   "cat": "off",
+   "icon": "mosque",
+   "theme": "joy"
+  },
+  {
+   "m": 8,
+   "d": 3,
+   "title": "ولادت امام حسین",
+   "cat": "rel",
+   "icon": "rose"
+  },
+  {
+   "m": 8,
+   "d": 15,
+   "title": "ولادت امام زمان",
+   "cat": "off",
+   "icon": "rose",
+   "theme": "joy"
+  },
+  {
+   "m": 9,
+   "d": 1,
+   "title": "آغاز ماه رمضان",
+   "cat": "rel",
+   "icon": "crescent"
+  },
+  {
+   "m": 9,
+   "d": 21,
+   "title": "شهادت امام علی",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 10,
+   "d": 1,
+   "title": "عید فطر",
+   "cat": "off",
+   "icon": "crescent",
+   "theme": "joy"
+  },
+  {
+   "m": 10,
+   "d": 25,
+   "title": "شهادت امام صادق",
+   "cat": "off",
+   "icon": "mourn",
+   "theme": "mourn"
+  },
+  {
+   "m": 11,
+   "d": 11,
+   "title": "ولادت امام رضا",
+   "cat": "rel",
+   "icon": "rose"
+  },
+  {
+   "m": 12,
+   "d": 9,
+   "title": "روز عرفه",
+   "cat": "rel",
+   "icon": "mosque"
+  },
+  {
+   "m": 12,
+   "d": 10,
+   "title": "عید قربان",
+   "cat": "off",
+   "icon": "mosque",
+   "theme": "joy"
+  },
+  {
+   "m": 12,
+   "d": 18,
+   "title": "عید غدیر",
+   "cat": "off",
+   "icon": "mosque",
+   "theme": "joy"
+  },
+  {
+   "m": 10,
+   "d": 2,
+   "title": "عید فطر",
+   "cat": "off",
+   "icon": "crescent",
+   "theme": "joy"
+  }
+ ],
+ "greg": [
+  {
+   "m": 1,
+   "d": 1,
+   "title": "سال نو میلادی",
+   "icon": "nye",
+   "theme": "nye"
+  },
+  {
+   "m": 1,
+   "d": 27,
+   "title": "روز جهانی یادبود هولوکاست"
+  },
+  {
+   "m": 2,
+   "d": 14,
+   "title": "ولنتاین",
+   "icon": "heart",
+   "theme": "val"
+  },
+  {
+   "m": 2,
+   "d": 21,
+   "title": "روز جهانی زبان مادری"
+  },
+  {
+   "m": 3,
+   "d": 8,
+   "title": "روز جهانی زن"
+  },
+  {
+   "m": 3,
+   "d": 21,
+   "title": "روز جهانی شعر"
+  },
+  {
+   "m": 3,
+   "d": 22,
+   "title": "روز جهانی آب"
+  },
+  {
+   "m": 3,
+   "d": 27,
+   "title": "روز جهانی تئاتر"
+  },
+  {
+   "m": 4,
+   "d": 7,
+   "title": "روز جهانی بهداشت"
+  },
+  {
+   "m": 4,
+   "d": 22,
+   "title": "روز جهانی زمین"
+  },
+  {
+   "m": 4,
+   "d": 23,
+   "title": "روز جهانی کتاب"
+  },
+  {
+   "m": 5,
+   "d": 1,
+   "title": "روز جهانی کارگر"
+  },
+  {
+   "m": 5,
+   "d": 3,
+   "title": "روز جهانی آزادی مطبوعات"
+  },
+  {
+   "m": 5,
+   "d": 12,
+   "title": "روز جهانی پرستار"
+  },
+  {
+   "m": 5,
+   "d": 18,
+   "title": "روز جهانی موزه"
+  },
+  {
+   "m": 6,
+   "d": 5,
+   "title": "روز جهانی محیط زیست"
+  },
+  {
+   "m": 6,
+   "d": 21,
+   "title": "روز جهانی موسیقی"
+  },
+  {
+   "m": 8,
+   "d": 12,
+   "title": "روز جهانی جوانان"
+  },
+  {
+   "m": 9,
+   "d": 5,
+   "title": "روز جهانی خیریه"
+  },
+  {
+   "m": 9,
+   "d": 21,
+   "title": "روز جهانی صلح"
+  },
+  {
+   "m": 9,
+   "d": 27,
+   "title": "روز جهانی گردشگری"
+  },
+  {
+   "m": 10,
+   "d": 1,
+   "title": "روز جهانی سالمندان"
+  },
+  {
+   "m": 10,
+   "d": 5,
+   "title": "روز جهانی معلم"
+  },
+  {
+   "m": 10,
+   "d": 9,
+   "title": "روز جهانی پست"
+  },
+  {
+   "m": 10,
+   "d": 10,
+   "title": "روز جهانی سلامت روان"
+  },
+  {
+   "m": 10,
+   "d": 16,
+   "title": "روز جهانی غذا"
+  },
+  {
+   "m": 10,
+   "d": 24,
+   "title": "روز ملل متحد"
+  },
+  {
+   "m": 10,
+   "d": 31,
+   "title": "هالووین",
+   "icon": "hal",
+   "theme": "hal"
+  },
+  {
+   "m": 11,
+   "d": 14,
+   "title": "روز جهانی دیابت"
+  },
+  {
+   "m": 11,
+   "d": 16,
+   "title": "روز جهانی مدارا"
+  },
+  {
+   "m": 11,
+   "d": 20,
+   "title": "روز جهانی کودک"
+  },
+  {
+   "m": 12,
+   "d": 1,
+   "title": "روز جهانی ایدز"
+  },
+  {
+   "m": 12,
+   "d": 3,
+   "title": "روز جهانی معلولان"
+  },
+  {
+   "m": 12,
+   "d": 10,
+   "title": "روز جهانی حقوق بشر"
+  },
+  {
+   "m": 12,
+   "d": 24,
+   "title": "شب کریسمس",
+   "icon": "xmas",
+   "theme": "xmas"
+  },
+  {
+   "m": 12,
+   "d": 25,
+   "title": "کریسمس",
+   "icon": "xmas",
+   "theme": "xmas"
+  },
+  {
+   "m": 12,
+   "d": 31,
+   "title": "شب سال نو میلادی",
+   "icon": "nye",
+   "theme": "nye"
+  }
+ ]
+}

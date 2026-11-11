@@ -1,0 +1,118 @@
+{
+ "year": 1404,
+ "source": "time.ir via hasan-ahani/shamsi-holidays",
+ "holidays": [
+  {
+   "date": "1404-01-11",
+   "title": "عید سعید فطر",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "crescent"
+  },
+  {
+   "date": "1404-02-04",
+   "title": "شهادت امام جعفر صادق علیه السلام",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-03-16",
+   "title": "عید سعید قربان",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "mosque"
+  },
+  {
+   "date": "1404-03-24",
+   "title": "عید سعید غدیر خم",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "mosque"
+  },
+  {
+   "date": "1404-04-14",
+   "title": "تاسوعای حسینی",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-04-15",
+   "title": "عاشورای حسینی",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-05-23",
+   "title": "اربعین حسینی",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-05-31",
+   "title": "رحلت رسول اکرم؛شهادت امام حسن مجتبی علیه السلام",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-06-02",
+   "title": "شهادت امام رضا علیه السلام",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-06-10",
+   "title": "شهادت امام حسن عسکری علیه السلام",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-06-19",
+   "title": "میلاد رسول اکرم و امام جعفر صادق علیه السلام",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "rose"
+  },
+  {
+   "date": "1404-09-03",
+   "title": "شهادت حضرت فاطمه زهرا سلام الله علیها",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  },
+  {
+   "date": "1404-10-13",
+   "title": "ولادت امام علی علیه السلام و روز پدر",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "rose"
+  },
+  {
+   "date": "1404-10-27",
+   "title": "مبعث رسول اکرم (ص)",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "mosque"
+  },
+  {
+   "date": "1404-11-15",
+   "title": "ولادت حضرت قائم عجل الله تعالی فرجه و جشن نیمه شعبان",
+   "cat": "off",
+   "theme": "joy",
+   "icon": "rose"
+  },
+  {
+   "date": "1404-12-20",
+   "title": "شهادت حضرت علی علیه السلام",
+   "cat": "off",
+   "theme": "mourn",
+   "icon": "mourn"
+  }
+ ]
+}
