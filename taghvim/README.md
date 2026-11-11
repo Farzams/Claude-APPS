@@ -37,3 +37,5 @@ GitHub Actions (`.github/workflows/build-taghvim.yml`) runs both and publishes t
 ## Adding a year
 
 Make `data/holidays/<year>.json` with the official lunar holidays of that Jalali year (same shape as `1405.json`), commit it, and installed apps pick it up within a day.
+
+(CI re-run)
