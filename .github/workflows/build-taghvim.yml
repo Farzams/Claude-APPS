@@ -1,0 +1,41 @@
+name: Build Taghvim (Persian calendar widgets)
+# Tests the calendar core on the JVM and builds the Android app (month and prayer-time widgets).
+# Publishes the APK in the release "taghvim-latest".
+on:
+  workflow_dispatch:
+  push:
+    paths: ["taghvim/**", ".github/workflows/build-taghvim.yml"]
+permissions:
+  contents: write
+concurrency:
+  group: build-taghvim
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: wrapper }
+      - name: Test the calendar core (Jalali and Hijri dates, holidays, prayer times)
+        working-directory: taghvim
+        run: ./gradlew --no-daemon :core:test
+      - name: Build the APK
+        working-directory: taghvim
+        env: { APP_VERSION_CODE: "${{ github.run_number }}" }
+        run: ./gradlew --no-daemon :app:assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: taghvim-apk
+          path: taghvim/app/build/outputs/apk/debug/*.apk
+      - name: Publish the APK (release taghvim-latest)
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          repo="${{ github.repository }}"; tag="taghvim-latest"
+          apk=$(find taghvim/app/build/outputs/apk/debug -name "*.apk" | head -1)
+          cp "$apk" Taghvim.apk
+          gh release view $tag --repo $repo >/dev/null 2>&1 || gh release create $tag --repo $repo --title "Taghvim for Android (latest build)" --target "${{ github.sha }}" --notes "Persian calendar widgets: month with holidays (4x4) and prayer times (4x1). Install Taghvim.apk and add the widgets from the home screen."
+          for i in 1 2 3 4 5; do gh release upload $tag Taghvim.apk --clobber --repo $repo && break; sleep $((10*i)); done

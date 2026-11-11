@@ -1,0 +1,135 @@
+package ir.taghvim.app.widget
+
+import android.content.Context
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.glance.GlanceId
+import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
+import androidx.glance.LocalContext
+import androidx.glance.action.actionStartActivity
+import androidx.glance.action.clickable
+import androidx.glance.appwidget.GlanceAppWidget
+import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.SizeMode
+import androidx.glance.appwidget.cornerRadius
+import androidx.glance.appwidget.provideContent
+import androidx.glance.background
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
+import androidx.glance.layout.Column
+import androidx.glance.layout.Row
+import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
+import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.height
+import androidx.glance.layout.padding
+import androidx.glance.layout.size
+import androidx.glance.text.FontWeight
+import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
+import ir.taghvim.app.data.AppSettings
+import ir.taghvim.app.data.Prefs
+import ir.taghvim.app.data.fa
+import ir.taghvim.app.ui.SettingsActivity
+import ir.taghvim.core.PrayerCalc
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+
+/** What the widget needs at one moment: the day's six times and which one is next, with minutes to wait. */
+class PrayerState(val labels: List<String>, val icons: List<String>, val times: List<String>, val next: Int, val minutesLeft: Int)
+
+object PrayerPlan {
+    private val labels = listOf("اذان صبح", "طلوع", "اذان ظهر", "غروب", "اذان مغرب", "نیمه‌شب")
+    private val icons = listOf("fajr", "rise", "sun", "set", "mag", "mid")
+
+    fun at(s: AppSettings, now: LocalDateTime, zone: ZoneId = ZoneId.systemDefault()): PrayerState {
+        val city = s.currentCity
+        val today = PrayerCalc.compute(now.toLocalDate(), city, zone).asList()
+        val nowMin = now.hour * 60.0 + now.minute + now.second / 60.0
+        var next = today.indexOfFirst { it > nowMin }
+        val left: Double
+        if (next >= 0) {
+            left = today[next] - nowMin
+        } else {
+            // after midnight time of the day: the next moment is tomorrow's dawn
+            val tomorrow = PrayerCalc.compute(now.toLocalDate().plusDays(1), city, zone).asList()
+            next = 0
+            left = 24 * 60 - nowMin + tomorrow[0]
+        }
+        // between midnight-after-24h and dawn the "midnight" can fall past 24:00; show it as is
+        return PrayerState(labels, icons, today.map { PrayerCalc.format(it).fa() }, next, Math.ceil(left).toInt())
+    }
+
+    fun countdown(state: PrayerState): String {
+        val h = state.minutesLeft / 60
+        val m = state.minutesLeft % 60
+        val span = when {
+            h == 0 -> "${m.fa()} دقیقه"
+            m == 0 -> "${h.fa()} ساعت"
+            else -> "${h.fa()} ساعت و ${m.fa()} دقیقه"
+        }
+        val target = state.labels[state.next].replace("اذان ", "اذان ")
+        return "$span تا $target"
+    }
+}
+
+/** The 4x1 widget: six moments with scene icons, the next one highlighted, and a countdown to it. */
+class PrayerWidget : GlanceAppWidget() {
+    override val sizeMode = SizeMode.Single
+
+    override suspend fun provideGlance(context: Context, id: GlanceId) {
+        val s = Prefs.load(context)
+        val state = PrayerPlan.at(s, LocalDateTime.now())
+        provideContent { PrayerContent(s, state) }
+    }
+}
+
+class PrayerWidgetReceiver : GlanceAppWidgetReceiver() {
+    override val glanceAppWidget: GlanceAppWidget = PrayerWidget()
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        ir.taghvim.app.work.Schedule.ensure(context)
+    }
+}
+
+@Composable
+private fun PrayerContent(s: AppSettings, st: PrayerState) {
+    val context = LocalContext.current
+    val p = Palettes.of(context, s)
+    val rtl = context.isRtl()
+    Column(
+        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(24.dp).padding(horizontal = 8.dp, vertical = 8.dp)
+            .clickable(actionStartActivity<SettingsActivity>()),
+    ) {
+        Row(modifier = GlanceModifier.fillMaxWidth().padding(horizontal = 6.dp)) {
+            val head: @Composable () -> Unit = {
+                Text(PrayerPlan.countdown(st), style = TextStyle(color = ColorProvider(p.ink), fontSize = 13.sp, fontWeight = FontWeight.Bold), modifier = GlanceModifier.defaultWeight())
+            }
+            val city: @Composable () -> Unit = {
+                Text("به افق ${s.city}", style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp))
+            }
+            if (rtl) { head(); city() } else { city(); head() }
+        }
+        Spacer(GlanceModifier.height(4.dp))
+        Row(modifier = GlanceModifier.fillMaxWidth()) {
+            st.labels.indices.toList().rightToLeft(rtl).forEach { i ->
+                val next = i == st.next
+                Column(
+                    modifier = GlanceModifier.defaultWeight().then(if (next) GlanceModifier.background(p.chip).cornerRadius(14.dp) else GlanceModifier).padding(vertical = 3.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    val id = context.drawableId("pr_${st.icons[i]}")
+                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(30.dp))
+                    Text(st.labels[i], style = TextStyle(color = ColorProvider(p.mute), fontSize = 9.sp, textAlign = TextAlign.Center))
+                    Text(st.times[i], style = TextStyle(color = ColorProvider(if (next) p.accent else p.ink), fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">تقویم</string>
+    <string name="widget_month_description">تقویم ماهانه با تعطیلات و مناسبت‌ها</string>
+    <string name="widget_prayer_description">اوقات شرعی و زمان مانده تا وقت بعدی</string>
+</resources>

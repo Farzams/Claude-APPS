@@ -1,0 +1,9 @@
+.th-nowruz{--thbg:radial-gradient(100% 80% at 10% 0%,#A8F2C4aa,transparent 60%),linear-gradient(150deg,#16A86E,#0A6E7E)}
+.th-nat{--thbg:radial-gradient(90% 70% at 20% 0%,#3FBF7D66,transparent 60%),linear-gradient(155deg,#17794A,#145A3E 55%,#9A2F26)}
+.th-mourn{--thbg:radial-gradient(90% 70% at 50% 115%,#A3243A,transparent 70%),linear-gradient(170deg,#141417,#2A1217)}
+.th-joy{--thbg:repeating-conic-gradient(from -20deg at 50% 0%,#ffffff22 0 9deg,transparent 9deg 18deg),linear-gradient(160deg,#0E7C69,#B8902B)}
+.th-xmas{--thbg:radial-gradient(circle at 24% 28%,#fff 0 1.3px,transparent 2.2px),radial-gradient(circle at 78% 62%,#fff 0 1.3px,transparent 2.2px),linear-gradient(150deg,#B3261E,#1F6B3A)}
+.th-nye{--thbg:radial-gradient(circle at 20% 25%,#FFE28A 0 1.3px,transparent 2.2px),radial-gradient(circle at 80% 70%,#FFE28A 0 1.2px,transparent 2.1px),linear-gradient(150deg,#16204A,#4B3A9C 62%,#D4A93C)}
+.th-yalda{--thbg:radial-gradient(circle at 22% 24%,#fff 0 1.2px,transparent 2px),radial-gradient(circle at 76% 70%,#fff 0 1.2px,transparent 2px),linear-gradient(150deg,#6A1033,#1C1552)}
+.th-val{--thbg:linear-gradient(150deg,#FF93B5,#D93A75)}
+.th-hal{--thbg:linear-gradient(150deg,#FF8A1F,#3E2468)}

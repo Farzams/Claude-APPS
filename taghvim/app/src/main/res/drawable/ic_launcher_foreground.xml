@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- calendar page -->
+    <path android:fillColor="#FFFFFF" android:pathData="M30,34h48a6,6 0 0 1 6,6v34a6,6 0 0 1 -6,6H30a6,6 0 0 1 -6,-6V40a6,6 0 0 1 6,-6z" />
+    <path android:fillColor="#F5C518" android:pathData="M24,40a6,6 0 0 1 6,-6h48a6,6 0 0 1 6,6v8H24z" />
+    <path android:fillColor="#0B1730" android:pathData="M54,62m-9,0a9,9 0 1 0 18,0a9,9 0 1 0 -18,0" />
+    <path android:fillColor="#FFFFFF" android:pathData="M58,57.5a6,6 0 1 0 0,9a4.6,4.6 0 0 1 0,-9z" />
+</vector>
