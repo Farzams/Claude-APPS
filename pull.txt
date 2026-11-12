@@ -1,0 +1,1 @@
+/sdcard/Android/data/ir.taghvim.calendar/files/./: 7 files pulled, 0 skipped. 8.8 MB/s (443104 bytes in 0.048s)

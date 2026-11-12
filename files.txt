@@ -1,0 +1,8 @@
+/sdcard/Android/data/ir.taghvim.calendar/files:
+settings_top.png
+widget_month.png
+widget_month.txt
+widget_month_selected.png
+widget_month_selected.txt
+widget_prayer.png
+widget_prayer.txt
