@@ -100,10 +100,11 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
     Column(
         modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(horizontal = 10.dp, vertical = 10.dp)
             .clickable(actionStartActivity<SettingsActivity>()),
+        verticalAlignment = Alignment.CenterVertically, // everything sits in the middle of the widget's height
     ) {
         Row(modifier = GlanceModifier.fillMaxWidth().padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-            val head: @Composable () -> Unit = { Txt(PrayerPlan.countdown(st), 15f, p.ink, 700, maxWidthDp = 220f) }
-            val city: @Composable () -> Unit = { Txt("به افق ${s.city}", 11.5f, p.mute) }
+            val head: @Composable () -> Unit = { Txt(PrayerPlan.countdown(st), 16f, p.ink, 700, maxWidthDp = 230f) }
+            val city: @Composable () -> Unit = { Txt("به افق ${s.city}", 12f, p.mute) }
             val gap: @Composable () -> Unit = { Spacer(GlanceModifier.defaultWeight()) }
             listOf(head, gap, city).rightToLeft(rtl).forEach { it() }
         }
@@ -120,8 +121,8 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
                     val id = context.drawableId("pr_${st.icons[i]}")
                     if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(38.dp))
                     Spacer(GlanceModifier.height(4.dp))
-                    Txt(st.labels[i], 10f, p.mute)
-                    Txt(st.times[i], 13f, if (next) p.accent else p.ink, 500)
+                    Txt(st.labels[i], 10.5f, p.mute)
+                    Txt(st.times[i], 14f, if (next) p.accent else p.ink, 500)
                 }
             }
         }

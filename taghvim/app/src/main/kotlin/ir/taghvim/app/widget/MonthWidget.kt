@@ -39,6 +39,7 @@ import ir.taghvim.app.data.AppSettings
 import ir.taghvim.app.data.Holidays
 import ir.taghvim.app.data.Prefs
 import ir.taghvim.app.data.fa
+import ir.taghvim.app.data.gregorianMonthNames
 import ir.taghvim.app.data.hijriMonthName
 import ir.taghvim.app.ui.SettingsActivity
 import ir.taghvim.core.CalendarEngine
@@ -54,17 +55,12 @@ class MonthWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        var s = Prefs.load(context)
+        val s = Prefs.load(context)
         val today = LocalDate.now(IRAN)
-        if (s.offsetDate != today.toString() && s.monthOffset != 0) {
-            s = s.copy(monthOffset = 0, offsetDate = today.toString())
-            Prefs.save(context, s)
-        }
         val engine = Holidays.engine(context, s)
         val j = JalaliDate.of(today)
-        val index = j.year * 12 + (j.month - 1) + s.monthOffset
-        val view = engine.month(index / 12, index % 12 + 1)
-        provideContent { MonthContent(s, view, today) }
+        val view = engine.month(j.year, j.month)
+        provideContent { MonthContent(s, view, engine.day(today), today) }
     }
 }
 
@@ -76,64 +72,37 @@ class MonthWidgetReceiver : GlanceAppWidgetReceiver() {
     }
 }
 
-/** Arrow buttons: moves the shown month one step, for the rest of the day. */
-class MonthNavCallback : ActionCallback {
-    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
-        val dir = parameters[DIR_KEY] ?: 0
-        Prefs.update(context) { it.copy(monthOffset = (it.monthOffset + dir).coerceIn(-36, 36), offsetDate = LocalDate.now(IRAN).toString()) }
-        MonthWidget().update(context, glanceId)
-    }
-
-    companion object {
-        val DIR_KEY = ActionParameters.Key<Int>("dir")
-    }
-}
-
-private val CELL = 38.dp
+private val CELL = 37.dp
 private const val INNER_WIDTH = 300f
 
 /** The side a Persian reader starts from: the right edge, on a screen set to either direction. */
 private fun rightEdge(rtl: Boolean) = if (rtl) Alignment.Start else Alignment.End
 
 @Composable
-private fun MonthContent(s: AppSettings, view: MonthView, today: LocalDate) {
+private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: LocalDate) {
     val context = LocalContext.current
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
-    val title = "${Jalali.monthNames[view.month - 1]} ${view.year.fa()}"
-    val first = view.days.first().hijri
-    val last = view.days.last().hijri
-    val sub = if (first.month == last.month) "${hijriMonthName(first.month)} ${first.year.fa()}"
-    else "${hijriMonthName(first.month)} و ${hijriMonthName(last.month)} ${last.year.fa()}"
+    val jalaliLine = "${now.jalali.day.fa()} ${Jalali.monthNames[now.jalali.month - 1]} ${now.jalali.year.fa()}"
+    val hijriLine = "${now.hijri.day.fa()} ${hijriMonthName(now.hijri.month)} ${now.hijri.year.fa()}"
+    val gregorianLine = "${today.dayOfMonth.fa()} ${gregorianMonthNames[today.monthValue - 1]} ${today.year.fa()}"
+    val weeks = (view.startColumn + view.days.size + 6) / 7
 
     Column(
         modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(12.dp)
             .clickable(actionStartActivity<SettingsActivity>()),
     ) {
-        // the title block sits on the right, the two arrows on the left
-        Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            val titleBlock: @Composable () -> Unit = {
-                Column(modifier = GlanceModifier.defaultWeight(), horizontalAlignment = rightEdge(rtl)) {
-                    Txt(title, 19f, p.ink, 500)
-                    Txt(sub, 11.5f, p.mute)
-                }
-            }
-            val nav: @Composable () -> Unit = {
-                Row {
-                    // next month on the right, previous month on the left
-                    listOf("‹" to 1, "›" to -1).rightToLeft(rtl).forEachIndexed { i, (glyph, dir) ->
-                        if (i > 0) Spacer(GlanceModifier.width(6.dp))
-                        NavButton(p, glyph, dir)
-                    }
-                }
-            }
-            if (rtl) { titleBlock(); nav() } else { nav(); titleBlock() }
+        // today's date in the three calendars, on the right: Jalali, then lunar, then Gregorian
+        Column(modifier = GlanceModifier.fillMaxWidth(), horizontalAlignment = rightEdge(rtl)) {
+            Txt(jalaliLine, 22f, p.ink, 500)
+            Txt(hijriLine, 13.5f, p.mute)
+            Txt(gregorianLine, 13.5f, p.mute)
         }
         Spacer(GlanceModifier.height(6.dp))
         Row(modifier = GlanceModifier.fillMaxWidth()) {
             Jalali.weekdayInitials.mapIndexed { i, w -> i to w }.rightToLeft(rtl).forEach { (i, w) ->
                 Box(modifier = GlanceModifier.defaultWeight(), contentAlignment = Alignment.Center) {
-                    Txt(w, 12f, if (i == 6) p.accent else p.mute, if (i == 6) 700 else 400)
+                    Txt(w, 13.5f, if (i == 6) p.accent else p.mute, if (i == 6) 700 else 400)
                 }
             }
         }
@@ -152,19 +121,7 @@ private fun MonthContent(s: AppSettings, view: MonthView, today: LocalDate) {
             }
         }
         Spacer(GlanceModifier.height(6.dp))
-        Column(modifier = GlanceModifier.fillMaxWidth()) { Footer(s, p, view, rtl) }
-    }
-}
-
-@Composable
-private fun NavButton(p: Palette, glyph: String, dir: Int) {
-    Box(
-        modifier = GlanceModifier.size(30.dp).background(ImageProvider(R.drawable.bg_soft_nat)).clickable(
-            actionRunCallback<MonthNavCallback>(actionParametersOf(MonthNavCallback.DIR_KEY to dir)),
-        ),
-        contentAlignment = Alignment.Center,
-    ) {
-        Txt(glyph, 18f, p.ink, 500)
+        Column(modifier = GlanceModifier.fillMaxWidth()) { Footer(s, p, view, rtl, if (weeks >= 6) 2 else 3) }
     }
 }
 
@@ -197,12 +154,12 @@ private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
         Image(
             provider = ImageProvider(bg),
             contentDescription = null,
-            modifier = GlanceModifier.size(35.dp),
+            modifier = GlanceModifier.size(36.dp),
             colorFilter = if (isToday) ColorFilter.tint(ColorProvider(p.todayBg)) else null,
         )
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Txt(d.jalali.day.fa(), 16f, numberColor, 500)
+        Txt(d.jalali.day.fa(), 19f, numberColor, 500)
         val secondary = when {
             themed -> null
             s.secondary == "hijri" -> d.hijri.day.fa()
@@ -214,7 +171,7 @@ private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
 }
 
 @Composable
-private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean) {
+private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean, maxLines: Int) {
     val dots = mapOf(
         Category.OFFICIAL to p.accent,
         Category.RELIGIOUS to Color(0xFFA593FF),
@@ -237,7 +194,7 @@ private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean) {
             } else i++
         }
     }
-    lines.take(3).forEach { (cat, text) ->
+    lines.take(maxLines).forEach { (cat, text) ->
         Row(modifier = GlanceModifier.fillMaxWidth().padding(bottom = 4.dp), horizontalAlignment = rightEdge(rtl)) {
             Row(
                 modifier = GlanceModifier.background(p.chip).cornerRadius(12.dp).padding(horizontal = 10.dp, vertical = 3.dp),
@@ -247,7 +204,7 @@ private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean) {
                 val parts: List<@Composable () -> Unit> = listOf(
                     { Txt("●", 8f, dots.getValue(cat)) },
                     { Spacer(GlanceModifier.width(6.dp)) },
-                    { Txt(text, 12f, p.ink, maxWidthDp = INNER_WIDTH - 30f) },
+                    { Txt(text, 13f, p.ink, maxWidthDp = INNER_WIDTH - 30f) },
                 )
                 parts.rightToLeft(rtl).forEach { it() }
             }
