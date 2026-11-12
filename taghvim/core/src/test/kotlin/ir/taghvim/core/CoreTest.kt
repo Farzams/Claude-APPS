@@ -80,8 +80,30 @@ class CoreTest {
         // 31 Oct 2026 is Halloween (global) and Friday-less; 13 Aban is Student Day (national)
         val day = engine.day(LocalDate.of(2026, 11, 4)) // 13 Aban 1405
         assertEquals(Category.NATIONAL, day.primary(Category.defaultOrder)?.category)
-        val onlyGlobal = day.primary(Category.defaultOrder, setOf(Category.GLOBAL))
+        val onlyGlobal = day.primary(Category.defaultOrder, mapOf(Category.GLOBAL to Level.ALL, Category.NATIONAL to Level.OFF))
         assertTrue(onlyGlobal == null || onlyGlobal.category == Category.GLOBAL)
+    }
+
+    @Test
+    fun importantLevelKeepsOnlyTheImportantDays() {
+        val engine = CalendarEngine()
+        // 13 Aban (Student Day) is important; 14 Aban (Mazandaran day) is not
+        val student = engine.day(JalaliDate(1405, 8, 13).toGregorian())
+        val mazandaran = engine.day(JalaliDate(1405, 8, 14).toGregorian())
+        val standard = LevelDefaults.standard
+        assertEquals("روز دانش‌آموز", student.primary(Category.defaultOrder, standard)?.title)
+        assertEquals(null, mazandaran.primary(Category.defaultOrder, standard))
+        assertEquals("روز ملی مازندران", mazandaran.primary(Category.defaultOrder, LevelDefaults.everything)?.title)
+        // the world group is off by default: Halloween (9 Aban) shows nothing, but shows when switched on
+        val halloween = engine.day(JalaliDate(1405, 8, 9).toGregorian())
+        assertEquals(null, halloween.primary(Category.defaultOrder, standard))
+        assertEquals("هالووین", halloween.primary(Category.defaultOrder, standard + (Category.GLOBAL to Level.ALL))?.title)
+        // official holidays stay even in "important only" mode
+        val fatima = engine.day(JalaliDate(1405, 8, 23).toGregorian())
+        assertEquals(Category.OFFICIAL, fatima.primary(Category.defaultOrder, standard)?.category)
+        // Yalda (30 Azar) is an important national night
+        val yalda = engine.day(JalaliDate(1405, 9, 30).toGregorian())
+        assertEquals("yalda", yalda.primary(Category.defaultOrder, standard)?.theme)
     }
 
     @Test

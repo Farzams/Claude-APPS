@@ -17,6 +17,28 @@ enum class Category(val code: String) {
     }
 }
 
+/** How much of a group the user wants to see. */
+enum class Level(val code: String) {
+    OFF("off"), IMPORTANT("imp"), ALL("all");
+
+    companion object {
+        fun fromCode(code: String) = entries.firstOrNull { it.code == code } ?: ALL
+    }
+}
+
+typealias Levels = Map<Category, Level>
+
+object LevelDefaults {
+    /** Official holidays in full, the important religious and national days, nothing from the world/Gregorian group. */
+    val standard: Levels = mapOf(
+        Category.OFFICIAL to Level.ALL,
+        Category.RELIGIOUS to Level.IMPORTANT,
+        Category.NATIONAL to Level.IMPORTANT,
+        Category.GLOBAL to Level.OFF,
+    )
+    val everything: Levels = Category.entries.associateWith { Level.ALL }
+}
+
 @Serializable
 data class EventDef(
     val m: Int,
@@ -25,6 +47,8 @@ data class EventDef(
     val cat: String = "nat",
     val icon: String? = null,
     val theme: String? = null,
+    /** Marked important: shown when its group is set to "important only". */
+    val imp: Boolean = false,
 )
 
 @Serializable
@@ -50,7 +74,15 @@ data class DayEvent(
     /** Name of the background theme for this day (nowruz, nat, mourn, joy, xmas, nye, val, hal, yalda) or null for a soft tint. */
     val theme: String?,
     val lunar: Boolean = false,
-)
+    val important: Boolean = false,
+) {
+    /** Official holidays are always important. */
+    fun shownAt(level: Level): Boolean = when (level) {
+        Level.OFF -> false
+        Level.ALL -> true
+        Level.IMPORTANT -> important || category == Category.OFFICIAL
+    }
+}
 
 data class DayInfo(
     val date: LocalDate,
@@ -62,17 +94,17 @@ data class DayInfo(
     val isFriday get() = weekdayIndex == 6
     val isHoliday get() = isFriday || events.any { it.category == Category.OFFICIAL }
 
-    /** The event that decides how the day looks: the first present category in the user's order. */
-    fun primary(order: List<Category>, enabled: Set<Category> = Category.entries.toSet()): DayEvent? {
+    /** The event that decides how the day looks: the first group in the user's order that has an event it shows. */
+    fun primary(order: List<Category>, levels: Levels = LevelDefaults.everything): DayEvent? {
         for (c in order) {
-            if (c !in enabled) continue
-            events.firstOrNull { it.category == c }?.let { return it }
+            val level = levels[c] ?: Level.ALL
+            events.firstOrNull { it.category == c && it.shownAt(level) }?.let { return it }
         }
         return null
     }
 
-    fun eventsOrdered(order: List<Category>, enabled: Set<Category> = Category.entries.toSet()): List<DayEvent> =
-        order.filter { it in enabled }.flatMap { c -> events.filter { it.category == c } }
+    fun eventsOrdered(order: List<Category>, levels: Levels = LevelDefaults.everything): List<DayEvent> =
+        order.flatMap { c -> events.filter { it.category == c && it.shownAt(levels[c] ?: Level.ALL) } }
 }
 
 data class MonthView(val year: Int, val month: Int, val startColumn: Int, val days: List<DayInfo>)
@@ -105,10 +137,10 @@ class CalendarEngine(
             if (!(officialYear && def.cat == "off")) list += def.toEvent(true)
         }
         officialByDate[j.toString()]?.forEach { e ->
-            list += DayEvent(e.title, Category.OFFICIAL, e.icon, e.theme ?: "joy", lunar = true)
+            list += DayEvent(e.title, Category.OFFICIAL, e.icon, e.theme ?: "joy", lunar = true, important = true)
         }
 
-        events.greg.filter { it.m == date.monthValue && it.d == date.dayOfMonth }.forEach { list += it.toEvent(false) }
+        events.greg.filter { it.m == date.monthValue && it.d == date.dayOfMonth }.forEach { list += it.toEvent(false, Category.GLOBAL) }
         return DayInfo(date, j, h, Jalali.weekdayIndex(date), list)
     }
 
@@ -129,7 +161,8 @@ class CalendarEngine(
         return def.d == h.day || (def.d == 30 && h.day == 29 && h.monthLength == 29)
     }
 
-    private fun EventDef.toEvent(lunar: Boolean) = DayEvent(title, Category.fromCode(cat), icon, theme, lunar)
+    private fun EventDef.toEvent(lunar: Boolean, forced: Category? = null) =
+        DayEvent(title, forced ?: Category.fromCode(cat), icon, theme, lunar, imp)
 }
 
 object EventData {

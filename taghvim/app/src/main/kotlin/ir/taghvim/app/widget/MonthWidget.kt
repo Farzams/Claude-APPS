@@ -83,9 +83,7 @@ private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: L
     val context = LocalContext.current
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
-    val jalaliLine = "${now.jalali.day.fa()} ${Jalali.monthNames[now.jalali.month - 1]} ${now.jalali.year.fa()}"
-    val hijriLine = "${now.hijri.day.fa()} ${hijriMonthName(now.hijri.month)} ${now.hijri.year.fa()}"
-    val gregorianLine = "${today.dayOfMonth.fa()} ${gregorianMonthNames[today.monthValue - 1]} ${today.year.fa()}"
+    val dateLines = DateLines.triple(now, today)
     val weeks = (view.startColumn + view.days.size + 6) / 7
 
     Column(
@@ -94,9 +92,9 @@ private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: L
     ) {
         // today's date in the three calendars, on the right: Jalali, then lunar, then Gregorian
         Column(modifier = GlanceModifier.fillMaxWidth(), horizontalAlignment = rightEdge(rtl)) {
-            Txt(jalaliLine, 22f, p.ink, 500)
-            Txt(hijriLine, 13.5f, p.mute)
-            Txt(gregorianLine, 13.5f, p.mute)
+            Txt(dateLines[0], 22f, p.ink, 500)
+            Txt(dateLines[1], 13.5f, p.mute)
+            Txt(dateLines[2], 13.5f, p.mute)
         }
         Spacer(GlanceModifier.height(6.dp))
         Row(modifier = GlanceModifier.fillMaxWidth()) {
@@ -129,7 +127,7 @@ private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: L
 @Composable
 private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
     val context = LocalContext.current
-    val ev = d.primary(s.order, s.enabled)
+    val ev = d.primary(s.order, s.levels)
     val isToday = d.date == today
     val themed = s.specialBackgrounds && ev?.theme != null
     val bg: Int = when {
@@ -178,22 +176,7 @@ private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean, ma
         Category.NATIONAL to Color(0xFF5BC0EB),
         Category.GLOBAL to Color(0xFF6FD08A),
     )
-    val lines = ArrayList<Pair<Category, String>>()
-    val monthName = Jalali.monthNames[view.month - 1]
-    for (cat in s.order.filter { it in s.enabled }) {
-        var i = 0
-        while (i < view.days.size) {
-            val d = view.days[i]
-            val e = d.events.firstOrNull { it.category == cat }
-            if (e != null) {
-                var j = i
-                while (j + 1 < view.days.size && view.days[j + 1].events.any { it.category == cat && it.title == e.title }) j++
-                val range = if (j == i) d.jalali.day.fa() else "${d.jalali.day.fa()} تا ${view.days[j].jalali.day.fa()}"
-                lines += cat to "$range $monthName · ${e.title}"
-                i = j + 1
-            } else i++
-        }
-    }
+    val lines = OccasionLines.build(s, view)
     lines.take(maxLines).forEach { (cat, text) ->
         Row(modifier = GlanceModifier.fillMaxWidth().padding(bottom = 4.dp), horizontalAlignment = rightEdge(rtl)) {
             Row(

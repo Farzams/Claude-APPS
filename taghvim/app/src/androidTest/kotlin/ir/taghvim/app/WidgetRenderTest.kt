@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
+import androidx.test.core.app.ActivityScenario
 import androidx.test.platform.app.InstrumentationRegistry
+import ir.taghvim.app.ui.SettingsActivity
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import ir.taghvim.app.data.fa
 import ir.taghvim.app.widget.MonthWidget
@@ -108,6 +110,16 @@ class WidgetRenderTest {
             assertTrue("the countdown is missing", prayer.any { it.contains("تا") })
         } finally {
             inst.uiAutomation.dropShellPermissionIdentity()
+        }
+    }
+
+    @Test
+    fun settingsScreenOpensAndShowsTheGroups() {
+        ActivityScenario.launch(SettingsActivity::class.java).use {
+            Thread.sleep(3000)
+            val shot = inst.uiAutomation.takeScreenshot()
+            val dir = ctx.getExternalFilesDir(null)!!
+            File(dir, "settings_top.png").outputStream().use { shot.compress(Bitmap.CompressFormat.PNG, 100, it) }
         }
     }
 }
