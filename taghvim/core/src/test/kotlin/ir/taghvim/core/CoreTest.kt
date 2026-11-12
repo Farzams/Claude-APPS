@@ -57,6 +57,21 @@ class CoreTest {
     }
 
     @Test
+    fun lunarDateFollowsIranNotTheTable() {
+        val engine = CalendarEngine()
+        // official list: 23 Aban 1405 is 3 Jumada II, so 21 Aban 1405 is 1 Jumada II
+        val today = engine.day(JalaliDate(1405, 8, 21).toGregorian())
+        assertEquals(6, today.hijri.month)
+        assertEquals(1, today.hijri.day)
+        val fatima = engine.day(JalaliDate(1405, 8, 23).toGregorian())
+        assertEquals(3, fatima.hijri.day)
+        // 5 Tir 1405 is Ashura (10 Muharram) and 4 Tir is Tasua
+        assertEquals(10, engine.day(JalaliDate(1405, 4, 5).toGregorian()).hijri.day)
+        // the user's own correction still moves it
+        assertEquals(2, CalendarEngine(hijriShift = -1).day(JalaliDate(1405, 8, 21).toGregorian()).hijri.day)
+    }
+
+    @Test
     fun solarHolidaysAndFridays() {
         val engine = CalendarEngine()
         val nowruz = engine.day(LocalDate.of(2026, 3, 21))

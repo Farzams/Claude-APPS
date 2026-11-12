@@ -108,7 +108,7 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
             val gap: @Composable () -> Unit = { Spacer(GlanceModifier.defaultWeight()) }
             listOf(head, gap, city).rightToLeft(rtl).forEach { it() }
         }
-        Spacer(GlanceModifier.height(4.dp))
+        Spacer(GlanceModifier.height(14.dp))
         Row(modifier = GlanceModifier.fillMaxWidth()) {
             st.labels.indices.toList().rightToLeft(rtl).forEach { i ->
                 val next = i == st.next

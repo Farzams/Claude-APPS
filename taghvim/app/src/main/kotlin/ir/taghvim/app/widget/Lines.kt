@@ -47,3 +47,18 @@ object OccasionLines {
         return lines
     }
 }
+
+/** The occasions of one tapped day, in the user's group order and levels. A Friday is mentioned too. */
+object DayOccasions {
+    fun forDay(s: AppSettings, day: DayInfo): List<Pair<Category, String>> {
+        val monthName = Jalali.monthNames[day.jalali.month - 1]
+        val prefix = "${day.jalali.day.fa()} $monthName · "
+        val list = ArrayList<Pair<Category, String>>()
+        if (day.isFriday) list += Category.OFFICIAL to (prefix + "جمعه")
+        for (cat in s.order) {
+            val level = s.levels[cat] ?: Level.ALL
+            day.events.filter { it.category == cat && it.shownAt(level) }.forEach { list += cat to (prefix + it.title) }
+        }
+        return list
+    }
+}

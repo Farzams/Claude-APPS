@@ -60,7 +60,10 @@ class MonthWidget : GlanceAppWidget() {
         val engine = Holidays.engine(context, s)
         val j = JalaliDate.of(today)
         val view = engine.month(j.year, j.month)
-        provideContent { MonthContent(s, view, engine.day(today), today) }
+        // the day the user tapped, if it belongs to this month; otherwise today
+        val picked = runCatching { LocalDate.parse(s.selectedDate) }.getOrNull()
+            ?.takeIf { d -> view.days.any { it.date == d } } ?: today
+        provideContent { MonthContent(s, view, engine.day(picked), today) }
     }
 }
 
@@ -75,6 +78,20 @@ class MonthWidgetReceiver : GlanceAppWidgetReceiver() {
 private val CELL = 37.dp
 private const val INNER_WIDTH = 300f
 
+/** A tap on a day: that day gets a yellow frame and its occasions are listed below. Tapping today clears it. */
+class SelectDayCallback : ActionCallback {
+    override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
+        val date = parameters[DATE_KEY] ?: return
+        val value = if (date == LocalDate.now(IRAN).toString()) "" else date
+        Prefs.update(context) { it.copy(selectedDate = value) }
+        MonthWidget().update(context, glanceId)
+    }
+
+    companion object {
+        val DATE_KEY = ActionParameters.Key<String>("date")
+    }
+}
+
 /** The side a Persian reader starts from: the right edge, on a screen set to either direction. */
 private fun rightEdge(rtl: Boolean) = if (rtl) Alignment.Start else Alignment.End
 
@@ -83,14 +100,14 @@ private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: L
     val context = LocalContext.current
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
-    val dateLines = DateLines.triple(now, today)
+    val dateLines = DateLines.triple(now, now.date)
     val weeks = (view.startColumn + view.days.size + 6) / 7
 
+    // no tap on the widget background opens anything: taps belong to the days
     Column(
-        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(12.dp)
-            .clickable(actionStartActivity<SettingsActivity>()),
+        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(12.dp),
     ) {
-        // today's date in the three calendars, on the right: Jalali, then lunar, then Gregorian
+        // the chosen day (today unless a day was tapped) in the three calendars, on the right: Jalali, then lunar, then Gregorian
         Column(modifier = GlanceModifier.fillMaxWidth(), horizontalAlignment = rightEdge(rtl)) {
             Txt(dateLines[0], 22f, p.ink, 500)
             Txt(dateLines[1], 13.5f, p.mute)
@@ -111,21 +128,24 @@ private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: L
                 Row(modifier = GlanceModifier.fillMaxWidth()) {
                     val padded = week + List(7 - week.size) { null }
                     padded.rightToLeft(rtl).forEach { d ->
-                        Box(modifier = GlanceModifier.defaultWeight().height(CELL), contentAlignment = Alignment.Center) {
-                            if (d != null) DayCell(s, p, d, today)
+                        val tap = if (d == null) GlanceModifier else GlanceModifier.clickable(
+                            actionRunCallback<SelectDayCallback>(actionParametersOf(SelectDayCallback.DATE_KEY to d.date.toString())),
+                        )
+                        Box(modifier = GlanceModifier.defaultWeight().height(CELL).then(tap), contentAlignment = Alignment.Center) {
+                            if (d != null) DayCell(s, p, d, today, now.date)
                         }
                     }
                 }
             }
         }
         Spacer(GlanceModifier.height(6.dp))
-        Column(modifier = GlanceModifier.fillMaxWidth()) { Footer(s, p, view, rtl, if (weeks >= 6) 2 else 3) }
+        Column(modifier = GlanceModifier.fillMaxWidth()) { Footer(p, DayOccasions.forDay(s, now), rtl, if (weeks >= 6) 2 else 3) }
     }
 }
 
 /** A day: a coloured rounded square when it is today or special, otherwise just the number. */
 @Composable
-private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
+private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate, selected: LocalDate) {
     val context = LocalContext.current
     val ev = d.primary(s.order, s.levels)
     val isToday = d.date == today
@@ -156,6 +176,15 @@ private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
             colorFilter = if (isToday) ColorFilter.tint(ColorProvider(p.todayBg)) else null,
         )
     }
+    // the tapped day gets a yellow frame; today never needs one
+    if (!isToday && d.date == selected) {
+        Image(
+            provider = ImageProvider(R.drawable.bg_select),
+            contentDescription = null,
+            modifier = GlanceModifier.size(37.dp),
+            colorFilter = ColorFilter.tint(ColorProvider(p.accent)),
+        )
+    }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Txt(d.jalali.day.fa(), 19f, numberColor, 500)
         val secondary = when {
@@ -169,15 +198,16 @@ private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
 }
 
 @Composable
-private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean, maxLines: Int) {
+private fun Footer(p: Palette, lines: List<Pair<Category, String>>, rtl: Boolean, maxLines: Int) {
     val dots = mapOf(
         Category.OFFICIAL to p.accent,
         Category.RELIGIOUS to Color(0xFFA593FF),
         Category.NATIONAL to Color(0xFF5BC0EB),
         Category.GLOBAL to Color(0xFF6FD08A),
     )
-    val lines = OccasionLines.build(s, view)
-    lines.take(maxLines).forEach { (cat, text) ->
+    val shown: List<Pair<Category?, String>> =
+        if (lines.isEmpty()) listOf(null to "مناسبتی برای این روز ثبت نشده") else lines.take(maxLines)
+    shown.forEach { (cat, text) ->
         Row(modifier = GlanceModifier.fillMaxWidth().padding(bottom = 4.dp), horizontalAlignment = rightEdge(rtl)) {
             Row(
                 modifier = GlanceModifier.background(p.chip).cornerRadius(12.dp).padding(horizontal = 10.dp, vertical = 3.dp),
@@ -185,9 +215,9 @@ private fun Footer(s: AppSettings, p: Palette, view: MonthView, rtl: Boolean, ma
             ) {
                 // the dot sits on the right of the text, as in the design
                 val parts: List<@Composable () -> Unit> = listOf(
-                    { Txt("●", 8f, dots.getValue(cat)) },
-                    { Spacer(GlanceModifier.width(6.dp)) },
-                    { Txt(text, 13f, p.ink, maxWidthDp = INNER_WIDTH - 30f) },
+                    { if (cat != null) Txt("●", 8f, dots.getValue(cat)) },
+                    { if (cat != null) Spacer(GlanceModifier.width(6.dp)) },
+                    { Txt(text, 13f, if (cat == null) p.mute else p.ink, maxWidthDp = INNER_WIDTH - 30f) },
                 )
                 parts.rightToLeft(rtl).forEach { it() }
             }

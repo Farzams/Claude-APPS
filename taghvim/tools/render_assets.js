@@ -28,6 +28,9 @@ for (const [k, c] of Object.entries(soft)) {
   items.push({ file: k === 'today' ? 'bg_today.png' : `bg_soft_${k}.png`, size: 120, html: `<div class="sq" style="width:120px;height:120px;background:${c}"></div>` });
 }
 
+// the yellow frame of a tapped day (white here, tinted with the accent colour in the app)
+items.push({ file: 'bg_select.png', size: 120, html: `<svg viewBox="0 0 120 120" width="120" height="120"><path d="M0,60 C0,12 12,0 60,0 C108,0 120,12 120,60 C120,108 108,120 60,120 C12,120 0,108 0,60Z" transform="translate(7 7) scale(0.883)" fill="none" stroke="#fff" stroke-width="10"/></svg>` });
+
 const page = `<!doctype html><meta charset="utf-8"><style>
 html,body{margin:0;background:transparent}
 .item{width:120px;height:120px;display:grid;place-items:center;position:absolute;left:0;top:0}

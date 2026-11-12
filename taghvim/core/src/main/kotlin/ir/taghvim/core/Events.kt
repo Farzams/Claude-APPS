@@ -62,6 +62,9 @@ data class HolidayEntry(
     val cat: String = "off",
     val theme: String? = null,
     val icon: String? = null,
+    /** Lunar month (1 = Muharram) and day of the occasion, when known: lets the app line up its lunar calendar with Iran's. */
+    val hm: Int? = null,
+    val hd: Int? = null,
 )
 
 @Serializable
@@ -121,12 +124,13 @@ class CalendarEngine(
     private val events: EventsFile = EventData.events
     private val yearFiles: Map<Int, HolidayYearFile> =
         (EventData.bundledYears + extraYears).associateBy { it.year }
+    private val calendar = HijriCalendar.from(yearFiles.values)
     private val officialByDate: Map<String, List<HolidayEntry>> =
         yearFiles.values.flatMap { it.holidays }.groupBy { it.date }
 
     fun day(date: LocalDate): DayInfo {
         val j = JalaliDate.of(date)
-        val h = Hijri.of(date, hijriShift)
+        val h = calendar.of(date, hijriShift)
         val list = ArrayList<DayEvent>()
 
         events.solar.filter { it.m == j.month && it.d == j.day }.forEach { list += it.toEvent(false) }

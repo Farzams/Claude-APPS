@@ -213,8 +213,8 @@ fun SettingsScreen() {
         Card {
             Label("خط دوم زیر روزها")
             Segmented(listOf("none" to "هیچ", "hijri" to "قمری", "greg" to "میلادی"), s.secondary) { v -> change { it.copy(secondary = v) } }
-            Label("اصلاح رؤیت هلال")
-            Segmented(listOf(-1 to "۱ روز زودتر", 0 to "طبق محاسبه", 1 to "۱ روز دیرتر"), s.hijriShift) { v -> change { it.copy(hijriShift = v) } }
+            Label("تاریخ قمری امروز")
+            LunarStepper(s.hijriShift) { v -> change { it.copy(hijriShift = v) } }
             Button("به‌روزرسانی تعطیلات", filled = false) {
                 Schedule.syncHolidaysNow(context)
                 updateMessage = "دریافت فهرست رسمی تعطیلات سال جاری و بعد شروع شد. اگر اینترنت وصل باشد، به‌زودی به‌روز می‌شود."
@@ -439,4 +439,32 @@ private fun GroupList(order: List<Category>, levels: Map<Category, Level>, onOrd
             }
         }
     }
+}
+
+/** Shows today's lunar date as the app counts it, with one-day steps if the real date (moon sighting) differs. */
+@Composable
+private fun LunarStepper(shift: Int, onShift: (Int) -> Unit) {
+    val context = LocalContext.current
+    val today = LocalDate.now(IRAN)
+    val settings = remember(shift) { AppSettings(hijriShift = shift) }
+    val day = remember(shift) { Holidays.engine(context, settings).day(today) }
+    val line = "${day.hijri.day.fa()} ${ir.taghvim.app.data.hijriMonthName(day.hijri.month)} ${day.hijri.year.fa()}"
+    Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        StepButton("+", enabled = shift > -2) { onShift(shift - 1) } // one day later in the lunar month
+        Box(Modifier.weight(1f), contentAlignment = Alignment.Center) { Tx(line, 16f, ink, FontWeight.Medium) }
+        StepButton("−", enabled = shift < 2) { onShift(shift + 1) }
+    }
+    Tx(
+        if (shift == 0) "از فهرست رسمی تعطیلات تنظیم شده است. اگر با رؤیت هلال شما نمی‌خواند، یک روز جلو یا عقب ببرید."
+        else "دستی ${if (shift < 0) "${(-shift).fa()} روز جلو" else "${shift.fa()} روز عقب"} برده شده است.",
+        12f, mute,
+    )
+}
+
+@Composable
+private fun StepButton(glyph: String, enabled: Boolean, onClick: () -> Unit) {
+    Box(
+        Modifier.size(44.dp).clip(RoundedCornerShape(14.dp)).background(if (enabled) chip else navy).then(if (enabled) Modifier.clickable(onClick = onClick) else Modifier),
+        contentAlignment = Alignment.Center,
+    ) { Tx(glyph, 22f, if (enabled) ink else mute, FontWeight.Medium) }
 }

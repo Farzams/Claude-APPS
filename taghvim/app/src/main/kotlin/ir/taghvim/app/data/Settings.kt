@@ -40,6 +40,8 @@ data class AppSettings(
     /** Months moved away from the current one with the widget's arrow buttons, valid for [offsetDate] only. */
     val monthOffset: Int = 0,
     val offsetDate: String = "",
+    /** The day the user tapped in the month widget (yyyy-MM-dd), or empty for today. */
+    val selectedDate: String = "",
 ) {
     val currentCity: City get() = Cities.find(province, city) ?: Cities.tehran
 }
@@ -56,6 +58,7 @@ object Prefs {
     private val SPECIAL = booleanPreferencesKey("special_backgrounds")
     private val OFFSET = intPreferencesKey("month_offset")
     private val OFFSET_DATE = stringPreferencesKey("offset_date")
+    private val SELECTED = stringPreferencesKey("selected_date")
 
     suspend fun load(context: Context): AppSettings {
         val p = context.store.data.first()
@@ -77,6 +80,7 @@ object Prefs {
             specialBackgrounds = p[SPECIAL] ?: d.specialBackgrounds,
             monthOffset = p[OFFSET] ?: 0,
             offsetDate = p[OFFSET_DATE] ?: "",
+            selectedDate = p[SELECTED] ?: "",
         )
     }
 
@@ -93,6 +97,7 @@ object Prefs {
             p[SPECIAL] = s.specialBackgrounds
             p[OFFSET] = s.monthOffset
             p[OFFSET_DATE] = s.offsetDate
+            p[SELECTED] = s.selectedDate
         }
     }
 

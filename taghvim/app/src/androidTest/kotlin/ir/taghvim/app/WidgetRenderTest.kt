@@ -100,10 +100,10 @@ class WidgetRenderTest {
             assertTrue("today's number is missing", month.any { it.contains(today.day.fa()) })
             assertTrue("the month title is missing", month.any { it.contains(today.year.fa()) })
             // the occasion list under the grid used to be dropped silently when the column had too many children
-            assertTrue("the occasion list under the grid is missing", month.any { it.contains("·") })
+            assertTrue("the occasion line under the grid is missing", month.any { it.contains("·") || it.contains("مناسبتی") })
             assertTrue("fewer than 28 day numbers", month.count { t -> t.trim().all { it in "۰۱۲۳۴۵۶۷۸۹" } && t.isNotBlank() } >= 28)
 
-            val prayer = render("prayer", PrayerWidgetReceiver::class.java, PrayerWidget(), 330, 150)
+            val prayer = render("prayer", PrayerWidgetReceiver::class.java, PrayerWidget(), 330, 180)
             println("prayer texts: $prayer")
             val times = prayer.filter { Regex("[۰-۹]{2}:[۰-۹]{2}").matches(it.trim()) }
             assertTrue("the six prayer times must all be visible, found $times", times.size == 6)
