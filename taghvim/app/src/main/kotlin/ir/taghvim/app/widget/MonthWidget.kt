@@ -211,7 +211,14 @@ private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
 
 @Composable
 private fun Footer(s: AppSettings, p: Palette, view: MonthView) {
-    val lines = ArrayList<String>()
+    val rtl = LocalContext.current.isRtl()
+    val dots = mapOf(
+        Category.OFFICIAL to p.accent,
+        Category.RELIGIOUS to Color(0xFFA593FF),
+        Category.NATIONAL to Color(0xFF5BC0EB),
+        Category.GLOBAL to Color(0xFF6FD08A),
+    )
+    val lines = ArrayList<Pair<Category, String>>()
     val monthName = Jalali.monthNames[view.month - 1]
     for (cat in s.order.filter { it in s.enabled }) {
         var i = 0
@@ -222,12 +229,25 @@ private fun Footer(s: AppSettings, p: Palette, view: MonthView) {
                 var j = i
                 while (j + 1 < view.days.size && view.days[j + 1].events.any { it.category == cat && it.title == e.title }) j++
                 val range = if (j == i) d.jalali.day.fa() else "${d.jalali.day.fa()} تا ${view.days[j].jalali.day.fa()}"
-                lines += "$range $monthName · ${e.title}"
+                lines += cat to "$range $monthName · ${e.title}"
                 i = j + 1
             } else i++
         }
     }
-    lines.take(4).forEach { line ->
-        Text(rtlText(line), maxLines = 1, modifier = GlanceModifier.fillMaxWidth(), style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp, textAlign = TextAlign.Right))
+    lines.take(3).forEach { (cat, text) ->
+        Row(modifier = GlanceModifier.fillMaxWidth().padding(bottom = 3.dp), horizontalAlignment = Alignment.End) {
+            Row(
+                modifier = GlanceModifier.background(p.chip).cornerRadius(12.dp).padding(horizontal = 9.dp, vertical = 3.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // the dot sits on the right of the text, as in the design
+                val parts: List<@Composable () -> Unit> = listOf(
+                    { Text("●", style = TextStyle(color = ColorProvider(dots.getValue(cat)), fontSize = 8.sp)) },
+                    { Spacer(GlanceModifier.width(5.dp)) },
+                    { Text(rtlText(text), maxLines = 1, style = TextStyle(color = ColorProvider(p.ink), fontSize = 11.sp)) },
+                )
+                parts.rightToLeft(rtl).forEach { it() }
+            }
+        }
     }
 }

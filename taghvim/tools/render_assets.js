@@ -23,7 +23,7 @@ for (const [k, body] of Object.entries(icons.prayer)) {
 for (const t of themes) {
   items.push({ file: `bg_${t}.png`, size: 120, html: `<div class="sq th-${t}" style="width:120px;height:120px;background:var(--thbg)"></div>` });
 }
-const soft = { nat: 'rgba(91,192,235,.30)', rel: 'rgba(165,147,255,.32)', gre: 'rgba(111,208,138,.26)', today: '#ffffff' };
+const soft = { nat: 'rgba(91,192,235,.40)', rel: 'rgba(165,147,255,.45)', gre: 'rgba(111,208,138,.36)', today: '#ffffff' };
 for (const [k, c] of Object.entries(soft)) {
   items.push({ file: k === 'today' ? 'bg_today.png' : `bg_soft_${k}.png`, size: 120, html: `<div class="sq" style="width:120px;height:120px;background:${c}"></div>` });
 }
