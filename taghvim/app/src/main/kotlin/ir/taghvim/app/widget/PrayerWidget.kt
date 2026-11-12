@@ -3,7 +3,6 @@ package ir.taghvim.app.widget
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
@@ -18,7 +17,6 @@ import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
-import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
@@ -27,11 +25,7 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
-import androidx.glance.text.FontWeight
-import androidx.glance.text.Text
-import androidx.glance.text.TextAlign
-import androidx.glance.text.TextStyle
-import androidx.glance.unit.ColorProvider
+import ir.taghvim.app.R
 import ir.taghvim.app.data.AppSettings
 import ir.taghvim.app.data.Prefs
 import ir.taghvim.app.data.fa
@@ -59,12 +53,11 @@ object PrayerPlan {
         if (next >= 0) {
             left = today[next] - nowMin
         } else {
-            // after midnight time of the day: the next moment is tomorrow's dawn
+            // every time of today has passed: the next moment is tomorrow's dawn
             val tomorrow = PrayerCalc.compute(now.toLocalDate().plusDays(1), city, zone).asList()
             next = 0
             left = 24 * 60 - nowMin + tomorrow[0]
         }
-        // between midnight-after-24h and dawn the "midnight" can fall past 24:00; show it as is
         return PrayerState(labels, icons, today.map { PrayerCalc.format(it).fa() }, next, Math.ceil(left).toInt())
     }
 
@@ -76,12 +69,11 @@ object PrayerPlan {
             m == 0 -> "${h.fa()} ساعت"
             else -> "${h.fa()} ساعت و ${m.fa()} دقیقه"
         }
-        val target = state.labels[state.next].replace("اذان ", "اذان ")
-        return "$span تا $target"
+        return "$span تا ${state.labels[state.next]}"
     }
 }
 
-/** The 4x1 widget: six moments with scene icons, the next one highlighted, and a countdown to it. */
+/** The 4x2 widget: six moments with scene icons and names, the next one highlighted, and a countdown to it. */
 class PrayerWidget : GlanceAppWidget() {
     override val sizeMode = SizeMode.Single
 
@@ -106,28 +98,30 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
     Column(
-        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(24.dp).padding(horizontal = 8.dp, vertical = 4.dp)
+        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(horizontal = 10.dp, vertical = 10.dp)
             .clickable(actionStartActivity<SettingsActivity>()),
     ) {
-        Row(modifier = GlanceModifier.fillMaxWidth().padding(horizontal = 6.dp)) {
-            val head: @Composable () -> Unit = {
-                Text(rtlText(PrayerPlan.countdown(st)), maxLines = 1, style = TextStyle(color = ColorProvider(p.ink), fontSize = 12.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Right), modifier = GlanceModifier.defaultWeight())
-            }
-            val city: @Composable () -> Unit = {
-                Text(rtlText("به افق ${s.city}"), maxLines = 1, style = TextStyle(color = ColorProvider(p.mute), fontSize = 10.sp))
-            }
-            if (rtl) { head(); city() } else { city(); head() }
+        Row(modifier = GlanceModifier.fillMaxWidth().padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+            val head: @Composable () -> Unit = { Txt(PrayerPlan.countdown(st), 15f, p.ink, 700, maxWidthDp = 220f) }
+            val city: @Composable () -> Unit = { Txt("به افق ${s.city}", 11.5f, p.mute) }
+            val gap: @Composable () -> Unit = { Spacer(GlanceModifier.defaultWeight()) }
+            listOf(head, gap, city).rightToLeft(rtl).forEach { it() }
         }
-        Row(modifier = GlanceModifier.fillMaxWidth().padding(top = 2.dp)) {
+        Spacer(GlanceModifier.height(8.dp))
+        Row(modifier = GlanceModifier.fillMaxWidth()) {
             st.labels.indices.toList().rightToLeft(rtl).forEach { i ->
                 val next = i == st.next
                 Column(
-                    modifier = GlanceModifier.defaultWeight().then(if (next) GlanceModifier.background(ImageProvider(ir.taghvim.app.R.drawable.bg_soft_nat)) else GlanceModifier).padding(vertical = 1.dp),
+                    modifier = GlanceModifier.defaultWeight()
+                        .then(if (next) GlanceModifier.background(ImageProvider(R.drawable.bg_soft_nat)) else GlanceModifier)
+                        .padding(vertical = 6.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val id = context.drawableId("pr_${st.icons[i]}")
-                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(25.dp))
-                    Text(st.times[i], style = TextStyle(color = ColorProvider(if (next) p.accent else p.ink), fontSize = 10.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
+                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(38.dp))
+                    Spacer(GlanceModifier.height(4.dp))
+                    Txt(st.labels[i], 10f, p.mute)
+                    Txt(st.times[i], 13f, if (next) p.accent else p.ink, 500)
                 }
             }
         }

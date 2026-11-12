@@ -37,7 +37,9 @@ class WidgetRenderTest {
     private val ctx: Context = inst.targetContext
 
     private fun texts(v: View, out: MutableList<String> = ArrayList()): List<String> {
+        // all text is drawn as pictures in the design's font; their description is the text
         if (v is TextView) out += v.text.toString()
+        else v.contentDescription?.let { out += it.toString() }
         if (v is ViewGroup) for (i in 0 until v.childCount) texts(v.getChildAt(i), out)
         return out
     }
@@ -99,7 +101,7 @@ class WidgetRenderTest {
             assertTrue("the occasion list under the grid is missing", month.any { it.contains("·") })
             assertTrue("fewer than 28 day numbers", month.count { t -> t.trim().all { it in "۰۱۲۳۴۵۶۷۸۹" } && t.isNotBlank() } >= 28)
 
-            val prayer = render("prayer", PrayerWidgetReceiver::class.java, PrayerWidget(), 330, 80)
+            val prayer = render("prayer", PrayerWidgetReceiver::class.java, PrayerWidget(), 330, 150)
             println("prayer texts: $prayer")
             val times = prayer.filter { Regex("[۰-۹]{2}:[۰-۹]{2}").matches(it.trim()) }
             assertTrue("the six prayer times must all be visible, found $times", times.size == 6)
