@@ -98,7 +98,7 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
     Column(
-        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(horizontal = 10.dp, vertical = 10.dp)
+        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(horizontal = 10.dp, vertical = 6.dp)
             .clickable(actionStartActivity<SettingsActivity>()),
         verticalAlignment = Alignment.CenterVertically, // everything sits in the middle of the widget's height
     ) {
@@ -108,19 +108,19 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
             val gap: @Composable () -> Unit = { Spacer(GlanceModifier.defaultWeight()) }
             listOf(head, gap, city).rightToLeft(rtl).forEach { it() }
         }
-        Spacer(GlanceModifier.height(8.dp))
+        Spacer(GlanceModifier.height(4.dp))
         Row(modifier = GlanceModifier.fillMaxWidth()) {
             st.labels.indices.toList().rightToLeft(rtl).forEach { i ->
                 val next = i == st.next
                 Column(
                     modifier = GlanceModifier.defaultWeight()
                         .then(if (next) GlanceModifier.background(ImageProvider(R.drawable.bg_soft_nat)) else GlanceModifier)
-                        .padding(vertical = 6.dp),
+                        .padding(vertical = 3.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val id = context.drawableId("pr_${st.icons[i]}")
-                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(38.dp))
-                    Spacer(GlanceModifier.height(4.dp))
+                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(34.dp))
+                    Spacer(GlanceModifier.height(2.dp))
                     Txt(st.labels[i], 10.5f, p.mute)
                     Txt(st.times[i], 14f, if (next) p.accent else p.ink, 500)
                 }
