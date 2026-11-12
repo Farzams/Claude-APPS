@@ -57,7 +57,7 @@ class MonthWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         var s = Prefs.load(context)
-        val today = LocalDate.now()
+        val today = LocalDate.now(IRAN)
         if (s.offsetDate != today.toString() && s.monthOffset != 0) {
             s = s.copy(monthOffset = 0, offsetDate = today.toString())
             Prefs.save(context, s)
@@ -82,7 +82,7 @@ class MonthWidgetReceiver : GlanceAppWidgetReceiver() {
 class MonthNavCallback : ActionCallback {
     override suspend fun onAction(context: Context, glanceId: GlanceId, parameters: ActionParameters) {
         val dir = parameters[DIR_KEY] ?: 0
-        Prefs.update(context) { it.copy(monthOffset = (it.monthOffset + dir).coerceIn(-36, 36), offsetDate = LocalDate.now().toString()) }
+        Prefs.update(context) { it.copy(monthOffset = (it.monthOffset + dir).coerceIn(-36, 36), offsetDate = LocalDate.now(IRAN).toString()) }
         MonthWidget().update(context, glanceId)
     }
 

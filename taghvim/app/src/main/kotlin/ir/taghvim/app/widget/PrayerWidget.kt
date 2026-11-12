@@ -37,18 +37,20 @@ import ir.taghvim.app.data.Prefs
 import ir.taghvim.app.data.fa
 import ir.taghvim.app.ui.SettingsActivity
 import ir.taghvim.core.PrayerCalc
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
 /** What the widget needs at one moment: the day's six times and which one is next, with minutes to wait. */
 class PrayerState(val labels: List<String>, val icons: List<String>, val times: List<String>, val next: Int, val minutesLeft: Int)
 
+/** Iran's own time zone: the times of an Iranian city are always read in Iran time, wherever the phone is. */
+val IRAN: ZoneId = ZoneId.of("Asia/Tehran")
+
 object PrayerPlan {
     private val labels = listOf("اذان صبح", "طلوع", "اذان ظهر", "غروب", "اذان مغرب", "نیمه‌شب")
     private val icons = listOf("fajr", "rise", "sun", "set", "mag", "mid")
 
-    fun at(s: AppSettings, now: LocalDateTime, zone: ZoneId = ZoneId.systemDefault()): PrayerState {
+    fun at(s: AppSettings, now: LocalDateTime, zone: ZoneId = IRAN): PrayerState {
         val city = s.currentCity
         val today = PrayerCalc.compute(now.toLocalDate(), city, zone).asList()
         val nowMin = now.hour * 60.0 + now.minute + now.second / 60.0
@@ -85,7 +87,7 @@ class PrayerWidget : GlanceAppWidget() {
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val s = Prefs.load(context)
-        val state = PrayerPlan.at(s, LocalDateTime.now())
+        val state = PrayerPlan.at(s, LocalDateTime.now(IRAN))
         provideContent { PrayerContent(s, state) }
     }
 }
@@ -104,28 +106,28 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
     Column(
-        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(24.dp).padding(horizontal = 8.dp, vertical = 6.dp)
+        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(24.dp).padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable(actionStartActivity<SettingsActivity>()),
     ) {
         Row(modifier = GlanceModifier.fillMaxWidth().padding(horizontal = 6.dp)) {
             val head: @Composable () -> Unit = {
-                Text(rtlText(PrayerPlan.countdown(st)), maxLines = 1, style = TextStyle(color = ColorProvider(p.ink), fontSize = 13.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Right), modifier = GlanceModifier.defaultWeight())
+                Text(rtlText(PrayerPlan.countdown(st)), maxLines = 1, style = TextStyle(color = ColorProvider(p.ink), fontSize = 12.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Right), modifier = GlanceModifier.defaultWeight())
             }
             val city: @Composable () -> Unit = {
-                Text(rtlText("به افق ${s.city}"), maxLines = 1, style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp))
+                Text(rtlText("به افق ${s.city}"), maxLines = 1, style = TextStyle(color = ColorProvider(p.mute), fontSize = 10.sp))
             }
             if (rtl) { head(); city() } else { city(); head() }
         }
-        Row(modifier = GlanceModifier.fillMaxWidth().padding(top = 3.dp)) {
+        Row(modifier = GlanceModifier.fillMaxWidth().padding(top = 2.dp)) {
             st.labels.indices.toList().rightToLeft(rtl).forEach { i ->
                 val next = i == st.next
                 Column(
-                    modifier = GlanceModifier.defaultWeight().then(if (next) GlanceModifier.background(p.chip).cornerRadius(14.dp) else GlanceModifier).padding(vertical = 2.dp),
+                    modifier = GlanceModifier.defaultWeight().then(if (next) GlanceModifier.background(ImageProvider(ir.taghvim.app.R.drawable.bg_soft_nat)) else GlanceModifier).padding(vertical = 1.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val id = context.drawableId("pr_${st.icons[i]}")
-                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(28.dp))
-                    Text(st.times[i], style = TextStyle(color = ColorProvider(if (next) p.accent else p.ink), fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
+                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(25.dp))
+                    Text(st.times[i], style = TextStyle(color = ColorProvider(if (next) p.accent else p.ink), fontSize = 10.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
                 }
             }
         }
