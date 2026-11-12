@@ -27,6 +27,7 @@ import androidx.glance.layout.Box
 import androidx.glance.layout.Column
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.absolutePadding
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.height
@@ -108,10 +109,19 @@ private fun MonthContent(s: AppSettings, view: MonthView, now: DayInfo, today: L
         modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(12.dp),
     ) {
         // the chosen day (today unless a day was tapped) in the three calendars, on the right: Jalali, then lunar, then Gregorian
-        Column(modifier = GlanceModifier.fillMaxWidth(), horizontalAlignment = rightEdge(rtl)) {
+        Column(modifier = GlanceModifier.fillMaxWidth().absolutePadding(right = 8.dp), horizontalAlignment = rightEdge(rtl)) {
             Txt(dateLines[0], 22f, p.ink, 500)
-            Txt(dateLines[1], 13.5f, p.mute)
-            Txt(dateLines[2], 13.5f, p.mute)
+            // Gregorian, then the lunar date, with a small dot between them
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                val parts: List<@Composable () -> Unit> = listOf(
+                    { Txt(dateLines[2], 13.5f, p.mute) },
+                    { Spacer(GlanceModifier.width(9.dp)) },
+                    { Txt("●", 5f, p.mute) },
+                    { Spacer(GlanceModifier.width(9.dp)) },
+                    { Txt(dateLines[1], 13.5f, p.mute) },
+                )
+                parts.rightToLeft(rtl).forEach { it() }
+            }
         }
         Spacer(GlanceModifier.height(6.dp))
         Row(modifier = GlanceModifier.fillMaxWidth()) {

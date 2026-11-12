@@ -103,6 +103,16 @@ class WidgetRenderTest {
             assertTrue("the occasion line under the grid is missing", month.any { it.contains("·") || it.contains("مناسبتی") })
             assertTrue("fewer than 28 day numbers", month.count { t -> t.trim().all { it in "۰۱۲۳۴۵۶۷۸۹" } && t.isNotBlank() } >= 28)
 
+            // a tapped day: the yellow frame and that day's occasions (a plain day in the same month, not today)
+            val iranToday = LocalDate.now(java.time.ZoneId.of("Asia/Tehran"))
+            val other = if (today.day <= 25) iranToday.plusDays(3) else iranToday.minusDays(3)
+            runBlocking { ir.taghvim.app.data.Prefs.update(ctx) { it.copy(selectedDate = other.toString()) } }
+            val picked = render("month_selected", MonthWidgetReceiver::class.java, MonthWidget(), 330, 400)
+            println("selected-day texts: $picked")
+            val pickedDay = JalaliDate.of(other).day.fa()
+            assertTrue("the chosen day's date is missing from the header", picked.any { it.contains(pickedDay) })
+            runBlocking { ir.taghvim.app.data.Prefs.update(ctx) { it.copy(selectedDate = "") } }
+
             val prayer = render("prayer", PrayerWidgetReceiver::class.java, PrayerWidget(), 330, 180)
             println("prayer texts: $prayer")
             val times = prayer.filter { Regex("[۰-۹]{2}:[۰-۹]{2}").matches(it.trim()) }
