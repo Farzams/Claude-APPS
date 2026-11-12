@@ -42,6 +42,11 @@
                 android:resource="@xml/widget_prayer_info" />
         </receiver>
 
+        <!-- Every minute: redraw the prayer widget (started by an alarm while the widget is on a screen) -->
+        <receiver
+            android:name=".widget.MinuteTickReceiver"
+            android:exported="false" />
+
         <!-- Refresh the widgets when the day or the time zone changes -->
         <receiver
             android:name=".widget.TimeChangeReceiver"

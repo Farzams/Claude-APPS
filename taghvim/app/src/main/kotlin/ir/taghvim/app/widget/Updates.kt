@@ -24,3 +24,13 @@ class TimeChangeReceiver : BroadcastReceiver() {
         }
     }
 }
+
+/** Every minute: redraw the prayer widget so the ring and the wait stay right. */
+class MinuteTickReceiver : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) {
+        val pending = goAsync()
+        CoroutineScope(Dispatchers.Default).launch {
+            try { PrayerWidget().updateAll(context.applicationContext) } finally { pending.finish() }
+        }
+    }
+}
