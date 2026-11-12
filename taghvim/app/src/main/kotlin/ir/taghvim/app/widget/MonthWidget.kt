@@ -96,6 +96,7 @@ private val themeIcon = mapOf(
     "xmas" to "xmas", "nye" to "nye", "val" to "heart", "hal" to "hal", "yalda" to "melon",
 )
 private val white = Color.White
+private val CELL = 37.dp
 
 @Composable
 private fun MonthContent(s: AppSettings, engine: CalendarEngine, view: MonthView, today: LocalDate) {
@@ -116,8 +117,8 @@ private fun MonthContent(s: AppSettings, engine: CalendarEngine, view: MonthView
         Row(modifier = GlanceModifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             val titleBlock: @Composable () -> Unit = {
                 Column(modifier = GlanceModifier.defaultWeight()) {
-                    Text(title, style = TextStyle(color = ColorProvider(p.ink), fontSize = 17.sp, fontWeight = FontWeight.Medium, textAlign = if (rtl) TextAlign.Start else TextAlign.End))
-                    Text(sub, style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp))
+                    Text(rtlText(title), modifier = GlanceModifier.fillMaxWidth(), style = TextStyle(color = ColorProvider(p.ink), fontSize = 18.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Right))
+                    Text(rtlText(sub), modifier = GlanceModifier.fillMaxWidth(), style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp, textAlign = TextAlign.Right))
                 }
             }
             val nav: @Composable () -> Unit = {
@@ -140,18 +141,20 @@ private fun MonthContent(s: AppSettings, engine: CalendarEngine, view: MonthView
             }
         }
         val cells: List<DayInfo?> = List(view.startColumn) { null } + view.days
-        cells.chunked(7).forEach { week ->
-            Row(modifier = GlanceModifier.fillMaxWidth()) {
-                val padded = week + List(7 - week.size) { null }
-                padded.rightToLeft(rtl).forEach { d ->
-                    Box(modifier = GlanceModifier.defaultWeight().height(32.dp), contentAlignment = Alignment.Center) {
-                        if (d != null) DayCell(s, p, d, today)
+        Column(modifier = GlanceModifier.fillMaxWidth()) {
+            cells.chunked(7).forEach { week ->
+                Row(modifier = GlanceModifier.fillMaxWidth()) {
+                    val padded = week + List(7 - week.size) { null }
+                    padded.rightToLeft(rtl).forEach { d ->
+                        Box(modifier = GlanceModifier.defaultWeight().height(CELL), contentAlignment = Alignment.Center) {
+                            if (d != null) DayCell(s, p, d, today)
+                        }
                     }
                 }
             }
         }
         Spacer(GlanceModifier.height(4.dp))
-        Footer(s, p, view)
+        Column(modifier = GlanceModifier.fillMaxWidth()) { Footer(s, p, view) }
     }
 }
 
@@ -192,14 +195,14 @@ private fun DayCell(s: AppSettings, p: Palette, d: DayInfo, today: LocalDate) {
         Image(
             provider = ImageProvider(bg),
             contentDescription = null,
-            modifier = GlanceModifier.size(30.dp),
+            modifier = GlanceModifier.size(34.dp),
             colorFilter = if (isToday) ColorFilter.tint(ColorProvider(p.todayBg)) else null,
         )
     }
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(d.jalali.day.fa(), style = TextStyle(color = ColorProvider(numberColor), fontSize = 14.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
+        Text(d.jalali.day.fa(), style = TextStyle(color = ColorProvider(numberColor), fontSize = 15.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
         when {
-            icon != 0 && bg != 0 -> Image(provider = ImageProvider(icon), contentDescription = null, modifier = GlanceModifier.size(10.dp))
+            icon != 0 && bg != 0 -> Image(provider = ImageProvider(icon), contentDescription = null, modifier = GlanceModifier.size(11.dp))
             s.secondary == "hijri" -> Text(d.hijri.day.fa(), style = TextStyle(color = ColorProvider(if (isToday) p.todayFg else p.mute), fontSize = 8.sp))
             s.secondary == "greg" -> Text(d.date.dayOfMonth.fa(), style = TextStyle(color = ColorProvider(if (isToday) p.todayFg else p.mute), fontSize = 8.sp))
         }
@@ -224,7 +227,7 @@ private fun Footer(s: AppSettings, p: Palette, view: MonthView) {
             } else i++
         }
     }
-    lines.take(3).forEach { line ->
-        Text(line, maxLines = 1, style = TextStyle(color = ColorProvider(p.mute), fontSize = 10.sp))
+    lines.take(4).forEach { line ->
+        Text(rtlText(line), maxLines = 1, modifier = GlanceModifier.fillMaxWidth(), style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp, textAlign = TextAlign.Right))
     }
 }

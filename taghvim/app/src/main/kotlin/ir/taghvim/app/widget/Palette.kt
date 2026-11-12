@@ -52,3 +52,9 @@ fun <T> List<T>.rightToLeft(rtlScreen: Boolean): List<T> = if (rtlScreen) this e
 
 /** Drawable by name (ic_*, pr_*, bg_*), or 0 when the artwork does not exist. */
 fun Context.drawableId(name: String): Int = resources.getIdentifier(name, "drawable", packageName)
+
+/**
+ * Persian text with digits and Latin parts must be shown right to left even when the phone is set to a
+ * left-to-right language; otherwise the digits jump to the wrong end of the line. The embedding marks force it.
+ */
+fun rtlText(text: String): String = "\u202B$text\u202C"

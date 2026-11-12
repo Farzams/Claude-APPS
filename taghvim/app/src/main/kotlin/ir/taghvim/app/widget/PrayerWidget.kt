@@ -104,29 +104,27 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
     Column(
-        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(24.dp).padding(horizontal = 8.dp, vertical = 8.dp)
+        modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(24.dp).padding(horizontal = 8.dp, vertical = 6.dp)
             .clickable(actionStartActivity<SettingsActivity>()),
     ) {
         Row(modifier = GlanceModifier.fillMaxWidth().padding(horizontal = 6.dp)) {
             val head: @Composable () -> Unit = {
-                Text(PrayerPlan.countdown(st), style = TextStyle(color = ColorProvider(p.ink), fontSize = 13.sp, fontWeight = FontWeight.Bold), modifier = GlanceModifier.defaultWeight())
+                Text(rtlText(PrayerPlan.countdown(st)), maxLines = 1, style = TextStyle(color = ColorProvider(p.ink), fontSize = 13.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Right), modifier = GlanceModifier.defaultWeight())
             }
             val city: @Composable () -> Unit = {
-                Text("به افق ${s.city}", style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp))
+                Text(rtlText("به افق ${s.city}"), maxLines = 1, style = TextStyle(color = ColorProvider(p.mute), fontSize = 11.sp))
             }
             if (rtl) { head(); city() } else { city(); head() }
         }
-        Spacer(GlanceModifier.height(4.dp))
-        Row(modifier = GlanceModifier.fillMaxWidth()) {
+        Row(modifier = GlanceModifier.fillMaxWidth().padding(top = 3.dp)) {
             st.labels.indices.toList().rightToLeft(rtl).forEach { i ->
                 val next = i == st.next
                 Column(
-                    modifier = GlanceModifier.defaultWeight().then(if (next) GlanceModifier.background(p.chip).cornerRadius(14.dp) else GlanceModifier).padding(vertical = 3.dp),
+                    modifier = GlanceModifier.defaultWeight().then(if (next) GlanceModifier.background(p.chip).cornerRadius(14.dp) else GlanceModifier).padding(vertical = 2.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val id = context.drawableId("pr_${st.icons[i]}")
-                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(30.dp))
-                    Text(st.labels[i], style = TextStyle(color = ColorProvider(p.mute), fontSize = 9.sp, textAlign = TextAlign.Center))
+                    if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(28.dp))
                     Text(st.times[i], style = TextStyle(color = ColorProvider(if (next) p.accent else p.ink), fontSize = 11.sp, fontWeight = FontWeight.Medium, textAlign = TextAlign.Center))
                 }
             }
