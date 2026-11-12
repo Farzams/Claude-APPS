@@ -90,7 +90,7 @@ class WidgetRenderTest {
     fun widgetsDrawWhatTheDesignNeeds() {
         inst.uiAutomation.adoptShellPermissionIdentity("android.permission.BIND_APPWIDGET")
         try {
-            val today = JalaliDate.of(LocalDate.now())
+            val today = JalaliDate.of(LocalDate.now(java.time.ZoneId.of("Asia/Tehran")))
             val month = render("month", MonthWidgetReceiver::class.java, MonthWidget(), 330, 400)
             println("month texts: $month")
             assertTrue("today's number is missing", month.any { it.contains(today.day.fa()) })
