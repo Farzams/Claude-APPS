@@ -117,7 +117,9 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
     val context = LocalContext.current
     val p = Palettes.of(context, s)
     val rtl = context.isRtl()
-    val track = if (Palettes.isDark(context, s)) Color(0xFF34508F) else Color(0xFFC4D0EA)
+    val dark = Palettes.isDark(context, s)
+    val track = if (dark) Color(0xFF34508F) else Color(0xFFC4D0EA)
+    val highlight = if (dark) Color(0xFF2A5A7B) else Color(0xFFD2E3F6)
 
     Row(
         modifier = GlanceModifier.fillMaxSize().background(p.card).cornerRadius(26.dp).padding(10.dp)
@@ -151,17 +153,17 @@ private fun PrayerContent(s: AppSettings, st: PrayerState) {
                     val id = context.drawableId("pr_${st.icons[i]}")
                     Row(
                         modifier = GlanceModifier.fillMaxWidth()
-                            .then(if (next) GlanceModifier.background(ImageProvider(R.drawable.bg_soft_nat)) else GlanceModifier)
-                            .padding(horizontal = 6.dp, vertical = 1.dp),
+                            .then(if (next) GlanceModifier.background(highlight).cornerRadius(12.dp) else GlanceModifier)
+                            .padding(horizontal = 6.dp, vertical = 0.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         // right to left: icon, name, then the time at the far left
                         val parts: List<@Composable () -> Unit> = listOf(
-                            { if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(24.dp)) },
+                            { if (id != 0) Image(ImageProvider(id), contentDescription = st.labels[i], modifier = GlanceModifier.size(22.dp)) },
                             { Spacer(GlanceModifier.width(8.dp)) },
-                            { Txt(st.labels[i], 12.5f, p.mute) },
+                            { Txt(st.labels[i], 12f, p.mute) },
                             { Spacer(GlanceModifier.defaultWeight()) },
-                            { Txt(st.times[i], 12.5f, if (next) p.accent else p.ink, 500) },
+                            { Txt(st.times[i], 12f, if (next) p.accent else p.ink, 500) },
                         )
                         parts.rightToLeft(rtl).forEach { it() }
                     }
